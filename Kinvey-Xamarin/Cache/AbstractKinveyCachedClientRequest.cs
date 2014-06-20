@@ -1,0 +1,112 @@
+﻿// Copyright (c) 2014, Kinvey, Inc. All rights reserved.
+//
+// This software is licensed to you under the Kinvey terms of service located at
+// http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
+// software, you hereby accept such terms of service  (and any agreement referenced
+// therein) and agree that you have read, understand and agree to be bound by such
+// terms of service and are of legal age to agree to such terms with Kinvey.
+//
+// This software contains valuable confidential and proprietary information of
+// KINVEY, INC and is subject to applicable licensing agreements.
+// Unauthorized reproduction, transmission or distribution of this file and its
+// contents is a violation of applicable laws.
+
+using System;
+using System.Collections.Generic;
+using Kinvey.DotNet.Framework.Core;
+
+namespace KinveyXamarin
+{
+	public class AbstractKinveyCachedClientRequest<T> : AbstractKinveyClientRequest<T>
+	{
+
+		private CachePolicy policy = CachePolicy.NO_CACHE;
+		// TODO no anonymous interface support in c# -> investigate making ICache an abstract class
+		private ICache<String, T> cache = null;
+
+		private Object locker = new Object();
+
+
+		protected AbstractKinveyCachedClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters) 
+			: base (client, requestMethod, uriTemplate, httpContent, uriParameters)
+		{
+		}
+
+		public void setCache(ICache<String, T> cache, CachePolicy policy)
+		{
+			this.cache = cache;
+			this.policy = policy;
+		}
+
+
+		public T fromCache(){
+			if (cache == null) {
+				return default(T);
+			}
+
+			var key = base.uriTemplate;
+			foreach (var p in base.uriResourceParameters)
+			{
+				key = key.Replace("{" + p.Key + "}", p.Value.ToString());
+			}
+				
+			lock (locker) {
+				return this.cache.get (key);
+			}
+		}
+
+		public T fromService(bool persist){
+			T ret = base.Execute ();
+			if (persist && ret != null && cache != null) {
+
+				var key = base.uriTemplate;
+				foreach (var p in base.uriResourceParameters)
+				{
+					key = key.Replace("{" + p.Key + "}", p.Value.ToString());
+				}
+
+				lock (locker) {
+					this.cache.put (key, ret);
+				}	
+			}
+			return ret;
+		}
+
+		public override T Execute ()
+		{
+			T ret = default(T);
+
+			if (policy == CachePolicy.NO_CACHE) {
+				ret = fromService (false);
+
+			} else if (policy == CachePolicy.CACHE_ONLY) {
+				ret = fromCache ();
+
+			} else if (policy == CachePolicy.CACHE_FIRST) {
+				ret = fromCache ();
+				if (ret == null) {
+					ret = fromService (true);
+				}
+			} else if (policy == CachePolicy.CACHE_FIRST_NOREFRESH) {
+				ret = fromCache ();
+				if (ret == null) {
+					ret = fromService(false);
+				}
+			} else if (policy == CachePolicy.NETWORK_FIRST) {
+				ret = fromService (true);
+				if (ret == null) {
+					ret = fromCache ();
+				}
+				
+			}
+
+			return ret;
+
+		}
+
+
+
+
+	}
+}
+
