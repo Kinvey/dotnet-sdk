@@ -33,7 +33,7 @@ namespace AndroidTestDrive
 	{
 		int count = 1;
 
-		private string appKey = "kid_eV220fVYa9" + "123";
+		private string appKey = "kid_eV220fVYa9";
 		private string appSecret = "98b40ad7a65d4655859f2e7b1432e0a1";
 
 		private static string COLLECTION = "myCollection";
@@ -53,9 +53,24 @@ namespace AndroidTestDrive
 //			AbstractClient kinveyClient = (AbstractClient)new AbstractClient.Builder (new RestClient (), new Kinvey.DotNet.Framework.Core.KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())).build ();
 			kinveyClient = new Client.Builder(appKey, appSecret).build();
 
-			new Thread(() => 
-				loginUserAndToast ()
-			).Start();
+			kinveyClient.User ().Login (new KinveyDelegate<User>{ 
+				onSuccess =  (user) => { 
+					RunOnUiThread (() => {
+						Toast.MakeText(this, "logged in as: " + user.Id, ToastLength.Short).Show();
+					});
+				},
+				onError = (error) => {
+					RunOnUiThread (() => {
+						Toast.MakeText(this, "something went wrong: " + error.Message, ToastLength.Short).Show();
+					});
+				}
+			});
+
+
+
+//			new Thread(() => 
+//				loginUserAndToast ()
+//			).Start();
 
 			// Get our button from the layout resource,
 			// and attach an event to it
@@ -123,7 +138,7 @@ namespace AndroidTestDrive
 			ent.Email = "test@tester.com";
 			ent.Name = "James Dean";
 			try{
-				entityCollection.Save(ent).Execute();
+				entityCollection.SaveBlocking(ent).Execute();
 			}catch(Exception e){
 				Console.WriteLine ("Uh oh! " + e);
 				RunOnUiThread (() => {
@@ -142,7 +157,7 @@ namespace AndroidTestDrive
 			entityCollection.setCache (myCache, CachePolicy.NO_CACHE);
 			MyEntity res = null;
 			try{
-				res = entityCollection.GetEntity (STABLE_ID).Execute ();
+				res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();
 			}catch(Exception e){
 				Console.WriteLine ("Uh oh! " + e);
 				RunOnUiThread (() => {
@@ -161,8 +176,12 @@ namespace AndroidTestDrive
 		private void loadFromCacheAndToast(){
 			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+
 			try{
-				MyEntity res = entityCollection.GetEntity (STABLE_ID).Execute ();
+				MyEntity res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();
+				RunOnUiThread ( () => {
+					Toast.MakeText(this, "got " + res.Name + "from cache, size: " + myCache.getSize(), ToastLength.Short).Show();
+				});
 			}catch(Exception e){
 				Console.WriteLine ("Uh oh! " + e);
 				RunOnUiThread (() => {
@@ -171,9 +190,7 @@ namespace AndroidTestDrive
 				return;
 			}			
 
-			RunOnUiThread ( () => {
-				Toast.MakeText(this, "got from cache size: " + myCache.getSize(), ToastLength.Short).Show();
-			});
+
 		}
 
 	}

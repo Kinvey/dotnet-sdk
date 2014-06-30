@@ -89,7 +89,7 @@ namespace Kinvey.DotNet.Framework.Core
 		}
 
 
-        public GetEntityRequest GetEntity(string entityId)
+		public GetEntityRequest GetEntityBlocking(string entityId)
         {
             var urlParameters = new Dictionary<string, string>();
             urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -101,7 +101,7 @@ namespace Kinvey.DotNet.Framework.Core
             return getEntity;
         }
 
-        public GetRequest Get()
+		public GetRequest GetBlocking()
         {
             var urlParameters = new Dictionary<string, string>();
             urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -112,7 +112,7 @@ namespace Kinvey.DotNet.Framework.Core
             return get;
         }
 
-        public SaveRequest Save(T entity)
+		public SaveRequest SaveBlocking(T entity)
         {
             SaveRequest save;
 			var urlParameters = new Dictionary<string, string>();

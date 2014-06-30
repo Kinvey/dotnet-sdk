@@ -6,7 +6,11 @@ This is a Public Class Library (PCL) for various supported Xamarin runtimes.
 
 ##DISCLAIMER
 
-This is an alpha release of the Kinvey-Xamarin Library.  There are many wrappers that need to be added, and the current implementation requires much more verbosity than will be required.  Also, future refactoring is planned for adding support for the async/await pattern instead of spawning threads.
+This is an alpha release of the Kinvey-Xamarin Library.  There are many wrappers that need to be added, and the current implementation requires much more verbosity than will be required.  Also, future refactoring is planned which might break backwards compatibility.
+
+Please report any issues on the issues section of this project, thank you!
+
+Also check out the index branch for current features being developed
 
 ## Build
 Pre-requisites:
@@ -17,24 +21,38 @@ Pre-requisites:
   * Set it as a reference for the Kinvey-Xamarin project (this repo)
   
   
+  
+##Usage and Concepts
+
+### The Client
+The Client acts as the point of interaction for all things Kinvey.  It manages the current users credentials, and provides a handful of factory methods for accessing features.  For example, to access all datastore operations, use `myKinveyClient.AppData(...)` and to access user operations use `myKinveyClient.User()`.
+
+
+### Async vs Sync (*Blocking)
+This library is implemented with a clean separation between blocking synchronous functionality and async functionality with delegates for results.  Note that there are two versions of each factory, for example there is a `User` class containing `LoginBlocking`, and a `AsyncUser` class containing `Login`.  The blocking variation requires a call to `Execute()` on the request object, and will block the current thread until it completes.  The Async Variations will spawn a new thread which executes the blocking variation, passing through any parameters.  Async methods also take an instance of a `KinveyDelegate`, a simple abstract class which provides on `Action` for `onSuccess` and `onFailure`, dependent on the results of the async execution.  
+  
+  
 ## Usage (from android-testdrive project) 
 
 ###create a client
 
-    AbstractClient kinveyClient = (AbstractClient)new AbstractClient.Builder (new RestClient (), new Kinvey.DotNet.Framework.Core.KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())).build ();
+    Client kinveyClient = new Client.Builder(appKey, appSecret).build();
     
     
-###access user operations (login)
+###access user operations async (login)
 
-    try{
-        user = kinveyClient.KinveyUser ().Login ().Execute();
-	}catch(Exception e){
-		Console.WriteLine ("Uh oh! " + e);
-		RunOnUiThread (() => {
-			Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
-		});
-		return;
-    }
+	kinveyClient.User ().Login (new KinveyDelegate<User>{ 
+		onSuccess =  (user) => { 
+			RunOnUiThread (() => {
+				Toast.MakeText(this, "logged in as: " + user.Id, ToastLength.Short).Show();
+			});
+		},
+		onError = (error) => {
+			RunOnUiThread (() => {
+				Toast.MakeText(this, "something went wrong: " + error.Message, ToastLength.Short).Show();
+			});
+		}
+	});
     
 
 

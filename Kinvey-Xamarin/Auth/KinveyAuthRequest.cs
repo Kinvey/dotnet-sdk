@@ -112,21 +112,21 @@ namespace Kinvey.DotNet.Framework.Auth
         }
 
 
-		public async Task<RestResponse> ExecuteUnparsedAsync()
-		{
-			RestClient client = InitializeRestClient();
-			RestRequest request = BuildRestRequest();
-
-			var response = await client.ExecuteAsync(request);
-//			var response = req.Result;
-
-			if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 200 )
-			{
-				throw NewExceptionOnError(response);
-			}
-
-			return (RestResponse)response;
-		}
+//		public async Task<RestResponse> ExecuteUnparsedAsync()
+//		{
+//			RestClient client = InitializeRestClient();
+//			RestRequest request = BuildRestRequest();
+//
+//			var response = await client.ExecuteAsync(request);
+////			var response = req.Result;
+//
+//			if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
+//			{
+//				throw NewExceptionOnError(response);
+//			}
+//
+//			return (RestResponse)response;
+//		}
 
 
 
@@ -138,7 +138,7 @@ namespace Kinvey.DotNet.Framework.Auth
 			var req = client.ExecuteAsync(request);
 			var response = req.Result;
 
-			if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 200 )
+			if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
             {
                 throw NewExceptionOnError(response);
             }
@@ -152,10 +152,10 @@ namespace Kinvey.DotNet.Framework.Auth
         }
 
 
-		public async Task<KinveyAuthResponse> ExecuteAsync()
-		{
-			return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
-		}
+//		public async Task<KinveyAuthResponse> ExecuteAsync()
+//		{
+//			return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
+//		}
 
         protected KinveyJsonResponseException NewExceptionOnError(IRestResponse response)
         {

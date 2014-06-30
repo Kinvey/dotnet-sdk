@@ -143,13 +143,14 @@ namespace Kinvey.DotNet.Framework
         }
 
 		/// <summary>
-		/// Create the specified userid and password.
+		/// Creates the User with a blocking implementation.
 		/// </summary>
-		/// <param name="userid">Userid.</param>
-		/// <param name="password">Password.</param>
-		public LoginRequest CreateBlocking(string userid, string password) 
+		/// <returns>The created User.</returns>
+		/// <param name="userid">the username of the user.</param>
+		/// <param name="password">the password for the user.</param>
+		public LoginRequest CreateBlocking(string username, string password) 
         {
-            return new LoginRequest(userid, password, true, this).buildAuthRequest();
+			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
 		public class LoginRequest 

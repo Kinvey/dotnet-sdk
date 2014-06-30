@@ -2,10 +2,10 @@
 
 namespace KinveyXamarin
 {
-	public abstract class KinveyDelegate<T>
+	public class KinveyDelegate<T>
 	{
-		public abstract Action<T> onSuccess(T entity);
-		public abstract Action<Exception> onError(Exception error);
+		public Action<T> onSuccess;
+		public Action<Exception> onError;
 
 	}
 }
