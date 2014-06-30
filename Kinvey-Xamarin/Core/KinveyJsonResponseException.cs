@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using RestSharp;
+using KinveyXamarin;
 
 namespace Kinvey.DotNet.Framework.Core
 {
@@ -59,7 +60,7 @@ namespace Kinvey.DotNet.Framework.Core
             }
             catch (IOException ex)
             {
-//				Console.WriteLine(ex.StackTrace);
+				ClientLogger.Log (ex.Message);
 
             } 
             

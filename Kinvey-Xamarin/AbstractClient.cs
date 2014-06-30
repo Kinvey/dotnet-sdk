@@ -29,7 +29,7 @@ namespace Kinvey.DotNet.Framework
 
         private User currentUser;
         private ICredentialStore store;
-        private AppData appData;
+		//        private AppData appData; //TODO ideally would cache reference here
         protected object Lock = new object();
         private IClientUsers clientUsers;
 
@@ -55,14 +55,15 @@ namespace Kinvey.DotNet.Framework
 
         public AppData<T> AppData<T>(String collectionName, Type myClass)
         {
-            lock(Lock) 
-            {
-                if (appData == null) 
-                {
-                    appData = new AppData<T>(collectionName, myClass, this);
-                }
-            return (AppData<T>) appData;
-            }
+			return new AppData<T>(collectionName, myClass, this);
+//            lock(Lock) 
+//            {
+//                if (appData == null) 
+//                {
+//                    appData = new AppData<T>(collectionName, myClass, this);
+//                }
+//            return (AppData<T>) appData;
+//            }
         }
 			
         public User CurrentUser

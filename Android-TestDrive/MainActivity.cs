@@ -50,7 +50,6 @@ namespace AndroidTestDrive
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-//			AbstractClient kinveyClient = (AbstractClient)new AbstractClient.Builder (new RestClient (), new Kinvey.DotNet.Framework.Core.KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())).build ();
 			kinveyClient = new Client.Builder(appKey, appSecret).build();
 
 			kinveyClient.User ().Login (new KinveyDelegate<User>{ 
@@ -66,11 +65,6 @@ namespace AndroidTestDrive
 				}
 			});
 
-
-
-//			new Thread(() => 
-//				loginUserAndToast ()
-//			).Start();
 
 			// Get our button from the layout resource,
 			// and attach an event to it
@@ -109,46 +103,48 @@ namespace AndroidTestDrive
 
 		}
 
-		private void loginUserAndToast(){
-			User user;
-			if (kinveyClient.User ().isUserLoggedIn ()) {
-				user = kinveyClient.User ();
-			} else {
-				try{
-					user = kinveyClient.User ().LoginBlocking ().Execute();
-				}catch(Exception e){
-					Console.WriteLine ("Uh oh! " + e);
-					RunOnUiThread (() => {
-						Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
-					});
-					return;
-				}
-			}
-
-			RunOnUiThread ( () => {
-				Toast.MakeText(this, "logged in as: " + user.Id, ToastLength.Short).Show();
-			});
-		}
-
+//		private void loginUserAndToast(){
+//			User user;
+//			if (kinveyClient.User ().isUserLoggedIn ()) {
+//				user = kinveyClient.User ();
+//			} else {
+//				try{
+//					user = kinveyClient.User ().LoginBlocking ().Execute();
+//				}catch(Exception e){
+//					Console.WriteLine ("Uh oh! " + e);
+//					RunOnUiThread (() => {
+//						Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
+//					});
+//					return;
+//				}
+//			}
+//
+//			RunOnUiThread ( () => {
+//				Toast.MakeText(this, "logged in as: " + user.Id, ToastLength.Short).Show();
+//			});
+//		}
+//
 		private void saveAndToast(){
 		
-			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
+			AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 			MyEntity ent = new MyEntity();
 			ent.ID = STABLE_ID;
 			ent.Email = "test@tester.com";
 			ent.Name = "James Dean";
-			try{
-				entityCollection.SaveBlocking(ent).Execute();
-			}catch(Exception e){
-				Console.WriteLine ("Uh oh! " + e);
-				RunOnUiThread (() => {
-					Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
-				});
-				return;
-			}
-			RunOnUiThread (() => {
-				Toast.MakeText(this, "saved: " + ent.Name, ToastLength.Short).Show();
+			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+			entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 
+				onSuccess = (entity) => { 
+					RunOnUiThread (() => {
+						Toast.MakeText (this, "logged in as: " + entity.Name, ToastLength.Short).Show ();
+					});
+				},
+				onError = (error) => {
+					RunOnUiThread (() => {
+						Toast.MakeText (this, "something went wrong: " + error.Message, ToastLength.Short).Show ();
+					});
+				}
 			});
+		
 		
 		}
 

@@ -56,19 +56,37 @@ This library is implemented with a clean separation between blocking synchronous
     
 
 
-###access app data operations (with cache support)
+###access app data operations (save with cache support)
 
 
-			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
-			try{
-				MyEntity res = entityCollection.GetEntity (STABLE_ID).Execute ();
-			}catch(Exception e){
-				Console.WriteLine ("Uh oh! " + e);
-				RunOnUiThread (() => {
-					Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
-				});
-				return;
-			}	
+	//get a reference to AsyncAppData
+	AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
+
+	//Create an entity to save	
+	MyEntity ent = new MyEntity();
+	ent.ID = STABLE_ID;
+	ent.Email = "test@tester.com";
+	ent.Name = "James Dean";
+	
+	//-----
+	//This line here enables Caching, used for retrieving only
+	entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+	//-----
+	
+	
+	//call save and pass delegates
+	entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 
+		onSuccess = (entity) => { 
+			RunOnUiThread (() => {
+				Toast.MakeText (this, "logged in as: " + entity.Name, ToastLength.Short).Show ();
+			});
+		},
+		onError = (error) => {
+			RunOnUiThread (() => {
+				Toast.MakeText (this, "something went wrong: " + error.Message, ToastLength.Short).Show ();
+			});
+		}
+	});
 
 
 ## License

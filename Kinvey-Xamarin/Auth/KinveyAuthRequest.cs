@@ -42,20 +42,14 @@ namespace Kinvey.DotNet.Framework.Auth
         }
 
         private bool create;
-        private LoginType type;
         private RestClient client;
         private string BaseUrl;
         private Dictionary<string, string> uriTemplateParameters;
 
         private HttpBasicAuthenticator appKeyAuthentication;
 
-        [JsonProperty]
-        private string appKey;
-
         private IAuthenticator requestPayload;
-
-//        private IRestResponse response;
-
+	
         private static KinveyHeaders kinveyHeaders = new KinveyHeaders();
 
         public KinveyAuthRequest(RestClient client, string baseUrl, HttpBasicAuthenticator auth, string appKey, string username, string password, User user, bool create)
@@ -63,7 +57,6 @@ namespace Kinvey.DotNet.Framework.Auth
 		{
             this.client = client;
             this.BaseUrl = baseUrl;
-            this.appKey = appKey;
             this.appKeyAuthentication = auth;
             this.requestPayload = (username == null || password == null) ? null : new HttpBasicAuthenticator(username, password);
             if (user != null)
@@ -71,7 +64,6 @@ namespace Kinvey.DotNet.Framework.Auth
                 // TODO Add properties of user
             }
             this.create = create;
-            this.type = requestPayload == null ? LoginType.IMPLICIT : LoginType.KINVEY;
             this.uriTemplateParameters = new Dictionary<string,string>();
             this.uriTemplateParameters.Add("appKey", appKey);
         }

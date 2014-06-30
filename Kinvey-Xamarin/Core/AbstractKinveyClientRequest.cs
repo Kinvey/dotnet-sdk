@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using System.IO;
 using RestSharp;
 using System.Net.Http;
+using KinveyXamarin;
 
 namespace Kinvey.DotNet.Framework.Core
 {
@@ -196,14 +197,12 @@ namespace Kinvey.DotNet.Framework.Core
             }
             catch(ArgumentException ex)
             {
-//                Console.WriteLine("unable to parse response -> " + ex.Message);
-                //this prevents a crash when we receive a 200 with null content
+				ClientLogger.Log (ex.Message);
                 return default(T);
             }
             catch (NullReferenceException ex)
             {
-//                Console.WriteLine("unable to parse response -> " + ex.Message);
-                //this prevents a crash when we receive a 200 with null content
+				ClientLogger.Log (ex.Message);
                 return default(T);
             }
         }

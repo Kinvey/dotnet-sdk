@@ -11,11 +11,7 @@ namespace KinveyXamarin
 
 
 		private AsyncUser user;
-
-
-//		protected object Lock = new object();
-
-
+//		private AsyncAppData appData;
 
 		protected Client(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
 			: base(client, rootUrl, servicePath, initializer, store) {}
@@ -34,6 +30,12 @@ namespace KinveyXamarin
 				return user;
 			}
 		}
+
+		public new AsyncAppData<T> AppData<T>(String collectionName, Type myClass)
+		{
+			return new AsyncAppData<T>(collectionName, myClass, this);
+		}
+
 	
 		public new class Builder : AbstractClient.Builder
 		{
