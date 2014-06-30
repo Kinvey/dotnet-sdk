@@ -39,7 +39,7 @@ namespace Kinvey.DotNet.Framework
             this.store = store;
         }
 
-        public User KinveyUser()
+		public User User()
         {
             lock (Lock)
             {
@@ -64,9 +64,7 @@ namespace Kinvey.DotNet.Framework
             return (AppData<T>) appData;
             }
         }
-
-        //public abstract IClientUsers GetClientUsers();
-
+			
         public User CurrentUser
         {
             get
@@ -120,7 +118,7 @@ namespace Kinvey.DotNet.Framework
             }
         }
 
-		public new class Builder : AbstractKinveyClient.Builder
+		public new abstract class Builder : AbstractKinveyClient.Builder
         {
             private ICredentialStore store;
             //private Properties props = new Properties();
@@ -139,11 +137,7 @@ namespace Kinvey.DotNet.Framework
                 get { return this.store; }
                 set { this.store = value; }
             }
-
-            public override AbstractKinveyClient build()
-            {
-                return new AbstractClient(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
-            }
+				
         }
     }
 }

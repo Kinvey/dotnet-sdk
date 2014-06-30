@@ -23,7 +23,7 @@ namespace Kinvey.DotNet.Framework.Auth
 {
 	public class Credential : IKinveyRequestInitializer
 	{
-		private static readonly string AuthHeaderFormat = "Kinvey %s";
+//		private static readonly string AuthHeaderFormat = "Kinvey %s";
 		private string userId;
 		private string authToken;
 

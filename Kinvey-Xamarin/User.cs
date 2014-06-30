@@ -42,7 +42,7 @@ namespace Kinvey.DotNet.Framework
         [JsonProperty("username")]
         private String username;
 
-        private Type thisClass = typeof(User);
+//        private Type thisClass = typeof(User);
 
         private AbstractClient client;
 
@@ -114,30 +114,30 @@ namespace Kinvey.DotNet.Framework
             credentialManager.RemoveCredential(userID);
         }
 
-        public LoginRequest Login()
+		public LoginRequest LoginBlocking()
         {
             return new LoginRequest(this).buildAuthRequest();
         }
 
-        public LoginRequest Login(string username, string password)
+		public LoginRequest LoginBlocking(string username, string password)
         {
             return new LoginRequest(username, password, false, this);
         }
 
-        public LoginRequest Login(Credential cred) 
+		public LoginRequest LoginBlocking(Credential cred) 
         {
             return new LoginRequest(cred, this);
         }
 
-        public LoginRequest LoginKinveyAuthToken(string userId, string authToken) 
+		public LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 
         {
             this.AuthToken = authToken;
             this.Id = userId;
             Credential c = Credential.From(this);
-            return Login(c);
+			return LoginBlocking(c);
         }
 
-        public LogoutRequest logout() 
+		public LogoutRequest logoutBlocking() 
         {
             return new LogoutRequest(this.KinveyClient.Store, this);
         }
@@ -147,7 +147,7 @@ namespace Kinvey.DotNet.Framework
 		/// </summary>
 		/// <param name="userid">Userid.</param>
 		/// <param name="password">Password.</param>
-        public LoginRequest Create(string userid, string password) 
+		public LoginRequest CreateBlocking(string userid, string password) 
         {
             return new LoginRequest(userid, password, true, this).buildAuthRequest();
         }
@@ -209,41 +209,41 @@ namespace Kinvey.DotNet.Framework
                 return this;
             }
 
-			public async Task<User> ExecuteAsync() 
-            {
-                if (memberUser.isUserLoggedIn())
-                {
-                    throw new KinveyException("Attempting to login when a user is already logged in",
-                            "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
-                            "Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended");
-                }
-                string userType = "";
-                if (this.type == LoginType.CREDENTIALSTORE) 
-                {
-                    return memberUser.initUser(credential);
-                }
-                else 
-                {
-                    switch (this.type)
-                    {
-                        case LoginType.IMPLICIT:
-                            userType = "Implicit";
-                            break;
-                        case LoginType.KINVEY:
-                            userType = "Kinvey";
-                            break;
-                        default:
-                            throw new ArgumentException("Invalid LoginType operation.");
-                    }
-                }
-//				this.request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
-
-//				client.InitializeRequest(this.request);
-//				this.request.
-
-				KinveyAuthResponse response = await this.request.ExecuteAsync();
-                return memberUser.InitUser(response, userType);
-            }
+//			public async Task<User> ExecuteAsync() 
+//            {
+//                if (memberUser.isUserLoggedIn())
+//                {
+//                    throw new KinveyException("Attempting to login when a user is already logged in",
+//                            "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
+//                            "Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended");
+//                }
+//                string userType = "";
+//                if (this.type == LoginType.CREDENTIALSTORE) 
+//                {
+//                    return memberUser.initUser(credential);
+//                }
+//                else 
+//                {
+//                    switch (this.type)
+//                    {
+//                        case LoginType.IMPLICIT:
+//                            userType = "Implicit";
+//                            break;
+//                        case LoginType.KINVEY:
+//                            userType = "Kinvey";
+//                            break;
+//                        default:
+//                            throw new ArgumentException("Invalid LoginType operation.");
+//                    }
+//                }
+////				this.request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
+//
+////				client.InitializeRequest(this.request);
+////				this.request.
+//
+//				KinveyAuthResponse response = await this.request.ExecuteAsync();
+//                return memberUser.InitUser(response, userType);
+//            }
 
 			/// <summary>
 			/// Execute this instance.

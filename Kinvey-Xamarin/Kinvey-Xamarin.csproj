@@ -55,12 +55,15 @@
     <Compile Include="Cache\InMemoryCache.cs" />
     <Compile Include="Cache\AbstractKinveyCachedClientRequest.cs" />
     <Compile Include="Cache\CachePolicy.cs" />
-    <Compile Include="Client.cs" />
+    <Compile Include="Async\Client.cs" />
+    <Compile Include="Async\AsyncUser.cs" />
+    <Compile Include="Async\KinveyDelegate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Core\" />
     <Folder Include="Cache\" />
+    <Folder Include="Async\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

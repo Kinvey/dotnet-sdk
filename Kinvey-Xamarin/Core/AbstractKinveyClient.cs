@@ -119,9 +119,7 @@ namespace Kinvey.DotNet.Framework.Core
                 ServicePath = defaultServicePath;
                 this.kinveyRequestInitializer = kinveyRequestInitializer;
             }
-
-            public abstract AbstractKinveyClient build();
-
+				
             public RestClient HttpRestClient
             {
                 get { return this.restClient; }

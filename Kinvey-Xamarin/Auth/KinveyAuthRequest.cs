@@ -54,7 +54,7 @@ namespace Kinvey.DotNet.Framework.Auth
 
         private IAuthenticator requestPayload;
 
-        private IRestResponse response;
+//        private IRestResponse response;
 
         private static KinveyHeaders kinveyHeaders = new KinveyHeaders();
 

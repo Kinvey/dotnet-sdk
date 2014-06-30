@@ -39,7 +39,7 @@ namespace AndroidTestDrive
 		private static string COLLECTION = "myCollection";
 		private static string STABLE_ID = "testdriver";
 
-		AbstractClient kinveyClient;
+		Client kinveyClient;
 		InMemoryCache<MyEntity> myCache = new InMemoryCache<MyEntity>();
 
 		protected override void OnCreate (Bundle bundle)
@@ -50,7 +50,8 @@ namespace AndroidTestDrive
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-			kinveyClient = (AbstractClient)new AbstractClient.Builder (new RestClient (), new Kinvey.DotNet.Framework.Core.KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())).build ();
+//			AbstractClient kinveyClient = (AbstractClient)new AbstractClient.Builder (new RestClient (), new Kinvey.DotNet.Framework.Core.KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())).build ();
+			kinveyClient = new Client.Builder(appKey, appSecret).build();
 
 			new Thread(() => 
 				loginUserAndToast ()
@@ -95,11 +96,11 @@ namespace AndroidTestDrive
 
 		private void loginUserAndToast(){
 			User user;
-			if (kinveyClient.KinveyUser ().isUserLoggedIn ()) {
-				user = kinveyClient.KinveyUser ();
+			if (kinveyClient.User ().isUserLoggedIn ()) {
+				user = kinveyClient.User ();
 			} else {
 				try{
-					user = kinveyClient.KinveyUser ().Login ().Execute();
+					user = kinveyClient.User ().LoginBlocking ().Execute();
 				}catch(Exception e){
 					Console.WriteLine ("Uh oh! " + e);
 					RunOnUiThread (() => {
