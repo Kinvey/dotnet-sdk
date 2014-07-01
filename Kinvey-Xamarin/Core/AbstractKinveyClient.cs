@@ -142,7 +142,6 @@ namespace Kinvey.DotNet.Framework.Core
                 get { return kinveyRequestInitializer; }
                 set { this.kinveyRequestInitializer = value; }
             }
-
         }
     }
 }

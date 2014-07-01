@@ -48,6 +48,16 @@ namespace KinveyXamarin
 				return new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 			}
 
+			public Builder setBaseURL(string url){
+				this.BaseUrl = url;
+				return this;
+			}
+
+			public Builder setServicePath(string servicePath){
+				this.ServicePath = servicePath;
+				return this;
+			}
+
 	
 		}
 	}

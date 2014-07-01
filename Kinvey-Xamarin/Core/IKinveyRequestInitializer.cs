@@ -22,5 +22,7 @@ namespace Kinvey.DotNet.Framework.Core
     public interface IKinveyRequestInitializer
     {
         void Initialize<T>(AbstractKinveyClientRequest<T> request);
+
+
     }
 }
