@@ -21,9 +21,9 @@ using KinveyXamarin;
 
 namespace Kinvey.DotNet.Framework.Core
 {
-    public class AppData { }
+//    public class AppData { }
 
-    public class AppData<T> : AppData
+    public class AppData<T> 
     {
         private String collectionName;
         private Type myClass;

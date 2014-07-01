@@ -60,6 +60,7 @@
     <Compile Include="Async\KinveyDelegate.cs" />
     <Compile Include="Async\AsyncAppData.cs" />
     <Compile Include="Core\ClientLogger.cs" />
+    <Compile Include="Async\AsyncExecutor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

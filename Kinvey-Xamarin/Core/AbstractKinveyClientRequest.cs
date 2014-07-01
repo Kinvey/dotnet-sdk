@@ -105,17 +105,17 @@ namespace Kinvey.DotNet.Framework.Core
             set;
         }
 
-        private RestRequest BuildRestRequest() 
+		public RestRequest BuildRestRequest() 
         {
             RestRequest restRequest = new RestRequest();
 
             switch (requestMethod)
             {
                 case "GET":
-				restRequest.Method = Method.GET;
+					restRequest.Method = Method.GET;
                     break;
-			case "POST":
-				restRequest.Method = Method.POST;
+				case "POST":
+					restRequest.Method = Method.POST;
                     break;
             }
 			if (this.HttpContent == null && requestMethod.Equals(HttpMethod.Post) || requestMethod.Equals(HttpMethod.Put))

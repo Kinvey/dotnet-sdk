@@ -1,15 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Android-TestDrive/MainActivity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin.Test/ClientTest.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin/Auth/KinveyAuthRequest.cs" Line="149" Column="9" />
-      <File FileName="../../webbox/restsharp/RestSharp.Portable/RestClient.cs" Line="146" Column="23" />
-      <File FileName="Android-TestDrive/MainActivity.cs" Line="101" Column="1" />
-      <File FileName="Kinvey-Xamarin/User.cs" Line="175" Column="8" />
-      <File FileName="Android-TestDrive/MyEntity.cs" Line="14" Column="14" />
-      <File FileName="Kinvey-Xamarin/Auth/KinveyAuthResponse.cs" Line="26" Column="5" />
-      <File FileName="Kinvey-Xamarin/AppData.cs" Line="81" Column="22" />
+      <File FileName="Kinvey-Xamarin.Test/ClientTest.cs" Line="3" Column="7" />
     </Files>
+    <Pads>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True" />
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
@@ -17,5 +16,6 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" />
+  <MonoDevelop.Ide.ItemProperties.Android-Libtester AndroidDeviceId-Debug="03080c26091b0a98" />
+  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="03080c26091b0a98" />
 </Properties>

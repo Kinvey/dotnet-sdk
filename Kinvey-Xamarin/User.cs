@@ -42,8 +42,6 @@ namespace Kinvey.DotNet.Framework
         [JsonProperty("username")]
         private String username;
 
-//        private Type thisClass = typeof(User);
-
         private AbstractClient client;
 
         public string Id

@@ -8,6 +8,9 @@ namespace AndroidLibtester
 	[TestFixture]
 	public class TestClient
 	{
+
+		string appkey = "123";
+		string appsecret = "123";
 		
 		[SetUp]
 		public void Setup ()
@@ -23,8 +26,7 @@ namespace AndroidLibtester
 		[Test ()]
 		public void TestAppKeyAndSecret ()
 		{
-			string appkey = "123";
-			string appsecret = "123";
+
 			Client testClient = new Client.Builder (appkey, appsecret).build ();
 
 			Assert.AreEqual (appkey, ((KinveyClientRequestInitializer)testClient.RequestInitializer).AppKey);
@@ -35,9 +37,6 @@ namespace AndroidLibtester
 		[Test ()]
 		public void TestClientBuilder ()
 		{
-
-			string appkey = "123";
-			string appsecret = "123";
 			string baseurl = "http://www.kinvey.com";
 			string servpath = "/someService";
 
@@ -46,17 +45,21 @@ namespace AndroidLibtester
 				.setServicePath (servpath)
 				.build ();
 
-			Console.WriteLine ("b " + testClient.BaseUrl);
-			Console.WriteLine ("s " + testClient.ServicePath);
-
 			Assert.AreEqual (baseurl + "/someService/", testClient.BaseUrl);
 			Assert.AreEqual ("someService/", testClient.ServicePath);
-
-
-
-
 		}
 
+		[Test ()]
+		public void TestUserFactoryIsCached()
+		{
+			Client testClient = new Client.Builder (appkey, appsecret).build ();
+
+			AsyncUser user = testClient.User ();
+			AsyncUser secondUser = testClient.User ();
+
+			Assert.That (ReferenceEquals (user, secondUser));
+
+		}
 
 	}
 }

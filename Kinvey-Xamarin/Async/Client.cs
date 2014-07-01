@@ -11,7 +11,6 @@ namespace KinveyXamarin
 
 
 		private AsyncUser user;
-//		private AsyncAppData appData;
 
 		protected Client(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
 			: base(client, rootUrl, servicePath, initializer, store) {}
