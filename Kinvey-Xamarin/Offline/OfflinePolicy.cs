@@ -9,27 +9,15 @@
 // This software contains valuable confidential and proprietary information of
 // KINVEY, INC and is subject to applicable licensing agreements.
 // Unauthorized reproduction, transmission or distribution of this file and its
-// contents is a violation of applicable laws.
+// contents is a violation of applicable laws.using System;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-
-
-namespace AndroidTestDrive
+namespace KinveyXamarin
 {
-	[JsonObject(MemberSerialization.OptIn)]
-	public class MyEntity
+	public enum OfflinePolicy
 	{
-		[JsonProperty("_id")]
-		public string ID {get; set;}
-
-		public string Name{get;set;}
-
-		public string Email{get;set;}
-
+		ALWAYS_ONLINE,
+		LOCAL_FIRST,
+		ONLINE_FIRST
 	}
 }
+

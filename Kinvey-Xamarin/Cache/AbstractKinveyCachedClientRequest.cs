@@ -17,7 +17,7 @@ using Kinvey.DotNet.Framework.Core;
 
 namespace KinveyXamarin
 {
-	public class AbstractKinveyCachedClientRequest<T> : AbstractKinveyClientRequest<T>
+	public class AbstractKinveyCachedClientRequest<T> : AbstractKinveyOfflineClientRequest<T>
 	{
 
 		private CachePolicy policy = CachePolicy.NO_CACHE;

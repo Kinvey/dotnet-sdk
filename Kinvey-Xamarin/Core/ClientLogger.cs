@@ -10,6 +10,7 @@ namespace KinveyXamarin
 
 
 		public static void Log(String message){}
+		public static void Log(Exception e){}
 
 	}
 }

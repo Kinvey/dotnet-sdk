@@ -67,6 +67,7 @@ namespace KinveyXamarin
 //					delegates.onSuccess(default(User)); //TODO find a better way, logout has no return value and void is not nullable in c#
 				}catch(Exception e){
 //					delegates.onError(e);
+					ClientLogger.Log(e);
 				}
 			});
 		}
