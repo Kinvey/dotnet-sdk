@@ -48,7 +48,6 @@ namespace KinveyXamarin
 				lock (locker) {
 					store.executeGet ();
 				}
-
 			} else if (verb.Equals ("PUT")) {
 				lock (locker) {
 					store.executeSave ();

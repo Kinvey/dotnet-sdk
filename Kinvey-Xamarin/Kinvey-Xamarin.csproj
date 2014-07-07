@@ -63,7 +63,11 @@
     <Compile Include="Async\AsyncExecutor.cs" />
     <Compile Include="Offline\AbstractKinveyOfflineClientRequest.cs" />
     <Compile Include="Offline\OfflinePolicy.cs" />
-    <Compile Include="Offline\OfflineStore.cs" />
+    <Compile Include="Offline\SQLiteHelper.cs" />
+    <Compile Include="Offline\SQLiteOfflineStore.cs" />
+    <Compile Include="Offline\IOfflineStore.cs" />
+    <Compile Include="Offline\DatabaseHandler.cs" />
+    <Compile Include="Offline\SQLTemplates.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -94,8 +98,11 @@
     <Reference Include="System.Net.Http.Extensions">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.22\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCL">
-      <HintPath>..\packages\SQLitePCL.3.8.5.0\lib\portable-net45+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\SQLitePCL.dll</HintPath>
+    <Reference Include="SQLite.Net">
+      <HintPath>..\packages\SQLite.Net-PCL.2.3.0\lib\portable-net4+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLite.Net.Async">
+      <HintPath>..\packages\SQLite.Net.Async-PCL.2.3.0\lib\portable-net4+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLite.Net.Async.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
