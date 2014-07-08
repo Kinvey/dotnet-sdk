@@ -27,8 +27,8 @@ namespace KinveyXamarin
 		private Object locker = new Object();
 
 
-		protected AbstractKinveyCachedClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters) 
-			: base (client, requestMethod, uriTemplate, httpContent, uriParameters)
+		protected AbstractKinveyCachedClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters, string collection) 
+			: base (client, requestMethod, uriTemplate, httpContent, uriParameters, collection)
 		{
 		}
 

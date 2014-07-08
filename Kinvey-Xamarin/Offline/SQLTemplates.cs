@@ -3,6 +3,9 @@ using SQLite.Net.Attributes;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// These are the structures stored in the database, one for each table
+	/// </summary>
 	public class SQLTemp{
 
 		public class TableItem{
@@ -29,7 +32,5 @@ namespace KinveyXamarin
 				
 		}
 	}
-
-
 }
 

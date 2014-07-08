@@ -14,24 +14,27 @@
 using System;
 using Kinvey.DotNet.Framework.Core;
 using System.Collections.Generic;
+using Kinvey.DotNet.Framework;
 
 namespace KinveyXamarin
 {
 	public class AbstractKinveyOfflineClientRequest<T> : AbstractKinveyClientRequest<T>
 	{
 
-		private OfflineStore<T> store;
+		private IOfflineStore<T> store;
 		private OfflinePolicy policy = OfflinePolicy.ALWAYS_ONLINE;
 
 		private Object locker = new Object();
+		private string collectionName;
 
 
-		protected AbstractKinveyOfflineClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters) 
+		protected AbstractKinveyOfflineClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters, string collection) 
 			: base (client, requestMethod, uriTemplate, httpContent, uriParameters)
 		{
+			this.collectionName = collection;
 		}
 
-		public void SetStore(OfflineStore<T> newStore, OfflinePolicy newPolicy){
+		public void SetStore(IOfflineStore<T> newStore, OfflinePolicy newPolicy){
 			this.store = newStore;
 			this.policy = newPolicy;
 		}
@@ -46,19 +49,19 @@ namespace KinveyXamarin
 
 			if (verb.Equals ("GET")) {
 				lock (locker) {
-					store.executeGet ();
+					store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("PUT")) {
 				lock (locker) {
-					store.executeSave ();
+					store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("POST")) {
 				lock (locker) {
-					store.executeSave ();
+					store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("DELETE")) {
 				lock (locker) {
-					store.executeDelete ();
+					store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			}
 

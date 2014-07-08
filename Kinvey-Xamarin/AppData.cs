@@ -95,7 +95,7 @@ namespace Kinvey.DotNet.Framework.Core
             urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
             urlParameters.Add("collectionName", CollectionName);
             urlParameters.Add("entityId", entityId);
-            GetEntityRequest getEntity = new GetEntityRequest(entityId, myClass, client, urlParameters);
+			GetEntityRequest getEntity = new GetEntityRequest(entityId, myClass, client, urlParameters, CollectionName);
             client.InitializeRequest(getEntity);
 			getEntity.setCache (this.cache, this.policy);
             return getEntity;
@@ -106,7 +106,7 @@ namespace Kinvey.DotNet.Framework.Core
             var urlParameters = new Dictionary<string, string>();
             urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
             urlParameters.Add("collectionName", CollectionName);
-            GetRequest get = new GetRequest(myClass, client, urlParameters);
+			GetRequest get = new GetRequest(myClass, client, urlParameters, collectionName);
             client.InitializeRequest(get);
 			get.setCache (this.cache, this.policy);
             return get;
@@ -138,8 +138,8 @@ namespace Kinvey.DotNet.Framework.Core
             [JsonProperty]
             public string collectionName { get; set; }
 
-            public GetRequest(Type myClass, AbstractClient client, Dictionary<string, string> urlParameters)
-				: base(client, "GET", REST_PATH, default(T), urlParameters)
+			public GetRequest(Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
             {
                 this.collectionName = urlParameters["collectionName"];
             }
@@ -161,8 +161,8 @@ namespace Kinvey.DotNet.Framework.Core
             [JsonProperty]
             public string collectionName;
 
-            public GetEntityRequest(string entityId, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters)
-                : base(client, "GET", REST_PATH, default(T), urlParameters)
+			public GetEntityRequest(string entityId, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
             {
                 this.collectionName = urlParameters["collectionName"];
                 this.EntityId = entityId;

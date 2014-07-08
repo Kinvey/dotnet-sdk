@@ -27,16 +27,16 @@ namespace Kinvey.DotNet.Framework.Core
     [JsonObject(MemberSerialization.OptIn)]
     public class AbstractKinveyClientRequest<T>
     {
-        private readonly AbstractKinveyClient client;
+		protected readonly AbstractKinveyClient client;
 		protected readonly string requestMethod;
         private List<RestSharp.HttpHeader> requestHeaders = new List<HttpHeader>();
-		protected readonly string uriTemplate;
+		public readonly string uriTemplate;
         private T requestContent;
         private List<Parameter> lastResponseHeaders = new List<Parameter>();
         private int lastResponseCode = -1;
         private string lastResponseMessage;
         private string appKey;
-		protected Dictionary<string, string> uriResourceParameters;
+		public Dictionary<string, string> uriResourceParameters;
         private IAuthenticator auth;
 
         protected AbstractKinveyClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters)

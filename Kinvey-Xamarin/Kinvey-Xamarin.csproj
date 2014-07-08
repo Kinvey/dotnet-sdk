@@ -66,8 +66,10 @@
     <Compile Include="Offline\SQLiteHelper.cs" />
     <Compile Include="Offline\SQLiteOfflineStore.cs" />
     <Compile Include="Offline\IOfflineStore.cs" />
-    <Compile Include="Offline\DatabaseHandler.cs" />
     <Compile Include="Offline\SQLTemplates.cs" />
+    <Compile Include="Offline\OfflineTable.cs" />
+    <Compile Include="Offline\DatabaseHelper.cs" />
+    <Compile Include="Model\KinveyDeleteResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -75,6 +77,7 @@
     <Folder Include="Cache\" />
     <Folder Include="Async\" />
     <Folder Include="Offline\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
