@@ -11,18 +11,31 @@ namespace KinveyXamarin
 	{
 
 
-		public static string PREFIX_OFFLINE = "offline_";
-		public static string PREFIX_QUEUE = "queue_";
-		public static string PREFIX_QUERY = "query_";
-		public static string PREFIX_RESULTS = "results_";
+		private string collectionName{ get; set;}
 
 
-		public OfflineTable ()
+
+		public OfflineTable (string collectionName)
 		{
+			this.collectionName = collectionName;
+
 		}
+
+
+
+		public T insertEntity (DatabaseHelper<T> handler, AbstractKinveyClient client, string jsonContent)
+		{
+
+//			string jsonContent = JsonConvert.SerializeObject (entity);
+
+			return default(T);
+		}
+
 
 		public T getQuery (DatabaseHelper<T> handler, AbstractKinveyClient client, string query, object par)
 		{
+
+
 			return default(T);
 		}
 
@@ -41,10 +54,7 @@ namespace KinveyXamarin
 			return default(T);
 		}
 
-		public T insertEntity (DatabaseHelper<T> handler, AbstractKinveyClient client, string jsonContent)
-		{
-			return default(T);
-		}
+
 
 		public KinveyDeleteResponse delete (DatabaseHelper<T> handler, AbstractKinveyClient client, string targetID)
 		{

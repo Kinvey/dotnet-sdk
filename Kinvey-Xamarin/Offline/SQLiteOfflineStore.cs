@@ -89,7 +89,6 @@ namespace KinveyXamarin
 				targetURI = targetURI.Replace("{" + p.Key + "}", p.Value.ToString());
 			}
 			int idIndex = targetURI.IndexOf(appData.CollectionName) + appData.CollectionName.Length + 1;
-//			T ret = default(T);
 
 			String targetID = targetURI.Substring(idIndex, targetURI.Length);
 			KinveyDeleteResponse ret = handler.getTable(appData.CollectionName).delete(handler,client, targetID);
@@ -110,16 +109,7 @@ namespace KinveyXamarin
 		}
 
 		public void clearStorage(){
-			DatabaseHelper<T> handler = getDatabaseHelper ();
-
-			List<String> collections = handler.getCollectionTables();
-
-			foreach (string collection in collections){
-				handler.deleteContentsOfTable(OfflineTable<T>.PREFIX_QUEUE + collection);
-				handler.deleteContentsOfTable(OfflineTable<T>.PREFIX_OFFLINE + collection);
-				handler.deleteContentsOfTable(OfflineTable<T>.PREFIX_QUERY + collection);
-				handler.deleteContentsOfTable(OfflineTable<T>.PREFIX_RESULTS + collection);
-			}
+			//TODO
 		}
 
 		public void kickOffSync(){

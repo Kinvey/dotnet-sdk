@@ -16,6 +16,10 @@ namespace KinveyXamarin
 		List<string> getCollectionTables ();
 
 		void deleteContentsOfTable (string str);
+
+		void RunCommand (string createCommand);
+
+
 	}
 }
 
