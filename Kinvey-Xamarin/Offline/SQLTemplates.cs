@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SQLite.Net.Attributes; 
 
 namespace KinveyXamarin
@@ -17,7 +18,6 @@ namespace KinveyXamarin
 			public int key { get; set; }
 			public string id { get; set;}
 			public string json { get; set;}
-			public string user { get; set;}
 			public string collection { get; set; }
 		}
 
@@ -25,13 +25,17 @@ namespace KinveyXamarin
 			[PrimaryKey, AutoIncrement] 
 			public string key { get; set; } 
 			public string id { get; set; }
+			public string collection { get; set; }
 			public string action { get; set; }
 
 		}
 
 		public class QueryItem{
+			[PrimaryKey, AutoIncrement] 
+			public string key { get; set; } 
 			public string query { get; set; }
-			public string ids { get; set; }
+			public List<string> ids { get; set; }
+			public string collection { get; set; }
 				
 		}
 	}

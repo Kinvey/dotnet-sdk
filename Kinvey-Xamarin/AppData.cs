@@ -30,7 +30,10 @@ namespace Kinvey.DotNet.Framework.Core
         private AbstractClient client;
 
 		private ICache<String, T> cache = null;
-		private CachePolicy policy = CachePolicy.NO_CACHE;
+		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
+
+		private IOfflineStore<T> store = null;
+		private OfflinePolicy offlinePolicy = OfflinePolicy.ALWAYS_ONLINE;
 
         public const string IdFieldName = "_id";
 
@@ -85,7 +88,17 @@ namespace Kinvey.DotNet.Framework.Core
 		public void setCache(ICache<String, T> cache, CachePolicy policy)
 		{
 			this.cache = cache;
-			this.policy = policy;
+			this.cachePolicy = policy;
+		}
+
+		public void setOffline(IOfflineStore<T> store, OfflinePolicy policy){
+
+			this.store = store;
+			this.offlinePolicy = policy;
+
+			this.store.dbpath = ((Client) KinveyClient).offline_dbpath;
+			this.store.platform = ((Client) KinveyClient).offline_platform;
+
 		}
 
 
@@ -97,7 +110,8 @@ namespace Kinvey.DotNet.Framework.Core
             urlParameters.Add("entityId", entityId);
 			GetEntityRequest getEntity = new GetEntityRequest(entityId, myClass, client, urlParameters, CollectionName);
             client.InitializeRequest(getEntity);
-			getEntity.setCache (this.cache, this.policy);
+			getEntity.setCache (this.cache, this.cachePolicy);
+			getEntity.SetStore (this.store, this.offlinePolicy);
             return getEntity;
         }
 
@@ -108,7 +122,8 @@ namespace Kinvey.DotNet.Framework.Core
             urlParameters.Add("collectionName", CollectionName);
 			GetRequest get = new GetRequest(myClass, client, urlParameters, collectionName);
             client.InitializeRequest(get);
-			get.setCache (this.cache, this.policy);
+			get.setCache (this.cache, this.cachePolicy);
+			get.SetStore (this.store, this.offlinePolicy);
             return get;
         }
 
@@ -118,7 +133,8 @@ namespace Kinvey.DotNet.Framework.Core
 			var urlParameters = new Dictionary<string, string>();
             urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
             urlParameters.Add("collectionName", CollectionName);
-            save = new SaveRequest(entity, myClass, null, SaveMode.POST, client, urlParameters);
+			save = new SaveRequest(entity, myClass, null, SaveMode.POST, client, urlParameters, this.CollectionName);
+			save.SetStore (this.store, this.offlinePolicy);
             client.InitializeRequest(save);
             return save;
         }
@@ -177,7 +193,7 @@ namespace Kinvey.DotNet.Framework.Core
         }
 
         [JsonObject(MemberSerialization.OptIn)]
-        public class SaveRequest : AbstractKinveyClientRequest<T>
+		public class SaveRequest : AbstractKinveyOfflineClientRequest<T>
         {
             private const string REST_PATH = "appdata/{appKey}/{collectionName}/";
 
@@ -187,8 +203,8 @@ namespace Kinvey.DotNet.Framework.Core
             [JsonProperty]
             public string EntityId { get; set; }
 
-            public SaveRequest(T entity, Type myClass, string entityId, SaveMode update, AbstractClient client, Dictionary<string, string> urlProperties)
-                : base(client, update.ToString(), REST_PATH, entity, urlProperties)
+			public SaveRequest(T entity, Type myClass, string entityId, SaveMode update, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
+				: base(client, update.ToString(), REST_PATH, entity, urlProperties, collectionName)
             {
                 this.CollectioName = urlProperties["collectionName"];
                 if (update.Equals(SaveMode.PUT))

@@ -20,9 +20,11 @@ namespace KinveyXamarin
 	public class AbstractKinveyCachedClientRequest<T> : AbstractKinveyOfflineClientRequest<T>
 	{
 
-		private CachePolicy policy = CachePolicy.NO_CACHE;
+		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
 		// TODO no anonymous interface support in c# -> investigate making ICache an abstract class
 		private ICache<String, T> cache = null;
+
+
 
 		private Object locker = new Object();
 
@@ -35,7 +37,7 @@ namespace KinveyXamarin
 		public void setCache(ICache<String, T> cache, CachePolicy policy)
 		{
 			this.cache = cache;
-			this.policy = policy;
+			this.cachePolicy = policy;
 		}
 
 
@@ -76,23 +78,23 @@ namespace KinveyXamarin
 		{
 			T ret = default(T);
 
-			if (policy == CachePolicy.NO_CACHE) {
+			if (cachePolicy == CachePolicy.NO_CACHE) {
 				ret = fromService (false);
 
-			} else if (policy == CachePolicy.CACHE_ONLY) {
+			} else if (cachePolicy == CachePolicy.CACHE_ONLY) {
 				ret = fromCache ();
 
-			} else if (policy == CachePolicy.CACHE_FIRST) {
+			} else if (cachePolicy == CachePolicy.CACHE_FIRST) {
 				ret = fromCache ();
 				if (ret == null) {
 					ret = fromService (true);
 				}
-			} else if (policy == CachePolicy.CACHE_FIRST_NOREFRESH) {
+			} else if (cachePolicy == CachePolicy.CACHE_FIRST_NOREFRESH) {
 				ret = fromCache ();
 				if (ret == null) {
 					ret = fromService(false);
 				}
-			} else if (policy == CachePolicy.NETWORK_FIRST) {
+			} else if (cachePolicy == CachePolicy.NETWORK_FIRST) {
 				ret = fromService (true);
 				if (ret == null) {
 					ret = fromCache ();

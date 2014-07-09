@@ -2,14 +2,12 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Offline/SQLiteHelper.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin/Cache/AbstractKinveyCachedClientRequest.cs" Line="43" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="58" Column="6" />
-      <File FileName="Kinvey-Xamarin/Offline/OfflineStore.cs" Line="20" Column="2" />
-      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="31" Column="28" />
-      <File FileName="Kinvey-Xamarin/Async/AsyncUser.cs" Line="72" Column="7" />
-      <File FileName="Kinvey-Xamarin/Core/ClientLogger.cs" Line="13" Column="40" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="22" Column="17" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="7" Column="13" />
+      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="21" Column="82" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="40" Column="8" />
+      <File FileName="Kinvey-Xamarin/Offline/OfflineTable.cs" Line="28" Column="24" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="55" Column="3" />
+      <File FileName="Kinvey-Xamarin/Offline/DatabaseHelper.cs" Line="17" Column="30" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLTemplates.cs" Line="18" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -18,6 +16,6 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-Libtester AndroidDeviceId-Debug="03080c26091b0a98" />
   <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="03080c26091b0a98" />
+  <MonoDevelop.Ide.ItemProperties.Android-Libtester />
 </Properties>

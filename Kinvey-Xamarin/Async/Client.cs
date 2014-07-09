@@ -3,6 +3,7 @@ using Kinvey.DotNet.Framework;
 using RestSharp;
 using Kinvey.DotNet.Framework.Core;
 using Kinvey.DotNet.Framework.Auth;
+using SQLite.Net.Interop;
 
 namespace KinveyXamarin
 {
@@ -11,6 +12,10 @@ namespace KinveyXamarin
 
 
 		private AsyncUser user;
+
+		public string offline_dbpath { get; set; }
+
+		public ISQLitePlatform offline_platform { get; set; }
 
 		protected Client(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
 			: base(client, rootUrl, servicePath, initializer, store) {}
@@ -38,13 +43,19 @@ namespace KinveyXamarin
 	
 		public new class Builder : AbstractClient.Builder
 		{
+
+			private string offlinePath{ get; set;}
+			private ISQLitePlatform offlinePlatform {get; set;}
 		
 			public Builder(string appKey, string appSecret) 
 				: base(new RestClient (), new Kinvey.DotNet.Framework.Core.KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())) {}
 
 
 			public Client build() {
-				return new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
+				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
+				c.offline_dbpath = this.offlinePath;
+				c.offline_platform = this.offlinePlatform;
+				return c;
 			}
 
 			public Builder setBaseURL(string url){
@@ -56,6 +67,18 @@ namespace KinveyXamarin
 				this.ServicePath = servicePath;
 				return this;
 			}
+
+			public Builder setOfflinePath(string path){
+				this.offlinePath = path;
+				return this;
+			}
+
+
+			public Builder setOfflinePlatform(ISQLitePlatform platform){
+				this.offlinePlatform = platform;
+				return this;
+			}
+
 
 	
 		}

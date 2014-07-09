@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -13,11 +14,20 @@ namespace KinveyXamarin
 
 		OfflineTable<T> getTable(string collectionName);
 
-		List<string> getCollectionTables ();
+		List<SQLTemplates.TableItem> getCollectionTables ();
 
-		void deleteContentsOfTable (string str);
+		int deleteContentsOfTable (string str);
 
-		void RunCommand (string createCommand);
+		void onCreate(string collectionName);
+
+		void upsertEntity(string id, string collection, string json);
+
+		List<T> getQuery (string queryString, string collection);
+
+		void enqueRequest (string action, string collection, string id);
+		List<T> getAll (string collection);
+		T getEntity (string collection, string id);
+		KinveyDeleteResponse delete(string collection, string id);
 
 
 	}

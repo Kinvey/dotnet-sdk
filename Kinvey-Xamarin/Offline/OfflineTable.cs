@@ -1,5 +1,6 @@
 ﻿using System;
 using Kinvey.DotNet.Framework.Core;
+using Newtonsoft.Json;
 
 namespace KinveyXamarin
 {
@@ -15,49 +16,51 @@ namespace KinveyXamarin
 
 
 
-		public OfflineTable (string collectionName)
+		public OfflineTable (DatabaseHelper<T> handler, string collectionName)
 		{
 			this.collectionName = collectionName;
-
+			//TODO check if already created first althogh from documentation this won't overwrite if already exists
+			handler.onCreate (collectionName);
+		}
+			
+		public void insertEntity (DatabaseHelper<T> handler, AbstractKinveyClient client, string id, string collection, string jsonContent)
+		{
+			handler.upsertEntity (id, collection, jsonContent);
 		}
 
 
+		public T getQuery (DatabaseHelper<T> handler, AbstractKinveyClient client, string collection, string query)
+		{
+			handler.getQuery(query, collection);
 
-		public T insertEntity (DatabaseHelper<T> handler, AbstractKinveyClient client, string jsonContent)
+			return default(T);
+		}
+
+		public void enqueueRequest (DatabaseHelper<T> handler, string verb, string collection, string id)
+		{
+			handler.enqueRequest (verb, collection, id);
+		}
+
+		public T getAll (DatabaseHelper<T> handler, AbstractKinveyClient client, string collection)
 		{
 
-//			string jsonContent = JsonConvert.SerializeObject (entity);
+			handler.getAll(collection);
+			return default(T);
+
+		}
+
+		public T getEntity (DatabaseHelper<T> handler, AbstractKinveyClient client, string collection, string id)
+		{
+			handler.getEntity(collection, id);
 
 			return default(T);
 		}
 
 
-		public T getQuery (DatabaseHelper<T> handler, AbstractKinveyClient client, string query, object par)
+
+		public KinveyDeleteResponse delete (DatabaseHelper<T> handler, AbstractKinveyClient client, string collection, string id)
 		{
-
-
-			return default(T);
-		}
-
-		public void enqueueRequest (DatabaseHelper<T> handler, string verb, string targetURL)
-		{
-
-		}
-
-		public T getAll (DatabaseHelper<T> handler, AbstractKinveyClient client, object par)
-		{
-			return default(T);
-		}
-
-		public T getEntity (DatabaseHelper<T> handler, AbstractKinveyClient client, string targetID, Type currentType)
-		{
-			return default(T);
-		}
-
-
-
-		public KinveyDeleteResponse delete (DatabaseHelper<T> handler, AbstractKinveyClient client, string targetID)
-		{
+			handler.delete (collection, id);
 			return new KinveyDeleteResponse ();
 		}
 	}

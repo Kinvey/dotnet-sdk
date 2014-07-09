@@ -4,6 +4,7 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using SQLite.Net.Interop;
 
 namespace KinveyXamarin
 {
@@ -17,6 +18,9 @@ namespace KinveyXamarin
 		public SQLiteOfflineStore ()
 		{
 		}
+
+		public ISQLitePlatform platform {get; set;}
+		public string dbpath{ get; set;}
 
 		public T executeGet(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
 			DatabaseHelper<T> handler = getDatabaseHelper ();
@@ -37,19 +41,19 @@ namespace KinveyXamarin
 				query = query.Replace("?query=","");
 				query = WebUtility.UrlDecode(query);
 
-				ret = (T) handler.getTable(appData.CollectionName).getQuery(handler, client, query, appData.CurrentType);
+				ret = (T) handler.getTable(appData.CollectionName).getQuery(handler, client, appData.CollectionName,  query);
 
-				handler.getTable(appData.CollectionName).enqueueRequest(handler, "QUERY", query);
+				handler.getTable (appData.CollectionName).enqueueRequest (handler, "QUERY", appData.CollectionName, query);
 
 			} else if (idIndex == targetURI.Length || targetURI.Contains ("query")) {
 				//it's a get all request (no query, no id)
-				ret = (T) handler.getTable(appData.CollectionName).getAll(handler, client, appData.CurrentType);
+				ret = (T)handler.getTable (appData.CollectionName).getAll (handler, client, appData.CollectionName);
 			} else {
 				//it's a get by id
 				String targetID = targetURI.Substring(idIndex, targetURI.Length);
-				ret = (T) handler.getTable(appData.CollectionName).getEntity(handler, client, targetID, appData.CurrentType);
+				ret = (T)handler.getTable (appData.CollectionName).getEntity (handler, client, appData.CollectionName, targetID);
 
-				handler.getTable(appData.CollectionName).enqueueRequest(handler, "GET", targetURI.Substring(idIndex, targetURI.Length));
+				handler.getTable(appData.CollectionName).enqueueRequest(handler, "GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length));
 			}
 
 			kickOffSync ();
@@ -66,17 +70,19 @@ namespace KinveyXamarin
 				jsonContent = JsonConvert.SerializeObject (request.HttpContent);
 			}
 		
-			//insert the entity into the database
-			T ret = (T) handler.getTable(appData.CollectionName).insertEntity(handler, client, jsonContent);
-			//grab the ID (for the queue)
+
+			//grab the ID
 			JToken token = JObject.Parse(jsonContent);
 			string id = (string)token.SelectToken("_id");
+
+			//insert the entity into the database
+			handler.getTable(appData.CollectionName).insertEntity(handler, client, id, appData.CollectionName, jsonContent);
 			//enque the request
-			handler.getTable(appData.CollectionName).enqueueRequest(handler, "PUT", id);
+			handler.getTable(appData.CollectionName).enqueueRequest(handler, "PUT", appData.CollectionName, id);
 
 			kickOffSync();
 
-			return ret;
+			return request.HttpContent;
 		}
 
 		public KinveyDeleteResponse executeDelete(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
@@ -91,8 +97,8 @@ namespace KinveyXamarin
 			int idIndex = targetURI.IndexOf(appData.CollectionName) + appData.CollectionName.Length + 1;
 
 			String targetID = targetURI.Substring(idIndex, targetURI.Length);
-			KinveyDeleteResponse ret = handler.getTable(appData.CollectionName).delete(handler,client, targetID);
-			handler.getTable(appData.CollectionName).enqueueRequest(handler, "DELETE", targetURI.Substring(idIndex, targetURI.Length));
+			KinveyDeleteResponse ret = handler.getTable(appData.CollectionName).delete(handler, client,appData.CollectionName, targetID);
+			handler.getTable(appData.CollectionName).enqueueRequest(handler, "DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length));
 
 			kickOffSync();
 			return ret;
@@ -104,7 +110,11 @@ namespace KinveyXamarin
 
 			string jsonContent = JsonConvert.SerializeObject (entity);
 
-			handler.getTable(appData.CollectionName).insertEntity(handler, client, jsonContent);
+			//grab the ID
+			JToken token = JObject.Parse(jsonContent);
+			string id = (string)token.SelectToken("_id");
+
+			handler.getTable(appData.CollectionName).insertEntity(handler, client, id, appData.CollectionName, jsonContent);
 
 		}
 
@@ -117,7 +127,7 @@ namespace KinveyXamarin
 		}
 
 		private DatabaseHelper<T> getDatabaseHelper(){
-			return SQLiteHelper<T>.getInstance ();
+			return SQLiteHelper<T>.getInstance (platform, dbpath);
 		}
 
 	}

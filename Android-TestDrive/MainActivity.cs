@@ -25,6 +25,8 @@ using Kinvey.DotNet.Framework.Core;
 using System.Threading;
 using KinveyXamarin;
 using System.Threading.Tasks;
+using System.IO;
+using SQLite.Net.Platform.XamarinAndroid;
 
 namespace AndroidTestDrive
 {
@@ -50,7 +52,7 @@ namespace AndroidTestDrive
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-			kinveyClient = new Client.Builder(appKey, appSecret).build();
+			kinveyClient = new Client.Builder(appKey, appSecret).setOfflinePath(Path.Combine (Android.OS.Environment.ExternalStorageDirectory.ToString (), "kinveyOffline.sqlite")).setOfflinePlatform(new SQLitePlatformAndroid()).build();
 
 			kinveyClient.User ().Login (new KinveyDelegate<User>{ 
 				onSuccess =  (user) => { 
@@ -127,11 +129,14 @@ namespace AndroidTestDrive
 		private void saveAndToast(){
 		
 			AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
+//			entityCollection.set
+
 			MyEntity ent = new MyEntity();
 			ent.ID = STABLE_ID;
 			ent.Email = "test@tester.com";
 			ent.Name = "James Dean";
-			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+//			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.LOCAL_FIRST);
 			entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 
 				onSuccess = (entity) => { 
 					RunOnUiThread (() => {
@@ -150,7 +155,8 @@ namespace AndroidTestDrive
 
 		private void loadAndToast(){
 			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
-			entityCollection.setCache (myCache, CachePolicy.NO_CACHE);
+//			entityCollection.setCache (myCache, CachePolicy.NO_CACHE);
+			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.ONLINE_FIRST);
 			MyEntity res = null;
 			try{
 				res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();
@@ -171,7 +177,8 @@ namespace AndroidTestDrive
 
 		private void loadFromCacheAndToast(){
 			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
-			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+//			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.LOCAL_FIRST);
 
 			try{
 				MyEntity res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();

@@ -15,10 +15,12 @@ Also check out the index branch for current features being developed
 ## Build
 Pre-requisites:
 
-* RestSharp - portable
-  * Download Restsharp.portable directory from the Portable branch of the RestSharp project on Github from here: https://github.com/restsharp/RestSharp/tree/portable/RestSharp.Portable
-  * Import this into Xamarin studio as an existing project
-  * Set it as a reference for the Kinvey-Xamarin project (this repo)
+* take a copy of this project's source code, and add it to your solution
+* Add this project as a dependency to your application
+* via nu-get, install the following packages:
+  * Newtonsoft.json
+  * SQLite.Net-PCL
+  * SQLite.Net.Platform.* where * is the runtime for the current application
   
   
   
@@ -37,6 +39,15 @@ This library is implemented with a clean separation between blocking synchronous
 ###create a client
 
     Client kinveyClient = new Client.Builder(appKey, appSecret).build();
+    
+##### add offline to the client builder
+Note the addition of two new builder methods (which will be refactored and simplified) to add the local database path location as well as a platform specific implementation of the sqlite.net pcl.
+
+    kinveyClient = new Client.Builder(appKey, appSecret)
+                   .setOfflinePath(Path.Combine (Android.OS.Environment.ExternalStorageDirectory.ToString (), "kinveyOffline.sqlite"))
+                   .setOfflinePlatform(new SQLitePlatformAndroid())
+                   .build();
+
     
     
 ###access user operations async (login)
