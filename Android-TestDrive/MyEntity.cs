@@ -27,8 +27,10 @@ namespace AndroidTestDrive
 		[JsonProperty("_id")]
 		public string ID {get; set;}
 
+		[JsonProperty]
 		public string Name{get;set;}
 
+		[JsonProperty]
 		public string Email{get;set;}
 
 	}

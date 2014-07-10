@@ -44,16 +44,15 @@ namespace KinveyXamarin
 		public T getAll (DatabaseHelper<T> handler, AbstractKinveyClient client, string collection)
 		{
 
-			handler.getAll(collection);
+			 handler.getAll(collection);
+			throw new NotSupportedException ();
 			return default(T);
 
 		}
 
 		public T getEntity (DatabaseHelper<T> handler, AbstractKinveyClient client, string collection, string id)
 		{
-			handler.getEntity(collection, id);
-
-			return default(T);
+			return handler.getEntity(collection, id);
 		}
 
 

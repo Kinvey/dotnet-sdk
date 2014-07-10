@@ -140,7 +140,7 @@ namespace AndroidTestDrive
 			entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 
 				onSuccess = (entity) => { 
 					RunOnUiThread (() => {
-						Toast.MakeText (this, "logged in as: " + entity.Name, ToastLength.Short).Show ();
+						Toast.MakeText (this, "saved: " + entity.Name, ToastLength.Short).Show ();
 					});
 				},
 				onError = (error) => {
@@ -176,22 +176,37 @@ namespace AndroidTestDrive
 		}
 
 		private void loadFromCacheAndToast(){
-			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
+			AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 //			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
 			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.LOCAL_FIRST);
 
-			try{
-				MyEntity res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();
-				RunOnUiThread ( () => {
-					Toast.MakeText(this, "got " + res.Name + "from cache, size: " + myCache.getSize(), ToastLength.Short).Show();
-				});
-			}catch(Exception e){
-				Console.WriteLine ("Uh oh! " + e);
-				RunOnUiThread (() => {
-					Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
-				});
-				return;
-			}			
+
+			entityCollection.GetEntity (STABLE_ID, new KinveyDelegate<MyEntity> { 
+				onSuccess = (entity) => { 
+					RunOnUiThread (() => {
+						Toast.MakeText (this, "got: " + entity.Name, ToastLength.Short).Show ();
+					});
+				},
+				onError = (error) => {
+					RunOnUiThread (() => {
+						Toast.MakeText (this, "something went wrong: " + error.Message, ToastLength.Short).Show ();
+					});
+				}
+			});
+
+
+//			try{
+//				MyEntity res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();
+//				RunOnUiThread ( () => {
+//					Toast.MakeText(this, "got " + res.Name, ToastLength.Short).Show();
+//				});
+//			}catch(Exception e){
+//				Console.WriteLine ("Uh oh! " + e);
+//				RunOnUiThread (() => {
+//					Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
+//				});
+//				return;
+//			}			
 
 
 		}

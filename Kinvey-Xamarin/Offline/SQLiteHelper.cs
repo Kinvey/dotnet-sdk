@@ -83,6 +83,8 @@ namespace KinveyXamarin
 			if (count == 0) {
 				_dbConnection.Insert (entity);
 			}
+			int okat = _dbConnection.Table<SQLTemplates.OfflineEntity> ().Count ();
+			int wat = 0;
 		}
 
 
@@ -92,7 +94,10 @@ namespace KinveyXamarin
 			SQLTemplates.QueryItem query = _dbConnection.Table<SQLTemplates.QueryItem>().Where(t => t.query == queryString && t.collection == collection).FirstOrDefault();
 
 			List<SQLTemplates.OfflineEntity> entities = new List<SQLTemplates.OfflineEntity>();
-			foreach (string id in query.ids){
+
+			string[] ids = query.commaDelimitedIds.Split (',');
+
+			foreach (string id in ids){
 				entities.Add(_dbConnection.Table<SQLTemplates.OfflineEntity>().Where(t => t.id == id && t.collection == collection).FirstOrDefault());
 			}
 
@@ -142,7 +147,8 @@ namespace KinveyXamarin
 		{
 			SQLTemplates.OfflineEntity entity = _dbConnection.Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefault ();
 
-			int count = _dbConnection.Delete (entity.key);
+			int count = _dbConnection.Delete (entity.id);
+
 
 			KinveyDeleteResponse resp = new KinveyDeleteResponse ();
 			resp.count = count;
@@ -156,7 +162,7 @@ namespace KinveyXamarin
 
 		}
 
-		public void removeFromQueue (string primaryKey)
+		public void removeFromQueue (int primaryKey)
 		{
 
 			_dbConnection.Delete<SQLTemplates.QueueItem> (primaryKey);

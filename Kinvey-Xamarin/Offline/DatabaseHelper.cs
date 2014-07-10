@@ -32,7 +32,7 @@ namespace KinveyXamarin
 		SQLTemplates.QueueItem popQueue ();
 
 
-		void removeFromQueue (string id, string collection);
+		void removeFromQueue (int primaryKey);
 	}
 }
 

@@ -31,13 +31,22 @@ namespace KinveyXamarin
 			{
 				targetURI = targetURI.Replace("{" + p.Key + "}", p.Value.ToString());
 			}
+
+			int uriLength = targetURI.Length;
+			int colIndex = targetURI.IndexOf (appData.CollectionName);
+
+
+
 			int idIndex = targetURI.IndexOf(appData.CollectionName) + appData.CollectionName.Length + 1;
+
+
+
 			T ret = default(T);
 			//is it a query?  (12 is magic number for decoding empty query string)
 			if (targetURI.Contains ("query") && (targetURI.IndexOf ("query") + 12) != targetURI.Length) {
 				//it's a query!
 				//pull the actual query string out and get rid of the "?query"
-				String query = targetURI.Substring(idIndex, targetURI.Length);
+				String query = targetURI.Substring(idIndex, targetURI.Length - idIndex);
 				query = query.Replace("?query=","");
 				query = WebUtility.UrlDecode(query);
 
@@ -50,10 +59,10 @@ namespace KinveyXamarin
 				ret = (T)handler.getTable (appData.CollectionName).getAll (handler, client, appData.CollectionName);
 			} else {
 				//it's a get by id
-				String targetID = targetURI.Substring(idIndex, targetURI.Length);
+				String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
 				ret = (T)handler.getTable (appData.CollectionName).getEntity (handler, client, appData.CollectionName, targetID);
 
-				handler.getTable(appData.CollectionName).enqueueRequest(handler, "GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length));
+				handler.getTable(appData.CollectionName).enqueueRequest(handler, "GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 			}
 
 			kickOffSync ();
@@ -96,9 +105,9 @@ namespace KinveyXamarin
 			}
 			int idIndex = targetURI.IndexOf(appData.CollectionName) + appData.CollectionName.Length + 1;
 
-			String targetID = targetURI.Substring(idIndex, targetURI.Length);
+			String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
 			KinveyDeleteResponse ret = handler.getTable(appData.CollectionName).delete(handler, client,appData.CollectionName, targetID);
-			handler.getTable(appData.CollectionName).enqueueRequest(handler, "DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length));
+			handler.getTable(appData.CollectionName).enqueueRequest(handler, "DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 
 			kickOffSync();
 			return ret;

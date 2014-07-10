@@ -49,19 +49,20 @@ namespace KinveyXamarin
 
 			if (verb.Equals ("GET")) {
 				lock (locker) {
-					store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					ret = store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("PUT")) {
 				lock (locker) {
-					store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					ret = store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("POST")) {
 				lock (locker) {
-					store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					ret = store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("DELETE")) {
 				lock (locker) {
-					store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					KinveyDeleteResponse d = store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					//TODO strong generics are messing this one up
 				}
 			}
 

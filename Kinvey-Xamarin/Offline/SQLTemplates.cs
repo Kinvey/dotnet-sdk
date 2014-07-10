@@ -14,8 +14,9 @@ namespace KinveyXamarin
 		}
 
 		public class OfflineEntity{
-			[PrimaryKey, AutoIncrement]
-			public int key { get; set; }
+//			[PrimaryKey, AutoIncrement]
+//			public int key { get; set; }
+			[PrimaryKey]
 			public string id { get; set;}
 			public string json { get; set;}
 			public string collection { get; set; }
@@ -23,7 +24,7 @@ namespace KinveyXamarin
 
 		public class QueueItem{
 			[PrimaryKey, AutoIncrement] 
-			public string key { get; set; } 
+			public int key { get; set; } 
 			public string id { get; set; }
 			public string collection { get; set; }
 			public string action { get; set; }
@@ -32,9 +33,9 @@ namespace KinveyXamarin
 
 		public class QueryItem{
 			[PrimaryKey, AutoIncrement] 
-			public string key { get; set; } 
+			public int key { get; set; } 
 			public string query { get; set; }
-			public List<string> ids { get; set; }
+			public string commaDelimitedIds { get; set; }
 			public string collection { get; set; }
 				
 		}
