@@ -14,7 +14,7 @@ namespace KinveyXamarin
 
 		OfflineTable<T> getTable(string collectionName);
 
-		List<SQLTemplates.TableItem> getCollectionTables ();
+		List<string> getCollectionTables ();
 
 		int deleteContentsOfTable (string str);
 
@@ -29,7 +29,10 @@ namespace KinveyXamarin
 		T getEntity (string collection, string id);
 		KinveyDeleteResponse delete(string collection, string id);
 
+		SQLTemplates.QueueItem popQueue ();
 
+
+		void removeFromQueue (string id, string collection);
 	}
 }
 

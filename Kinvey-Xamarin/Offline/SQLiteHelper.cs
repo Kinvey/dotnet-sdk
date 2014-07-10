@@ -41,10 +41,16 @@ namespace KinveyXamarin
 		}
 
 
-		public List<SQLTemplates.TableItem> getCollectionTables ()
+		public List<string> getCollectionTables ()
 		{
 			List<SQLTemplates.TableItem> result = _dbConnection.Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToList ();
-			return result;
+			List<string> collections = new List<string> ();
+
+			foreach (SQLTemplates.TableItem item in result) {
+				collections.Add (item.name);
+			}
+
+			return collections;
 		}
 
 		public int deleteContentsOfTable (string collection)
@@ -142,6 +148,19 @@ namespace KinveyXamarin
 			resp.count = count;
 
 			return resp;
+		}
+
+		public SQLTemplates.QueueItem popQueue (){
+			SQLTemplates.QueueItem item = _dbConnection.Table<SQLTemplates.QueueItem> ().FirstOrDefault ();
+			return item;
+
+		}
+
+		public void removeFromQueue (string primaryKey)
+		{
+
+			_dbConnection.Delete<SQLTemplates.QueueItem> (primaryKey);
+
 		}
 		#endregion
 	}
