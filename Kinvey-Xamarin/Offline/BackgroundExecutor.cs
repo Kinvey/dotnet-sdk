@@ -2,6 +2,7 @@
 using SQLite.Net.Interop;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -12,10 +13,10 @@ namespace KinveyXamarin
 		private string dbpath;
 		private Client client;
 
-		public BackgroundExecutor (Client c, ISQLitePlatform platform, string dbpath)
+		public BackgroundExecutor (Client c)
 		{
-			this.dbpath = dbpath;
-			this.platform = platform;
+			this.dbpath = c.offline_dbpath;
+			this.platform = c.offline_platform;
 			this.client = c;
 		}
 
@@ -61,6 +62,7 @@ namespace KinveyXamarin
 						string json = JsonConvert.SerializeObject(T);
 						handler.upsertEntity(id, collection, json);
 						handler.removeFromQueue(item.key);
+						doneSuccessfully();
 					},
 					onError = (error) => {
 						ClientLogger.Log(error);
@@ -75,6 +77,7 @@ namespace KinveyXamarin
 						string json = JsonConvert.SerializeObject(T);
 						handler.upsertEntity(id, collection, json);
 						handler.removeFromQueue(item.key);
+						doneSuccessfully();
 					},
 					onError = (error) => {
 						ClientLogger.Log(error);
@@ -106,6 +109,12 @@ namespace KinveyXamarin
 
 		}
 
+		private void doneSuccessfully(){
+			Task.Factory.StartNew (() => {
+				new BackgroundExecutor<T>(client).RunSync();
+
+			});
+		}
 
 
 

@@ -15,6 +15,7 @@ using System;
 using Kinvey.DotNet.Framework.Core;
 using System.Collections.Generic;
 using Kinvey.DotNet.Framework;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -87,21 +88,27 @@ namespace KinveyXamarin
 			} else if (policy == OfflinePolicy.LOCAL_FIRST) {
 				ret = offlineFromStore ();
 				if (ret == null) {
-					try{
+					try {
 						ret = offlineFromService ();
-					}catch(Exception e){
+					} catch (Exception e) {
 						ClientLogger.Log (e);
 					}
 				}
 
 			} else if (policy == OfflinePolicy.ONLINE_FIRST) {
-				try{
-					ret = offlineFromService();
-				}catch(Exception e){
+				try {
+					ret = offlineFromService ();
+				} catch (Exception e) {
 					ClientLogger.Log (e);
 					ret = offlineFromStore ();
 				}
 			}
+
+			Task.Factory.StartNew (() => {
+				new BackgroundExecutor<T>((Client)Client).RunSync();
+			  
+			});
+
 			return ret;
 		}
 	}
