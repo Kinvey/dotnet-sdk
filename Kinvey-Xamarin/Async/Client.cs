@@ -54,10 +54,24 @@ namespace KinveyXamarin
 
 
 			public Client build() {
+				if (this.filePath != null && offlinePlatform != null && this.Store == null) {
+					this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
+				} else if (this.Store == null){
+					this.Store = new InMemoryCredentialStore();
+				}
+
+
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 //				c.offline_dbpath = this.offlinePath;
 				c.offline_platform = this.offlinePlatform;
+				c.filePath = this.filePath;
+	
 				return c;
+			}
+
+			public Builder setCredentialStore(ICredentialStore store){
+				this.Store = store;
+				return this;
 			}
 
 			public Builder setBaseURL(string url){

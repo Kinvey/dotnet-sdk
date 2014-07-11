@@ -39,6 +39,9 @@ namespace KinveyXamarin
 			T ret = default(T);
 			//is it a query?  (12 is magic number for decoding empty query string)
 			if (targetURI.Contains ("query") && (targetURI.IndexOf ("query") + 12) != targetURI.Length) {
+
+				throw new NotImplementedException ();
+
 				//it's a query!
 				//pull the actual query string out and get rid of the "?query"
 				String query = targetURI.Substring(idIndex, targetURI.Length - idIndex);
@@ -48,7 +51,7 @@ namespace KinveyXamarin
 				handler.createTable (appData.CollectionName);
 
 				List<T> ok = handler.getQuery(appData.CollectionName,  query);
-				throw new NotImplementedException ();
+
 
 				handler.enqueueRequest("QUERY", appData.CollectionName, query);
 

@@ -23,6 +23,9 @@ namespace Kinvey.DotNet.Framework.Auth
     {
         private Dictionary<string, Credential> store = new Dictionary<string, Credential>();
 
+		public InMemoryCredentialStore(){
+		}
+
         public Credential Load(string userId)
         {
             return store[userId];

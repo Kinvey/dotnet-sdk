@@ -70,7 +70,7 @@
     <Compile Include="Offline\DatabaseHelper.cs" />
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
-    <Compile Include="Auth\OnDiskCredentialStore.cs" />
+    <Compile Include="Auth\SQLiteCredentialStore.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

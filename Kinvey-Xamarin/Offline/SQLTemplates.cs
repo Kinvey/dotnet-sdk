@@ -9,13 +9,12 @@ namespace KinveyXamarin
 	/// </summary>
 	public class SQLTemplates{
 
+
 		public class TableItem{
 			public string name { get; set;}
 		}
-
+			
 		public class OfflineEntity{
-//			[PrimaryKey, AutoIncrement]
-//			public int key { get; set; }
 			[PrimaryKey]
 			public string id { get; set;}
 			public string json { get; set;}
