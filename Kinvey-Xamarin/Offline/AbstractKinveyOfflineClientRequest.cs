@@ -62,7 +62,8 @@ namespace KinveyXamarin
 				}
 			} else if (verb.Equals ("DELETE")) {
 				lock (locker) {
-					KinveyDeleteResponse d = store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+//					KinveyDeleteResponse d = 
+					store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 					//TODO strong generics are messing this one up
 				}
 			}
@@ -73,7 +74,11 @@ namespace KinveyXamarin
 		public T offlineFromService(){
 			T ret = base.Execute ();
 
-		
+			Task.Factory.StartNew (() => {
+				new BackgroundExecutor<T>((Client)Client).RunSync();
+
+			});
+
 			return ret;
 		}
 
@@ -104,10 +109,7 @@ namespace KinveyXamarin
 				}
 			}
 
-			Task.Factory.StartNew (() => {
-				new BackgroundExecutor<T>((Client)Client).RunSync();
-			  
-			});
+
 
 			return ret;
 		}

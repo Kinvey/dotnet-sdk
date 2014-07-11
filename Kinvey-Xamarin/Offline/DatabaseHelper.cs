@@ -12,7 +12,7 @@ namespace KinveyXamarin
 	public interface DatabaseHelper<T>
 	{
 
-		OfflineTable<T> getTable(string collectionName);
+		void createTable(string collectionName);
 
 		List<string> getCollectionTables ();
 
@@ -24,7 +24,7 @@ namespace KinveyXamarin
 
 		List<T> getQuery (string queryString, string collection);
 
-		void enqueRequest (string action, string collection, string id);
+		void enqueueRequest (string action, string collection, string id);
 		List<T> getAll (string collection);
 		T getEntity (string collection, string id);
 		KinveyDeleteResponse delete(string collection, string id);

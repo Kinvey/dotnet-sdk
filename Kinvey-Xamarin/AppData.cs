@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KinveyXamarin;
+using System.IO;
 
 namespace Kinvey.DotNet.Framework.Core
 {
@@ -96,7 +97,7 @@ namespace Kinvey.DotNet.Framework.Core
 			this.store = store;
 			this.offlinePolicy = policy;
 
-			this.store.dbpath = ((Client) KinveyClient).offline_dbpath;
+			this.store.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
 			this.store.platform = ((Client) KinveyClient).offline_platform;
 
 		}

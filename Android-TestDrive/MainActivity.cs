@@ -52,7 +52,7 @@ namespace AndroidTestDrive
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-			kinveyClient = new Client.Builder(appKey, appSecret).setOfflinePath(Path.Combine (Android.OS.Environment.ExternalStorageDirectory.ToString (), "kinveyOffline.sqlite")).setOfflinePlatform(new SQLitePlatformAndroid()).build();
+			kinveyClient = new Client.Builder(appKey, appSecret).setFilePath(Android.OS.Environment.ExternalStorageDirectory.ToString ()).setOfflinePlatform(new SQLitePlatformAndroid()).build();
 
 			kinveyClient.User ().Login (new KinveyDelegate<User>{ 
 				onSuccess =  (user) => { 

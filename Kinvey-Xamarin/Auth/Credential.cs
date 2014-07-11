@@ -21,10 +21,13 @@ using System.Threading.Tasks;
 
 namespace Kinvey.DotNet.Framework.Auth
 {
+	[DataContract]
 	public class Credential : IKinveyRequestInitializer
 	{
 //		private static readonly string AuthHeaderFormat = "Kinvey %s";
+		[DataMember]
 		private string userId;
+		[DataMember]
 		private string authToken;
 
 		internal Credential() { }

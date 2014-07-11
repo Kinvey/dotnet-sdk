@@ -3,6 +3,7 @@ using SQLite.Net.Interop;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace KinveyXamarin
 {
@@ -15,7 +16,7 @@ namespace KinveyXamarin
 
 		public BackgroundExecutor (Client c)
 		{
-			this.dbpath = c.offline_dbpath;
+			this.dbpath = Path.Combine(c.filePath,  "kinveyOffline.sqlite") ;
 			this.platform = c.offline_platform;
 			this.client = c;
 		}

@@ -13,7 +13,8 @@ namespace KinveyXamarin
 
 		private AsyncUser user;
 
-		public string offline_dbpath { get; set; }
+
+		public string filePath { get; set; }
 
 		public ISQLitePlatform offline_platform { get; set; }
 
@@ -44,7 +45,8 @@ namespace KinveyXamarin
 		public new class Builder : AbstractClient.Builder
 		{
 
-			private string offlinePath{ get; set;}
+//			private string offlinePath{ get; set;}
+			private string filePath {get; set;}
 			private ISQLitePlatform offlinePlatform {get; set;}
 		
 			public Builder(string appKey, string appSecret) 
@@ -53,7 +55,7 @@ namespace KinveyXamarin
 
 			public Client build() {
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
-				c.offline_dbpath = this.offlinePath;
+//				c.offline_dbpath = this.offlinePath;
 				c.offline_platform = this.offlinePlatform;
 				return c;
 			}
@@ -68,8 +70,8 @@ namespace KinveyXamarin
 				return this;
 			}
 
-			public Builder setOfflinePath(string path){
-				this.offlinePath = path;
+			public Builder setFilePath(string path){
+				this.filePath = path;
 				return this;
 			}
 

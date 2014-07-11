@@ -44,7 +44,7 @@ This library is implemented with a clean separation between blocking synchronous
 Note the addition of two new builder methods (which will be refactored and simplified) to add the local database path location as well as a platform specific implementation of the sqlite.net pcl.
 
     kinveyClient = new Client.Builder(appKey, appSecret)
-                   .setOfflinePath(Path.Combine (Android.OS.Environment.ExternalStorageDirectory.ToString (), "kinveyOffline.sqlite"))
+                   .setFilePath(Android.OS.Environment.ExternalStorageDirectory.ToString ())
                    .setOfflinePlatform(new SQLitePlatformAndroid())
                    .build();
 

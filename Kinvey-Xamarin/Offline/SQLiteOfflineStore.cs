@@ -32,11 +32,6 @@ namespace KinveyXamarin
 				targetURI = targetURI.Replace("{" + p.Key + "}", p.Value.ToString());
 			}
 
-			int uriLength = targetURI.Length;
-			int colIndex = targetURI.IndexOf (appData.CollectionName);
-
-
-
 			int idIndex = targetURI.IndexOf(appData.CollectionName) + appData.CollectionName.Length + 1;
 
 
@@ -50,19 +45,24 @@ namespace KinveyXamarin
 				query = query.Replace("?query=","");
 				query = WebUtility.UrlDecode(query);
 
-				ret = (T) handler.getTable(appData.CollectionName).getQuery(handler, client, appData.CollectionName,  query);
+				handler.createTable (appData.CollectionName);
 
-				handler.getTable (appData.CollectionName).enqueueRequest (handler, "QUERY", appData.CollectionName, query);
+				List<T> ok = handler.getQuery(appData.CollectionName,  query);
+				throw new NotImplementedException ();
+
+				handler.enqueueRequest("QUERY", appData.CollectionName, query);
 
 			} else if (idIndex == targetURI.Length || targetURI.Contains ("query")) {
 				//it's a get all request (no query, no id)
-				ret = (T)handler.getTable (appData.CollectionName).getAll (handler, client, appData.CollectionName);
+				List<T> ok = handler.getAll (appData.CollectionName);
+				throw new NotImplementedException ();
+
 			} else {
 				//it's a get by id
 				String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
-				ret = (T)handler.getTable (appData.CollectionName).getEntity (handler, client, appData.CollectionName, targetID);
+				ret = (T)handler.getEntity (appData.CollectionName, targetID);
 
-				handler.getTable(appData.CollectionName).enqueueRequest(handler, "GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
+				handler.enqueueRequest("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 			}
 
 			kickOffSync ();
@@ -85,9 +85,10 @@ namespace KinveyXamarin
 			string id = (string)token.SelectToken("_id");
 
 			//insert the entity into the database
-			handler.getTable(appData.CollectionName).insertEntity(handler, client, id, appData.CollectionName, jsonContent);
+			handler.createTable (appData.CollectionName);
+			handler.upsertEntity(id, appData.CollectionName, jsonContent);
 			//enque the request
-			handler.getTable(appData.CollectionName).enqueueRequest(handler, "PUT", appData.CollectionName, id);
+			handler.enqueueRequest("PUT", appData.CollectionName, id);
 
 			kickOffSync();
 
@@ -106,9 +107,15 @@ namespace KinveyXamarin
 			int idIndex = targetURI.IndexOf(appData.CollectionName) + appData.CollectionName.Length + 1;
 
 			String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
-			KinveyDeleteResponse ret = handler.getTable(appData.CollectionName).delete(handler, client,appData.CollectionName, targetID);
-			handler.getTable(appData.CollectionName).enqueueRequest(handler, "DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 
+
+
+
+			handler.createTable (appData.CollectionName);
+			KinveyDeleteResponse ret = handler.delete(appData.CollectionName, targetID);
+
+			handler.enqueueRequest("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
+			throw new NotImplementedException ();
 			kickOffSync();
 			return ret;
 		}
@@ -123,7 +130,9 @@ namespace KinveyXamarin
 			JToken token = JObject.Parse(jsonContent);
 			string id = (string)token.SelectToken("_id");
 
-			handler.getTable(appData.CollectionName).insertEntity(handler, client, id, appData.CollectionName, jsonContent);
+			handler.createTable (appData.CollectionName);
+
+			handler.upsertEntity( id, appData.CollectionName, jsonContent);
 
 		}
 

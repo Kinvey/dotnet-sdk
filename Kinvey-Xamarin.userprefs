@@ -1,25 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../../../../Library/Frameworks/Mono.framework/Versions/3.4.0/lib/mono/4.5/Microsoft.CSharp.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs">
     <Files>
-      <File FileName="Android-TestDrive/MainActivity.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="96" Column="5" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/OfflineTable.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="1" Column="1" />
-      <File FileName="Android-TestDrive/MyEntity.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLTemplates.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/DatabaseHelper.cs" Line="1" Column="1" />
-      <File FileName="../../../../Library/Frameworks/Mono.framework/Versions/3.4.0/lib/mono/4.5/Microsoft.CSharp.targets" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="66" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="114" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="113" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="26" column="1" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="62" column="70" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="140" column="1" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="87" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="57" column="70" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="139" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>

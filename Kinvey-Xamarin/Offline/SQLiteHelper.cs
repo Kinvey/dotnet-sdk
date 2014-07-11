@@ -35,9 +35,10 @@ namespace KinveyXamarin
 
 		#region DatabaseHelper implementation
 
-		public OfflineTable<T> getTable (string collectionName)
+		public void createTable (string collectionName)
 		{
-			return new OfflineTable<T> (this, collectionName);
+			//return new OfflineTable<T> (this, collectionName);
+			onCreate (collectionName);
 		}
 
 
@@ -83,8 +84,7 @@ namespace KinveyXamarin
 			if (count == 0) {
 				_dbConnection.Insert (entity);
 			}
-			int okat = _dbConnection.Table<SQLTemplates.OfflineEntity> ().Count ();
-			int wat = 0;
+		
 		}
 
 
@@ -109,7 +109,7 @@ namespace KinveyXamarin
 
 		}
 
-		public void enqueRequest (string action, string collection, string id)
+		public void enqueueRequest (string action, string collection, string id)
 		{
 			SQLTemplates.QueueItem queue = new SQLTemplates.QueueItem ();
 			queue.action = action;
