@@ -68,7 +68,6 @@ namespace KinveyXamarin
 				handler.enqueueRequest("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 			}
 
-			kickOffSync ();
 
 			return ret;
 		}
@@ -92,8 +91,6 @@ namespace KinveyXamarin
 			handler.upsertEntity(id, appData.CollectionName, jsonContent);
 			//enque the request
 			handler.enqueueRequest("PUT", appData.CollectionName, id);
-
-			kickOffSync();
 
 			return request.HttpContent;
 		}
@@ -119,7 +116,6 @@ namespace KinveyXamarin
 
 			handler.enqueueRequest("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 			throw new NotImplementedException ();
-			kickOffSync();
 			return ret;
 		}
 
@@ -142,10 +138,7 @@ namespace KinveyXamarin
 		public void clearStorage(){
 			//TODO
 		}
-
-		public void kickOffSync(){
-			//TODO sync
-		}
+			
 
 		private DatabaseHelper<T> getDatabaseHelper(){
 			return SQLiteHelper<T>.getInstance (platform, dbpath);

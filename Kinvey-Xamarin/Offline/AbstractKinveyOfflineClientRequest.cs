@@ -73,12 +73,6 @@ namespace KinveyXamarin
 
 		public T offlineFromService(){
 			T ret = base.Execute ();
-
-			Task.Factory.StartNew (() => {
-				new BackgroundExecutor<T>((Client)Client).RunSync();
-
-			});
-
 			return ret;
 		}
 
@@ -109,9 +103,16 @@ namespace KinveyXamarin
 				}
 			}
 
-
+			kickOffSync ();
 
 			return ret;
+		}
+	
+
+		public void kickOffSync(){
+			Task.Run (() => {
+				new BackgroundExecutor<T> ((Client)Client).RunSync ();
+			});
 		}
 	}
 }

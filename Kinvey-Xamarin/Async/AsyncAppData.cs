@@ -15,7 +15,7 @@ namespace KinveyXamarin
 			
 		public void GetEntity(string entityId, KinveyDelegate<T> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try {
 					T entity = base.GetEntityBlocking (entityId).Execute ();
 					delegates.onSuccess (entity);
@@ -28,7 +28,7 @@ namespace KinveyXamarin
 			
 		public void Get(KinveyDelegate<T> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try {
 					T entity = base.GetBlocking ().Execute ();
 					delegates.onSuccess (entity);
@@ -40,7 +40,7 @@ namespace KinveyXamarin
 
 		public void Save(T entity, KinveyDelegate<T> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try {
 					T saved = base.SaveBlocking (entity).Execute ();
 					delegates.onSuccess (saved);

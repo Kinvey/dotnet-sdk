@@ -13,7 +13,7 @@ namespace KinveyXamarin
 
 		public void Login(KinveyDelegate<User> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try{
 					User user = base.LoginBlocking().Execute();
 					delegates.onSuccess(user);
@@ -25,7 +25,7 @@ namespace KinveyXamarin
 
 		public void Login(string username, string password, KinveyDelegate<User> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try{
 					User user = base.LoginBlocking(username, password).Execute();
 					delegates.onSuccess(user);
@@ -37,7 +37,7 @@ namespace KinveyXamarin
 
 		public void Login(Credential cred, KinveyDelegate<User> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try{
 					User user = base.LoginBlocking(cred).Execute();
 					delegates.onSuccess(user);
@@ -49,7 +49,7 @@ namespace KinveyXamarin
 
 		public void LoginKinveyAuthToken(string userId, string authToken, KinveyDelegate<User> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try{
 					User user = base.LoginBlocking(userId, authToken).Execute();
 					delegates.onSuccess(user);
@@ -61,7 +61,7 @@ namespace KinveyXamarin
 
 		public void logout()
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try{
 					base.logoutBlocking().Execute();
 //					delegates.onSuccess(default(User)); //TODO find a better way, logout has no return value and void is not nullable in c#
@@ -74,7 +74,7 @@ namespace KinveyXamarin
 			
 		public void Create(string userid, string password, KinveyDelegate<User> delegates)
 		{
-			Task.Factory.StartNew (() => {
+			Task.Run (() => {
 				try{
 					User user = base.CreateBlocking(userid, password).Execute();
 					delegates.onSuccess(user);

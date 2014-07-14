@@ -22,9 +22,6 @@ namespace KinveyXamarin
 		void insertEntity(AbstractKinveyClient client, AppData<T> appdata, T entity);
 
 		void clearStorage();
-
-		void kickOffSync();
-
 	}
 }
 

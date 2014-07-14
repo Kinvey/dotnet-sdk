@@ -178,6 +178,7 @@ namespace Kinvey.DotNet.Framework.Core
                 throw NewExceptionOnError(response);
             }
 
+
             return (RestResponse) response;
         }
 
