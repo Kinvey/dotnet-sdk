@@ -1,16 +1,19 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.4.0" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Linq/InnermostWhereFinder.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="66" Column="6" />
+      <File FileName="Kinvey-Xamarin/Linq/QueryableKinveyData.cs" Line="38" Column="29" />
+      <File FileName="Kinvey-Xamarin/Linq/KinveyQueryProvider.cs" Line="18" Column="4" />
+      <File FileName="Kinvey-Xamarin/Linq/LinqToKinveyProvider.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Linq/InnermostWhereFinder.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="113" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="114" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="26" column="1" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="57" column="70" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="139" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="65" column="70" />
+      <RunToCursorBreakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Auth/OnDiskCredentialStore.cs" line="45" column="16" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>

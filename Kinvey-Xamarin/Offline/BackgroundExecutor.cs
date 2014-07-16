@@ -111,8 +111,8 @@ namespace KinveyXamarin
 		}
 
 		private void doneSuccessfully(){
-			Task.Run (() =>{
-				RunSync();
+			Task.Run (() => {
+				new BackgroundExecutor<T> ((Client)client).RunSync ();
 			});
 		}
 

@@ -71,6 +71,17 @@
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
+    <Compile Include="Linq\QueryableKinveyData.cs" />
+    <Compile Include="Linq\KinveyQueryProvider.cs" />
+    <Compile Include="Linq\InnermostWhereFinder.cs" />
+    <Compile Include="Linq\KinveyQueryContext.cs" />
+    <Compile Include="Linq\WebServiceHelper.cs" />
+    <Compile Include="Linq\LocationFinder.cs" />
+    <Compile Include="Linq\ExpressionTreeModifier.cs" />
+    <Compile Include="Linq\Evaluator.cs" />
+    <Compile Include="Linq\TypeSystem.cs" />
+    <Compile Include="Linq\ExpressionTreeHelpers.cs" />
+    <Compile Include="Linq\InvalidQueryException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -79,6 +90,7 @@
     <Folder Include="Async\" />
     <Folder Include="Offline\" />
     <Folder Include="Model\" />
+    <Folder Include="Linq\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
