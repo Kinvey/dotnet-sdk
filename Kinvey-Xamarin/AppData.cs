@@ -19,12 +19,14 @@ using System.Text;
 using System.Threading.Tasks;
 using KinveyXamarin;
 using System.IO;
+using System.Linq.Expressions;
+using System.Collections;
 
 namespace Kinvey.DotNet.Framework.Core
 {
 //    public class AppData { }
 
-    public class AppData<T> 
+	public class AppData<T> : IOrderedQueryable<T>
     {
         private String collectionName;
         private Type myClass;
@@ -49,7 +51,25 @@ namespace Kinvey.DotNet.Framework.Core
             this.collectionName = collectionName;
             this.myClass = myClass;
             this.client = client;
+			this._expression = Expression.Constant (this);
         }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.Core.AppData`1"/> class.
+		/// </summary>
+		/// <param name="collectionName">Collection name.</param>
+		/// <param name="myClass">My class.</param>
+		/// <param name="client">Client.</param>
+		public AppData(string collectionName, Type myClass, AbstractClient client, MongoQueryProvider<T> provider)
+		{
+			this.collectionName = collectionName;
+			this.myClass = myClass;
+			this.client = client;
+			this._expression = Expression.Constant (this);
+			this._provider = provider;
+		}
+
+
 
 		/// <summary>
 		/// Gets or sets the name of the collection.
@@ -145,6 +165,57 @@ namespace Kinvey.DotNet.Framework.Core
             POST,
             PUT
         }
+
+
+
+		#region LINQ
+
+		// private fields
+		private MongoQueryProvider<T> _provider;
+		private Expression _expression;
+
+		// public methods
+		/// <summary>
+		/// Gets an enumerator for the results of a MongoDB LINQ query.
+		/// </summary>
+		/// <returns>An enumerator for the results of a MongoDB LINQ query.</returns>
+		public IEnumerator<T> GetEnumerator()
+		{
+			return ((IEnumerable<T>)_provider.Execute(_expression)).GetEnumerator();
+		}
+
+		/// <summary>
+		/// Gets the MongoDB query that will be sent to the server when this LINQ query is executed.
+		/// </summary>
+		/// <returns>The MongoDB query.</returns>
+		public IMongoQuery GetMongoQuery()
+		{
+			return _provider.BuildMongoQuery(this);
+		}
+
+		// explicit implementation of IEnumerable
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable)_provider.Execute(_expression)).GetEnumerator();
+		}
+
+		// explicit implementation of IQueryable
+		Type IQueryable.ElementType
+		{
+			get { return typeof(T); }
+		}
+
+		Expression IQueryable.Expression
+		{
+			get { return _expression; }
+		}
+
+		IQueryProvider IQueryable.Provider
+		{
+			get { return (IQueryProvider) _provider; }
+		}
+		#endregion
+
 
 
         [JsonObject(MemberSerialization.OptIn)]

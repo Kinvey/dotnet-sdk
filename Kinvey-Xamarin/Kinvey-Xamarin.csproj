@@ -71,6 +71,14 @@
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
+    <Compile Include="Linq\MongoQueryProvider.cs" />
+    <Compile Include="Linq\IMongoQuery.cs" />
+    <Compile Include="Linq\MongoQueryTranslator.cs" />
+    <Compile Include="Linq\TranslatedQuery.cs" />
+    <Compile Include="Linq\PartialEvaluator.cs" />
+    <Compile Include="Linq\ExpressionNormalizer.cs" />
+    <Compile Include="Linq\SelectQuery.cs" />
+    <Compile Include="Linq\Nominator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -79,6 +87,7 @@
     <Folder Include="Async\" />
     <Folder Include="Offline\" />
     <Folder Include="Model\" />
+    <Folder Include="Linq\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
