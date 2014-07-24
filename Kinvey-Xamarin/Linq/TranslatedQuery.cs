@@ -17,16 +17,52 @@ using System;
 
 namespace KinveyXamarin
 {
-	public class TranslatedQuery
+	/// <summary>
+	/// Represents a LINQ query that has been translated to a MongoDB query.
+	/// </summary>
+	public abstract class TranslatedQuery
 	{
-		public TranslatedQuery ()
+		// private fields
+		private string _collection;
+		private Type _documentType;
+
+		// constructors
+		/// <summary>
+		/// Initializes a new instance of the MongoLinqQuery class.
+		/// </summary>
+		/// <param name="collection">The collection being queried.</param>
+		/// <param name="documentType">The document type being queried.</param>
+		public TranslatedQuery(string collection, Type documentType)
 		{
+			_collection = collection;
+			_documentType = documentType;
 		}
 
-		public object Execute ()
+		// public properties
+		/// <summary>
+		/// Gets the collection being queried.
+		/// </summary>
+		public string Collection
 		{
-			throw new NotImplementedException ();
+			get { return _collection; }
+		}
+
+		/// <summary>
+		/// Get the document type being queried.
+		/// </summary>
+		public Type DocumentType
+		{
+			get { return _documentType; }
+		}
+
+		// public methods
+		/// <summary>
+		/// Executes a query that returns a single result (overridden by subclasses).
+		/// </summary>
+		/// <returns>The result of executing the query.</returns>
+		public virtual object Execute()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
-

@@ -20,9 +20,7 @@ namespace KinveyXamarin
 {
 	public class SelectQuery : TranslatedQuery
 	{
-		public SelectQuery (string Collection, Type type)
-		{
-			throw new NotImplementedException ();
+		public SelectQuery (string Collection, Type type) : base(Collection, type){
 		}
 
 		public void Translate (Expression expression)

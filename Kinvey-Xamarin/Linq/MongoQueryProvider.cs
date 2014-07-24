@@ -18,15 +18,17 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Kinvey.DotNet.Framework.Core;
 using System.Linq;
+using System.Reflection;
 
 namespace KinveyXamarin
 {
-	public class MongoQueryProvider<T>
+	public class MongoQueryProvider : IQueryProvider
 	{
 		public string Collection;
 
-		public MongoQueryProvider ()
+		public MongoQueryProvider (string Collection)
 		{
+			this.Collection = Collection;
 		}
 
 		/// <summary>
@@ -34,7 +36,61 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="expression">The query expression.</param>
 		/// <returns>The result of the query.</returns>
-		public object Execute(Expression expression)
+		public T Execute<T>(Expression expression)
+		{
+			if (expression == null)
+			{
+				throw new ArgumentNullException("expression");
+			}
+	
+
+			var result = Execute(expression);
+			if (result == null)
+			{
+				return default(T);
+			}
+			else
+			{
+				return (T)result;
+			}
+		}
+
+
+		public IMongoQuery BuildMongoQuery<T> (AppData<T> query)
+		{
+			var translatedQuery = MongoQueryTranslator.Translate(this, ((IQueryable)query).Expression);
+			return ((SelectQuery)translatedQuery).BuildQuery();
+		}
+
+		public IQueryable CreateQuery (Expression expression)
+		{
+			if (expression == null)
+			{
+				throw new ArgumentNullException("expression");
+			}
+			//var elementType = TypeHelper.GetElementType(expression.Type);
+			try
+			{
+				var queryableType = typeof(AppData<>).MakeGenericType(expression.Type);
+				return (IQueryable)Activator.CreateInstance(queryableType, new object[] { this, expression });
+			}
+			catch (TargetInvocationException ex)
+			{
+				throw ex.InnerException;
+			}
+		}
+
+		public IQueryable<T> CreateQuery<T> (Expression expression)
+		{
+			if (expression == null)
+			{
+				throw new ArgumentNullException("expression");
+			}
+		
+			return new AppData<T>(this, expression);
+		}
+
+		public Object Execute (Expression expression)
 		{
 			if (expression == null)
 			{
@@ -42,14 +98,7 @@ namespace KinveyXamarin
 			}
 
 			var translatedQuery = MongoQueryTranslator.Translate(this, expression);
-			return translatedQuery.Execute();
-		}
-
-		public IMongoQuery BuildMongoQuery (AppData<T> query)
-		{
-			var translatedQuery = MongoQueryTranslator.Translate(this, ((IQueryable)query).Expression);
-			return ((SelectQuery)translatedQuery).BuildQuery();
+			return translatedQuery.Execute(); 
 		}
 	}
 }
-

@@ -31,9 +31,9 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="query">The MongoDB LINQ query.</param>
 		/// <returns>A TranslatedQuery.</returns>
-		public static TranslatedQuery Translate<T>(IQueryable query)
+		public static TranslatedQuery Translate(IQueryable query)
 		{
-			return Translate((MongoQueryProvider<T>)query.Provider, query.Expression);
+			return Translate((MongoQueryProvider)query.Provider, query.Expression);
 		}
 
 		/// <summary>
@@ -42,12 +42,12 @@ namespace KinveyXamarin
 		/// <param name="provider">The MongoDB query provider.</param>
 		/// <param name="expression">The LINQ query expression.</param>
 		/// <returns>A TranslatedQuery.</returns>
-		public static TranslatedQuery Translate<T>(MongoQueryProvider<T> provider, Expression expression)
+		public static TranslatedQuery Translate(MongoQueryProvider provider, Expression expression)
 		{
 			expression = PartialEvaluator.Evaluate(expression, provider);
 			expression = ExpressionNormalizer.Normalize(expression);
 			// assume for now it's a SelectQuery
-			Type documentType = typeof(T);
+			Type documentType = typeof(Expression);
 			var selectQuery = new SelectQuery(provider.Collection, documentType);
 			selectQuery.Translate(expression);
 			return selectQuery;

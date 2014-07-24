@@ -26,12 +26,12 @@ namespace KinveyXamarin
 		{
 		}
 
-		public static Expression Evaluate<T> (Expression expression, MongoQueryProvider<T> provider)
+		public static Expression Evaluate (Expression expression, MongoQueryProvider provider)
 		{
 			return new SubtreeEvaluator(new Nominator(e => CanBeEvaluatedLocally(e, provider)).Nominate(expression)).Evaluate(expression);
 		}
 
-		private static bool CanBeEvaluatedLocally<T>(Expression expression, MongoQueryProvider<T> queryProvider)
+		private static bool CanBeEvaluatedLocally(Expression expression, MongoQueryProvider queryProvider)
 		{
 			// any operation on a query can't be done locally
 			var constantExpression = expression as ConstantExpression;

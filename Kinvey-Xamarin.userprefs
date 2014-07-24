@@ -1,8 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.ok" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/AppData.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Linq/TypeHelper.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin/AppData.cs" Line="158" Column="46" />
+      <File FileName="Kinvey-Xamarin/Linq/ExpressionNormalizer.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Linq/ExpressionVisitor.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Linq/IMongoQuery.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Linq/MongoQueryProvider.cs" Line="80" Column="11" />
+      <File FileName="Kinvey-Xamarin/AppData.cs" Line="59" Column="25" />
+      <File FileName="Kinvey-Xamarin/Linq/TypeHelper.cs" Line="11" Column="17" />
+      <File FileName="Kinvey-Xamarin/Linq/MongoQueryTranslator.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Linq/PartialEvaluator.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Linq/TranslatedQuery.cs" Line="31" Column="20" />
+      <File FileName="Kinvey-Xamarin/Linq/SelectQuery.cs" Line="23" Column="53" />
+      <File FileName="Kinvey-Xamarin/packages.config" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Properties/AssemblyInfo.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -10,7 +21,6 @@
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="114" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="26" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="65" column="70" />
-      <RunToCursorBreakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Linq/TypeSystem.cs" line="11" column="27" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>

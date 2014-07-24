@@ -54,13 +54,19 @@ namespace Kinvey.DotNet.Framework.Core
 			this._expression = Expression.Constant (this);
         }
 
+		public AppData(MongoQueryProvider provider, Expression e){
+			this._provider = _provider;
+			this._expression = e;
+			
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.Core.AppData`1"/> class.
 		/// </summary>
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">My class.</param>
 		/// <param name="client">Client.</param>
-		public AppData(string collectionName, Type myClass, AbstractClient client, MongoQueryProvider<T> provider)
+		public AppData(string collectionName, Type myClass, AbstractClient client, MongoQueryProvider provider)
 		{
 			this.collectionName = collectionName;
 			this.myClass = myClass;
@@ -171,7 +177,7 @@ namespace Kinvey.DotNet.Framework.Core
 		#region LINQ
 
 		// private fields
-		private MongoQueryProvider<T> _provider;
+		private MongoQueryProvider _provider;
 		private Expression _expression;
 
 		// public methods
@@ -181,7 +187,7 @@ namespace Kinvey.DotNet.Framework.Core
 		/// <returns>An enumerator for the results of a MongoDB LINQ query.</returns>
 		public IEnumerator<T> GetEnumerator()
 		{
-			return ((IEnumerable<T>)_provider.Execute(_expression)).GetEnumerator();
+			return ((IEnumerable<T>)_provider.Execute<T>(_expression)).GetEnumerator();
 		}
 
 		/// <summary>
@@ -196,7 +202,9 @@ namespace Kinvey.DotNet.Framework.Core
 		// explicit implementation of IEnumerable
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable)_provider.Execute(_expression)).GetEnumerator();
+			//TODO generics?
+			throw new NotImplementedException ();
+			//return ((IEnumerable)_provider.Execute(_expression)).GetEnumerator();
 		}
 
 		// explicit implementation of IQueryable
