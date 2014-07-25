@@ -34,6 +34,13 @@ namespace Kinvey.DotNet.Framework
             this.explanation = explanation;
         }
 
+		public KinveyException(string reason) : base (FormatMessage(reason, "Double check your types match.", "There is an issue with Generic Types.")){
+			this.reason = reason;
+			this.fix = "Double check your types match.";
+			this.explanation = "There is an issue with Generic Types.";
+		}
+
+
 
         public string Reason
         {

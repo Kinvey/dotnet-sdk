@@ -80,6 +80,10 @@
     <Compile Include="Linq\SelectQuery.cs" />
     <Compile Include="Linq\Nominator.cs" />
     <Compile Include="Linq\ExpressionVisitor.cs" />
+    <Compile Include="Linq\OrderByClause.cs" />
+    <Compile Include="Linq\ExpressionParameterReplacer.cs" />
+    <Compile Include="Linq\Projector.cs" />
+    <Compile Include="Linq\Helpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
