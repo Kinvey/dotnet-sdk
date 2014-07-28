@@ -226,10 +226,11 @@ namespace AndroidTestDrive
 			AsyncAppData<MyEntity> query = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 //
 			var queryAllCustomers = from cust in query
+					where cust.Name=="James Dean"
 									select cust;
 
 			Console.WriteLine (queryAllCustomers.Count());
-			Console.WriteLine (query.writer);
+			Console.WriteLine (query.writer.GetString());
 
 //			foreach (MyEntity e in queryAllCustomers){
 //				Console.WriteLine ("huh" + e.Name);

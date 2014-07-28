@@ -16,5 +16,10 @@ namespace KinveyXamarin
 		}
 
 		private StringBuilder builder;
+
+		public String GetString(){
+			return builder.ToString ();
+		}
 	}
+
 }

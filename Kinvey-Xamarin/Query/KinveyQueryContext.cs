@@ -41,21 +41,29 @@ namespace KinveyXamarin
 
 		public IEnumerable<T> Execute(Ast.Expression expression)
 		{
+			writer.Write ("{");
 			this.Visit(expression);
+			writer.Write ("}");
 			return new List<T>().AsEnumerable();
+
+
 		}
 
 		public override Ast.Expression VisitTypeExpression(Ast.TypeExpression expression)
 		{
-			writer.Write(string.Format("select * from {0}", expression.Type.Name));
+			//this one is a no-op because we don't support typing
+
+//			writer.Write(string.Format("select * from {0}", expression.Type.Name));
+
+
 			return expression;
 		}
 
 		public override Ast.Expression VisitLambdaExpression(Ast.LambdaExpression expression)
 		{
-			WriteNewLine();
-			writer.Write("where");
-			WriteNewLine();
+//			WriteNewLine();
+//			writer.Write("where");
+//			WriteNewLine();
 
 			this.Visit(expression.Body);
 
@@ -88,7 +96,8 @@ namespace KinveyXamarin
 
 		public override Ast.Expression VisitMemberExpression(Ast.MemberExpression expression)
 		{
-			writer.Write(expression.FullName);
+			writer.Write(String.Format("\"{0}\"", expression.FullName));
+//			writer.Write(expression.FullName);
 			return expression;
 		}
 
@@ -115,7 +124,7 @@ namespace KinveyXamarin
 			switch (@operator)
 			{
 			case BinaryOperator.Equal:
-				return " = ";
+				return ":";
 			}
 			throw new ArgumentException("Invalid binary operator");
 		}
