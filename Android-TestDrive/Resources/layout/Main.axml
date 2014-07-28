@@ -23,4 +23,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/loadcache" />
+    <Button
+        android:id="@+id/loadWithQuery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/loadQuery" />
 </LinearLayout>

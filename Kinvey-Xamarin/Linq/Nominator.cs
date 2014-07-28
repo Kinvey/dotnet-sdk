@@ -23,7 +23,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Performs bottom-up analysis to find maximal subtrees that satisfy a predicate.
 	/// </summary>
-	class Nominator : ExpressionVisitor
+	class Nominator : ExpressionVisitors
 	{
 		Func<Expression, bool> _predicate;
 		HashSet<Expression> _candidates;

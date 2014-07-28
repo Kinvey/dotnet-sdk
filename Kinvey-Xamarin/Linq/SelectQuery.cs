@@ -38,6 +38,9 @@ namespace KinveyXamarin
 		private LambdaExpression _distinct;
 		private Expression _lastExpression;
 
+		private readonly BsonSerializationInfoHelper _serializationInfoHelper;
+
+
 		public SelectQuery (string Collection, Type type) : base (Collection, type)
 		{
 		}
@@ -62,10 +65,19 @@ namespace KinveyXamarin
 			throw new NotSupportedException (message);
 		}
 
-		public IMongoQuery BuildQuery ()
-		{
-			throw new NotImplementedException ();
-		}
+//		public IMongoQuery BuildQuery ()
+//		{
+//			if (_where == null)
+//			{
+//				return null;
+//			}
+//
+//			// TODO: check lambda for proper type
+//
+//			var predicateTranslator = new PredicateTranslator(_serializationInfoHelper);
+//			var body = _where.Body;
+//			return predicateTranslator.BuildQuery(body);
+//		}
 
 		private void TranslateMethodCall (MethodCallExpression methodCallExpression)
 		{
@@ -110,6 +122,7 @@ namespace KinveyXamarin
 				TranslateLast (methodCallExpression);
 				break;
 			case "Max":
+				//TODO
 			case "Min":
 				TranslateMaxMin (methodCallExpression);
 				break;
@@ -631,6 +644,133 @@ namespace KinveyXamarin
 				throw new KinveyException("Skip and Take may only be used in conjunction with each other and cannot be separated by other operations.");
 			}
 		}
+
+		/// <summary>
+		/// Executes the translated Find query.
+		/// </summary>
+		/// <returns>The result of executing the translated Find query.</returns>
+		public override object Execute()
+		{
+			if (_take.HasValue && _take.Value == 0)
+			{
+				var type = _ofType ?? DocumentType;
+
+//				return typeof(Enumerable).GetMethod("Empty").MakeGenericMethod(type).Invoke(null, null);
+				//return new Enumerable ();
+
+			}
+
+//			var query = BuildQuery();
+
+			if (_distinct != null)
+			{
+			//	return ExecuteDistinct(query);
+			}
+
+//			var cursor = Collection.FindAs(DocumentType, query);
+//
+//			if (_orderBy != null)
+//			{
+//				var sortBy = new SortByDocument();
+//				foreach (var clause in _orderBy)
+//				{
+//					var keyExpression = clause.Key.Body;
+//					var serializationInfo = _serializationInfoHelper.GetSerializationInfo(keyExpression);
+//					var direction = (clause.Direction == OrderByDirection.Descending) ? -1 : 1;
+//					sortBy.Add(serializationInfo.ElementName, direction);
+//				}
+//				cursor.SetSortOrder(sortBy);
+//			}
+
+			if (_skip != null)
+			{
+			//	cursor.SetSkip(_skip.Value);
+			}
+
+			if (_take != null)
+			{
+			//	cursor.SetLimit(_take.Value);
+			}
+
+
+			var projection = _projection;
+			if (_ofType != null)
+			{
+				if (projection == null)
+				{
+					var paramExpression = Expression.Parameter(DocumentType, "x");
+					var convertExpression = Expression.Convert(paramExpression, _ofType);
+					projection = Expression.Lambda(convertExpression, paramExpression);
+				}
+				else
+				{
+					var paramExpression = Expression.Parameter(DocumentType, "x");
+					var convertExpression = Expression.Convert(paramExpression, _ofType);
+					var body = ExpressionParameterReplacer.ReplaceParameter(projection.Body, projection.Parameters[0], convertExpression);
+					projection = Expression.Lambda(body, paramExpression);
+				}
+			}
+
+			IProjector projector;
+			if (projection == null)
+			{
+				var projectorType = typeof(IdentityProjector<>).MakeGenericType(DocumentType);
+				projector = null;//(IProjector)Activator.CreateInstance(projectorType, cursor);
+			}
+			else
+			{
+//				var lambdaType = projection.GetType();
+//				var delegateType = lambdaType.GetGenericArguments()[0];
+//				var sourceType = delegateType.GetGenericArguments()[0];
+//				var resultType = delegateType.GetGenericArguments()[1];
+//				var projectorType = typeof(Projector<,>).MakeGenericType(sourceType, resultType);
+//				var compiledProjection = projection.Compile();
+//				projector = (IProjector)Activator.CreateInstance(projectorType, cursor, compiledProjection);
+			}
+
+		//if (_elementSelector != null)
+		//{
+		//	return _elementSelector(projector);
+		//}
+		//else
+		//{
+		//	return projector;
+		//}
+			return null;
+		}
+
+//		private object ExecuteDistinct(IMongoQuery query)
+//		{
+//			if (_orderBy != null)
+//			{
+//				throw new NotSupportedException("Distinct cannot be used with OrderBy.");
+//			}
+//			if (_skip != null || _take != null)
+//			{
+//				throw new NotSupportedException("Distinct cannot be used with Skip or Take.");
+//			}
+//
+//			var keyExpression = _distinct.Body;
+//			BsonSerializationInfo serializationInfo;
+//			try
+//			{
+//				serializationInfo = _serializationInfoHelper.GetSerializationInfo(keyExpression);
+//			}
+//			catch
+//			{
+//				throw new NotSupportedException("Distinct is only supported for a single field. Projections used with Distinct must resolve to a single field in the document.");
+//			}
+//
+//			var dottedElementName = serializationInfo.ElementName;
+//			var source = Collection.Distinct(dottedElementName, query);
+//
+//			var deserializationProjectorGenericDefinition = typeof(DeserializationProjector<>);
+//			var deserializationProjectorType = deserializationProjectorGenericDefinition.MakeGenericType(keyExpression.Type);
+//			return Activator.CreateInstance(deserializationProjectorType, source, serializationInfo);
+//		}
+
 	}
+
+
 }
 

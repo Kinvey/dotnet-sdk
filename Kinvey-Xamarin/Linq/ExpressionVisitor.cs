@@ -24,13 +24,13 @@ namespace KinveyXamarin
 	/// <summary>
 	/// An abstract base class for an Expression visitor.
 	/// </summary>
-	public abstract class ExpressionVisitor
+	public abstract class ExpressionVisitors
 	{
 		// constructors
 		/// <summary>
 		/// Initializes a new instance of the ExpressionVisitor class.
 		/// </summary>
-		protected ExpressionVisitor()
+		protected ExpressionVisitors()
 		{
 		}
 

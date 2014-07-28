@@ -84,6 +84,13 @@
     <Compile Include="Linq\ExpressionParameterReplacer.cs" />
     <Compile Include="Linq\Projector.cs" />
     <Compile Include="Linq\Helpers.cs" />
+    <Compile Include="Linq\PredicateTranslator.cs" />
+    <Compile Include="Linq\BsonSerializationInfoHelper.cs" />
+    <Compile Include="Query\DefaultContext.cs" />
+    <Compile Include="Query\ExpressionVisitor.cs" />
+    <Compile Include="Query\KinveyQueryContext.cs" />
+    <Compile Include="Query\IQueryBuilder.cs" />
+    <Compile Include="Query\StringQueryBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -93,6 +100,7 @@
     <Folder Include="Offline\" />
     <Folder Include="Model\" />
     <Folder Include="Linq\" />
+    <Folder Include="Query\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -121,6 +129,9 @@
     </Reference>
     <Reference Include="SQLite.Net.Async">
       <HintPath>..\packages\SQLite.Net.Async-PCL.2.3.0\lib\portable-net4+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLite.Net.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqExtender">
+      <HintPath>..\packages\LinqExtender.3.0.1\lib\LinqExtender.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

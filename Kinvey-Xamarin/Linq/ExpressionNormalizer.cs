@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
-	public class ExpressionNormalizer : ExpressionVisitor
+	public class ExpressionNormalizer : ExpressionVisitors
 	{
 		private Expression _expression;
 

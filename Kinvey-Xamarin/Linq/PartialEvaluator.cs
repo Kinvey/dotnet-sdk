@@ -74,7 +74,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Evaluates and replaces sub-trees when first candidate is reached (top-down)
 		/// </summary>
-		class SubtreeEvaluator : ExpressionVisitor
+		class SubtreeEvaluator : ExpressionVisitors
 		{
 			HashSet<Expression> _candidates;
 

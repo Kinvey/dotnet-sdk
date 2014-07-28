@@ -27,6 +27,8 @@ using KinveyXamarin;
 using System.Threading.Tasks;
 using System.IO;
 using SQLite.Net.Platform.XamarinAndroid;
+using System.Linq;
+using LinqExtender;
 
 namespace AndroidTestDrive
 {
@@ -96,6 +98,13 @@ namespace AndroidTestDrive
 			loadCache.Click += delegate {
 				new Thread(() =>
 					loadFromCacheAndToast()	
+				).Start();
+			};
+
+			Button loadQuery = FindViewById<Button> (Resource.Id.loadWithQuery);
+			loadQuery.Click += delegate {
+				new Thread(() => 
+					loadFromQuery()
 				).Start();
 			};
 
@@ -210,6 +219,25 @@ namespace AndroidTestDrive
 
 
 		}
+
+
+		private void loadFromQuery(){
+
+			AsyncAppData<MyEntity> query = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
+//
+			var queryAllCustomers = from cust in query
+									select cust;
+
+			Console.WriteLine (queryAllCustomers.Count());
+			Console.WriteLine (query.writer);
+
+//			foreach (MyEntity e in queryAllCustomers){
+//				Console.WriteLine ("huh" + e.Name);
+//			}
+
+
+		}
+
 
 	}
 }

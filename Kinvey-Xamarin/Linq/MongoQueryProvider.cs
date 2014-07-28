@@ -59,7 +59,8 @@ namespace KinveyXamarin
 		public IMongoQuery BuildMongoQuery<T> (AppData<T> query)
 		{
 			var translatedQuery = MongoQueryTranslator.Translate(this, ((IQueryable)query).Expression);
-			return ((SelectQuery)translatedQuery).BuildQuery();
+//			return ((SelectQuery)translatedQuery).BuildQuery();
+			return null;
 		}
 
 		public IQueryable CreateQuery (Expression expression)
@@ -87,7 +88,7 @@ namespace KinveyXamarin
 				throw new ArgumentNullException("expression");
 			}
 		
-			return new AppData<T>(this, expression);
+			return null;
 		}
 
 		public Object Execute (Expression expression)

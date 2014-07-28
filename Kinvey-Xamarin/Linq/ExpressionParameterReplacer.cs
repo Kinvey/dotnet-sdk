@@ -6,7 +6,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// A class that replaces all occurences of one parameter with a different parameter.
 	/// </summary>
-	public class ExpressionParameterReplacer : ExpressionVisitor
+	public class ExpressionParameterReplacer : ExpressionVisitors
 	{
 		// private fields
 		private ParameterExpression _fromParameter;

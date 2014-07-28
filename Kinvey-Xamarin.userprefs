@@ -1,19 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.ok" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Linq/TypeHelper.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Android-TestDrive/MainActivity.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin/Linq/ExpressionNormalizer.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Linq/ExpressionVisitor.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Linq/IMongoQuery.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Linq/MongoQueryProvider.cs" Line="80" Column="11" />
-      <File FileName="Kinvey-Xamarin/AppData.cs" Line="59" Column="25" />
-      <File FileName="Kinvey-Xamarin/Linq/TypeHelper.cs" Line="11" Column="17" />
-      <File FileName="Kinvey-Xamarin/Linq/MongoQueryTranslator.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Linq/PartialEvaluator.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Linq/TranslatedQuery.cs" Line="31" Column="20" />
-      <File FileName="Kinvey-Xamarin/Linq/SelectQuery.cs" Line="23" Column="53" />
-      <File FileName="Kinvey-Xamarin/packages.config" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Properties/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Query/ExpressionVisitor.cs" Line="17" Column="13" />
+      <File FileName="Kinvey-Xamarin/Query/DefaultContext.cs" Line="4" Column="1" />
+      <File FileName="Kinvey-Xamarin/AppData.cs" Line="156" Column="3" />
+      <File FileName="Kinvey-Xamarin/Linq/MongoQueryProvider.cs" Line="91" Column="16" />
+      <File FileName="Android-TestDrive/MainActivity.cs" Line="16" Column="19" />
+      <File FileName="Android-Libtester/TestAppData.cs" Line="8" Column="20" />
+      <File FileName="Kinvey-Xamarin/Query/KinveyQueryContext.cs" Line="35" Column="4" />
+      <File FileName="Kinvey-Xamarin/Query/IQueryBuilder.cs" Line="6" Column="3" />
+      <File FileName="Kinvey-Xamarin/Query/StringQueryBuilder.cs" Line="19" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
