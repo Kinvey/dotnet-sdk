@@ -53,8 +53,7 @@ namespace Kinvey.DotNet.Framework.Core
             this.collectionName = collectionName;
             this.myClass = myClass;
             this.client = client;
-			StringBuilder builder = new StringBuilder ();
-			this.writer = new StringQueryBuilder (builder);
+			this.writer = new StringQueryBuilder ();
 		}
 			
 

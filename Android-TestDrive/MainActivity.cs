@@ -29,6 +29,7 @@ using System.IO;
 using SQLite.Net.Platform.XamarinAndroid;
 using System.Linq;
 using LinqExtender;
+using System.Text;
 
 namespace AndroidTestDrive
 {
@@ -225,16 +226,108 @@ namespace AndroidTestDrive
 
 			AsyncAppData<MyEntity> query = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 //
-			var queryAllCustomers = from cust in query
-					where cust.Name=="James Dean"
-									select cust;
+			var query1 = from cust in query
+			             where cust.lowercasetest == "James Dean"
+			             select cust;
 
-			Console.WriteLine (queryAllCustomers.Count());
-			Console.WriteLine (query.writer.GetString());
+			Console.WriteLine ("1-------");
+			Console.WriteLine(query1.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("1-------");
 
-//			foreach (MyEntity e in queryAllCustomers){
-//				Console.WriteLine ("huh" + e.Name);
-//			}
+			query.writer.Reset ();
+
+			var query2 = from cust in query
+			             where cust.lowercasetest == "James Dean"
+			                 && cust.Name == "someName"
+			             select cust;
+						
+			Console.WriteLine ("2-------");
+			Console.WriteLine(query2.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("2-------");
+
+			query.writer.Reset ();
+
+			var query3 = from cust in query
+					where (cust.lowercasetest == "James Dean" && cust.Name == "Charlie")
+				|| cust.Name == "Max"
+				select cust;
+
+
+			Console.WriteLine ("3-------");
+			Console.WriteLine(query3.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("3-------");
+
+			query.writer.Reset ();
+
+			var query4 = from cust in query
+					where cust.Name == "Max" 
+				|| (cust.lowercasetest == "James Dean" && cust.Name == "Charlie")
+				select cust;
+
+
+			Console.WriteLine ("4-------");
+			Console.WriteLine(query4.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("4-------");
+
+			query.writer.Reset ();
+
+			var query5 = from cust in query
+					where (cust.ID == "10" && cust.Name == "Billy") || (cust.ID == "1" && cust.Name == "Charlie")
+				select cust;
+
+			Console.WriteLine ("5-------");
+			Console.WriteLine(query5.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("5-------");
+
+			query.writer.Reset ();
+
+			var query6 = from cust in query
+				orderby cust.ID
+				select cust;
+
+			Console.WriteLine ("6-------");
+			Console.WriteLine(query6.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("6-------");
+
+			query.writer.Reset ();
+
+			var query7 = from cust in query
+				orderby cust.ID descending
+				select cust;
+
+			Console.WriteLine ("7-------");
+			Console.WriteLine(query7.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("7-------");
+
+			query.writer.Reset ();
+
+			var query8 = query.Where(x => x.ID == "1").Where(x => x.Name == "Scott");
+
+			Console.WriteLine ("8-------");
+			Console.WriteLine(query8.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("8-------");
+
+			query.writer.Reset ();
+
+			var query9 = query
+				.Where(x => x.ID == "111")
+				.Where(x => x.ID== "1" || x.Name == "Scott" || x.IsAvailable);
+
+			Console.WriteLine ("9-------");
+			Console.WriteLine(query9.Count());
+			Console.WriteLine (query.writer.GetFullString());
+			Console.WriteLine ("9-------");
+
+
+
 
 
 		}

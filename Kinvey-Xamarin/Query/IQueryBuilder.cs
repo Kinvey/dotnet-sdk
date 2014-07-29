@@ -6,7 +6,11 @@ namespace KinveyXamarin
 	{
 		void Write(object value);
 
-		string GetString();
+		string GetFullString();
+
+		void Dangle(object value);
+
+		void Reset();
 	}
 }
 

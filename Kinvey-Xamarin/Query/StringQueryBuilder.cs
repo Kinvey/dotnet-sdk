@@ -5,9 +5,18 @@ namespace KinveyXamarin
 {
 	public class StringQueryBuilder : IQueryBuilder
 	{
-		public StringQueryBuilder(StringBuilder builder)
+
+		private StringBuilder builder;
+		private StringBuilder dangler;
+
+		public StringQueryBuilder()
 		{
-			this.builder = builder;
+			Reset ();
+		}
+
+		public void Reset(){
+			this.builder = new StringBuilder ();
+			this.dangler = new StringBuilder ();
 		}
 
 		public void Write(object value)
@@ -15,10 +24,13 @@ namespace KinveyXamarin
 			builder.Append(value);
 		}
 
-		private StringBuilder builder;
+		public String GetFullString(){
+			return builder.ToString () + dangler.ToString ();
+		}
 
-		public String GetString(){
-			return builder.ToString ();
+		public void Dangle(object value){
+			dangler.Append (value);
+
 		}
 	}
 

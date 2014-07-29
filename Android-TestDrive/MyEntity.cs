@@ -33,5 +33,11 @@ namespace AndroidTestDrive
 		[JsonProperty]
 		public string Email{get;set;}
 
+		[JsonProperty]
+		public string lowercasetest{get;set;}
+
+		[JsonProperty]
+		public bool IsAvailable{get; set;}
+
 	}
 }

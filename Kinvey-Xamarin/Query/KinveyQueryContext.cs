@@ -27,6 +27,8 @@ using System.Linq;
 using Ast = LinqExtender.Ast;
 using LinqExtender;
 
+//throw not supported exception instead of just ignoring
+
 namespace KinveyXamarin
 {
 	public class KinveyQueryContext<T> : ExpressionVisitor, IQueryContext<T>
@@ -41,26 +43,29 @@ namespace KinveyXamarin
 
 		public IEnumerable<T> Execute(Ast.Expression expression)
 		{
-			writer.Write ("{");
+			//TODO not sure need ?query here
+			writer.Write ("?query={");
 			this.Visit(expression);
 			writer.Write ("}");
 			return new List<T>().AsEnumerable();
+
+			//TODO execution
 
 
 		}
 
 		public override Ast.Expression VisitTypeExpression(Ast.TypeExpression expression)
 		{
-			//this one is a no-op because we don't support typing
+			//this one is a no-op because we don't support typing, (one type per collection and no joins)
 
-//			writer.Write(string.Format("select * from {0}", expression.Type.Name));
-
-
+			//writer.Write(string.Format("select * from {0}", expression.Type.Name));
 			return expression;
 		}
 
 		public override Ast.Expression VisitLambdaExpression(Ast.LambdaExpression expression)
 		{
+			//another no-op, `where` clause is implicit in Mongo
+
 //			WriteNewLine();
 //			writer.Write("where");
 //			WriteNewLine();
@@ -72,6 +77,8 @@ namespace KinveyXamarin
 
 		public override Ast.Expression VisitBinaryExpression(Ast.BinaryExpression expression)
 		{
+			//TODO
+			//gte, lte, lt, gt, eq, ne, contains are binary expressions
 			this.Visit(expression.Left);
 			writer.Write(GetBinaryOperator(expression.Operator));
 			this.Visit(expression.Right);
@@ -81,34 +88,71 @@ namespace KinveyXamarin
 
 		public override Ast.Expression VisitLogicalExpression(Ast.LogicalExpression expression)
 		{
-			WriteTokenIfReq(expression, Token.LeftParenthesis);
+			//TODO
+			//And, Or are logical expressions
 
-			this.Visit(expression.Left);
+			if (expression.Operator == LogicalOperator.And) {
 
-			WriteLogicalOperator(expression.Operator);
+				//WriteTokenIfReq (expression, Token.LeftParenthesis);
 
-			this.Visit(expression.Right);
+				this.Visit (expression.Left);
 
-			WriteTokenIfReq(expression, Token.RightParentThesis);
+				writer.Write (",");
+//				WriteLogicalOperator (expression.Operator);
+
+				this.Visit (expression.Right);
+
+				//WriteTokenIfReq (expression, Token.RightParentThesis);
+
+			} else {
+				//it's an OR
+				writer.Write ("$or:");
+				writer.Write("[");
+				writer.Write ("{");
+				this.Visit (expression.Left);
+				writer.Write ("},");
+				writer.Write ("{");
+				this.Visit (expression.Right);
+				writer.Write ("}");
+				writer.Write ("]");
+			}
 
 			return expression;
 		}
 
 		public override Ast.Expression VisitMemberExpression(Ast.MemberExpression expression)
 		{
-			writer.Write(String.Format("\"{0}\"", expression.FullName));
+
+
+			//expression.FullName returns `MyClass.MyField`, need to remove `MyClass.`
+			//so find the first index of the . and then substring from one character after it.
+			string withoutClassDec = expression.FullName.Substring (expression.FullName.IndexOf (".") + 1);
+
+			writer.Write(String.Format("\"{0}\"", withoutClassDec));
 //			writer.Write(expression.FullName);
 			return expression;
 		}
 
 		public override Ast.Expression VisitLiteralExpression(Ast.LiteralExpression expression)
 		{
+			//TODO literal expression is where type is implied by a constant's inline declaration -> string, "hey" or float, 10f
+
 			WriteValue(expression.Type, expression.Value);
 			return expression;
 		}
 
 		public override Ast.Expression VisitOrderbyExpression(Ast.OrderbyExpression expression)
 		{
+
+			//TODO
+			//ascending, descending
+
+			//writer.Dangle (string.Format("&sort={\"{0}\": {1}" + "}", expression.Member.Name, expression.Ascending ? "1" : "-1"));
+
+//			expression.Ascending ? "1" : "-1";
+
+
+
 			WriteNewLine();
 			Write(string.Format("order by {0}.{1} {2}", 
 				expression.Member.DeclaringType.Name,
@@ -134,6 +178,7 @@ namespace KinveyXamarin
 			WriteSpace();
 
 			writer.Write(logicalOperator.ToString().ToUpper());
+
 
 			WriteSpace();
 		}
