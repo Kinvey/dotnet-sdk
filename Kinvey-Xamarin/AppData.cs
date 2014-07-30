@@ -32,7 +32,7 @@ namespace Kinvey.DotNet.Framework.Core
     {
         private String collectionName;
         private Type myClass;
-        private AbstractClient client;
+//        private AbstractClient client;
 
 		private ICache<String, T> cache = null;
 		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
@@ -48,11 +48,11 @@ namespace Kinvey.DotNet.Framework.Core
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">My class.</param>
 		/// <param name="client">Client.</param>
-        public AppData(string collectionName, Type myClass, AbstractClient client)
+		public AppData(string collectionName, Type myClass, AbstractClient client) : base(client)
         {
             this.collectionName = collectionName;
             this.myClass = myClass;
-            this.client = client;
+//            this.client = client;
 			this.writer = new StringQueryBuilder ();
 		}
 			
@@ -152,72 +152,11 @@ namespace Kinvey.DotNet.Framework.Core
             PUT
         }
 
-//
-//		#region LINQ
-//
-//		public IEnumerable<T> Execute(Ast.Expression expression){
-//			this.Visit(expression);
-//			return new List<T>().AsEnumerable();
-//		}
-//
-//		private void Visit(Ast.Expression expression){
-//		
-//		}
-//
-//		#endregion
+		protected override List<T> executeQuery(string query){
+			return new List<T> ();
+		}
 
 
-//		#region LINQ
-//
-//		// private fields
-//		private MongoQueryProvider _provider;
-//		private Expression _expression;
-//
-//		// public methods
-//		/// <summary>
-//		/// Gets an enumerator for the results of a MongoDB LINQ query.
-//		/// </summary>
-//		/// <returns>An enumerator for the results of a MongoDB LINQ query.</returns>
-//		public IEnumerator<T> GetEnumerator()
-//		{
-//			return ((IEnumerable<T>)_provider.Execute<T>(_expression)).GetEnumerator();
-//		}
-//
-//		/// <summary>
-//		/// Gets the MongoDB query that will be sent to the server when this LINQ query is executed.
-//		/// </summary>
-//		/// <returns>The MongoDB query.</returns>
-//		public IMongoQuery GetMongoQuery()
-//		{
-//			return _provider.BuildMongoQuery(this);
-//		}
-//
-//		// explicit implementation of IEnumerable
-//		IEnumerator IEnumerable.GetEnumerator()
-//		{
-//			//TODO generics?
-//			throw new NotImplementedException ();
-//			//return ((IEnumerable)_provider.Execute(_expression)).GetEnumerator();
-//		}
-//
-//		// explicit implementation of IQueryable
-//		Type IQueryable.ElementType
-//		{
-//			get { return typeof(T); }
-//		}
-//
-//		Expression IQueryable.Expression
-//		{
-//			get { return _expression; }
-//		}
-//
-//		IQueryProvider IQueryable.Provider
-//		{
-//			get { return (IQueryProvider) _provider; }
-//		}
-//		#endregion
-//
-//
 
         [JsonObject(MemberSerialization.OptIn)]
 		public class GetRequest : AbstractKinveyCachedClientRequest<T>

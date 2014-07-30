@@ -57,6 +57,8 @@
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="ExpressionVisitor.cs" />
     <Compile Include="DefaultContext.cs" />
+    <Compile Include="LinqBuilderTest.cs" />
+    <Compile Include="MyEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

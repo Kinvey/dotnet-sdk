@@ -1,24 +1,15 @@
-﻿/*
-Copyright (c) 2007- 2010 LinqExtender Toolkit Project.
-
-Permission is hereby granted, free of charge, to any person obtaining a 
-copy of this software and associated documentation files (the "Software"), 
-to deal in the Software without restriction, including without limitation 
-the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of the Software, and to permit persons to whom the 
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included 
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
-THE SOFTWARE.
-*/
+﻿// Copyright (c) 2014, Kinvey, Inc. All rights reserved.
+//
+// This software is licensed to you under the Kinvey terms of service located at
+// http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
+// software, you hereby accept such terms of service  (and any agreement referenced
+// therein) and agree that you have read, understand and agree to be bound by such
+// terms of service and are of legal age to agree to such terms with Kinvey.
+//
+// This software contains valuable confidential and proprietary information of
+// KINVEY, INC and is subject to applicable licensing agreements.
+// Unauthorized reproduction, transmission or distribution of this file and its
+// contents is a violation of applicable laws.
 
 using System;
 using System.Collections.Generic;
@@ -26,31 +17,33 @@ using System.Text;
 using System.Linq;
 using Ast = LinqExtender.Ast;
 using LinqExtender;
-
-//throw not supported exception instead of just ignoring
+using Kinvey.DotNet.Framework;
 
 namespace KinveyXamarin
 {
-	public class KinveyQueryContext<T> : ExpressionVisitor, IQueryContext<T>
+	public abstract class KinveyQueryContext<T> : ExpressionVisitor, IQueryContext<T>
 	{
-		public KinveyQueryContext(){
+		protected AbstractClient client;
+
+		public KinveyQueryContext(AbstractClient client){
+			this.client = client;
 		}
 
-		public KinveyQueryContext (IQueryBuilder writer)
+		public KinveyQueryContext (AbstractClient client, IQueryBuilder writer)
 		{
 			this.writer = writer;
+			this.client = client;
 		}
 
 		public IEnumerable<T> Execute(Ast.Expression expression)
 		{
-			//TODO not sure need ?query here
 			writer.Write ("?query={");
 			this.Visit(expression);
 			writer.Write ("}");
-			return new List<T>().AsEnumerable();
 
-			//TODO execution
-
+			List<T> ret = executeQuery (writer.GetFullString());
+			writer.Reset ();
+			return ret;
 
 		}
 
@@ -151,14 +144,18 @@ namespace KinveyXamarin
 
 //			expression.Ascending ? "1" : "-1";
 
+			string sort = "&sort={\"" + expression.Member.Name + "\":" + (expression.Ascending ? "1" : "-1") + "}";
+			writer.Dangle (sort);
 
 
-			WriteNewLine();
-			Write(string.Format("order by {0}.{1} {2}", 
-				expression.Member.DeclaringType.Name,
-				expression.Member.Name, 
-				expression.Ascending ? "asc" : "desc"));
-			WriteNewLine();
+
+//
+//			WriteNewLine();
+//			Write(string.Format("order by {0}.{1} {2}", 
+//				expression.Member.DeclaringType.Name,
+//				expression.Member.Name, 
+//				expression.Ascending ? "asc" : "desc"));
+//			WriteNewLine();
 
 			return expression;
 		}
@@ -235,5 +232,9 @@ namespace KinveyXamarin
 
 		public IQueryBuilder writer;
 		public bool parameter;
+
+		protected abstract List<T> executeQuery(string query);
 	}
+
+
 }

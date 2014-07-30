@@ -19,13 +19,6 @@ namespace AndroidLibtester
 		AppData<MyEntity> testData;
 		string myCollection = "myCollection";
 
-
-		private class MyEntity
-		{
-
-		}
-
-
 		[SetUp]
 		public void Setup ()
 		{

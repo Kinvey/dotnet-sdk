@@ -71,21 +71,6 @@
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
-    <Compile Include="Linq\MongoQueryProvider.cs" />
-    <Compile Include="Linq\IMongoQuery.cs" />
-    <Compile Include="Linq\MongoQueryTranslator.cs" />
-    <Compile Include="Linq\TranslatedQuery.cs" />
-    <Compile Include="Linq\PartialEvaluator.cs" />
-    <Compile Include="Linq\ExpressionNormalizer.cs" />
-    <Compile Include="Linq\SelectQuery.cs" />
-    <Compile Include="Linq\Nominator.cs" />
-    <Compile Include="Linq\ExpressionVisitor.cs" />
-    <Compile Include="Linq\OrderByClause.cs" />
-    <Compile Include="Linq\ExpressionParameterReplacer.cs" />
-    <Compile Include="Linq\Projector.cs" />
-    <Compile Include="Linq\Helpers.cs" />
-    <Compile Include="Linq\PredicateTranslator.cs" />
-    <Compile Include="Linq\BsonSerializationInfoHelper.cs" />
     <Compile Include="Query\DefaultContext.cs" />
     <Compile Include="Query\ExpressionVisitor.cs" />
     <Compile Include="Query\KinveyQueryContext.cs" />
@@ -99,7 +84,6 @@
     <Folder Include="Async\" />
     <Folder Include="Offline\" />
     <Folder Include="Model\" />
-    <Folder Include="Linq\" />
     <Folder Include="Query\" />
   </ItemGroup>
   <ItemGroup>
