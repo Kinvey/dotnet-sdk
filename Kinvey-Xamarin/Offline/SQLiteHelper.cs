@@ -13,7 +13,11 @@ namespace KinveyXamarin
 	{
 		private static SQLiteHelper<T> _instance;
 
-		private SQLiteConnection _dbConnection;
+//		private SQLiteConnection _dbConnection;
+
+		private ISQLitePlatform platform;
+		private string databasePath;
+
 
 		public static SQLiteHelper<T> getInstance(ISQLitePlatform platform, string dbpath){
 			if (_instance == null) {
@@ -24,7 +28,9 @@ namespace KinveyXamarin
 
 		public SQLiteHelper(ISQLitePlatform platform, string databasePath) 
 		{ 
-			_dbConnection = new SQLiteConnection (platform, databasePath);
+			//_dbConnection = new SQLiteConnection (platform, databasePath);
+			this.platform = platform;
+			this.databasePath = databasePath;
 
 //			SQLiteConnectionString _connectionParameters = new SQLiteConnectionString(databasePath, false); 
 //			SQLiteConnectionPool _sqliteConnectionPool = new SQLiteConnectionPool(platform); 
@@ -44,6 +50,7 @@ namespace KinveyXamarin
 
 		public List<string> getCollectionTables ()
 		{
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 			List<SQLTemplates.TableItem> result = _dbConnection.Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToList ();
 			List<string> collections = new List<string> ();
 
@@ -56,12 +63,14 @@ namespace KinveyXamarin
 
 		public int deleteContentsOfTable (string collection)
 		{
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 			int result = _dbConnection.DropTable<SQLTemplates.TableItem> ();
 			return result;
 		
 		}
 
 		public void onCreate(string collection){
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 			_dbConnection.CreateTable<SQLTemplates.TableItem> ();
 			_dbConnection.CreateTable<SQLTemplates.QueueItem> ();
 			_dbConnection.CreateTable<SQLTemplates.QueryItem> ();
@@ -72,6 +81,9 @@ namespace KinveyXamarin
 			SQLTemplates.TableItem table = new SQLTemplates.TableItem ();
 			table.name = collection;
 			_dbConnection.Insert(table);
+
+			int count = _dbConnection.Table<SQLTemplates.TableItem> ().Count ();
+			int x = 0;
 		}
 
 		public void upsertEntity(string id, string collection, string json){
@@ -79,6 +91,8 @@ namespace KinveyXamarin
 			entity.id = id;
 			entity.json = json;
 			entity.collection = collection;
+
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 
 			int count = _dbConnection.Update (entity);
 			if (count == 0) {
@@ -90,6 +104,8 @@ namespace KinveyXamarin
 
 		public List<T> getQuery (string queryString, string collection)
 		{
+
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 		
 			SQLTemplates.QueryItem query = _dbConnection.Table<SQLTemplates.QueryItem>().Where(t => t.query == queryString && t.collection == collection).FirstOrDefault();
 
@@ -116,12 +132,16 @@ namespace KinveyXamarin
 			queue.collection = collection;
 			queue.id = id;
 
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
+
 			_dbConnection.Insert (queue);
 
 		}
 
 		public List<T> getAll (string collection)
 		{
+
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 			List<SQLTemplates.OfflineEntity> entities = _dbConnection.Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection).ToList ();
 
 			List<T> results = new List<T>();
@@ -136,6 +156,7 @@ namespace KinveyXamarin
 
 		public T getEntity (string collection, string id)
 		{
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 
 			SQLTemplates.OfflineEntity entity = _dbConnection.Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefault ();
 
@@ -145,6 +166,8 @@ namespace KinveyXamarin
 
 		public KinveyDeleteResponse delete(string collection, string id)
 		{
+
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 			SQLTemplates.OfflineEntity entity = _dbConnection.Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefault ();
 
 			int count = _dbConnection.Delete (entity.id);
@@ -157,6 +180,7 @@ namespace KinveyXamarin
 		}
 
 		public SQLTemplates.QueueItem popQueue (){
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 			SQLTemplates.QueueItem item = _dbConnection.Table<SQLTemplates.QueueItem> ().FirstOrDefault ();
 			return item;
 
@@ -164,6 +188,7 @@ namespace KinveyXamarin
 
 		public void removeFromQueue (int primaryKey)
 		{
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 
 			_dbConnection.Delete<SQLTemplates.QueueItem> (primaryKey);
 

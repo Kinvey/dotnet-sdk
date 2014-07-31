@@ -35,9 +35,11 @@ namespace Kinvey.DotNet.Framework.Core
 //        private AbstractClient client;
 
 		private ICache<String, T> cache = null;
+		private ICache<String, T[]> queryCache = null;
 		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
 
 		private IOfflineStore<T> store = null;
+		private IOfflineStore<T[]> queryStore = null;
 		private OfflinePolicy offlinePolicy = OfflinePolicy.ALWAYS_ONLINE;
 
         public const string IdFieldName = "_id";
@@ -98,6 +100,21 @@ namespace Kinvey.DotNet.Framework.Core
 			this.cachePolicy = policy;
 		}
 
+		/// <summary>
+		/// Sets the cache for query requests
+		/// </summary>
+		/// <param name="cache">Cache.</param>
+		/// <param name="policy">Policy.</param>
+		public void setCache(ICache<String, T[]> cache, CachePolicy policy){
+			this.queryCache = cache;
+			this.cachePolicy = policy;
+		}
+
+		/// <summary>
+		/// Sets the offline store and policy
+		/// </summary>
+		/// <param name="store">Store.</param>
+		/// <param name="policy">Policy.</param>
 		public void setOffline(IOfflineStore<T> store, OfflinePolicy policy){
 
 			this.store = store;
@@ -107,6 +124,22 @@ namespace Kinvey.DotNet.Framework.Core
 			this.store.platform = ((Client) KinveyClient).offline_platform;
 
 		}
+
+		/// <summary>
+		/// Sets the offline store and policy for query requests
+		/// </summary>
+		/// <param name="store">Store.</param>
+		/// <param name="policy">Policy.</param>
+		public void setOffline(IOfflineStore<T[]> store, OfflinePolicy policy){
+
+			this.queryStore = store;
+			this.offlinePolicy = policy;
+
+			this.store.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
+			this.store.platform = ((Client) KinveyClient).offline_platform;
+
+		}
+
 
 
 		public GetEntityRequest GetEntityBlocking(string entityId)
@@ -142,8 +175,8 @@ namespace Kinvey.DotNet.Framework.Core
 
 			GetQueryRequest getQuery = new GetQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
 			client.InitializeRequest(getQuery);
-//			getQuery.setCache (this.cache, this.cachePolicy);
-//			getQuery.SetStore (this.store, this.offlinePolicy);
+			getQuery.setCache (this.queryCache, this.cachePolicy);
+			getQuery.SetStore (this.queryStore, this.offlinePolicy);
 			return getQuery;
 			 
 
@@ -232,6 +265,8 @@ namespace Kinvey.DotNet.Framework.Core
 			[JsonProperty]
 			public string collectionName;
 
+			private ICache<String, T[]> cache = null;
+
 			public GetQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
 				: base(client, "GET", REST_PATH, default(T[]), urlParameters, collection)
 			{
@@ -244,6 +279,10 @@ namespace Kinvey.DotNet.Framework.Core
 			{
 				T[] myEntity = base.Execute();
 				return myEntity;
+			}
+
+			public void setCache(ICache<String, T[]> cache, CachePolicy policy){
+
 			}
 
 		}

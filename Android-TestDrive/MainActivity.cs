@@ -55,7 +55,10 @@ namespace AndroidTestDrive
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-			kinveyClient = new Client.Builder(appKey, appSecret).setFilePath(Android.OS.Environment.ExternalStorageDirectory.ToString ()).setOfflinePlatform(new SQLitePlatformAndroid()).build();
+			kinveyClient = new Client.Builder(appKey, appSecret)
+//				.setFilePath(Android.OS.Environment.ExternalStorageDirectory.ToString ())
+				.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
+				.setOfflinePlatform(new SQLitePlatformAndroid()).build();
 
 			kinveyClient.User ().Login (new KinveyDelegate<User>{ 
 				onSuccess =  (user) => { 
@@ -144,7 +147,7 @@ namespace AndroidTestDrive
 			MyEntity ent = new MyEntity();
 			ent.ID = STABLE_ID;
 			ent.Email = "test@tester.com";
-			ent.Name = "James Dean";
+			ent.Name = "James Dean Offline";
 //			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
 			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.LOCAL_FIRST);
 			entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 

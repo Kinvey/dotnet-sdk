@@ -44,6 +44,7 @@ namespace KinveyXamarin
 
 			T[] ret = executeQuery (writer.GetFullString());
 			writer.Reset ();
+
 //			T[] ok = (T[])ret;
 			return ret;//(IEnumerable<T>)ret;
 //			return new T[]{ret};
