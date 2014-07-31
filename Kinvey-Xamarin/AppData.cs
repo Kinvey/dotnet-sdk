@@ -134,6 +134,22 @@ namespace Kinvey.DotNet.Framework.Core
             return get;
         }
 
+		public GetQueryRequest getQueryBlocking(string queryString){
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", CollectionName);
+			urlParameters.Add("querystring", queryString);
+
+			GetQueryRequest getQuery = new GetQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
+			client.InitializeRequest(getQuery);
+//			getQuery.setCache (this.cache, this.cachePolicy);
+//			getQuery.SetStore (this.store, this.offlinePolicy);
+			return getQuery;
+			 
+
+
+		}
+
 		public SaveRequest SaveBlocking(T entity)
         {
             SaveRequest save;
@@ -152,8 +168,9 @@ namespace Kinvey.DotNet.Framework.Core
             PUT
         }
 
-		protected override List<T> executeQuery(string query){
-			return new List<T> ();
+		protected override T[] executeQuery(string query){
+			return getQueryBlocking(query).Execute ();
+			//return default(T[]);
 		}
 
 
@@ -204,6 +221,33 @@ namespace Kinvey.DotNet.Framework.Core
 
         }
 
+		[JsonObject(MemberSerialization.OptIn)]
+		public class GetQueryRequest : AbstractKinveyCachedClientRequest<T[]>
+		{
+			private const string REST_PATH = "appdata/{appKey}/{collectionName}/?query={querystring}";
+
+			[JsonProperty]
+			public string QueryString { get; set; }
+
+			[JsonProperty]
+			public string collectionName;
+
+			public GetQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base(client, "GET", REST_PATH, default(T[]), urlParameters, collection)
+			{
+			
+				this.collectionName = urlParameters["collectionName"];
+				this.QueryString = queryString;
+			}
+
+			public override T[] Execute()
+			{
+				T[] myEntity = base.Execute();
+				return myEntity;
+			}
+
+		}
+
         [JsonObject(MemberSerialization.OptIn)]
 		public class SaveRequest : AbstractKinveyOfflineClientRequest<T>
         {
@@ -231,5 +275,7 @@ namespace Kinvey.DotNet.Framework.Core
                 return myEntity;
             }
         }
+
+
     }
 }

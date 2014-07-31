@@ -39,6 +39,8 @@ namespace Kinvey.DotNet.Framework.Core
 		public Dictionary<string, string> uriResourceParameters;
         private IAuthenticator auth;
 
+
+
         protected AbstractKinveyClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters)
         {
             this.client = client;
@@ -138,6 +140,8 @@ namespace Kinvey.DotNet.Framework.Core
                 restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
             }
 
+//			restRequest.
+
 			auth.Authenticate (restRequest);
             return restRequest;           
         }
@@ -187,7 +191,7 @@ namespace Kinvey.DotNet.Framework.Core
         {
             var response = ExecuteUnparsed();
 
-            // special class to handle void or empty responses
+            // special case to handle void or empty responses
 			if (response.Content == null) 
             {
                 return default(T);
@@ -196,6 +200,18 @@ namespace Kinvey.DotNet.Framework.Core
             {
 				return JsonConvert.DeserializeObject<T>(response.Content);
             }
+//			catch(Exception isArray){
+//				try{
+//					return JsonConvert.DeserializeObject<T[]>(response.Content);
+//
+//				}catch (Exception nope){
+//					ClientLogger.Log (nope.Message);
+//					return default(T);
+//				}
+//
+//
+//			}
+
             catch(ArgumentException ex)
             {
 				ClientLogger.Log (ex.Message);
@@ -206,6 +222,7 @@ namespace Kinvey.DotNet.Framework.Core
 				ClientLogger.Log (ex.Message);
                 return default(T);
             }
+
         }
     }
 }

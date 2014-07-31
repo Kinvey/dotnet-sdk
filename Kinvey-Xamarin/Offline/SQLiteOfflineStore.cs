@@ -40,7 +40,7 @@ namespace KinveyXamarin
 			//is it a query?  (12 is magic number for decoding empty query string)
 			if (targetURI.Contains ("query") && (targetURI.IndexOf ("query") + 12) != targetURI.Length) {
 
-				throw new NotImplementedException ();
+//				throw new NotImplementedException ();
 
 				//it's a query!
 				//pull the actual query string out and get rid of the "?query"

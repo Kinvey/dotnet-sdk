@@ -40,6 +40,10 @@ namespace KinveyXamarin
 			this.cachePolicy = policy;
 		}
 
+//		public void setCache(ICache<String, T[]> cache, CachePolicy policy){
+//
+//		}
+
 
 		public T fromCache(){
 			if (cache == null) {

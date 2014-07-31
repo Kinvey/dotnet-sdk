@@ -37,13 +37,16 @@ namespace KinveyXamarin
 
 		public IEnumerable<T> Execute(Ast.Expression expression)
 		{
-			writer.Write ("?query={");
+//			writer.Write ("?query={");
+			writer.Write ("{");
 			this.Visit(expression);
 			writer.Write ("}");
 
-			List<T> ret = executeQuery (writer.GetFullString());
+			T[] ret = executeQuery (writer.GetFullString());
 			writer.Reset ();
-			return ret;
+//			T[] ok = (T[])ret;
+			return ret;//(IEnumerable<T>)ret;
+//			return new T[]{ret};
 
 		}
 
@@ -233,7 +236,7 @@ namespace KinveyXamarin
 		public IQueryBuilder writer;
 		public bool parameter;
 
-		protected abstract List<T> executeQuery(string query);
+		protected abstract T[] executeQuery(string query);
 	}
 
 
