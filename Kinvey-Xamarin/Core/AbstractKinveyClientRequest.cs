@@ -70,6 +70,7 @@ namespace Kinvey.DotNet.Framework.Core
         public T HttpContent
         {
             get { return this.requestContent; }
+			set { this.requestContent = value;}
         }
 
         public List<Parameter> LastResponseHeaders

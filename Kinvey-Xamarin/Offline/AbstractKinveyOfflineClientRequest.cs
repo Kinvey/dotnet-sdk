@@ -16,6 +16,7 @@ using Kinvey.DotNet.Framework.Core;
 using System.Collections.Generic;
 using Kinvey.DotNet.Framework;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -58,6 +59,11 @@ namespace KinveyXamarin
 				}
 			} else if (verb.Equals ("POST")) {
 				lock (locker) {
+					JObject jobj = JObject.FromObject (this.HttpContent);
+					jobj["_id"] = getGUID ();
+					this.HttpContent = jobj.ToObject<T>();
+
+//					this.HttpContent ["_id"] = getGUID ();
 					ret = store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("DELETE")) {
@@ -113,6 +119,11 @@ namespace KinveyXamarin
 			Task.Run (() => {
 				new BackgroundExecutor<T> ((Client)Client).RunSync ();
 			});
+		}
+
+		private string getGUID(){
+			string guid =  Guid.NewGuid().ToString();
+			return guid.Replace ("-", "");
 		}
 	}
 }
