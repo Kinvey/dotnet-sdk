@@ -1,27 +1,37 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.ok" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Android-TestDrive/MainActivity.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.6da39684" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Offline/BackgroundExecutor.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin/Query/ExpressionVisitor.cs" Line="17" Column="13" />
-      <File FileName="Kinvey-Xamarin/Query/DefaultContext.cs" Line="4" Column="1" />
-      <File FileName="Kinvey-Xamarin/AppData.cs" Line="156" Column="3" />
-      <File FileName="Kinvey-Xamarin/Linq/MongoQueryProvider.cs" Line="91" Column="16" />
-      <File FileName="Android-TestDrive/MainActivity.cs" Line="16" Column="19" />
-      <File FileName="Android-Libtester/TestAppData.cs" Line="8" Column="20" />
-      <File FileName="Kinvey-Xamarin/Query/KinveyQueryContext.cs" Line="35" Column="4" />
-      <File FileName="Kinvey-Xamarin/Query/IQueryBuilder.cs" Line="6" Column="3" />
-      <File FileName="Kinvey-Xamarin/Query/StringQueryBuilder.cs" Line="19" Column="2" />
+      <File FileName="Kinvey-Xamarin/AppData.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Cache/AbstractKinveyCachedClientRequest.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Query/KinveyQueryContext.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/BackgroundExecutor.cs" Line="27" Column="1" />
+      <File FileName="Android-TestDrive/MainActivity.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="1" Column="1" />
+      <File FileName="Android-TestDrive/packages.config" Line="1" Column="1" />
+      <File FileName="Android-TestDrive/Resources/Resource.designer.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="114" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="130" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="26" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="65" column="70" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Query/KinveyQueryContext.cs" line="45" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/AppData.cs" line="205" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="192" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="168" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/BackgroundExecutor.cs" line="19" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/BackgroundExecutor.cs" line="27" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="75" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="86" column="14" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="03080c26091b0a98" />
+  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
 </Properties>

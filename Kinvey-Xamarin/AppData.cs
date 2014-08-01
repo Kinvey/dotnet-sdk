@@ -23,6 +23,7 @@ using System.Linq.Expressions;
 using System.Collections;
 using LinqExtender;
 using Ast = LinqExtender.Ast;
+using Newtonsoft.Json.Linq;
 
 namespace Kinvey.DotNet.Framework.Core
 {
@@ -189,7 +190,18 @@ namespace Kinvey.DotNet.Framework.Core
 			var urlParameters = new Dictionary<string, string>();
             urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
             urlParameters.Add("collectionName", CollectionName);
-			save = new SaveRequest(entity, myClass, null, SaveMode.POST, client, urlParameters, this.CollectionName);
+
+			SaveMode mode;
+			string id = JObject.FromObject (entity) ["_id"].ToString();
+			if (id != null && id.Length > 0) {
+				mode = SaveMode.PUT;
+				urlParameters.Add ("entityId", id);
+			} else {
+				mode = SaveMode.POST;
+			}
+				
+
+			save = new SaveRequest(entity, myClass, id, mode, client, urlParameters, this.CollectionName);
 			save.SetStore (this.store, this.offlinePolicy);
             client.InitializeRequest(save);
             return save;
@@ -231,7 +243,7 @@ namespace Kinvey.DotNet.Framework.Core
         [JsonObject(MemberSerialization.OptIn)]
 		public class GetEntityRequest : AbstractKinveyCachedClientRequest<T>
         {
-            private const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityId}";
+            private const string REST_PATH = "appdata/{appKey}/{collectionName}";
 
             [JsonProperty]
             public string EntityId { get; set; }
@@ -244,6 +256,7 @@ namespace Kinvey.DotNet.Framework.Core
             {
                 this.collectionName = urlParameters["collectionName"];
                 this.EntityId = entityId;
+
             }
 
             public override T Execute()
@@ -290,13 +303,14 @@ namespace Kinvey.DotNet.Framework.Core
         [JsonObject(MemberSerialization.OptIn)]
 		public class SaveRequest : AbstractKinveyOfflineClientRequest<T>
         {
-            private const string REST_PATH = "appdata/{appKey}/{collectionName}/";
+			private const string REST_PATH = "appdata/{appKey}/{collectionName}";
 
             [JsonProperty]
             public string CollectioName { get; set; }
 
             [JsonProperty]
             public string EntityId { get; set; }
+
 
 			public SaveRequest(T entity, Type myClass, string entityId, SaveMode update, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
 				: base(client, update.ToString(), REST_PATH, entity, urlProperties, collectionName)
@@ -305,6 +319,7 @@ namespace Kinvey.DotNet.Framework.Core
                 if (update.Equals(SaveMode.PUT))
                 {
                     this.EntityId = entityId;
+					this.uriTemplate += "/{entityId}";
                 }
             }
 

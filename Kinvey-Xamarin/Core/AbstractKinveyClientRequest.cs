@@ -30,7 +30,7 @@ namespace Kinvey.DotNet.Framework.Core
 		protected readonly AbstractKinveyClient client;
 		protected readonly string requestMethod;
         private List<RestSharp.HttpHeader> requestHeaders = new List<HttpHeader>();
-		public readonly string uriTemplate;
+		public string uriTemplate;
         private T requestContent;
         private List<Parameter> lastResponseHeaders = new List<Parameter>();
         private int lastResponseCode = -1;
@@ -119,13 +119,18 @@ namespace Kinvey.DotNet.Framework.Core
 				case "POST":
 					restRequest.Method = Method.POST;
                     break;
+				case "PUT":
+					restRequest.Method = Method.PUT;
+					break;
             }
-			if (this.HttpContent == null && requestMethod.Equals(HttpMethod.Post) || requestMethod.Equals(HttpMethod.Put))
+			//TODO WTF
+			if (this.HttpContent == null && requestMethod.Equals(HttpMethod.Post) )
             {
                 restRequest.AddBody(new object());
             }
             else
             {
+
                 restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
 
             }
