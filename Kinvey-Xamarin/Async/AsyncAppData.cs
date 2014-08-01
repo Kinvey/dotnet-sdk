@@ -49,6 +49,18 @@ namespace KinveyXamarin
 				}
 			});
 		}
+
+		public void Get(string query, KinveyDelegate<T[]> delegates){
+			Task.Run (() => {
+				try {
+					T[] results = base.getQueryBlocking (query).Execute ();
+					delegates.onSuccess (results);
+				} catch (Exception e) {
+					delegates.onError (e);
+				}
+			});
+
+		}
 	}
 }
 

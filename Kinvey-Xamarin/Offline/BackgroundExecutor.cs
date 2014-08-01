@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -52,8 +53,32 @@ namespace KinveyXamarin
 
 			switch (verb) {
 			case "QUERY":
+				appdata.Get (id, new KinveyDelegate<T[]>{ 
+					onSuccess = (results) => { 
 
+						List<string> idresults = new List<string>();
 
+						foreach ( T ent in results){
+						
+							string entJSON = JsonConvert.SerializeObject(ent);
+							string entID = JObject.FromObject (ent) ["_id"].ToString();
+
+							handler.upsertEntity(entID, collection, entJSON);
+
+							idresults.Add(entID);
+						}
+
+						handler.saveQueryResults(id, collection, idresults);
+
+						handler.removeFromQueue(item.key);
+						doneSuccessfully();
+
+					},
+					onError = (error) => {
+						ClientLogger.Log(error);
+					}
+				
+				});
 				break;
 			case "PUT":
 				T entity = handler.getEntity (collection, id);

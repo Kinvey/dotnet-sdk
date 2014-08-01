@@ -82,8 +82,8 @@ namespace KinveyXamarin
 			table.name = collection;
 			_dbConnection.Insert(table);
 
-			int count = _dbConnection.Table<SQLTemplates.TableItem> ().Count ();
-			int x = 0;
+//			int count = _dbConnection.Table<SQLTemplates.TableItem> ().Count ();
+//			int x = 0;
 		}
 
 		public void upsertEntity(string id, string collection, string json){
@@ -109,6 +109,10 @@ namespace KinveyXamarin
 		
 			SQLTemplates.QueryItem query = _dbConnection.Table<SQLTemplates.QueryItem>().Where(t => t.query == queryString && t.collection == collection).FirstOrDefault();
 
+			if (query == null) {
+				return null;
+			}
+
 			List<SQLTemplates.OfflineEntity> entities = new List<SQLTemplates.OfflineEntity>();
 
 			string[] ids = query.commaDelimitedIds.Split (',');
@@ -124,6 +128,22 @@ namespace KinveyXamarin
 			return results;
 
 		}
+
+		public void saveQueryResults (string queryString, string collection, List<string> ids)
+		{
+			SQLTemplates.QueryItem query = new SQLTemplates.QueryItem ();
+			query.query = queryString;
+			query.collection = collection;
+			query.commaDelimitedIds = String.Join (",", ids); 
+
+			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
+
+			int count = _dbConnection.Update (query);
+			if (count == 0) {
+				_dbConnection.Insert (query);
+			}
+		}
+
 
 		public void enqueueRequest (string action, string collection, string id)
 		{

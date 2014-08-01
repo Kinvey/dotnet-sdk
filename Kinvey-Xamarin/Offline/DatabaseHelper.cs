@@ -24,6 +24,8 @@ namespace KinveyXamarin
 
 		List<T> getQuery (string queryString, string collection);
 
+		void saveQueryResults (string queryString, string collection, List<string> ids);
+
 		void enqueueRequest (string action, string collection, string id);
 		List<T> getAll (string collection);
 		T getEntity (string collection, string id);

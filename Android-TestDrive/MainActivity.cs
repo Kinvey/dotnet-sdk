@@ -190,7 +190,7 @@ namespace AndroidTestDrive
 
 		private void loadFromCacheAndToast(){
 			AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
-//			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
+			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
 //			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.LOCAL_FIRST);
 
 
@@ -228,6 +228,8 @@ namespace AndroidTestDrive
 		private void loadFromQuery(){
 
 			AsyncAppData<MyEntity> query = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
+
+			query.setOffline (new SQLiteOfflineStore<MyEntity[]>(), OfflinePolicy.LOCAL_FIRST);
 //
 			var query1 = from cust in query
 			             where cust.Name == "James Dean"

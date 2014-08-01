@@ -136,8 +136,8 @@ namespace Kinvey.DotNet.Framework.Core
 			this.queryStore = store;
 			this.offlinePolicy = policy;
 
-			this.store.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
-			this.store.platform = ((Client) KinveyClient).offline_platform;
+			this.queryStore.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
+			this.queryStore.platform = ((Client) KinveyClient).offline_platform;
 
 		}
 
@@ -278,7 +278,7 @@ namespace Kinvey.DotNet.Framework.Core
 			[JsonProperty]
 			public string collectionName;
 
-			private ICache<String, T[]> cache = null;
+//			private ICache<String, T[]> cache = null;
 
 			public GetQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
 				: base(client, "GET", REST_PATH, default(T[]), urlParameters, collection)
@@ -295,7 +295,7 @@ namespace Kinvey.DotNet.Framework.Core
 			}
 
 			public void setCache(ICache<String, T[]> cache, CachePolicy policy){
-
+//				this.cache = cache;
 			}
 
 		}
