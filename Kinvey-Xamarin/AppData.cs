@@ -27,7 +27,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Kinvey.DotNet.Framework.Core
 {
-//    public class AppData { }
+    
 
 	public class AppData<T> : KinveyQueryContext<T>,  IQueryContext<T>
     {

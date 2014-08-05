@@ -123,17 +123,17 @@ namespace Kinvey.DotNet.Framework.Core
 				case "PUT":
 					restRequest.Method = Method.PUT;
 					break;
+				case "DELETE":
+					restRequest.Method = Method.DELETE;
+					break;
             }
-			//TODO WTF
 			if (this.HttpContent == null && requestMethod.Equals(HttpMethod.Post) )
             {
                 restRequest.AddBody(new object());
             }
             else
             {
-
                 restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
-
             }
             foreach (var header in requestHeaders)
             {

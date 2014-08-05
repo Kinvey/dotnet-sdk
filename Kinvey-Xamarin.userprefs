@@ -1,21 +1,33 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.ok" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../../webbox/restsharp/RestSharp.Portable/RestSharp.Portable.csproj">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs">
     <Files>
       <File FileName="Android-Libtester/TestAppData.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/AppData.cs" Line="344" Column="35" />
-      <File FileName="../../webbox/restsharp/RestSharp.Portable/RestSharp.Portable.csproj" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/AppData.cs" Line="32" Column="46" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="66" Column="18" />
+      <File FileName="Kinvey-Xamarin/Offline/IOfflineStore.cs" Line="25" Column="3" />
+      <File FileName="Kinvey-Xamarin/Async/KinveyDelegate.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Model/KinveyDeleteResponse.cs" Line="7" Column="35" />
+      <File FileName="Kinvey-Xamarin/Offline/DatabaseHelper.cs" Line="32" Column="23" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="196" Column="56" />
+      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="71" Column="53" />
+      <File FileName="Kinvey-Xamarin/Async/AsyncAppData.cs" Line="29" Column="37" />
+      <File FileName="Android-TestDrive/MainActivity.cs" Line="228" Column="4" />
+      <File FileName="Kinvey-Xamarin/AbstractClient.cs" Line="45" Column="41" />
+      <File FileName="Kinvey-Xamarin/Query/KinveyQueryContext.cs" Line="24" Column="65" />
+      <File FileName="Kinvey-Xamarin/Query/ExpressionVisitor.cs" Line="26" Column="1" />
+      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="122" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="150" column="1" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="65" column="70" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="63" column="70" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Query/KinveyQueryContext.cs" line="45" column="1" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/AppData.cs" line="242" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/AppData.cs" line="235" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/BackgroundExecutor.cs" line="49" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="177" column="1" />
-      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/AppData.cs" line="195" column="1" />
+      <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/AppData.cs" line="196" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" line="64" column="42" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="108" column="1" />
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" line="35" column="1" />

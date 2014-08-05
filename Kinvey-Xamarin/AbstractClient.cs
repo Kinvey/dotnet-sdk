@@ -29,7 +29,6 @@ namespace Kinvey.DotNet.Framework
 
         private User currentUser;
         private ICredentialStore store;
-		//        private AppData appData; //TODO ideally would cache reference here
         protected object Lock = new object();
         private IClientUsers clientUsers;
 

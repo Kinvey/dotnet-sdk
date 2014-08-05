@@ -63,14 +63,13 @@ namespace KinveyXamarin
 					jobj["_id"] = getGUID ();
 					this.HttpContent = jobj.ToObject<T>();
 
-//					this.HttpContent ["_id"] = getGUID ();
 					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("DELETE")) {
 				lock (locker) {
-//					KinveyDeleteResponse d = 
-					store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-					//TODO strong generics are messing this one up
+
+					KinveyDeleteResponse resp = store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					return resp;
 				}
 			}
 
