@@ -39,8 +39,8 @@ namespace Kinvey.DotNet.Framework.Core
 		private ICache<String, T[]> queryCache = null;
 		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
 
-		private IOfflineStore<T> store = null;
-		private IOfflineStore<T[]> queryStore = null;
+		private IOfflineStore store = null;
+//		private IOfflineStore<T[]> queryStore = null;
 		private OfflinePolicy offlinePolicy = OfflinePolicy.ALWAYS_ONLINE;
 
         public const string IdFieldName = "_id";
@@ -116,7 +116,7 @@ namespace Kinvey.DotNet.Framework.Core
 		/// </summary>
 		/// <param name="store">Store.</param>
 		/// <param name="policy">Policy.</param>
-		public void setOffline(IOfflineStore<T> store, OfflinePolicy policy){
+		public void setOffline(IOfflineStore store, OfflinePolicy policy){
 
 			this.store = store;
 			this.offlinePolicy = policy;
@@ -125,21 +125,21 @@ namespace Kinvey.DotNet.Framework.Core
 			this.store.platform = ((Client) KinveyClient).offline_platform;
 
 		}
-
-		/// <summary>
-		/// Sets the offline store and policy for query requests
-		/// </summary>
-		/// <param name="store">Store.</param>
-		/// <param name="policy">Policy.</param>
-		public void setOffline(IOfflineStore<T[]> store, OfflinePolicy policy){
-
-			this.queryStore = store;
-			this.offlinePolicy = policy;
-
-			this.queryStore.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
-			this.queryStore.platform = ((Client) KinveyClient).offline_platform;
-
-		}
+//
+//		/// <summary>
+//		/// Sets the offline store and policy for query requests
+//		/// </summary>
+//		/// <param name="store">Store.</param>
+//		/// <param name="policy">Policy.</param>
+//		public void setOffline(IOfflineStore<T[]> store, OfflinePolicy policy){
+//
+//			this.queryStore = store;
+//			this.offlinePolicy = policy;
+//
+//			this.queryStore.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
+//			this.queryStore.platform = ((Client) KinveyClient).offline_platform;
+//
+//		}
 
 
 
@@ -163,8 +163,9 @@ namespace Kinvey.DotNet.Framework.Core
             urlParameters.Add("collectionName", CollectionName);
 			GetRequest get = new GetRequest(myClass, client, urlParameters, collectionName);
             client.InitializeRequest(get);
-			get.setCache (this.cache, this.cachePolicy);
+			get.setCache (this.queryCache, this.cachePolicy);
 			get.SetStore (this.store, this.offlinePolicy);
+//			get.SetStore (this.queryStore, this.offlinePolicy);
             return get;
         }
 
@@ -177,7 +178,7 @@ namespace Kinvey.DotNet.Framework.Core
 			GetQueryRequest getQuery = new GetQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
 			client.InitializeRequest(getQuery);
 			getQuery.setCache (this.queryCache, this.cachePolicy);
-			getQuery.SetStore (this.queryStore, this.offlinePolicy);
+			getQuery.SetStore (this.store, this.offlinePolicy);
 			return getQuery;
 			 
 
@@ -201,11 +202,28 @@ namespace Kinvey.DotNet.Framework.Core
 			}
 				
 
-			save = new SaveRequest(entity, myClass, id, mode, client, urlParameters, this.CollectionName);
+			save = new SaveRequest(entity,id, myClass, mode, client, urlParameters, this.CollectionName);
 			save.SetStore (this.store, this.offlinePolicy);
             client.InitializeRequest(save);
             return save;
         }
+
+		public DeleteRequest DeleteBlocking(string entityId)
+		{
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", CollectionName);
+			urlParameters.Add ("entityID", entityId);
+
+			DeleteRequest delete = new DeleteRequest(entityId, myClass, client, urlParameters, this.CollectionName);
+			delete.SetStore (this.store, this.offlinePolicy);
+
+			client.InitializeRequest(delete);
+			return delete;
+		}
+
+
 
         public enum SaveMode
         {
@@ -221,7 +239,7 @@ namespace Kinvey.DotNet.Framework.Core
 
 
         [JsonObject(MemberSerialization.OptIn)]
-		public class GetRequest : AbstractKinveyCachedClientRequest<T>
+		public class GetRequest : AbstractKinveyCachedClientRequest<T[]>
         {
             private const string REST_PATH = "appdata/{appKey}/{collectionName}/";
 
@@ -229,12 +247,12 @@ namespace Kinvey.DotNet.Framework.Core
             public string collectionName { get; set; }
 
 			public GetRequest(Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
+				: base(client, "GET", REST_PATH, default(T[]), urlParameters, collection)
             {
                 this.collectionName = urlParameters["collectionName"];
             }
 
-            public override T Execute()
+            public override T[] Execute()
             {
                 return base.Execute();
             }
@@ -278,7 +296,6 @@ namespace Kinvey.DotNet.Framework.Core
 			[JsonProperty]
 			public string collectionName;
 
-//			private ICache<String, T[]> cache = null;
 
 			public GetQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
 				: base(client, "GET", REST_PATH, default(T[]), urlParameters, collection)
@@ -294,10 +311,6 @@ namespace Kinvey.DotNet.Framework.Core
 				return myEntity;
 			}
 
-			public void setCache(ICache<String, T[]> cache, CachePolicy policy){
-//				this.cache = cache;
-			}
-
 		}
 
         [JsonObject(MemberSerialization.OptIn)]
@@ -306,16 +319,16 @@ namespace Kinvey.DotNet.Framework.Core
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}";
 
             [JsonProperty]
-            public string CollectioName { get; set; }
+            public string CollectionName { get; set; }
 
             [JsonProperty]
             public string EntityId { get; set; }
 
 
-			public SaveRequest(T entity, Type myClass, string entityId, SaveMode update, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
+			public SaveRequest(T entity, string entityId, Type myClass, SaveMode update, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
 				: base(client, update.ToString(), REST_PATH, entity, urlProperties, collectionName)
             {
-                this.CollectioName = urlProperties["collectionName"];
+                this.CollectionName = urlProperties["collectionName"];
                 if (update.Equals(SaveMode.PUT))
                 {
                     this.EntityId = entityId;
@@ -329,6 +342,31 @@ namespace Kinvey.DotNet.Framework.Core
                 return myEntity;
             }
         }
+
+		[JsonObject(MemberSerialization.OptIn)]
+		public class DeleteRequest : AbstractKinveyOfflineClientRequest<KinveyDeleteResponse>
+		{
+
+			private const string REST_PATH = "appdata/{appkey}/{collectionName}/{entityID}";
+
+			[JsonProperty]
+			public string CollectionName {get; set;}
+
+			[JsonProperty]
+			public string EntityId { get; set;}
+
+			public DeleteRequest(string entityId, Type myClass, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
+				: base(client, "DELETE", REST_PATH, default(KinveyDeleteResponse), urlProperties, collectionName)
+			{
+				this.CollectionName = urlProperties["collectionName"];
+				this.EntityId = entityId;
+
+			}
+
+
+				
+
+		}
 
 
     }

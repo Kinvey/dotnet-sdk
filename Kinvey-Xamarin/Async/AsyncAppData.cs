@@ -26,11 +26,11 @@ namespace KinveyXamarin
 
 		}
 			
-		public void Get(KinveyDelegate<T> delegates)
+		public void Get(KinveyDelegate<T[]> delegates)
 		{
 			Task.Run (() => {
 				try {
-					T entity = base.GetBlocking ().Execute ();
+					T[] entity = base.GetBlocking ().Execute ();
 					delegates.onSuccess (entity);
 				} catch (Exception e) {
 					delegates.onError (e);

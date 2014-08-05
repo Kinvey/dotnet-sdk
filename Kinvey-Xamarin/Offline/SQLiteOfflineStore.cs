@@ -13,7 +13,7 @@ namespace KinveyXamarin
 	/// This class is responsible for breaking apart a request, and determing what actions to take
 	/// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
 	/// </summary>
-	public class SQLiteOfflineStore<T> : IOfflineStore<T>
+	public class SQLiteOfflineStore : IOfflineStore
 	{
 		public SQLiteOfflineStore ()
 		{
@@ -22,8 +22,8 @@ namespace KinveyXamarin
 		public ISQLitePlatform platform {get; set;}
 		public string dbpath{ get; set;}
 
-		public T executeGet(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
-			DatabaseHelper<T> handler = getDatabaseHelper ();
+		public object executeGet<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
+			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
 			//expand the URL
 			string targetURI = request.uriTemplate;
@@ -36,12 +36,10 @@ namespace KinveyXamarin
 
 
 
-			T ret = default(T);
+			object ret = null;
 			//is it a query?  (12 is magic number for decoding empty query string)
 			if (targetURI.Contains ("query") && (targetURI.IndexOf ("query") + 12) != targetURI.Length) {
-
-//				throw new NotImplementedException ();
-
+			
 				//it's a query!
 				//pull the actual query string out and get rid of the "?query"
 				String query = targetURI.Substring(idIndex, targetURI.Length - idIndex);
@@ -54,12 +52,12 @@ namespace KinveyXamarin
 
 
 				handler.enqueueRequest("QUERY", appData.CollectionName, query);
+				return ok;
 
 			} else if (idIndex == targetURI.Length || targetURI.Contains ("query")) {
 				//it's a get all request (no query, no id)
 				List<T> ok = handler.getAll (appData.CollectionName);
-				throw new NotImplementedException ();
-
+				return ok;
 			} else {
 				//it's a get by id
 				String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
@@ -72,8 +70,8 @@ namespace KinveyXamarin
 			return ret;
 		}
 
-		public T executeSave(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
-			DatabaseHelper<T> handler = getDatabaseHelper ();
+		public object executeSave<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
+			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
 			//grab json content and put it in the store
 			string jsonContent = null;
@@ -95,8 +93,8 @@ namespace KinveyXamarin
 			return request.HttpContent;
 		}
 
-		public KinveyDeleteResponse executeDelete(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
-			DatabaseHelper<T> handler = getDatabaseHelper ();
+		public KinveyDeleteResponse executeDelete<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
+			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
 			//expand the URL
 			string targetURI = request.uriTemplate;
@@ -115,13 +113,12 @@ namespace KinveyXamarin
 			KinveyDeleteResponse ret = handler.delete(appData.CollectionName, targetID);
 
 			handler.enqueueRequest("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
-			throw new NotImplementedException ();
 			return ret;
 		}
 
-		public void insertEntity(AbstractKinveyClient client, AppData<T> appData, T entity){
+		public void insertEntity<T>(AbstractKinveyClient client, AppData<T> appData, T entity){
 
-			DatabaseHelper<T> handler = getDatabaseHelper ();
+			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
 			string jsonContent = JsonConvert.SerializeObject (entity);
 
@@ -140,7 +137,7 @@ namespace KinveyXamarin
 		}
 			
 
-		private DatabaseHelper<T> getDatabaseHelper(){
+		private DatabaseHelper<T> getDatabaseHelper<T>(){
 			return SQLiteHelper<T>.getInstance (platform, dbpath);
 		}
 

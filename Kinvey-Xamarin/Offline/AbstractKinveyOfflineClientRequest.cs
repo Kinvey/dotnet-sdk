@@ -23,7 +23,7 @@ namespace KinveyXamarin
 	public class AbstractKinveyOfflineClientRequest<T> : AbstractKinveyClientRequest<T>
 	{
 
-		private IOfflineStore<T> store;
+		private IOfflineStore store;
 		private OfflinePolicy policy = OfflinePolicy.ALWAYS_ONLINE;
 
 		private Object locker = new Object();
@@ -36,7 +36,7 @@ namespace KinveyXamarin
 			this.collectionName = collection;
 		}
 
-		public void SetStore(IOfflineStore<T> newStore, OfflinePolicy newPolicy){
+		public void SetStore(IOfflineStore newStore, OfflinePolicy newPolicy){
 			this.store = newStore;
 			this.policy = newPolicy;
 		}
@@ -51,11 +51,11 @@ namespace KinveyXamarin
 
 			if (verb.Equals ("GET")) {
 				lock (locker) {
-					ret = store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					ret = (T) store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("PUT")) {
 				lock (locker) {
-					ret = store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("POST")) {
 				lock (locker) {
@@ -64,7 +64,7 @@ namespace KinveyXamarin
 					this.HttpContent = jobj.ToObject<T>();
 
 //					this.HttpContent ["_id"] = getGUID ();
-					ret = store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 				}
 			} else if (verb.Equals ("DELETE")) {
 				lock (locker) {

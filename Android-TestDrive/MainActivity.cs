@@ -149,7 +149,7 @@ namespace AndroidTestDrive
 			ent.Email = "test@tester.com";
 			ent.Name = "James Dean";
 //			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
-			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.LOCAL_FIRST);
+			entityCollection.setOffline(new SQLiteOfflineStore(), OfflinePolicy.LOCAL_FIRST);
 			entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 
 				onSuccess = (entity) => { 
 					RunOnUiThread (() => {
@@ -169,7 +169,7 @@ namespace AndroidTestDrive
 		private void loadAndToast(){
 			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 //			entityCollection.setCache (myCache, CachePolicy.NO_CACHE);
-			entityCollection.setOffline(new SQLiteOfflineStore<MyEntity>(), OfflinePolicy.LOCAL_FIRST);
+			entityCollection.setOffline(new SQLiteOfflineStore(), OfflinePolicy.LOCAL_FIRST);
 			MyEntity res = null;
 			try{
 				res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();
@@ -229,7 +229,7 @@ namespace AndroidTestDrive
 
 			AsyncAppData<MyEntity> query = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 
-			query.setOffline (new SQLiteOfflineStore<MyEntity[]>(), OfflinePolicy.LOCAL_FIRST);
+			query.setOffline (new SQLiteOfflineStore(), OfflinePolicy.LOCAL_FIRST);
 //
 			var query1 = from cust in query
 			             where cust.Name == "James Dean"
