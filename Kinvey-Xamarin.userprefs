@@ -1,22 +1,23 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.ok" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Auth/KinveyAuthRequest.cs">
     <Files>
       <File FileName="Android-Libtester/TestAppData.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/AppData.cs" Line="32" Column="46" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="66" Column="18" />
-      <File FileName="Kinvey-Xamarin/Offline/IOfflineStore.cs" Line="25" Column="3" />
+      <File FileName="Kinvey-Xamarin/AppData.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/IOfflineStore.cs" Line="1" Column="1" />
       <File FileName="Kinvey-Xamarin/Async/KinveyDelegate.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Model/KinveyDeleteResponse.cs" Line="7" Column="35" />
-      <File FileName="Kinvey-Xamarin/Offline/DatabaseHelper.cs" Line="32" Column="23" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="196" Column="56" />
-      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="71" Column="53" />
-      <File FileName="Kinvey-Xamarin/Async/AsyncAppData.cs" Line="29" Column="37" />
-      <File FileName="Android-TestDrive/MainActivity.cs" Line="228" Column="4" />
-      <File FileName="Kinvey-Xamarin/AbstractClient.cs" Line="45" Column="41" />
-      <File FileName="Kinvey-Xamarin/Query/KinveyQueryContext.cs" Line="24" Column="65" />
-      <File FileName="Kinvey-Xamarin/Query/ExpressionVisitor.cs" Line="26" Column="1" />
-      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="122" Column="27" />
+      <File FileName="Kinvey-Xamarin/Model/KinveyDeleteResponse.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/DatabaseHelper.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Async/AsyncAppData.cs" Line="1" Column="1" />
+      <File FileName="Android-TestDrive/MainActivity.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/AbstractClient.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Query/KinveyQueryContext.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Query/ExpressionVisitor.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Auth/KinveyAuthRequest.cs" Line="7" Column="7" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -119,7 +119,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\webbox\restsharp\RestSharp.Portable\RestSharp.Portable.csproj">
+    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
       <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
       <Name>RestSharp.Portable</Name>
     </ProjectReference>

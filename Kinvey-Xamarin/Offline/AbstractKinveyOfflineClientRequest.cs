@@ -69,7 +69,9 @@ namespace KinveyXamarin
 				lock (locker) {
 
 					KinveyDeleteResponse resp = store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-					return resp;
+//					return resp;
+					//TODO
+					return default(T);
 				}
 			}
 
