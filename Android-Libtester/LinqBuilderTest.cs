@@ -1,8 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using KinveyXamarin;
-using Kinvey.DotNet.Framework.Core;
-using Kinvey.DotNet.Framework;
 using System.Reflection;
 using RestSharp;
 using LinqExtender;

@@ -12,9 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
-using Kinvey.DotNet.Framework.Core;
 using System.Collections.Generic;
-using Kinvey.DotNet.Framework;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 

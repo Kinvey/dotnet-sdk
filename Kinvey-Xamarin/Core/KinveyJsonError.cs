@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace Kinvey.DotNet.Framework.Core
+namespace KinveyXamarin
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class KinveyJsonError

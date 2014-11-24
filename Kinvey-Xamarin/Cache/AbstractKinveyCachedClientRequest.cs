@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using Kinvey.DotNet.Framework.Core;
 
 namespace KinveyXamarin
 {
@@ -22,7 +21,7 @@ namespace KinveyXamarin
 
 		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
 		// TODO no anonymous interface support in c# -> investigate making ICache an abstract class
-		private ICache<String, T> cache = null;
+		private Cache<String, T> cache = null;
 
 
 
@@ -34,7 +33,7 @@ namespace KinveyXamarin
 		{
 		}
 
-		public void setCache(ICache<String, T> cache, CachePolicy policy)
+		public void setCache(Cache<String, T> cache, CachePolicy policy)
 		{
 			this.cache = cache;
 			this.cachePolicy = policy;

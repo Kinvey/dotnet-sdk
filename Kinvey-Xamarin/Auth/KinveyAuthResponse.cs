@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 using RestSharp;
 
 
-namespace Kinvey.DotNet.Framework.Auth
+namespace KinveyXamarin
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class KinveyAuthResponse

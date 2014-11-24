@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kinvey.DotNet.Framework
+namespace KinveyXamarin
 {
     public class KinveyException : Exception 
     {

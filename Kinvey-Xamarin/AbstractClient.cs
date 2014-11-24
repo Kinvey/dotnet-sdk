@@ -16,11 +16,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Kinvey.DotNet.Framework.Core;
-using Kinvey.DotNet.Framework.Auth;
 using RestSharp;
 
-namespace Kinvey.DotNet.Framework
+namespace KinveyXamarin
 {
     public class AbstractClient : AbstractKinveyClient
     {
@@ -64,6 +62,12 @@ namespace Kinvey.DotNet.Framework
 //            return (AppData<T>) appData;
 //            }
         }
+
+		public File File()
+		{
+			return new File (this);
+	
+		}
 			
         public User CurrentUser
         {

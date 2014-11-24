@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Kinvey.DotNet.Framework;
-using Kinvey.DotNet.Framework.Auth;
 
 namespace KinveyXamarin
 {

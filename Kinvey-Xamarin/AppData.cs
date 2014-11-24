@@ -25,7 +25,7 @@ using LinqExtender;
 using Ast = LinqExtender.Ast;
 using Newtonsoft.Json.Linq;
 
-namespace Kinvey.DotNet.Framework.Core
+namespace KinveyXamarin
 {
     
 
@@ -33,14 +33,12 @@ namespace Kinvey.DotNet.Framework.Core
     {
         private String collectionName;
         private Type myClass;
-//        private AbstractClient client;
 
-		private ICache<String, T> cache = null;
-		private ICache<String, T[]> queryCache = null;
+		private Cache<String, T> cache = null;
+		private Cache<String, T[]> queryCache = null;
 		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
 
 		private IOfflineStore store = null;
-//		private IOfflineStore<T[]> queryStore = null;
 		private OfflinePolicy offlinePolicy = OfflinePolicy.ALWAYS_ONLINE;
 
         public const string IdFieldName = "_id";
@@ -55,7 +53,6 @@ namespace Kinvey.DotNet.Framework.Core
         {
             this.collectionName = collectionName;
             this.myClass = myClass;
-//            this.client = client;
 			this.writer = new StringQueryBuilder ();
 		}
 			
@@ -95,7 +92,7 @@ namespace Kinvey.DotNet.Framework.Core
 		/// </summary>
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Policy.</param>
-		public void setCache(ICache<String, T> cache, CachePolicy policy)
+		public void setCache(Cache<String, T> cache, CachePolicy policy)
 		{
 			this.cache = cache;
 			this.cachePolicy = policy;
@@ -106,7 +103,7 @@ namespace Kinvey.DotNet.Framework.Core
 		/// </summary>
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Policy.</param>
-		public void setCache(ICache<String, T[]> cache, CachePolicy policy){
+		public void setCache(Cache<String, T[]> cache, CachePolicy policy){
 			this.queryCache = cache;
 			this.cachePolicy = policy;
 		}

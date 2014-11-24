@@ -20,7 +20,7 @@ using System.IO;
 using RestSharp;
 using KinveyXamarin;
 
-namespace Kinvey.DotNet.Framework.Core
+namespace KinveyXamarin
 {
     public class KinveyJsonResponseException : Exception
     {

@@ -1,5 +1,4 @@
 ﻿using System;
-using Kinvey.DotNet.Framework.Core;
 using SQLite.Net.Interop;
 
 namespace KinveyXamarin

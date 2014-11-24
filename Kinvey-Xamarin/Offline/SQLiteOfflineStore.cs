@@ -1,5 +1,4 @@
 ﻿using System;
-using Kinvey.DotNet.Framework.Core;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

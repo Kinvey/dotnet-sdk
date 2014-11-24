@@ -16,10 +16,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Kinvey.DotNet.Framework.Auth;
 using RestSharp;
 
-namespace Kinvey.DotNet.Framework.Core
+namespace KinveyXamarin
 {
     public class KinveyClientRequestInitializer : IKinveyRequestInitializer
     {

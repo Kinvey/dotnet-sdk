@@ -17,7 +17,6 @@ using System.Text;
 using System.Linq;
 using Ast = LinqExtender.Ast;
 using LinqExtender;
-using Kinvey.DotNet.Framework;
 
 namespace KinveyXamarin
 {

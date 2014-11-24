@@ -15,7 +15,7 @@ using System;
 
 namespace KinveyXamarin
 {
-	public interface ICache<String, V>
+	public interface Cache<String, V>
 	{
 		void put (String key, V value);
 

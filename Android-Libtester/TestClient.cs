@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using KinveyXamarin;
-using Kinvey.DotNet.Framework.Core;
 
 namespace AndroidLibtester
 {

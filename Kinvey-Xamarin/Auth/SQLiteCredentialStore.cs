@@ -1,5 +1,4 @@
 ﻿using System;
-using Kinvey.DotNet.Framework.Auth;
 using System.IO;
 using SQLite.Net.Interop;
 using SQLite.Net;

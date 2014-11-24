@@ -11,7 +11,6 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using Kinvey.DotNet.Framework.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kinvey.DotNet.Framework.Auth
+namespace KinveyXamarin
 {
 	[DataContract]
 	public class Credential : IKinveyRequestInitializer

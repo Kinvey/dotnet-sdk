@@ -1,8 +1,5 @@
 ﻿using System;
-using Kinvey.DotNet.Framework;
 using RestSharp;
-using Kinvey.DotNet.Framework.Core;
-using Kinvey.DotNet.Framework.Auth;
 using SQLite.Net.Interop;
 
 namespace KinveyXamarin
@@ -50,7 +47,7 @@ namespace KinveyXamarin
 			private ISQLitePlatform offlinePlatform {get; set;}
 		
 			public Builder(string appKey, string appSecret) 
-				: base(new RestClient (), new Kinvey.DotNet.Framework.Core.KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())) {}
+				: base(new RestClient (), new KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())) {}
 
 
 			public Client build() {

@@ -1,24 +1,31 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Auth/KinveyAuthRequest.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Model/DownloadProgressListener.cs">
     <Files>
-      <File FileName="Android-Libtester/TestAppData.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/AppData.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteOfflineStore.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/IOfflineStore.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Async/KinveyDelegate.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Model/KinveyDeleteResponse.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/DatabaseHelper.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/SQLiteHelper.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Async/AsyncAppData.cs" Line="1" Column="1" />
-      <File FileName="Android-TestDrive/MainActivity.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/AbstractClient.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Query/KinveyQueryContext.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Query/ExpressionVisitor.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Auth/KinveyAuthRequest.cs" Line="7" Column="7" />
+      <File FileName="Kinvey-Xamarin/File.cs" Line="36" Column="36" />
+      <File FileName="Kinvey-Xamarin/Model/DownloadProgressListener.cs" Line="3" Column="3" />
+      <File FileName="Kinvey-Xamarin/Cache/Cache.cs" Line="24" Column="24" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Android-Libtester" expanded="True" />
+          <Node name="Android-TestDrive" expanded="True" />
+          <Node name="Kinvey-Xamarin" expanded="True">
+            <Node name="Async" expanded="True" />
+            <Node name="Auth" expanded="True" />
+            <Node name="Cache" expanded="True" />
+            <Node name="Core" expanded="True" />
+            <Node name="Model" expanded="True">
+              <Node name="DownloadProgressListener.cs" selected="True" />
+            </Node>
+            <Node name="Offline" expanded="True" />
+            <Node name="Properties" expanded="True" />
+            <Node name="Query" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>

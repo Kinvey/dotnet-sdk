@@ -17,10 +17,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Kinvey.DotNet.Framework.Auth;
-using Kinvey.DotNet.Framework.Core;
 
-namespace Kinvey.DotNet.Framework
+namespace KinveyXamarin
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class User
@@ -119,12 +117,12 @@ namespace Kinvey.DotNet.Framework
 
 		public LoginRequest LoginBlocking(string username, string password)
         {
-            return new LoginRequest(username, password, false, this);
+			return new LoginRequest(username, password, false, this).buildAuthRequest();
         }
 
 		public LoginRequest LoginBlocking(Credential cred) 
         {
-            return new LoginRequest(cred, this);
+			return new LoginRequest(cred, this).buildAuthRequest();
         }
 
 		public LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 

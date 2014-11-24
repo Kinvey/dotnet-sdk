@@ -51,7 +51,6 @@
     <Compile Include="Core\KinveyHeaders.cs" />
     <Compile Include="Core\KinveyJsonError.cs" />
     <Compile Include="Core\KinveyJsonResponseException.cs" />
-    <Compile Include="Cache\ICache.cs" />
     <Compile Include="Cache\InMemoryCache.cs" />
     <Compile Include="Cache\AbstractKinveyCachedClientRequest.cs" />
     <Compile Include="Cache\CachePolicy.cs" />
@@ -76,8 +75,19 @@
     <Compile Include="Query\KinveyQueryContext.cs" />
     <Compile Include="Query\IQueryBuilder.cs" />
     <Compile Include="Query\StringQueryBuilder.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="Async\AsyncFile.cs" />
+    <Compile Include="Cache\Cache.cs" />
+    <Compile Include="Model\KinveyMetaData.cs" />
+    <Compile Include="Util\KAssert.cs" />
+    <Compile Include="File\FileMetaData.cs" />
+    <Compile Include="File\MediaHttpDownloader.cs" />
+    <Compile Include="File\KinveyFileRequest.cs" />
+    <Compile Include="File\UploadProgressListener.cs" />
+    <Compile Include="File\FileProgressListener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <ItemGroup>
     <Folder Include="Core\" />
     <Folder Include="Cache\" />
@@ -85,6 +95,8 @@
     <Folder Include="Offline\" />
     <Folder Include="Model\" />
     <Folder Include="Query\" />
+    <Folder Include="Util\" />
+    <Folder Include="File\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

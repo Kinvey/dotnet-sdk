@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kinvey.DotNet.Framework.Auth
+namespace KinveyXamarin
 {
     public interface IClientUsers
     {

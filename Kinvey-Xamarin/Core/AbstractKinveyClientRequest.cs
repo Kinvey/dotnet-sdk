@@ -22,7 +22,7 @@ using RestSharp;
 using System.Net.Http;
 using KinveyXamarin;
 
-namespace Kinvey.DotNet.Framework.Core
+namespace KinveyXamarin
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class AbstractKinveyClientRequest<T>
@@ -38,7 +38,6 @@ namespace Kinvey.DotNet.Framework.Core
         private string appKey;
 		public Dictionary<string, string> uriResourceParameters;
         private IAuthenticator auth;
-
 
 
         protected AbstractKinveyClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters)
@@ -145,9 +144,7 @@ namespace Kinvey.DotNet.Framework.Core
             {
                 restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
             }
-
-//			restRequest.
-
+				
 			auth.Authenticate (restRequest);
             return restRequest;           
         }
@@ -206,21 +203,10 @@ namespace Kinvey.DotNet.Framework.Core
             {
 				return JsonConvert.DeserializeObject<T>(response.Content);
             }
-//			catch(Exception isArray){
-//				try{
-//					return JsonConvert.DeserializeObject<T[]>(response.Content);
-//
-//				}catch (Exception nope){
-//					ClientLogger.Log (nope.Message);
-//					return default(T);
-//				}
-//
-//
-//			}
 
             catch(ArgumentException ex)
             {
-				ClientLogger.Log (ex.Message);
+				ClientLogger.Log (ex.Message);  
                 return default(T);
             }
             catch (NullReferenceException ex)
@@ -230,5 +216,6 @@ namespace Kinvey.DotNet.Framework.Core
             }
 
         }
+			
     }
 }

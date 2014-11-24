@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
-	public class InMemoryCache<V> : ICache<String, V>
+	public class InMemoryCache<V> : Cache<String, V>
 	{
 
 		private Dictionary<String, V> cache;

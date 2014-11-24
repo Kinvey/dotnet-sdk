@@ -17,11 +17,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Kinvey.DotNet.Framework.Core;
 using System.Net.Http;
 using RestSharp;
 
-namespace Kinvey.DotNet.Framework.Auth
+namespace KinveyXamarin
 {
     [JsonObject(MemberSerialization.OptIn)]
 	public class KinveyAuthRequest

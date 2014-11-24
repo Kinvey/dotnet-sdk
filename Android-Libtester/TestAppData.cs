@@ -1,8 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using KinveyXamarin;
-using Kinvey.DotNet.Framework.Core;
-using Kinvey.DotNet.Framework;
 using System.Reflection;
 using RestSharp;
 using LinqExtender;
@@ -38,7 +36,7 @@ namespace AndroidLibtester
 		{
 
 			string someID = "some id";
-			Kinvey.DotNet.Framework.Core.AppData<MyEntity>.GetEntityRequest req = testData.GetEntityBlocking (someID);
+			AppData<MyEntity>.GetEntityRequest req = testData.GetEntityBlocking (someID);
 
 			RestRequest restReq = req.BuildRestRequest ();
 			Assert.True (restReq.Method == Method.GET);
@@ -55,7 +53,7 @@ namespace AndroidLibtester
 		[Test()]
 		public void TestGetAll()
 		{
-			Kinvey.DotNet.Framework.Core.AppData<MyEntity>.GetRequest req = testData.GetBlocking ();
+			AppData<MyEntity>.GetRequest req = testData.GetBlocking ();
 
 			RestRequest restReq = req.BuildRestRequest ();
 			Assert.True (restReq.Method == Method.GET);
@@ -73,7 +71,7 @@ namespace AndroidLibtester
 		public void TestSaveEntity()
 		{
 
-			Kinvey.DotNet.Framework.Core.AppData<MyEntity>.SaveRequest req = testData.SaveBlocking (new MyEntity());
+			AppData<MyEntity>.SaveRequest req = testData.SaveBlocking (new MyEntity());
 
 			RestRequest restReq = req.BuildRestRequest ();
 			Assert.True (restReq.Method == Method.POST);

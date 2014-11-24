@@ -1,6 +1,4 @@
 ﻿using System;
-using Kinvey.DotNet.Framework;
-using Kinvey.DotNet.Framework.Core;
 using System.Threading.Tasks;
 
 namespace KinveyXamarin
