@@ -162,7 +162,6 @@ namespace KinveyXamarin
             client.InitializeRequest(get);
 			get.setCache (this.queryCache, this.cachePolicy);
 			get.SetStore (this.store, this.offlinePolicy);
-//			get.SetStore (this.queryStore, this.offlinePolicy);
             return get;
         }
 

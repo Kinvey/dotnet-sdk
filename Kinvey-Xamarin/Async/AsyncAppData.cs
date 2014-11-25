@@ -4,13 +4,26 @@ using System.Threading.Tasks;
 namespace KinveyXamarin
 {
 
-
+	/// <summary>
+	/// Async app data.  This class allows access to a Kinvey datastore asynchronously.  CRUD operations are supported, as well as LINQ querying.  
+	/// </summary>
 	public class AsyncAppData<T> : AppData<T>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.AsyncAppData`1"/> class.
+		/// </summary>
+		/// <param name="collectionName">Collection name.</param>
+		/// <param name="myClass">The class json data will be serialized into.</param>
+		/// <param name="client">A configured instance of a Kinvey client.</param>
 		public AsyncAppData (string collectionName, Type myClass, AbstractClient client): base(collectionName, myClass, client)
 		{
 		}
 			
+		/// <summary>
+		/// Get a single entity stored in a Kinvey collection.
+		/// </summary>
+		/// <param name="entityId">Entity identifier.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
 		public void GetEntity(string entityId, KinveyDelegate<T> delegates)
 		{
 			Task.Run (() => {
@@ -24,6 +37,10 @@ namespace KinveyXamarin
 
 		}
 			
+		/// <summary>
+		/// Get all entities from a Kinvey collection.
+		/// </summary>
+		/// <param name="delegates">Delegates for success or failure.</param>
 		public void Get(KinveyDelegate<T[]> delegates)
 		{
 			Task.Run (() => {
@@ -36,6 +53,11 @@ namespace KinveyXamarin
 			});
 		}
 
+		/// <summary>
+		/// Save the specified entity to a Kinvey collection.
+		/// </summary>
+		/// <param name="entity">the entity to save.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
 		public void Save(T entity, KinveyDelegate<T> delegates)
 		{
 			Task.Run (() => {
@@ -48,6 +70,11 @@ namespace KinveyXamarin
 			});
 		}
 
+		/// <summary>
+		/// Returns the results of a kinvey-style mongodb raw query.  Note this class also supports LINQ for querying.
+		/// </summary>
+		/// <param name="query">The raw query string to execute.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
 		public void Get(string query, KinveyDelegate<T[]> delegates){
 			Task.Run (() => {
 				try {
