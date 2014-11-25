@@ -1,32 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Model/DownloadProgressListener.cs">
-    <Files>
-      <File FileName="Kinvey-Xamarin/File.cs" Line="36" Column="36" />
-      <File FileName="Kinvey-Xamarin/Model/DownloadProgressListener.cs" Line="3" Column="3" />
-      <File FileName="Kinvey-Xamarin/Cache/Cache.cs" Line="24" Column="24" />
-    </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="Android-Libtester" expanded="True" />
-          <Node name="Android-TestDrive" expanded="True" />
-          <Node name="Kinvey-Xamarin" expanded="True">
-            <Node name="Async" expanded="True" />
-            <Node name="Auth" expanded="True" />
-            <Node name="Cache" expanded="True" />
-            <Node name="Core" expanded="True" />
-            <Node name="Model" expanded="True">
-              <Node name="DownloadProgressListener.cs" selected="True" />
-            </Node>
-            <Node name="Offline" expanded="True" />
-            <Node name="Properties" expanded="True" />
-            <Node name="Query" expanded="True" />
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="150" column="1" />

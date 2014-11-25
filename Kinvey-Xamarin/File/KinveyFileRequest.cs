@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RestSharp;
+using System.IO;
 
 namespace KinveyXamarin
 {
@@ -13,22 +14,36 @@ namespace KinveyXamarin
 		}
 
 
-		public void executeAndDownloadTo (byte[] output){
-
+		public FileMetaData executeAndDownloadTo (byte[] output){
 			FileMetaData metadata = base.Execute ();
-
 			downloadFile (metadata, output);
-
+			return metadata;
 		}
-
-		public void executeAndUploadFrom(byte[] input){
-
+			
+		public FileMetaData executeAndDownloadTo(Stream stream){
 			FileMetaData metadata = base.Execute ();
-
-			uploadFile (metadata, input);
-
+			downloadFile (metadata, stream);
+			return metadata;
 		}
 
+		public FileMetaData executeAndUploadFrom(byte[] input){
+			FileMetaData metadata = base.Execute ();
+			uploadFile (metadata, input);
+			return metadata;
+		}
+			
+		private void downloadFile(FileMetaData metadata, Stream stream){
+			string downloadURL = metadata.downloadURL;
+
+			RestClient client = new RestClient (downloadURL);
+			RestRequest request = new RestRequest ();
+
+			request.Method = Method.GET;
+
+			request.ResponseWriter = (responseStream) => responseStream.CopyTo (stream);
+
+			client.DownloadDataAsync (request);
+		}
 
 		private void downloadFile(FileMetaData metadata, byte[] output){
 			string downloadURL = metadata.downloadURL;
@@ -41,7 +56,6 @@ namespace KinveyXamarin
 			var response = req.Result;
 
 			output = response.RawBytes;
-
 		}
 
 		private void uploadFile(FileMetaData metadata, byte[] input){
@@ -63,9 +77,6 @@ namespace KinveyXamarin
 			var req = client.ExecuteAsync (request);
 			var response = req.Result;
 		}
-
-
-
 	}
 }
 
