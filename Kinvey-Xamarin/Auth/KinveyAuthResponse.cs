@@ -22,28 +22,53 @@ using RestSharp;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This class represents the response of a Kinvey Auth Request.
+	/// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class KinveyAuthResponse
     {
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthResponse"/> class.
+		/// </summary>
         public KinveyAuthResponse() { }
 
+		/// <summary>
+		/// Parse the specified response into an instance of a KinveyAuthResponse.
+		/// </summary>
+		/// <param name="response">Response.</param>
 		private static KinveyAuthResponse Parse(IRestResponse response)
         {
             return JsonConvert.DeserializeObject<KinveyAuthResponse>(response.Content);
         }
 
+		/// <summary>
+		/// Gets or sets the user identifier.
+		/// </summary>
+		/// <value>The user identifier.</value>
         [JsonProperty("_id")]
         public string UserId { get; set; }
 
+		/// <summary>
+		/// Gets or sets the user metadata.
+		/// </summary>
+		/// <value>The user metadata.</value>
         [JsonProperty("_kmd")]
         public KinveyUserMetadata UserMetadata { get; set; }
 
+		/// <summary>
+		/// Gets the auth token.
+		/// </summary>
+		/// <value>The auth token.</value>
         public string AuthToken
         {
             get { return (UserMetadata != null ? UserMetadata.AuthToken : null); }
         }
 
+		/// <summary>
+		/// Kinvey user metadata.
+		/// </summary>
         [JsonObject(MemberSerialization.OptIn)]
         public class KinveyUserMetadata 
         {

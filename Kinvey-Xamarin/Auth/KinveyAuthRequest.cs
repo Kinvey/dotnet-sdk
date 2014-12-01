@@ -22,9 +22,16 @@ using RestSharp;
 
 namespace KinveyXamarin
 {
+
+	/// <summary>
+	/// Kinvey auth request, used for creation/login and setting the session on the client.
+	/// </summary>
     [JsonObject(MemberSerialization.OptIn)]
 	public class KinveyAuthRequest
     {
+		/// <summary>
+		/// Login type.
+		/// </summary>
         public enum LoginType
         {
             IMPLICIT,
@@ -32,6 +39,9 @@ namespace KinveyXamarin
             THIRDPARTY
         }
 
+		/// <summary>
+		/// Auth request payload
+		/// </summary>
         private class AuthRequestPayload
         {
             [JsonProperty("username")]
@@ -40,17 +50,48 @@ namespace KinveyXamarin
             private string Password { get; set; }
         }
 
+		/// <summary>
+		/// Is this a create request?
+		/// </summary>
         private bool create;
+		/// <summary>
+		/// The RestSharp client
+		/// </summary>
         private RestClient client;
+		/// <summary>
+		/// The base URL of the request.
+		/// </summary>
         private string BaseUrl;
+		/// <summary>
+		/// The URI template parameters.
+		/// </summary>
         private Dictionary<string, string> uriTemplateParameters;
 
+		/// <summary>
+		/// The authenticator of the request, create/login use appkey authentication.
+		/// </summary>
         private HttpBasicAuthenticator appKeyAuthentication;
-
+		/// <summary>
+		/// The payload of the request.
+		/// </summary>
         private IAuthenticator requestPayload;
 	
+		/// <summary>
+		/// The kinvey headers.
+		/// </summary>
         private static KinveyHeaders kinveyHeaders = new KinveyHeaders();
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="baseUrl">Base URL.</param>
+		/// <param name="auth">authenticator to use.</param>
+		/// <param name="appKey">App key.</param>
+		/// <param name="username">Username.</param>
+		/// <param name="password">Password.</param>
+		/// <param name="user">User.</param>
+		/// <param name="create">If set to <c>true</c> create.</param>
         public KinveyAuthRequest(RestClient client, string baseUrl, HttpBasicAuthenticator auth, string appKey, string username, string password, User user, bool create)
 			
 		{
@@ -67,6 +108,10 @@ namespace KinveyXamarin
             this.uriTemplateParameters.Add("appKey", appKey);
         }
 
+		/// <summary>
+		/// Builds the rest request.
+		/// </summary>
+		/// <returns>The rest request.</returns>
         private RestRequest BuildRestRequest() 
         {
 		
@@ -95,6 +140,10 @@ namespace KinveyXamarin
             return restRequest;    
         }
 
+		/// <summary>
+		/// Initializes the rest client.
+		/// </summary>
+		/// <returns>The rest client.</returns>
         private RestClient InitializeRestClient()
         {
             RestClient restClient = this.client;
@@ -102,14 +151,16 @@ namespace KinveyXamarin
             return restClient;
         }
 
-
+		/// <summary>
+		/// Executes the request async without parsing it.
+		/// </summary>
+		/// <returns>The unparsed async.</returns>
 		public async Task<RestResponse> ExecuteUnparsedAsync()
 		{
 			RestClient client = InitializeRestClient();
 			RestRequest request = BuildRestRequest();
 
 			var response = await client.ExecuteAsync(request);
-//			var response = req.Result;
 
 			if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
 			{
@@ -120,7 +171,10 @@ namespace KinveyXamarin
 		}
 
 
-
+		/// <summary>
+		/// Executes the request without parsing it.
+		/// </summary>
+		/// <returns>The unparsed.</returns>
         public RestResponse ExecuteUnparsed()
         {
             RestClient client = InitializeRestClient();
@@ -137,22 +191,35 @@ namespace KinveyXamarin
             return (RestResponse)response;
         }
 
+		/// <summary>
+		/// Executes this request and parses the result.
+		/// </summary>
 		public KinveyAuthResponse Execute()
         {
 			return JsonConvert.DeserializeObject<KinveyAuthResponse>( ExecuteUnparsed().Content);
         }
 
-
+		/// <summary>
+		/// Executes this request async and parses the result.
+		/// </summary>
+		/// <returns>The async request.</returns>
 		public async Task<KinveyAuthResponse> ExecuteAsync()
 		{
 			return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
 		}
-
+		/// <summary>
+		/// Throw an expection when an error occurs.
+		/// </summary>
+		/// <returns>The exception.</returns>
+		/// <param name="response">Response.</param>
         protected KinveyJsonResponseException NewExceptionOnError(IRestResponse response)
         {
             return KinveyJsonResponseException.From(response);
         }
 
+		/// <summary>
+		/// Builder for an auth request.
+		/// </summary>
         public class Builder
         {
 
@@ -172,6 +239,14 @@ namespace KinveyXamarin
 
             private string appKey;
 
+			/// <summary>
+			/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest+Builder"/> class.
+			/// </summary>
+			/// <param name="transport">Transport.</param>
+			/// <param name="baseUrl">Base URL.</param>
+			/// <param name="appKey">App key.</param>
+			/// <param name="appSecret">App secret.</param>
+			/// <param name="user">User.</param>
             public Builder(RestClient transport, string baseUrl, string appKey, string appSecret, User user)
             {
                 this.client = transport;
@@ -181,57 +256,101 @@ namespace KinveyXamarin
                 this.user = user;
             }
 
+			/// <summary>
+			/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest+Builder"/> class.
+			/// </summary>
+			/// <param name="transport">Transport.</param>
+			/// <param name="baseUrl">Base URL.</param>
+			/// <param name="appKey">App key.</param>
+			/// <param name="appSecret">App secret.</param>
+			/// <param name="username">Username.</param>
+			/// <param name="password">Password.</param>
+			/// <param name="user">User.</param>
             public Builder(RestClient transport, string baseUrl, string appKey, string appSecret, string username, string password, User user)
                 : this(transport, baseUrl, appKey, appSecret, user)
             {
                 this.username = username;
                 this.password = password;
             }
-
+			/// <summary>
+			/// Build the Auth Request.
+			/// </summary>
             public KinveyAuthRequest build()
             {
                 return new KinveyAuthRequest(Client, BaseUrl, AppKeyAuthentication, AppKey, Username, Password, KinveyUser, this.create);
             }
 
+			/// <summary>
+			/// Gets or sets the username.
+			/// </summary>
+			/// <value>The username.</value>
             public string Username
             {
                 get { return this.username; }
                 set { this.username = value; }
             }
 
+			/// <summary>
+			/// Gets or sets the password.
+			/// </summary>
+			/// <value>The password.</value>
             public string Password
             {
                 get { return this.password; }
                 set { this.password = value; }
             }
 
+			/// <summary>
+			/// Gets or sets a value indicating whether this <see cref="KinveyXamarin.KinveyAuthRequest+Builder"/> is create.
+			/// </summary>
+			/// <value><c>true</c> if create; otherwise, <c>false</c>.</value>
             public bool Create
             {
                 get { return this.create; }
                 set { this.create = value; }
             }
 
+			/// <summary>
+			/// Gets or sets the kinvey user.
+			/// </summary>
+			/// <value>The kinvey user.</value>
             public User KinveyUser
             {
                 get { return this.user; }
                 set { this.user = value; }
             }
 
+			/// <summary>
+			/// Gets the client.
+			/// </summary>
+			/// <value>The client.</value>
             public RestClient Client
             {
                 get { return this.client; }
             }
 
+			/// <summary>
+			/// Gets the app key authentication.
+			/// </summary>
+			/// <value>The app key authentication.</value>
             public HttpBasicAuthenticator AppKeyAuthentication
             {
                 get { return appKeyAuthentication; }
             }
 
+			/// <summary>
+			/// Gets the base URL.
+			/// </summary>
+			/// <value>The base URL.</value>
             public string BaseUrl
             {
                 get { return baseUrl; }
             }
 
+			/// <summary>
+			/// Gets or sets the app key.
+			/// </summary>
+			/// <value>The app key.</value>
             public string AppKey
             {
                 get { return appKey; }

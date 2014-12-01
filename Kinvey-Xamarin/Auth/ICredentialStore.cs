@@ -19,10 +19,28 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This interface defines the ability to store Credentials.
+	/// </summary>
     public interface ICredentialStore
     {
+		/// <summary>
+		/// Load the specified userId.
+		/// </summary>
+		/// <param name="userId">User identifier.</param>
         Credential Load(string userId);
+
+		/// <summary>
+		/// Store the specified userId and credential.
+		/// </summary>
+		/// <param name="userId">User identifier.</param>
+		/// <param name="credential">Credential.</param>
         void Store(string userId, Credential credential);
+
+		/// <summary>
+		/// Delete the specified userId.
+		/// </summary>
+		/// <param name="userId">User identifier.</param>
         void Delete(string userId);
     }
 }

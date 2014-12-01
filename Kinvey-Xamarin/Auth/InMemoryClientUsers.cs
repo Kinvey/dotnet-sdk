@@ -19,12 +19,27 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This Client User implementation is done in memory, and will not persist between application executions.
+	/// </summary>
     public class InMemoryClientUsers : IClientUsers
     {
+		/// <summary>
+		/// The user list, backing this implementation.
+		/// </summary>
         private Dictionary<string, string> userList;
+		/// <summary>
+		/// The active user.
+		/// </summary>
         private string activeUser;
+		/// <summary>
+		/// This is a singleton so this is the instance.
+		/// </summary>
         private static InMemoryClientUsers _instance;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.InMemoryClientUsers"/> class.
+		/// </summary>
         private InMemoryClientUsers()
         {
             if (userList == null)
@@ -37,12 +52,20 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Gets or sets the current user's _id.
+		/// </summary>
+		/// <value>The current user's _id.</value>
         public string CurrentUser
         {
             get { return activeUser; }
             set { this.activeUser = value; }
         }
 
+		/// <summary>
+		/// Accessor for this singleton.
+		/// </summary>
+		/// <returns>The instance of the singleto</returns>
         public static InMemoryClientUsers GetClientUsers()
         {
             if (_instance == null)
@@ -52,11 +75,22 @@ namespace KinveyXamarin
             return _instance;
         }
 
+		/// <summary>
+		/// Add a new user to this in memory client user store.
+		/// </summary>
+		/// <param name="userID">User._id.</param>
+		/// <param name="type">Type.</param>
+		/// <param name="userId">User identifier.</param>
         public void AddUser(string userId, string type)
         {
             userList.Add(userId, type);
         }
 
+		/// <summary>
+		/// Removes the user from this user store.
+		/// </summary>
+		/// <param name="userID">User._id.</param>
+		/// <param name="userId">User identifier.</param>
         public void RemoveUser(string userId)
         {
             if (userId == CurrentUser)
@@ -66,6 +100,11 @@ namespace KinveyXamarin
             userList.Remove(userId);
         }
 
+		/// <summary>
+		/// Unloads the current user and loads the new one
+		/// </summary>
+		/// <param name="userID">User._id</param>
+		/// <param name="userId">User identifier.</param>
         public void SwitchUser(string userId)
         {
             if (userList.ContainsKey(userId))
@@ -74,6 +113,10 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Sets the current user.
+		/// </summary>
+		/// <param name="userId">User._id.</param>
         public void SetCurrentUser(string userId)
         {
             if (userList.ContainsKey(userId))
@@ -81,7 +124,10 @@ namespace KinveyXamarin
                 CurrentUser = userId;
             }
         }
-
+		/// <summary>
+		/// Gets the login type of the current user.
+		/// </summary>
+		/// <returns>The current user's login type.</returns>
         public string GetCurrentUserType()
         {
             string userType = userList[activeUser];

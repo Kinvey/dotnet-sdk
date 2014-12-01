@@ -72,17 +72,26 @@ namespace KinveyXamarin
 		}
 
 	
+		/// <summary>
+		/// Builder for creating a new instance of a client.  Use this class to easily create a new client, as it uses the builder pattern so methods can be chained together.
+		/// Once the builder is configured, call `.build()` to return an instance of a client.
+		/// </summary>
 		public new class Builder : AbstractClient.Builder
 		{
 
-//			private string offlinePath{ get; set;}
+			//A reference to the local file system -- going to be platform dependent
 			private string filePath {get; set;}
+			//a reference to the sqlite implementation -- going to be platform dependent
 			private ISQLitePlatform offlinePlatform {get; set;}
 		
+			//Constructor for a client builder, takes an app key and an app secret.
 			public Builder(string appKey, string appSecret) 
 				: base(new RestClient (), new KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())) {}
 
 
+			/// <summary>
+			/// This method creates and initializes a client for use with Kinvey.
+			/// </summary>
 			public Client build() {
 				if (this.filePath != null && offlinePlatform != null && this.Store == null) {
 					this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
@@ -92,34 +101,59 @@ namespace KinveyXamarin
 
 
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
-//				c.offline_dbpath = this.offlinePath;
 				c.offline_platform = this.offlinePlatform;
 				c.filePath = this.filePath;
 	
 				return c;
 			}
 
+			/// <summary>
+			///Set the credential store to use for the client.
+			/// </summary>
+			/// <returns>This builder.</returns>
+			/// <param name="store">Store.</param>
 			public Builder setCredentialStore(ICredentialStore store){
 				this.Store = store;
 				return this;
 			}
+				
 
+			/// <summary>
+			///Set the base url to use for this client, if it is a custom one.
+			/// </summary>
+			/// <returns>This builder..</returns>
+			/// <param name="url">URL.</param>
 			public Builder setBaseURL(string url){
 				this.BaseUrl = url;
 				return this;
 			}
 
+
+			/// <summary>
+			/// Set any appended service url to the base url, if necessary.
+			/// </summary>
+			/// <returns>The service path.</returns>
+			/// <param name="servicePath">Service path.</param>
 			public Builder setServicePath(string servicePath){
 				this.ServicePath = servicePath;
 				return this;
 			}
-
+				
+			/// <summary>
+			/// Set the directory to use for offline.
+			/// </summary>
+			/// <returns>The file path.</returns>
+			/// <param name="path">Path.</param>
 			public Builder setFilePath(string path){
 				this.filePath = path;
 				return this;
 			}
-
-
+				
+			/// <summary>
+			/// Set the sqlite implementation to use for offline.
+			/// </summary>
+			/// <returns>The offline platform.</returns>
+			/// <param name="platform">Platform.</param>
 			public Builder setOfflinePlatform(ISQLitePlatform platform){
 				this.offlinePlatform = platform;
 				return this;

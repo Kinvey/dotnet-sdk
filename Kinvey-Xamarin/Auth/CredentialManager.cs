@@ -19,11 +19,25 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This class is used to manage credential objects.
+	/// </summary>
     public class CredentialManager
     {
+		/// <summary>
+		/// Defines where the Credential is stored-- in memory, on disk, etc.
+		/// </summary>
         private ICredentialStore credentialStore;
+
+		/// <summary>
+		/// Create a new Credential Manager.
+		/// </summary>
         private CredentialManager() { }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.CredentialManager"/> class with a CredentialStore implementation
+		/// </summary>
+		/// <param name="store">Store.</param>
         public CredentialManager(ICredentialStore store)
         {
             if (credentialStore == null)
@@ -37,6 +51,11 @@ namespace KinveyXamarin
 
         }
 
+		/// <summary>
+		/// Loads the credential of a provided user._id from the previously configured Credential Store.
+		/// </summary>
+		/// <returns>The credential.</returns>
+		/// <param name="userId">User _id.</param>
         public Credential LoadCredential(string userId)
         {
             if (credentialStore == null)
@@ -49,6 +68,11 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Saves the credential associated with the user._id.
+		/// </summary>
+		/// <param name="userId">User _id.</param>
+		/// <param name="credential">Credential.</param>
         public void MakePersistant(string userId, Credential credential)
         {
             if (credentialStore == null)
@@ -61,6 +85,12 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Creates a new Credential object from a Kinvey user login/create request, and saves the it in the Credential Store.
+		/// </summary>
+		/// <returns>The and store credential.</returns>
+		/// <param name="response">Response.</param>
+		/// <param name="userId">User _id.</param>
         public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId)
         {
             Credential newCredential = Credential.From(response);
@@ -71,6 +101,10 @@ namespace KinveyXamarin
             return newCredential;
         }
 
+		/// <summary>
+		/// Removes the user._id's credential from the Credential Store.
+		/// </summary>
+		/// <param name="userId">User identifier.</param>
         public void RemoveCredential(string userId)
         {
             if (credentialStore != null)

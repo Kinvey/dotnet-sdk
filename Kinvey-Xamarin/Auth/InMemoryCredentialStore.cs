@@ -17,20 +17,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// In memory credential store.
+/// </summary>
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// In memory credential store.
+	/// </summary>
     public class InMemoryCredentialStore : ICredentialStore
     {
+		/// <summary>
+		/// The store.
+		/// </summary>
         private Dictionary<string, Credential> store = new Dictionary<string, Credential>();
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.InMemoryCredentialStore"/> class.
+		/// </summary>
 		public InMemoryCredentialStore(){
 		}
 
+		/// <summary>
+		/// Load the specified userId.
+		/// </summary>
+		/// <param name="userId">User._id.</param>
         public Credential Load(string userId)
         {
             return store[userId];
         }
 
+		/// <summary>
+		/// Store the specified userId and credential.
+		/// </summary>
+		/// <param name="userId">User identifier.</param>
+		/// <param name="credential">Credential.</param>
         public void Store(string userId, Credential credential)
         {
             Credential cred = new Credential(userId, credential.AuthToken);
@@ -40,6 +61,10 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Delete the specified userId.
+		/// </summary>
+		/// <param name="userId">User identifier.</param>
         public void Delete(string userId)
         {
             if (userId != null)

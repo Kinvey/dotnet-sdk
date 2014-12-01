@@ -1,6 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Model/KinveyMetaData.cs">
+    <Files>
+      <File FileName="Kinvey-Xamarin/Async/Client.cs" Line="68" Column="68" />
+      <File FileName="Kinvey-Xamarin/Model/KinveyDeleteResponse.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Model/KinveyMetaData.cs" Line="42" Column="42" />
+      <File FileName="Android-Libtester/LinqBuilderTest.cs" Line="32" Column="32" />
+      <File FileName="Kinvey-Xamarin/AppData.cs" Line="4" Column="4" />
+      <File FileName="Kinvey-Xamarin/Async/AsyncAppData.cs" Line="35" Column="35" />
+      <File FileName="Android-Libtester/MainActivity.cs" Line="1" Column="1" />
+      <File FileName="Android-TestDrive/MainActivity.cs" Line="47" Column="47" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="150" column="1" />

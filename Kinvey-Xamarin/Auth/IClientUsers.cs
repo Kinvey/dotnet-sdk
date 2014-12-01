@@ -19,16 +19,40 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This interface defines the behaiovor of a kinvey client user.
+	/// </summary>
     public interface IClientUsers
     {
+		/// <summary>
+		/// Adds the user.
+		/// </summary>
+		/// <param name="userID">User._id.</param>
+		/// <param name="type">Type.</param>
         void AddUser(string userID, string type);
 
+		/// <summary>
+		/// Removes the user.
+		/// </summary>
+		/// <param name="userID">User._id.</param>
         void RemoveUser(string userID);
 
+		/// <summary>
+		/// Unloads the current user and loads the new one
+		/// </summary>
+		/// <param name="userID">User._id</param>
         void SwitchUser(string userID);
 
+		/// <summary>
+		/// Gets or sets the current user's _id.
+		/// </summary>
+		/// <value>The current user's _id.</value>
         string CurrentUser { get; set; }
 
+		/// <summary>
+		/// Gets the login type of the current user.
+		/// </summary>
+		/// <returns>The current user's login type.</returns>
         string GetCurrentUserType();
     }
 }
