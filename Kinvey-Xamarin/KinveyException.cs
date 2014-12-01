@@ -19,13 +19,30 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Wrapper for a kinvey specific exception containing information about how to resolve the issue. 
+	/// </summary>
     public class KinveyException : Exception 
     {
-
+		/// <summary>
+		/// The reason.
+		/// </summary>
         private string reason;
+		/// <summary>
+		/// The fix.
+		/// </summary>
         private string fix;
+		/// <summary>
+		/// The explanation.
+		/// </summary>
         private string explanation;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
+		/// </summary>
+		/// <param name="reason">Reason.</param>
+		/// <param name="fix">Fix.</param>
+		/// <param name="explanation">Explanation.</param>
         public KinveyException(string reason, string fix, string explanation)
             : base(FormatMessage(reason, fix, explanation))
         {
@@ -33,15 +50,11 @@ namespace KinveyXamarin
             this.fix = fix;
             this.explanation = explanation;
         }
-
-		public KinveyException(string reason) : base (FormatMessage(reason, "Double check your types match.", "There is an issue with Generic Types.")){
-			this.reason = reason;
-			this.fix = "Double check your types match.";
-			this.explanation = "There is an issue with Generic Types.";
-		}
-
-
-
+			
+		/// <summary>
+		/// Gets or sets the reason.
+		/// </summary>
+		/// <value>The reason.</value>
         public string Reason
         {
             get { return reason; }
@@ -49,18 +62,33 @@ namespace KinveyXamarin
         }
 
       
+		/// <summary>
+		/// Gets or sets the fix.
+		/// </summary>
+		/// <value>The fix.</value>
         public string Fix
         {
             get { return fix; }
             set { this.fix = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the explanation.
+		/// </summary>
+		/// <value>The explanation.</value>
         public string Explanation
         {
             get { return explanation; }
             set { this.explanation = value; }
         }
 
+		/// <summary>
+		/// Formats the message.
+		/// </summary>
+		/// <returns>The message.</returns>
+		/// <param name="reason">Reason.</param>
+		/// <param name="fix">Fix.</param>
+		/// <param name="explanation">Explanation.</param>
         private static String FormatMessage(string reason, string fix, string explanation)
         {
             return "\nREASON: " + reason + "\n" + "FIX: " + fix + "\n" + "EXPLANATION: " + explanation + "\n";

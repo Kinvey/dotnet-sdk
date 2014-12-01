@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Android-Libtester", "Androi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestSharp.Portable", "RestSharp.Portable\RestSharp.Portable.csproj", "{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Android-StatusShare", "Android-StatusShare\Android-StatusShare.csproj", "{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,12 @@ Global
 		{6644D98D-026B-48E9-95A3-61C4D98D82E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6644D98D-026B-48E9-95A3-61C4D98D82E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6644D98D-026B-48E9-95A3-61C4D98D82E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}.Release|Any CPU.Build.0 = Release|Any CPU
 		{992EF0A6-40EA-48E3-9E42-AFFF703E4627}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{992EF0A6-40EA-48E3-9E42-AFFF703E4627}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 		{992EF0A6-40EA-48E3-9E42-AFFF703E4627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -40,12 +48,6 @@ Global
 		{CC4D99EF-0740-47BD-96AD-2FCD4C36C7FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC4D99EF-0740-47BD-96AD-2FCD4C36C7FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC4D99EF-0740-47BD-96AD-2FCD4C36C7FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}.AppStore|Any CPU.Build.0 = Debug|Any CPU
-		{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Android-TestDrive\Android-TestDrive.csproj

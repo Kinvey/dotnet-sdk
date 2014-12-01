@@ -20,11 +20,20 @@ using Newtonsoft.Json;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This class manages the state of a Kinvey user.  User methods can be accessed through this class, and this class represents the currently logged in user.
+	/// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class User
     {
+		/// <summary>
+		/// The name of the user collection.
+		/// </summary>
         public const string UserCollectionName = "user";
 
+		/// <summary>
+		/// the available login types
+		/// </summary>
         protected enum LoginType 
         {
             IMPLICIT,
@@ -32,55 +41,103 @@ namespace KinveyXamarin
             CREDENTIALSTORE
         }
 
+		/// <summary>
+		/// The _id.
+		/// </summary>
         [JsonProperty("_id")]
         private String id;
 
+		/// <summary>
+		/// The auth token.
+		/// </summary>
         private String authToken;
 
+		/// <summary>
+		/// The username.
+		/// </summary>
         [JsonProperty("username")]
         private String username;
 
+		/// <summary>
+		/// The client.
+		/// </summary>
         private AbstractClient client;
 
+		/// <summary>
+		/// Gets or sets the identifier.
+		/// </summary>
+		/// <value>The identifier.</value>
         public string Id
         {
             get { return this.id; }
             set { this.id = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the auth token.
+		/// </summary>
+		/// <value>The auth token.</value>
         public string AuthToken
         {
             get { return this.authToken; }
             set { this.authToken = value; }
         }
 
+		/// <summary>
+		/// Gets or sets the name of the user.
+		/// </summary>
+		/// <value>The name of the user.</value>
         public string UserName
         {
             get { return this.username; }
             set { this.username = value; }
         }
 
+		/// <summary>
+		/// Gets the kinvey client.
+		/// </summary>
+		/// <value>The kinvey client.</value>
         public AbstractClient KinveyClient
         {
             get { return this.client; }
         }
 
+		/// <summary>
+		/// the auth request builder.
+		/// </summary>
         private KinveyAuthRequest.Builder builder;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="builder">Builder.</param>
         public User(AbstractClient client, KinveyAuthRequest.Builder builder) 
         {
             this.client = client;
             this.builder = builder;
             builder.KinveyUser = this;
         }
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
+		/// </summary>
         public User() { }
 
+		/// <summary>
+		/// checks if there is currently a logged in user.
+		/// </summary>
+		/// <returns><c>true</c>, if user logged in was ised, <c>false</c> otherwise.</returns>
         public bool isUserLoggedIn()
         {
             return (this.Id != null || this.AuthToken != null || this.UserName != null);
         }
 
+		/// <summary>
+		/// Inits the user from a kinvey auth response.
+		/// </summary>
+		/// <returns>The user.</returns>
+		/// <param name="response">Response.</param>
+		/// <param name="userType">User type.</param>
         private User InitUser(KinveyAuthResponse response, string userType) 
         {
             this.Id = response.UserId;
@@ -97,6 +154,11 @@ namespace KinveyXamarin
             return this;
         }
 
+		/// <summary>
+		/// Inits the user from a credential
+		/// </summary>
+		/// <returns>The user.</returns>
+		/// <param name="credential">Credential.</param>
         private User initUser(Credential credential)
         {
             this.Id = credential.UserId;
@@ -104,27 +166,52 @@ namespace KinveyXamarin
             return this;
         }
 
+		/// <summary>
+		/// Removes the user from the store..
+		/// </summary>
+		/// <param name="userID">User _id.</param>
         private void removeFromStore(string userID)
         {
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             credentialManager.RemoveCredential(userID);
         }
 
+		/// <summary>
+		/// Logins an anonymous user synchronously.
+		/// </summary>
+		/// <returns>The blocking.</returns>
 		public LoginRequest LoginBlocking()
         {
             return new LoginRequest(this).buildAuthRequest();
         }
 
+		/// <summary>
+		/// Logins a user with a username and password synchronously.
+		/// </summary>
+		/// <returns>The blocking.</returns>
+		/// <param name="username">Username.</param>
+		/// <param name="password">Password.</param>
 		public LoginRequest LoginBlocking(string username, string password)
         {
 			return new LoginRequest(username, password, false, this).buildAuthRequest();
         }
 
+		/// <summary>
+		/// Logins a user with a credential synchronously
+		/// </summary>
+		/// <returns>The blocking.</returns>
+		/// <param name="cred">Cred.</param>
 		public LoginRequest LoginBlocking(Credential cred) 
         {
 			return new LoginRequest(cred, this).buildAuthRequest();
         }
 
+		/// <summary>
+		/// Logins a user with a Kinvey Auth token synchronously.
+		/// </summary>
+		/// <returns>The kinvey auth token blocking.</returns>
+		/// <param name="userId">User identifier.</param>
+		/// <param name="authToken">Auth token.</param>
 		public LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 
         {
             this.AuthToken = authToken;
@@ -133,6 +220,10 @@ namespace KinveyXamarin
 			return LoginBlocking(c);
         }
 
+		/// <summary>
+		/// Logouts the user synchronously.
+		/// </summary>
+		/// <returns>The blocking.</returns>
 		public LogoutRequest logoutBlocking() 
         {
             return new LogoutRequest(this.KinveyClient.Store, this);
@@ -149,6 +240,10 @@ namespace KinveyXamarin
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
+
+		/// <summary>
+		/// A synchronous login request.
+		/// </summary>
 		public class LoginRequest 
         {
             Credential credential;
@@ -277,7 +372,9 @@ namespace KinveyXamarin
 			}
         }
 
-
+		/// <summary>
+		/// A synchronous logout request.
+		/// </summary>
         public class LogoutRequest
         {
 

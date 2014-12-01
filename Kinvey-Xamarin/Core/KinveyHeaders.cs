@@ -20,16 +20,37 @@ using RestSharp;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Default Kinvey specific headers added to every request.
+	/// </summary>
     public class KinveyHeaders : List<HttpHeader>
     {
-        private static string version = "2.6.6";
+		/// <summary>
+		/// The version of the library.
+		/// </summary>
+		private static string version = "1.0.0";
 
+		/// <summary>
+		/// The kinvey API version key.
+		/// </summary>
         private static string kinveyApiVersionKey = "X-Kinvey-API-Version";
+		/// <summary>
+		/// The kinvey API version.
+		/// </summary>
         private static string kinveyApiVersion = "3";
 
+		/// <summary>
+		/// The user agent key.
+		/// </summary>
         private static string userAgentKey = "user-agent";
-        private string userAgent = "dotnet-kinvey-http/" + version;
+		/// <summary>
+		/// The user agent.
+		/// </summary>
+        private string userAgent = "xamarin-kinvey-http/" + version;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyHeaders"/> class.
+		/// </summary>
         public KinveyHeaders() : base()
         {
 			this.Add(new HttpHeader() {Name = userAgentKey, Value = new List<string>(){userAgent}});

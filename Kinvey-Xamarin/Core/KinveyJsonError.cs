@@ -21,18 +21,37 @@ using RestSharp;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Kinvey json error.
+	/// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class KinveyJsonError
     {
+		/// <summary>
+		/// Gets or sets the error.
+		/// </summary>
+		/// <value>The error.</value>
         [JsonProperty]
         public string Error {get; set;}
 
+		/// <summary>
+		/// Gets or sets the description.
+		/// </summary>
+		/// <value>The description.</value>
         [JsonProperty]
         public string Description {get; set;}
 
+		/// <summary>
+		/// Gets or sets the debug message of the error.
+		/// </summary>
+		/// <value>The debug.</value>
         [JsonProperty]
         public string Debug {get; set;}
 
+		/// <summary>
+		/// Parse the specified response into an error.
+		/// </summary>
+		/// <param name="response">Response.</param>
         public static KinveyJsonError parse(IRestResponse response)
         {
             return JsonConvert.DeserializeObject<KinveyJsonError>(response.Content);

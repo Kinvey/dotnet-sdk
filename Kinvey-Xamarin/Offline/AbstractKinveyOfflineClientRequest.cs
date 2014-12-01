@@ -18,13 +18,28 @@ using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This class represents a Kinvey request that can be executed offline.
+	/// </summary>
 	public class AbstractKinveyOfflineClientRequest<T> : AbstractKinveyClientRequest<T>
 	{
-
+		/// <summary>
+		/// The store.
+		/// </summary>
 		private IOfflineStore store;
+		/// <summary>
+		/// The policy.
+		/// </summary>
 		private OfflinePolicy policy = OfflinePolicy.ALWAYS_ONLINE;
 
+		/// <summary>
+		/// The lock for database access
+		/// </summary>
 		private Object locker = new Object();
+
+		/// <summary>
+		/// The name of the collection.
+		/// </summary>
 		private string collectionName;
 
 
@@ -34,11 +49,20 @@ namespace KinveyXamarin
 			this.collectionName = collection;
 		}
 
+		/// <summary>
+		/// Sets the store.
+		/// </summary>
+		/// <param name="newStore">the offline store to use.</param>
+		/// <param name="newPolicy">the offline policy to use.</param>
 		public void SetStore(IOfflineStore newStore, OfflinePolicy newPolicy){
 			this.store = newStore;
 			this.policy = newPolicy;
 		}
 
+		/// <summary>
+		/// Executes the request from the offline store
+		/// </summary>
+		/// <returns>The response, if there is one, from the offline store.</returns>
 		public T offlineFromStore(){
 			if (store == null) {
 				return default(T);
@@ -76,13 +100,19 @@ namespace KinveyXamarin
 			return ret;
 		}
 
+		/// <summary>
+		/// Executes the request over the network
+		/// </summary>
+		/// <returns>The entity from the service.</returns>
 		public T offlineFromService(){
 			T ret = base.Execute ();
 			return ret;
 		}
 
 
-
+		/// <summary>
+		/// Execute this request.
+		/// </summary>
 		public override T Execute(){
 			T ret =  default(T);
 
@@ -113,13 +143,19 @@ namespace KinveyXamarin
 			return ret;
 		}
 	
-
+		/// <summary>
+		/// Kicks off the background sync thread
+		/// </summary>
 		public void kickOffSync(){
 			Task.Run (() => {
 				new BackgroundExecutor<T> ((Client)Client).RunSync ();
 			});
 		}
 
+		/// <summary>
+		/// get a unique guid for this device
+		/// </summary>
+		/// <returns>The GUID</returns>
 		private string getGUID(){
 			string guid =  Guid.NewGuid().ToString();
 			return guid.Replace ("-", "");

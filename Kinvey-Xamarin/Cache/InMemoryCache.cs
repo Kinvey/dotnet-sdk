@@ -16,25 +16,46 @@ using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// An implementation of an in memory cache, backed by a Dictionary.
+	/// </summary>
 	public class InMemoryCache<V> : Cache<String, V>
 	{
-
+		/// <summary>
+		/// The cache itself.
+		/// </summary>
 		private Dictionary<String, V> cache;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.InMemoryCache`1"/> class.
+		/// </summary>
 		public InMemoryCache (){
 			cache = new Dictionary<String, V> ();
 		}
 
+		/// <summary>
+		/// Put the specified key and value into the cache
+		/// </summary>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
 		public void put(String key, V value){
 			cache.Add (key, value);
 		}
 
+		/// <summary>
+		/// Get the specified key from the cache.
+		/// </summary>
+		/// <param name="key">Key.</param>
 		public V get(String key){
 			V ret;
 			cache.TryGetValue (key, out ret);
 			return ret;
 		}
 
+		/// <summary>
+		/// Gets the size of the cache
+		/// </summary>
+		/// <returns>The size.</returns>
 		public int getSize(){
 			return cache.Count;
 		}

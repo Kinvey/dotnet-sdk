@@ -27,8 +27,16 @@ using Ast = LinqExtender.Ast;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This class is used by the LINQ implementation to visit expressions.
+	/// </summary>
     public class ExpressionVisitor
     {
+
+		/// <summary>
+		/// This method determines the behaivor dependant on the current expression
+		/// </summary>
+		/// <param name="expression">Expression.</param>
         internal Ast.Expression Visit(Ast.Expression expression)
         {
             switch (expression.CodeType)
@@ -54,11 +62,21 @@ namespace KinveyXamarin
             throw new ArgumentException("Expression type is not supported");
         }
 
+		/// <summary>
+		/// Visits the type expression.
+		/// </summary>
+		/// <returns>The type expression.</returns>
+		/// <param name="typeExpression">Type expression.</param>
         public virtual Ast.Expression VisitTypeExpression(Ast.TypeExpression typeExpression)
         {
             return typeExpression;
         }
 
+		/// <summary>
+		/// Visits the block expression.
+		/// </summary>
+		/// <returns>The block expression.</returns>
+		/// <param name="blockExpression">Block expression.</param>
         public virtual Ast.Expression VisitBlockExpression(Ast.BlockExpression blockExpression)
         {
             foreach (var expression in blockExpression.Expressions)
@@ -67,6 +85,11 @@ namespace KinveyXamarin
             return blockExpression;
         }
 
+		/// <summary>
+		/// Visits the logical expression.
+		/// </summary>
+		/// <returns>The logical expression.</returns>
+		/// <param name="expression">Expression.</param>
         public virtual Ast.Expression VisitLogicalExpression(Ast.LogicalExpression expression)
         {
             this.Visit(expression.Left);
@@ -74,6 +97,11 @@ namespace KinveyXamarin
             return expression;
         }
 
+		/// <summary>
+		/// Visits the lambda expression.
+		/// </summary>
+		/// <returns>The lambda expression.</returns>
+		/// <param name="expression">Expression.</param>
         public virtual Ast.Expression VisitLambdaExpression(Ast.LambdaExpression expression)
         {
             if (expression.Body != null)
@@ -81,6 +109,11 @@ namespace KinveyXamarin
             return expression;
         }
 
+		/// <summary>
+		/// Visits the binary expression.
+		/// </summary>
+		/// <returns>The binary expression.</returns>
+		/// <param name="expression">Expression.</param>
         public virtual Ast.Expression VisitBinaryExpression(Ast.BinaryExpression expression)
         {
             this.Visit(expression.Left);
@@ -89,16 +122,31 @@ namespace KinveyXamarin
             return expression;
         }
 
+		/// <summary>
+		/// Visits the member expression.
+		/// </summary>
+		/// <returns>The member expression.</returns>
+		/// <param name="expression">Expression.</param>
         public virtual Ast.Expression VisitMemberExpression(Ast.MemberExpression expression)
         {
             return expression;
         }
 
+		/// <summary>
+		/// Visits the literal expression.
+		/// </summary>
+		/// <returns>The literal expression.</returns>
+		/// <param name="expression">Expression.</param>
         public virtual Ast.Expression VisitLiteralExpression(Ast.LiteralExpression expression)
         {
             return expression;
         }
 
+		/// <summary>
+		/// Visits the orderby expression.
+		/// </summary>
+		/// <returns>The orderby expression.</returns>
+		/// <param name="expression">Expression.</param>
         public virtual Ast.Expression VisitOrderbyExpression(Ast.OrderbyExpression expression)
         {
             return expression;

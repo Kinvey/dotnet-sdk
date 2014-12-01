@@ -15,14 +15,32 @@ using System;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This interface defines the behaivor of building a query.
+	/// </summary>
 	public interface IQueryBuilder
 	{
+		/// <summary>
+		/// Write the specified value to the query
+		/// </summary>
+		/// <param name="value">Value.</param>
 		void Write(object value);
 
+		/// <summary>
+		/// Gets the full string.
+		/// </summary>
+		/// <returns>The full string.</returns>
 		string GetFullString();
 
+		/// <summary>
+		///Write the specified value as a query modifier.
+		/// </summary>
+		/// <param name="value">Value.</param>
 		void Dangle(object value);
 
+		/// <summary>
+		/// Reset this instance.
+		/// </summary>
 		void Reset();
 	}
 }

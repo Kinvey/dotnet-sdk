@@ -38,14 +38,10 @@ namespace KinveyXamarin
         /// pre populated expression tree.
         /// </summary>
         /// <param name="expression">Target expression block</param>
-        /// <returns>Expected result</returns>
+        /// <returns> null, beucase query is passed to AppData.</returns></returns>
         public IEnumerable<T> Execute(Ast.Expression expression)
-        {
-            //TODO: Visit the extender expression to build your meta 
-            
+        {            
             this.Visit(expression);
-
-            ///TOOD: return your result.
             return null;
         }
     }

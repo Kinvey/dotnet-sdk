@@ -8,21 +8,40 @@ using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
+
+	/// <summary>
+	/// This class is used by the offline implementation to pop the queue and fire off requests.
+	/// </summary>
 	public class BackgroundExecutor<T>
 	{
 
+		/// <summary>
+		/// The platform.
+		/// </summary>
 		private ISQLitePlatform platform;
+		/// <summary>
+		/// The location of the database..
+		/// </summary>
 		private string dbpath;
+		/// <summary>
+		/// The Kinvey client.
+		/// </summary>
 		private Client client;
 
-		public BackgroundExecutor (Client c)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.BackgroundExecutor`1"/> class.
+		/// </summary>
+		/// <param name="client">The Kinvey client</param>
+		public BackgroundExecutor (Client client)
 		{
 			this.dbpath = Path.Combine(c.filePath,  "kinveyOffline.sqlite") ;
-			this.platform = c.offline_platform;
-			this.client = c;
+			this.platform = client.offline_platform;
+			this.client = client;
 		}
 
-
+		/// <summary>
+		/// runs sync
+		/// </summary>
 		public void RunSync(){
 
 			getFromStoreAndExecute ();
@@ -30,7 +49,9 @@ namespace KinveyXamarin
 
 		}
 
-
+		/// <summary>
+		/// Gets a request from the offline store associated with the client, and executes it.
+		/// </summary>
 		private void getFromStoreAndExecute(){
 			DatabaseHelper<T> handler = getDatabaseHelper ();
 
@@ -45,6 +66,11 @@ namespace KinveyXamarin
 		}
 
 
+		/// <summary>
+		/// Builds the queued up request and updates it.
+		/// </summary>
+		/// <param name="handler">Handler to access database.</param>
+		/// <param name="item">The queued representation of the request.</param>
 		private void buildAndExecuteRequest(DatabaseHelper<T> handler, SQLTemplates.QueueItem item){
 			string collection = item.collection;
 			string verb = item.action;
@@ -125,16 +151,14 @@ namespace KinveyXamarin
 
 
 				break;
-			
-
-			
-
-
 
 			}
 
 		}
 
+		/// <summary>
+		/// Executed when a request has completely successfully
+		/// </summary>
 		private void doneSuccessfully(){
 			Task.Run (() => {
 				new BackgroundExecutor<T> ((Client)client).RunSync ();
@@ -142,7 +166,10 @@ namespace KinveyXamarin
 		}
 
 
-
+		/// <summary>
+		/// returns an instance of the database helper.
+		/// </summary>
+		/// <returns>The database helper.</returns>
 		private DatabaseHelper<T> getDatabaseHelper(){
 			return SQLiteHelper<T>.getInstance (platform, dbpath);
 		}

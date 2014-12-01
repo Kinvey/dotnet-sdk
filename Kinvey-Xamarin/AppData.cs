@@ -27,20 +27,45 @@ using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
-    
-
+    /// <summary>
+	/// Class for managing appData access to the Kinvey backend.
+    /// </summary>
 	public class AppData<T> : KinveyQueryContext<T>,  IQueryContext<T>
     {
+		/// <summary>
+		/// The name of the collection.
+		/// </summary>
         private String collectionName;
+		/// <summary>
+		/// The Type of the class.
+		/// </summary>
         private Type myClass;
 
+		/// <summary>
+		/// The cache.
+		/// </summary>
 		private Cache<String, T> cache = null;
+		/// <summary>
+		/// The query cache.
+		/// </summary>
 		private Cache<String, T[]> queryCache = null;
+		/// <summary>
+		/// The cache policy.
+		/// </summary>
 		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
 
+		/// <summary>
+		/// The Offline Store
+		/// </summary>
 		private IOfflineStore store = null;
+		/// <summary>
+		/// The offline policy.
+		/// </summary>
 		private OfflinePolicy offlinePolicy = OfflinePolicy.ALWAYS_ONLINE;
 
+		/// <summary>
+		/// The name of the identifier field.
+		/// </summary>
         public const string IdFieldName = "_id";
 
 		/// <summary>
@@ -139,7 +164,11 @@ namespace KinveyXamarin
 //		}
 
 
-
+		/// <summary>
+		/// gets the specified entity.
+		/// </summary>
+		/// <returns>The request, ready to execute..</returns>
+		/// <param name="entityId">Entity's _id.</param>
 		public GetEntityRequest GetEntityBlocking(string entityId)
         {
             var urlParameters = new Dictionary<string, string>();
@@ -153,6 +182,10 @@ namespace KinveyXamarin
             return getEntity;
         }
 
+		/// <summary>
+		/// gets all entities
+		/// </summary>
+		/// <returns>The blocking.</returns>
 		public GetRequest GetBlocking()
         {
             var urlParameters = new Dictionary<string, string>();
@@ -165,6 +198,11 @@ namespace KinveyXamarin
             return get;
         }
 
+		/// <summary>
+		///gets the specified query string
+		/// </summary>
+		/// <returns>The query blocking.</returns>
+		/// <param name="queryString">Query string.</param>
 		public GetQueryRequest getQueryBlocking(string queryString){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -176,11 +214,13 @@ namespace KinveyXamarin
 			getQuery.setCache (this.queryCache, this.cachePolicy);
 			getQuery.SetStore (this.store, this.offlinePolicy);
 			return getQuery;
-			 
-
-
 		}
 
+		/// <summary>
+		/// saves the specified entity
+		/// </summary>
+		/// <returns>The blocking.</returns>
+		/// <param name="entity">Entity.</param>
 		public SaveRequest SaveBlocking(T entity)
         {
             SaveRequest save;
@@ -204,6 +244,11 @@ namespace KinveyXamarin
             return save;
         }
 
+		/// <summary>
+		/// Deletes the specified entity
+		/// </summary>
+		/// <returns>The blocking.</returns>
+		/// <param name="entityId">Entity _id.</param>
 		public DeleteRequest DeleteBlocking(string entityId)
 		{
 
@@ -221,19 +266,28 @@ namespace KinveyXamarin
 
 
 
+		/// <summary>
+		/// Save mode.
+		/// </summary>
         public enum SaveMode
         {
             POST,
             PUT
         }
 
+		/// <summary>
+		/// Executes the query.
+		/// </summary>
+		/// <returns>The query.</returns>
+		/// <param name="query">the results of the query, executed synchronously.</param>
 		protected override T[] executeQuery(string query){
 			return getQueryBlocking(query).Execute ();
-			//return default(T[]);
 		}
 
 
-
+		/// <summary>
+		/// A Get request, which is implemented synchronously
+		/// </summary>
         [JsonObject(MemberSerialization.OptIn)]
 		public class GetRequest : AbstractKinveyCachedClientRequest<T[]>
         {
@@ -254,6 +308,9 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Get entity request, which is implemented synchronously
+		/// </summary>
         [JsonObject(MemberSerialization.OptIn)]
 		public class GetEntityRequest : AbstractKinveyCachedClientRequest<T>
         {
@@ -281,6 +338,9 @@ namespace KinveyXamarin
 
         }
 
+		/// <summary>
+		/// Get query request, which is implemented synchronously
+		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
 		public class GetQueryRequest : AbstractKinveyCachedClientRequest<T[]>
 		{
@@ -309,6 +369,9 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// Save request, which is implemented synchronously.
+		/// </summary>
         [JsonObject(MemberSerialization.OptIn)]
 		public class SaveRequest : AbstractKinveyOfflineClientRequest<T>
         {
@@ -339,6 +402,9 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Delete request, which is implemented synchronously.
+		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
 		public class DeleteRequest : AbstractKinveyOfflineClientRequest<KinveyDeleteResponse>
 		{

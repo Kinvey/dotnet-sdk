@@ -20,22 +20,58 @@ using RestSharp;
 
 namespace KinveyXamarin
 {
+
+	/// <summary>
+	/// This class adds the concept of a user to the Client, and couples it with Kinvey.
+	/// </summary>
     public class AbstractClient : AbstractKinveyClient
     {
+		/// <summary>
+		/// The default base URL.
+		/// </summary>
         public const string DefaultBaseUrl = "https://baas.kinvey.com/";
+		/// <summary>
+		/// The default service path.
+		/// </summary>
         public const string DefaultServicePath = "";
 
+		/// <summary>
+		/// The current user.
+		/// </summary>
         private User currentUser;
+
+		/// <summary>
+		/// The current credential store.
+		/// </summary>
         private ICredentialStore store;
+
+		/// <summary>
+		/// The access lock
+		/// </summary>
         protected object Lock = new object();
+
+		/// <summary>
+		/// The client users.
+		/// </summary>
         private IClientUsers clientUsers;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="rootUrl">Root URL.</param>
+		/// <param name="servicePath">Service path.</param>
+		/// <param name="initializer">Initializer.</param>
+		/// <param name="store">Store.</param>
         protected AbstractClient(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
             : base(client, rootUrl, servicePath, initializer)
         {
             this.store = store;
         }
 
+		/// <summary>
+		/// Access the `User` API through this.  The User object is initialized to the currently logged in user.
+		/// </summary>
 		public User User()
         {
             lock (Lock)
@@ -50,6 +86,13 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Access AppData operations through this.
+		/// </summary>
+		/// <returns>The data.</returns>
+		/// <param name="collectionName">Collection name.</param>
+		/// <param name="myClass">The class definition for entities in this collection.</param>
+		/// <typeparam name="T">The Type associated with the Class</typeparam>
         public AppData<T> AppData<T>(String collectionName, Type myClass)
         {
 			return new AppData<T>(collectionName, myClass, this);
@@ -63,12 +106,19 @@ namespace KinveyXamarin
 //            }
         }
 
+		/// <summary>
+		/// Access file operations through this.
+		/// </summary>
 		public File File()
 		{
 			return new File (this);
 	
 		}
 			
+		/// <summary>
+		/// Gets or sets the current user.
+		/// </summary>
+		/// <value>The current user.</value>
         public User CurrentUser
         {
             get
@@ -87,6 +137,10 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Gets or sets the client users.
+		/// </summary>
+		/// <value>The client users.</value>
         public IClientUsers ClientUsers
         {
             get 
@@ -100,11 +154,20 @@ namespace KinveyXamarin
             set { this.clientUsers = value; }
         }
 
+		/// <summary>
+		/// Gets the credential store.
+		/// </summary>
+		/// <value>The store.</value>
         public ICredentialStore Store
         {
             get { return store; }
         }
 
+		/// <summary>
+		/// Gets the credential for a specified user._id
+		/// </summary>
+		/// <returns><c>true</c>, if credential was loaded, <c>false</c> otherwise.</returns>
+		/// <param name="userId">User identifier.</param>
         private bool GetCredential(String userId) 
         {
 
@@ -122,6 +185,9 @@ namespace KinveyXamarin
             }
         }
 
+		/// <summary>
+		/// Builder for this AbstractClient implementation.
+		/// </summary>
 		public new abstract class Builder : AbstractKinveyClient.Builder
         {
             private ICredentialStore store;

@@ -5,18 +5,31 @@ using System.Diagnostics.Contracts;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This class provides access to Kinvey's File API.
+	/// </summary>
 	public class File
 	{
+		/// <summary>
+		/// Gets or sets the client.
+		/// </summary>
+		/// <value>The client.</value>
 		private AbstractClient client {get; set;}
 
-		public FileProgressListener progressListener { get; set;}
-
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.File"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
 		public File (AbstractClient client)
 		{
 			this.client = client;
 		}
 
+		/// <summary>
+		/// Downloads the file associated with the _id contained in the FileMetaData.
+		/// </summary>
+		/// <returns>a blocking Download request</returns>
+		/// <param name="metadata">Metadata.</param>
 		public DownloadMetadataAndFile downloadBlocking(FileMetaData metadata)
 		{
 
@@ -24,7 +37,7 @@ namespace KinveyXamarin
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("fileID", KAssert.notNull(metadata.id, "metadata.id is required to download a specific file-- can also download by query if _id is unknown."));
 
-			DownloadMetadataAndFile download = new DownloadMetadataAndFile (progressListener, urlParameters, this.client);
+			DownloadMetadataAndFile download = new DownloadMetadataAndFile (urlParameters, this.client);
 
 			client.InitializeRequest (download);
 
@@ -38,6 +51,12 @@ namespace KinveyXamarin
 			return download;
 		}
 
+
+		/// <summary>
+		/// Uploads the FileMetaData and it's associated file.
+		/// </summary>
+		/// <returns>a blocking upload request.</returns>
+		/// <param name="metadata">Metadata.</param>
 		public UploadMetadataAndFile uploadBlocking(FileMetaData metadata)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -48,13 +67,19 @@ namespace KinveyXamarin
 				mode = "PUT";
 			}
 
-			UploadMetadataAndFile upload = new UploadMetadataAndFile (metadata, mode, progressListener, urlParameters, this.client);
+			UploadMetadataAndFile upload = new UploadMetadataAndFile (metadata, mode, urlParameters, this.client);
 
 			client.InitializeRequest (upload);
 		
 			return upload;
 		}
 
+
+		/// <summary>
+		/// Downloads the FileMetaData blocking.
+		/// </summary>
+		/// <returns>The blocking download Request.</returns>
+		/// <param name="fileId">File _id.</param>
 		public DownloadMetadata downloadMetadataBlocking(String fileId)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -69,6 +94,12 @@ namespace KinveyXamarin
 
 		}
 
+
+		/// <summary>
+		/// Uploads the metadata.
+		/// </summary>
+		/// <returns>The blocking upload request.</returns>
+		/// <param name="metadata">Metadata.</param>
 		public UploadMetadata uploadMetadataBlocking(FileMetaData metadata)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -83,6 +114,11 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// Deletes a file's FileMetaData
+		/// </summary>
+		/// <returns>The blocking delete request.</returns>
+		/// <param name="fileId">File _id.</param>
 		public DeleteMetadataAndFile deleteBlocking(String fileId)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -103,7 +139,9 @@ namespace KinveyXamarin
 
 
 
-
+		/// <summary>
+		/// A synchronously request to download metadata and file.
+		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
 		public class DownloadMetadataAndFile : KinveyFileRequest
 		{
@@ -113,7 +151,7 @@ namespace KinveyXamarin
 			[JsonProperty]
 			public string fileID { get; set;}
 
-			public DownloadMetadataAndFile(FileProgressListener progressListener, Dictionary<string, string> urlProperties, AbstractClient client)
+			public DownloadMetadataAndFile(Dictionary<string, string> urlProperties, AbstractClient client)
 				: base(client, "GET", REST_PATH, default(FileMetaData), urlProperties)
 			{
 				this.fileID = urlProperties["fileID"];
@@ -122,6 +160,9 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// A synchronously request to upload metadata and file.
+		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
 		public class UploadMetadataAndFile : KinveyFileRequest
 		{
@@ -131,7 +172,7 @@ namespace KinveyXamarin
 			[JsonProperty]
 			public string fileID { get; set;}
 
-			public UploadMetadataAndFile(FileMetaData meta, string mode, FileProgressListener progressListener, Dictionary<string, string> urlProperties, AbstractClient client)
+			public UploadMetadataAndFile(FileMetaData meta, string mode, Dictionary<string, string> urlProperties, AbstractClient client)
 				: base(client, mode, REST_PATH, meta, urlProperties)
 			{
 
@@ -143,7 +184,9 @@ namespace KinveyXamarin
 			}
 		}
 
-
+		/// <summary>
+		/// A synchronously request to download metadata.
+		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
 		public class DownloadMetadata : KinveyFileRequest
 		{
@@ -162,6 +205,9 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// A synchronously request to upload metadata.
+		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
 		public class UploadMetadata : KinveyFileRequest
 		{
@@ -178,6 +224,9 @@ namespace KinveyXamarin
 			}
 		}
 
+		/// <summary>
+		/// A synchronously request to delete metadata and file.
+		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
 		public class DeleteMetadataAndFile : AbstractKinveyClientRequest<KinveyDeleteResponse>
 		{

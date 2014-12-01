@@ -13,10 +13,22 @@
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Defines the policies available for offline behaivor.
+	/// </summary>
 	public enum OfflinePolicy
 	{
+		/// <summary>
+		/// The device is always online, and will never attempt to use offline.
+		/// </summary>
 		ALWAYS_ONLINE,
+		/// <summary>
+		/// The device will first attempt to use the local storage, and if that fails attempt to go online.
+		/// </summary>
 		LOCAL_FIRST,
+		/// <summary>
+		/// The device will first attempt to use a network connection, and if that fails will use local storage.
+		/// </summary>
 		ONLINE_FIRST
 	}
 }

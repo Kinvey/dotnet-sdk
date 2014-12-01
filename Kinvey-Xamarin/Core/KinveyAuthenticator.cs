@@ -21,15 +21,33 @@ using RestSharp;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Authenticator for kinvey style authentication.
+	/// </summary>
 	public class KinveyAuthenticator : IAuthenticator
     {
+		/// <summary>
+		/// The auth header format.
+		/// </summary>
         private static readonly string AuthHeaderFormat = "Kinvey {0}";
+		/// <summary>
+		/// The auth token.
+		/// </summary>
         private readonly string authToken;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthenticator"/> class.
+		/// </summary>
+		/// <param name="authToken">Auth token.</param>
 		public KinveyAuthenticator(string authToken) {
 			this.authToken = authToken;
 		}
 
+		/// <summary>
+		/// Authenticate the specified request.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="request">Request.</param>
 		public void Authenticate(IRestClient client, IRestRequest request) {
 
 			if (!request.Parameters.Any(p => p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))
@@ -40,6 +58,10 @@ namespace KinveyXamarin
 			}
 		}
 
+		/// <summary>
+		/// Authenticate the specified request.
+		/// </summary>
+		/// <param name="request">Request.</param>
 		public void Authenticate(IRestRequest request) {
 
 			if (!request.Parameters.Any(p => p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))

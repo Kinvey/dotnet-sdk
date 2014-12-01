@@ -22,15 +22,40 @@ namespace KinveyXamarin
 {
     public class KinveyClientRequestInitializer : IKinveyRequestInitializer
     {
+		/// <summary>
+		/// The app key.
+		/// </summary>
         private readonly string appKey;
+		/// <summary>
+		/// The app secret.
+		/// </summary>
         private readonly string appSecret;
 
+		/// <summary>
+		/// The credential to use to authenticate the request
+		/// </summary>
         private Credential credential;
 
+		/// <summary>
+		/// the kinvey headers
+		/// </summary>
         private readonly KinveyHeaders headers;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyClientRequestInitializer"/> class.
+		/// </summary>
+		/// <param name="appKey">App key.</param>
+		/// <param name="appSecret">App secret.</param>
+		/// <param name="headers">Headers.</param>
         public KinveyClientRequestInitializer(string appKey, string appSecret, KinveyHeaders headers) : this(appKey, appSecret, headers, default(Credential)) {}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyClientRequestInitializer"/> class.
+		/// </summary>
+		/// <param name="appKey">App key.</param>
+		/// <param name="appSecret">App secret.</param>
+		/// <param name="headers">Headers.</param>
+		/// <param name="credential">Credential.</param>
         public KinveyClientRequestInitializer(string appKey, string appSecret, KinveyHeaders headers, Credential credential)
         {
             this.appKey = appKey;
@@ -39,26 +64,47 @@ namespace KinveyXamarin
             this.credential = credential;
         }
 
+		/// <summary>
+		/// Gets the app key.
+		/// </summary>
+		/// <value>The app key.</value>
         public string AppKey
         {
             get { return appKey; }
         }
 
+		/// <summary>
+		/// Gets the app secret.
+		/// </summary>
+		/// <value>The app secret.</value>
         public string AppSecret
         {
             get { return appSecret; }
         }
 
+		/// <summary>
+		/// Gets the headers.
+		/// </summary>
+		/// <value>The headers.</value>
         public KinveyHeaders Headers
         {
             get { return headers;}
         }
 
+		/// <summary>
+		/// Sets the kinvey credential.
+		/// </summary>
+		/// <value>The kinvey credential.</value>
         public Credential KinveyCredential
         {
             set { this.credential = value; }
         }
 
+		/// <summary>
+		/// Initialize the specified request.
+		/// </summary>
+		/// <param name="request">Request.</param>
+		/// <typeparam name="T">The response type of the request.</typeparam>
         public void Initialize<T>(AbstractKinveyClientRequest<T> request)
         {
             if (credential != null && !request.RequireCredentials)

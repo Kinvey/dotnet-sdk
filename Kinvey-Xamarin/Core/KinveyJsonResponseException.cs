@@ -22,27 +22,54 @@ using KinveyXamarin;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// An exeception based on a Kinvey JSON response.
+	/// </summary>
     public class KinveyJsonResponseException : Exception
     {
+		/// <summary>
+		/// The error this expection wraps.
+		/// </summary>
         private readonly KinveyJsonError details;
+		/// <summary>
+		/// The message.
+		/// </summary>
         private string message;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyJsonResponseException"/> class.
+		/// </summary>
+		/// <param name="response">Response.</param>
+		/// <param name="details">Details.</param>
+		/// <param name="message">Message.</param>
 		private KinveyJsonResponseException(IRestResponse response, KinveyJsonError details, string message) : base(response.ErrorMessage, response.ErrorException)
         {
             this.details = details;
             this.message = message;
         }
 
+		/// <summary>
+		/// Gets the message.
+		/// </summary>
+		/// <value>The message.</value>
         public override string Message
         {
             get { return this.message; }
         }
 
+		/// <summary>
+		/// Gets the details.
+		/// </summary>
+		/// <value>The details.</value>
         public KinveyJsonError Details
         {
             get { return this.details; }
         }
 
+		/// <summary>
+		/// Creates a Response Execption from a RestRequest response.
+		/// </summary>
+		/// <param name="response">Response.</param>
 		public static KinveyJsonResponseException From(IRestResponse response)
         {
             KinveyJsonError details = null;

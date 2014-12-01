@@ -14,13 +14,34 @@ namespace KinveyXamarin
 	/// </summary>
 	public class SQLiteOfflineStore : IOfflineStore
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteOfflineStore"/> class.
+		/// </summary>
 		public SQLiteOfflineStore ()
 		{
 		}
 
+		/// <summary>
+		/// Gets or sets the platform.
+		/// </summary>
+		/// <value>The platform.</value>
 		public ISQLitePlatform platform {get; set;}
+
+		/// <summary>
+		/// Gets or sets the database file path.
+		/// </summary>
+		/// <value>The dbpath.</value>
 		public string dbpath{ get; set;}
 
+		/// <summary>
+		/// Executes a get request.
+		/// </summary>
+		/// <returns>The response object.</returns>
+		/// <param name="client">Client.</param>
+		/// <param name="appdata">Appdata.</param>
+		/// <param name="request">Request.</param>
+		/// <typeparam name="T">The type of the response.</typeparam>
+		/// <param name="appData">App data.</param>
 		public object executeGet<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
@@ -69,6 +90,15 @@ namespace KinveyXamarin
 			return ret;
 		}
 
+		/// <summary>
+		/// Executes a save request.
+		/// </summary>
+		/// <returns>The save.</returns>
+		/// <param name="client">Client.</param>
+		/// <param name="appdata">Appdata.</param>
+		/// <param name="request">Request.</param>
+		/// <typeparam name="T">The type of the response.</typeparam>
+		/// <param name="appData">App data.</param>
 		public object executeSave<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
@@ -92,6 +122,15 @@ namespace KinveyXamarin
 			return request.HttpContent;
 		}
 
+		/// <summary>
+		/// Executes a delete request.
+		/// </summary>
+		/// <returns>The delete.</returns>
+		/// <param name="client">Client.</param>
+		/// <param name="appdata">Appdata.</param>
+		/// <param name="request">Request.</param>
+		/// <typeparam name="T">The type of the response.</typeparam>
+		/// <param name="appData">App data.</param>
 		public KinveyDeleteResponse executeDelete<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
@@ -115,6 +154,14 @@ namespace KinveyXamarin
 			return ret;
 		}
 
+		/// <summary>
+		/// Inserts an entity directly into the database.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="appdata">Appdata.</param>
+		/// <param name="entity">Entity.</param>
+		/// <typeparam name="T">The type of the response.</typeparam>
+		/// <param name="appData">App data.</param>
 		public void insertEntity<T>(AbstractKinveyClient client, AppData<T> appData, T entity){
 
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
@@ -131,11 +178,19 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// Clears the storage.
+		/// </summary>
 		public void clearStorage(){
 			//TODO
 		}
 			
 
+		/// <summary>
+		/// Gets the database helper.
+		/// </summary>
+		/// <returns>The database helper.</returns>
+		/// <typeparam name="T">The type of entities stored in this collection.</typeparam>
 		private DatabaseHelper<T> getDatabaseHelper<T>(){
 			return SQLiteHelper<T>.getInstance (platform, dbpath);
 		}

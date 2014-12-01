@@ -16,34 +16,54 @@ using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This client request object adds support for pulling respones from a cache.
+	/// </summary>
 	public class AbstractKinveyCachedClientRequest<T> : AbstractKinveyOfflineClientRequest<T>
 	{
-
+		/// <summary>
+		/// The cache policy.
+		/// </summary>
 		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
 		// TODO no anonymous interface support in c# -> investigate making ICache an abstract class
+		/// <summary>
+		/// The cache itself.
+		/// </summary>
 		private Cache<String, T> cache = null;
-
-
-
+		/// <summary>
+		/// The lock which cache access is syncronized on.
+		/// </summary>
 		private Object locker = new Object();
 
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyCachedClientRequest`1"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="requestMethod">Request method.</param>
+		/// <param name="uriTemplate">URI template.</param>
+		/// <param name="httpContent">Http content.</param>
+		/// <param name="uriParameters">URI parameters.</param>
+		/// <param name="collection">Collection.</param>
 		protected AbstractKinveyCachedClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters, string collection) 
 			: base (client, requestMethod, uriTemplate, httpContent, uriParameters, collection)
 		{
 		}
 
+		/// <summary>
+		/// Sets the cache.
+		/// </summary>
+		/// <param name="cache">Cache.</param>
+		/// <param name="policy">Policy.</param>
 		public void setCache(Cache<String, T> cache, CachePolicy policy)
 		{
 			this.cache = cache;
 			this.cachePolicy = policy;
 		}
-
-//		public void setCache(ICache<String, T[]> cache, CachePolicy policy){
-//
-//		}
-
-
+			
+		/// <summary>
+		/// Pulls a value from the cache, or the default value if it's not present.
+		/// </summary>
+		/// <returns>The cache.</returns>
 		public T fromCache(){
 			if (cache == null) {
 				return default(T);
@@ -60,6 +80,11 @@ namespace KinveyXamarin
 			}
 		}
 
+		/// <summary>
+		/// Froms the service.
+		/// </summary>
+		/// <returns>The service.</returns>
+		/// <param name="persist">If set to <c>true</c> persist.</param>
 		public T fromService(bool persist){
 			T ret = base.Execute ();
 			if (persist && ret != null && cache != null) {
@@ -77,6 +102,9 @@ namespace KinveyXamarin
 			return ret;
 		}
 
+		/// <summary>
+		/// Execute this request.
+		/// </summary>
 		public override T Execute ()
 		{
 			T ret = default(T);

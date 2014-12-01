@@ -19,8 +19,16 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Interface defining ability to initialize a Kinvey request.
+	/// </summary>
     public interface IKinveyRequestInitializer
     {
+		/// <summary>
+		/// Initialize the specified request.
+		/// </summary>
+		/// <param name="request">Request.</param>
+		/// <typeparam name="T">The response type of the request.</typeparam>
         void Initialize<T>(AbstractKinveyClientRequest<T> request);
 
 

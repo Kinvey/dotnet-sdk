@@ -9,16 +9,34 @@ using Newtonsoft.Json;
 
 namespace KinveyXamarin
 {
+
+
+	/// <summary>
+	/// This class wraps and manages all sqlite access needed by offline.
+	/// </summary>
 	public class SQLiteHelper<T> : DatabaseHelper<T>
 	{
+
+		/// <summary>
+		/// This class is a singleton, this is the instance.
+		/// </summary>
 		private static SQLiteHelper<T> _instance;
 
-//		private SQLiteConnection _dbConnection;
-
+		/// <summary>
+		/// The platform.
+		/// </summary>
 		private ISQLitePlatform platform;
+		/// <summary>
+		/// The database path.
+		/// </summary>
 		private string databasePath;
 
-
+		/// <summary>
+		/// Gets the instance.
+		/// </summary>
+		/// <returns>The instance.</returns>
+		/// <param name="platform">The sqlite platform to use.</param>
+		/// <param name="dbpath">Where to save the databse file.</param>
 		public static SQLiteHelper<T> getInstance(ISQLitePlatform platform, string dbpath){
 			if (_instance == null) {
 				_instance = new SQLiteHelper<T> (platform, dbpath);
@@ -26,28 +44,33 @@ namespace KinveyXamarin
 			return _instance;
 		}
 
-		public SQLiteHelper(ISQLitePlatform platform, string databasePath) 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteHelper`1"/> class.
+		/// </summary>
+		/// <param name="platform">Platform.</param>
+		/// <param name="databasePath">Database path.</param>
+		internal SQLiteHelper(ISQLitePlatform platform, string databasePath) 
 		{ 
-			//_dbConnection = new SQLiteConnection (platform, databasePath);
 			this.platform = platform;
 			this.databasePath = databasePath;
-
-//			SQLiteConnectionString _connectionParameters = new SQLiteConnectionString(databasePath, false); 
-//			SQLiteConnectionPool _sqliteConnectionPool = new SQLiteConnectionPool(platform); 
-//			_dbConnection = new SQLiteConnection(() =>
-//				_sqliteConnectionPool.GetConnection(_connectionParameters));
-
 		} 
 
 		#region DatabaseHelper implementation
 
+		/// <summary>
+		/// Creates an Offline Table, which manages all offline collection features.
+		/// </summary>
+		/// <param name="collectionName">Collection name.</param>
 		public void createTable (string collectionName)
 		{
-			//return new OfflineTable<T> (this, collectionName);
 			onCreate (collectionName);
 		}
 
 
+		/// <summary>
+		/// Gets the collection tables.
+		/// </summary>
+		/// <returns>The collection tables.</returns>
 		public List<string> getCollectionTables ()
 		{
 			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
@@ -61,6 +84,11 @@ namespace KinveyXamarin
 			return collections;
 		}
 
+		/// <summary>
+		/// Deletes the contents of table.
+		/// </summary>
+		/// <returns>The contents of table.</returns>
+		/// <param name="collection">Collection.</param>
 		public int deleteContentsOfTable (string collection)
 		{
 			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
@@ -69,6 +97,10 @@ namespace KinveyXamarin
 		
 		}
 
+		/// <summary>
+		/// Creates all the tables associated with a collection
+		/// </summary>
+		/// <param name="collection">Collection.</param>
 		public void onCreate(string collection){
 			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
 			_dbConnection.CreateTable<SQLTemplates.TableItem> ();
@@ -81,11 +113,15 @@ namespace KinveyXamarin
 			SQLTemplates.TableItem table = new SQLTemplates.TableItem ();
 			table.name = collection;
 			_dbConnection.Insert(table);
-
-//			int count = _dbConnection.Table<SQLTemplates.TableItem> ().Count ();
-//			int x = 0;
 		}
 
+
+		/// <summary>
+		/// Upserts a specific entity, adding it directly to to the offline table.
+		/// </summary>
+		/// <param name="id">Identifier.</param>
+		/// <param name="collection">Collection.</param>
+		/// <param name="json">Json.</param>
 		public void upsertEntity(string id, string collection, string json){
 			SQLTemplates.OfflineEntity entity = new SQLTemplates.OfflineEntity ();
 			entity.id = id;

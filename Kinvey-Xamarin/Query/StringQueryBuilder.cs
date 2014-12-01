@@ -16,31 +16,58 @@ using System.Text;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Builds a Kinvey-style query.
+	/// </summary>
 	public class StringQueryBuilder : IQueryBuilder
 	{
 
+		/// <summary>
+		/// The StringBuilder used for building up the query string.
+		/// </summary>
 		private StringBuilder builder;
+		/// <summary>
+		/// The StringBuilder used for building up the modifiers on the query string (such as skip, limit
+		/// </summary>
 		private StringBuilder dangler;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.StringQueryBuilder"/> class.
+		/// </summary>
 		public StringQueryBuilder()
 		{
 			Reset ();
 		}
 
+		/// <summary>
+		/// Reset this instance by creating new StringBuilders.
+		/// </summary>
 		public void Reset(){
 			this.builder = new StringBuilder ();
 			this.dangler = new StringBuilder ();
 		}
 
+		/// <summary>
+		/// Writes the specified value to the query Builder.
+		/// </summary>
+		/// <param name="value">Value.</param>
 		public void Write(object value)
 		{
 			builder.Append(value);
 		}
 
+		/// <summary>
+		/// Gets the full string by combining the two StringBuilders.
+		/// </summary>
+		/// <returns>The full string.</returns>
 		public String GetFullString(){
 			return builder.ToString () + dangler.ToString ();
 		}
 
+		/// <summary>
+		/// Writes the specified value as a query modifier.
+		/// </summary>
+		/// <param name="value">Value.</param>
 		public void Dangle(object value){
 			dangler.Append (value);
 

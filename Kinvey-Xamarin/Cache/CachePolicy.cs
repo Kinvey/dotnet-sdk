@@ -15,12 +15,30 @@ using System;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Cache policies, used for Caching.
+	/// </summary>
 	public enum CachePolicy
 	{
+		/// <summary>
+		/// Executes the request online every single time.
+		/// </summary>
 		NO_CACHE,
+		/// <summary>
+		/// Executes the request from the cache every single time.
+		/// </summary>
 		CACHE_ONLY,
+		/// <summary>
+		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
+		/// </summary>
 		CACHE_FIRST,
+		/// <summary>
+		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will not be cached.
+		/// </summary>
 		CACHE_FIRST_NOREFRESH,
+		/// <summary>
+		/// Attempts to get the response from the network, if that fails attempts to get the response from the cache.
+		/// </summary>
 		NETWORK_FIRST
 	}
 }

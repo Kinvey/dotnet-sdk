@@ -15,12 +15,28 @@ using System;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// This interface defines the behaivor of a cache.
+	/// </summary>
 	public interface Cache<String, V>
 	{
+		/// <summary>
+		/// Put the specified key and value into the cache
+		/// </summary>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
 		void put (String key, V value);
 
+		/// <summary>
+		/// Get the specified key from the cache.
+		/// </summary>
+		/// <param name="key">Key.</param>
 		V get (String key);
 
+		/// <summary>
+		/// Gets the size of the cache
+		/// </summary>
+		/// <returns>The size.</returns>
 		int getSize();
 	}
 }
