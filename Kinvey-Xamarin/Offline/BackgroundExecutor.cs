@@ -34,7 +34,7 @@ namespace KinveyXamarin
 		/// <param name="client">The Kinvey client</param>
 		public BackgroundExecutor (Client client)
 		{
-			this.dbpath = Path.Combine(c.filePath,  "kinveyOffline.sqlite") ;
+			this.dbpath = Path.Combine(client.filePath,  "kinveyOffline.sqlite") ;
 			this.platform = client.offline_platform;
 			this.client = client;
 		}

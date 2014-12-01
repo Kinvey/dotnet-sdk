@@ -1,8 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/updatesMain"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-</LinearLayout>
-
+    android:background="@color/ghost_white"
+    android:orientation="vertical">
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:dividerHeight="16dp"
+        android:divider="#00000000"
+        android:id="@+id/updateList" />
+    <ProgressBar
+        android:id="@+id/updateProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+    <TextView
+        android:id="@+id/empty_list"
+        android:textSize="24sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No updates (yet!)"
+        android:gravity="center" />
+</RelativeLayout>

@@ -1,8 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="10dp"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
+    android:background="@color/ghost_white"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="36sp"
+        android:text="Share"
+        android:id="@+id/share_title" />
+    <EditText
+        android:id="@+id/update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ebony"
+        android:hint="Enter an update!" />
+    <TextView
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:layout_width="match_parent"
+        android:textSize="36sp"
+        android:text="Attach a File"
+        android:id="@+id/share_attach_title" />
+    <ImageView
+        android:id="@+id/preview"
+        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:background="@drawable/camera"
+        android:contentDescription="@string/description_preview" />
 </LinearLayout>
-
