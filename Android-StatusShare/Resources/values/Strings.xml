@@ -4,6 +4,7 @@
 
     <string name="login_username">username</string>
     <string name="login_password">password</string>
+    <string name="register_text">Register</string>
 
     <string name="description_sign_out">Sign out</string>
     <string name="description_about">About</string>

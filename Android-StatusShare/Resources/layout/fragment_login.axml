@@ -45,8 +45,13 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/login"
                 android:layout_margin="10dp"
-                android:onClick="submit"
                 android:text="@string/login_text" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/login_register"
+                android:layout_margin="10dp"
+                android:text="@string/register_text" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

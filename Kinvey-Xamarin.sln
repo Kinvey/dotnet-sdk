@@ -50,6 +50,6 @@ Global
 		{CC4D99EF-0740-47BD-96AD-2FCD4C36C7FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Android-TestDrive\Android-TestDrive.csproj
+		StartupItem = Android-StatusShare\Android-StatusShare.csproj
 	EndGlobalSection
 EndGlobal

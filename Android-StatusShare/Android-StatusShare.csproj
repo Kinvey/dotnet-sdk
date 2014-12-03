@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
+    <Reference Include="LinqExtender">
+      <HintPath>..\packages\LinqExtender.3.0.1\lib\LinqExtender.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -49,11 +55,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatusShare.cs" />
     <Compile Include="src.model\UpdateEntity.cs" />
+    <Compile Include="src.fragments\KinveyFragment.cs" />
+    <Compile Include="src.fragments\LoginFragment.cs" />
+    <Compile Include="src.fragments\ShareListFragment.cs" />
+    <Compile Include="src.fragments\UpdateDetailsFragment.cs" />
+    <Compile Include="src.fragments\UserFragment.cs" />
+    <Compile Include="KinveyService.cs" />
+    <Compile Include="src.component\UpdateAdapter.cs" />
+    <Compile Include="ExpressionVisitor.cs" />
+    <Compile Include="DefaultContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
@@ -61,7 +77,6 @@
     <AndroidResource Include="Resources\layout\fragment_login.axml" />
     <AndroidResource Include="Resources\layout\activity_fragment_holder.axml" />
     <AndroidResource Include="Resources\layout\fragment_edit_comment.axml" />
-    <AndroidResource Include="Resources\layout\fragment_register.axml" />
     <AndroidResource Include="Resources\layout\fragment_update_details.axml" />
     <AndroidResource Include="Resources\layout\fragment_updates_list.axml" />
     <AndroidResource Include="Resources\layout\fragment_view_author.axml" />
@@ -69,9 +84,37 @@
     <AndroidResource Include="Resources\layout\row_comment.axml" />
     <AndroidResource Include="Resources\layout\row_update.axml" />
     <AndroidResource Include="Resources\values\colors.axml" />
+    <AndroidResource Include="Resources\drawable\actionbar_background.xml" />
+    <AndroidResource Include="Resources\drawable\camera.png" />
+    <AndroidResource Include="Resources\drawable\edit_text_background.xml" />
+    <AndroidResource Include="Resources\drawable\edit_text_cursor.xml" />
+    <AndroidResource Include="Resources\drawable\grid_blank.png" />
+    <AndroidResource Include="Resources\drawable\ic_title_share_default.png" />
+    <AndroidResource Include="Resources\drawable\icon_small.png" />
+    <AndroidResource Include="Resources\drawable\kinvey_button_text_color.xml" />
+    <AndroidResource Include="Resources\drawable\kinvey_button.xml.bak" />
+    <AndroidResource Include="Resources\drawable\lock.png" />
+    <AndroidResource Include="Resources\drawable\rounded_layout.xml" />
+    <AndroidResource Include="Resources\drawable\spinner_outer.png" />
+    <AndroidResource Include="Resources\drawable\spinner.xml" />
+    <AndroidResource Include="Resources\drawable\splash_land.png" />
+    <AndroidResource Include="Resources\drawable\splash_port.png" />
+    <AndroidResource Include="Resources\drawable\unlock.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="src.model\" />
+    <Folder Include="src.fragments\" />
+    <Folder Include="src.component\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">
+      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
+      <Name>Kinvey-Xamarin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
+      <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
+      <Name>RestSharp.Portable</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

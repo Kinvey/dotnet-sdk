@@ -11,43 +11,47 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Graphics;
+using AndroidStatusShare;
 
 namespace AndroidStatusShare
 {
-
-	public static final String TAG = "Kinvey - StatusShare";
-
-	public static final String COL_UPDATES = "Updates";
-	public static final String COL_COMMENTS = "Comments";
-
-	private static final int PICK_FROM_CAMERA = 1;
-	private static final int PICK_FROM_FILE = 2;
-
-	private Uri mImageCaptureUri;
-
-	public Bitmap bitmap = null;
-	public String path = null;
-
-	private List<UpdateEntity> shareList;
-
-
 	[Activity (Label = "StatusShare", MainLauncher = true, Icon = "@drawable/icon")]		
 	public class StatusShare : Activity
 	{
+
+
+		public static string TAG = "Kinvey - StatusShare";
+
+		public static string COL_UPDATES = "Updates";
+		public static string COL_COMMENTS = "Comments";
+
+		private static int PICK_FROM_CAMERA = 1;
+		private static int PICK_FROM_FILE = 2;
+
+		private Uri mImageCaptureUri;
+
+		public Bitmap bitmap = null;
+		public String path = null;
+
+		public UpdateEntity[] shareList { get; set; }
+
+
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+			SetContentView (Resource.Layout.activity_fragment_holder);
+			ReplaceFragment (new LoginFragment (), false);
 
-			// Create your application here
 		}
 
-		public void replaceFragment(SherlockFragment frag, boolean addToBackStack) {
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.replace(R.id.fragmentBox, frag);
+		public void ReplaceFragment(Fragment frag, bool addToBackStack) {
+			FragmentTransaction ft = FragmentManager.BeginTransaction ();
+			ft.Replace(Resource.Id.fragmentBox, frag);
 			if (addToBackStack) {
-				ft.addToBackStack(frag.toString());
+				ft.AddToBackStack(frag.ToString());
 			}
-			ft.commit();
+			ft.Commit();
 		}
 
 
