@@ -130,40 +130,46 @@ namespace AndroidStatusShare
 			public const int grid_blank = 2130837508;
 			
 			// aapt resource value: 0x7f020005
-			public const int ic_title_share_default = 2130837509;
+			public const int ic_menu_refresh = 2130837509;
 			
 			// aapt resource value: 0x7f020006
-			public const int Icon = 2130837510;
+			public const int ic_menu_start_conversation = 2130837510;
 			
 			// aapt resource value: 0x7f020007
-			public const int icon_small = 2130837511;
+			public const int ic_title_share_default = 2130837511;
 			
 			// aapt resource value: 0x7f020008
-			public const int kinvey_button = 2130837512;
+			public const int Icon = 2130837512;
 			
 			// aapt resource value: 0x7f020009
-			public const int kinvey_button_text_color = 2130837513;
+			public const int icon_small = 2130837513;
 			
 			// aapt resource value: 0x7f02000a
-			public const int @lock = 2130837514;
+			public const int kinvey_button = 2130837514;
 			
 			// aapt resource value: 0x7f02000b
-			public const int rounded_layout = 2130837515;
+			public const int kinvey_button_text_color = 2130837515;
 			
 			// aapt resource value: 0x7f02000c
-			public const int spinner = 2130837516;
+			public const int @lock = 2130837516;
 			
 			// aapt resource value: 0x7f02000d
-			public const int spinner_outer = 2130837517;
+			public const int rounded_layout = 2130837517;
 			
 			// aapt resource value: 0x7f02000e
-			public const int splash_land = 2130837518;
+			public const int spinner = 2130837518;
 			
 			// aapt resource value: 0x7f02000f
-			public const int splash_port = 2130837519;
+			public const int spinner_outer = 2130837519;
 			
 			// aapt resource value: 0x7f020010
-			public const int unlock = 2130837520;
+			public const int splash_land = 2130837520;
+			
+			// aapt resource value: 0x7f020011
+			public const int splash_port = 2130837521;
+			
+			// aapt resource value: 0x7f020012
+			public const int unlock = 2130837522;
 			
 			static Drawable()
 			{
@@ -178,104 +184,116 @@ namespace AndroidStatusShare
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060013
-			public const int auther_updates_title = 2131099667;
+			// aapt resource value: 0x7f070013
+			public const int auther_updates_title = 2131165203;
 			
-			// aapt resource value: 0x7f060015
-			public const int author_list_loading = 2131099669;
+			// aapt resource value: 0x7f070015
+			public const int author_list_loading = 2131165205;
 			
-			// aapt resource value: 0x7f060012
-			public const int author_name = 2131099666;
+			// aapt resource value: 0x7f070012
+			public const int author_name = 2131165202;
 			
-			// aapt resource value: 0x7f060014
-			public const int author_updateList = 2131099668;
+			// aapt resource value: 0x7f070014
+			public const int author_updateList = 2131165204;
 			
-			// aapt resource value: 0x7f060011
-			public const int avatar = 2131099665;
+			// aapt resource value: 0x7f070011
+			public const int avatar = 2131165201;
 			
-			// aapt resource value: 0x7f060002
-			public const int comment_text = 2131099650;
+			// aapt resource value: 0x7f070002
+			public const int comment_text = 2131165186;
 			
-			// aapt resource value: 0x7f060001
-			public const int comment_title = 2131099649;
+			// aapt resource value: 0x7f070001
+			public const int comment_title = 2131165185;
 			
-			// aapt resource value: 0x7f060010
-			public const int empty_list = 2131099664;
+			// aapt resource value: 0x7f070010
+			public const int empty_list = 2131165200;
 			
-			// aapt resource value: 0x7f060004
-			public const int et_login = 2131099652;
+			// aapt resource value: 0x7f070004
+			public const int et_login = 2131165188;
 			
-			// aapt resource value: 0x7f060005
-			public const int et_password = 2131099653;
+			// aapt resource value: 0x7f070005
+			public const int et_password = 2131165189;
 			
-			// aapt resource value: 0x7f060000
-			public const int fragmentBox = 2131099648;
+			// aapt resource value: 0x7f070000
+			public const int fragmentBox = 2131165184;
 			
-			// aapt resource value: 0x7f060007
-			public const int login = 2131099655;
+			// aapt resource value: 0x7f070007
+			public const int login = 2131165191;
 			
-			// aapt resource value: 0x7f060006
-			public const int login_label_password = 2131099654;
+			// aapt resource value: 0x7f070006
+			public const int login_label_password = 2131165190;
 			
-			// aapt resource value: 0x7f060003
-			public const int login_label_username = 2131099651;
+			// aapt resource value: 0x7f070003
+			public const int login_label_username = 2131165187;
 			
-			// aapt resource value: 0x7f060008
-			public const int login_register = 2131099656;
+			// aapt resource value: 0x7f070008
+			public const int login_register = 2131165192;
 			
-			// aapt resource value: 0x7f060019
-			public const int preview = 2131099673;
+			// aapt resource value: 0x7f070023
+			public const int menu_refresh = 2131165219;
 			
-			// aapt resource value: 0x7f06001b
-			public const int row_comment_author = 2131099675;
+			// aapt resource value: 0x7f070021
+			public const int menu_send_post = 2131165217;
 			
-			// aapt resource value: 0x7f06001a
-			public const int row_comment_text = 2131099674;
+			// aapt resource value: 0x7f070024
+			public const int menu_sign_out = 2131165220;
 			
-			// aapt resource value: 0x7f06001c
-			public const int row_comment_time = 2131099676;
+			// aapt resource value: 0x7f070022
+			public const int menu_status_post = 2131165218;
 			
-			// aapt resource value: 0x7f06001f
-			public const int row_update_author = 2131099679;
+			// aapt resource value: 0x7f070019
+			public const int preview = 2131165209;
 			
-			// aapt resource value: 0x7f06001d
-			public const int row_update_image = 2131099677;
+			// aapt resource value: 0x7f07001b
+			public const int row_comment_author = 2131165211;
 			
-			// aapt resource value: 0x7f06001e
-			public const int row_update_text = 2131099678;
+			// aapt resource value: 0x7f07001a
+			public const int row_comment_text = 2131165210;
 			
-			// aapt resource value: 0x7f060020
-			public const int row_update_time = 2131099680;
+			// aapt resource value: 0x7f07001c
+			public const int row_comment_time = 2131165212;
 			
-			// aapt resource value: 0x7f060018
-			public const int share_attach_title = 2131099672;
+			// aapt resource value: 0x7f07001f
+			public const int row_update_author = 2131165215;
 			
-			// aapt resource value: 0x7f060016
-			public const int share_title = 2131099670;
+			// aapt resource value: 0x7f07001d
+			public const int row_update_image = 2131165213;
 			
-			// aapt resource value: 0x7f060017
-			public const int update = 2131099671;
+			// aapt resource value: 0x7f07001e
+			public const int row_update_text = 2131165214;
 			
-			// aapt resource value: 0x7f06000e
-			public const int updateList = 2131099662;
+			// aapt resource value: 0x7f070020
+			public const int row_update_time = 2131165216;
 			
-			// aapt resource value: 0x7f06000f
-			public const int updateProgress = 2131099663;
+			// aapt resource value: 0x7f070018
+			public const int share_attach_title = 2131165208;
 			
-			// aapt resource value: 0x7f06000a
-			public const int update_author = 2131099658;
+			// aapt resource value: 0x7f070016
+			public const int share_title = 2131165206;
 			
-			// aapt resource value: 0x7f06000c
-			public const int update_comment_list = 2131099660;
+			// aapt resource value: 0x7f070017
+			public const int update = 2131165207;
 			
-			// aapt resource value: 0x7f06000b
-			public const int update_image = 2131099659;
+			// aapt resource value: 0x7f07000e
+			public const int updateList = 2131165198;
 			
-			// aapt resource value: 0x7f060009
-			public const int update_text = 2131099657;
+			// aapt resource value: 0x7f07000f
+			public const int updateProgress = 2131165199;
 			
-			// aapt resource value: 0x7f06000d
-			public const int updatesMain = 2131099661;
+			// aapt resource value: 0x7f07000a
+			public const int update_author = 2131165194;
+			
+			// aapt resource value: 0x7f07000c
+			public const int update_comment_list = 2131165196;
+			
+			// aapt resource value: 0x7f07000b
+			public const int update_image = 2131165195;
+			
+			// aapt resource value: 0x7f070009
+			public const int update_text = 2131165193;
+			
+			// aapt resource value: 0x7f07000d
+			public const int updatesMain = 2131165197;
 			
 			static Id()
 			{
@@ -323,6 +341,25 @@ namespace AndroidStatusShare
 			}
 			
 			private Layout()
+			{
+			}
+		}
+		
+		public partial class Menu
+		{
+			
+			// aapt resource value: 0x7f060000
+			public const int menu_editshare = 2131099648;
+			
+			// aapt resource value: 0x7f060001
+			public const int menu_sharelist = 2131099649;
+			
+			static Menu()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Menu()
 			{
 			}
 		}

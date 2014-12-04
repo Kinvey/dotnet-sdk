@@ -64,6 +64,7 @@
     <Compile Include="src.component\UpdateAdapter.cs" />
     <Compile Include="ExpressionVisitor.cs" />
     <Compile Include="DefaultContext.cs" />
+    <Compile Include="src.fragments\UpdateEditFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -100,12 +101,17 @@
     <AndroidResource Include="Resources\drawable\splash_land.png" />
     <AndroidResource Include="Resources\drawable\splash_port.png" />
     <AndroidResource Include="Resources\drawable\unlock.png" />
+    <AndroidResource Include="Resources\menu\menu_sharelist.axml" />
+    <AndroidResource Include="Resources\menu\menu_editshare.axml" />
+    <AndroidResource Include="Resources\drawable\ic_menu_refresh.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_start_conversation.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="src.model\" />
     <Folder Include="src.fragments\" />
     <Folder Include="src.component\" />
+    <Folder Include="Resources\menu\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">

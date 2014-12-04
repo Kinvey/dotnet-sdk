@@ -71,6 +71,14 @@ namespace KinveyXamarin
 			return new AsyncAppData<T>(collectionName, myClass, this);
 		}
 
+		/// <summary>
+		/// Access file operations through this.
+		/// </summary>
+		/// <returns>A configured instance of File.</returns>
+		public new AsyncFile File(){
+			return new AsyncFile (this);
+		}
+
 	
 		/// <summary>
 		/// Builder for creating a new instance of a client.  Use this class to easily create a new client, as it uses the builder pattern so methods can be chained together.

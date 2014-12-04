@@ -1,13 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Android-StatusShare/MainActivity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Android-StatusShare/src.fragments/ShareListFragment.cs">
     <Files>
-      <File FileName="Android-StatusShare/StatusShare.cs" Line="1" Column="1" />
-      <File FileName="Android-StatusShare/src.model/UpdateEntity.cs" Line="2" Column="2" />
-      <File FileName="Kinvey-Xamarin/Offline/BackgroundExecutor.cs" Line="37" Column="37" />
-      <File FileName="Android-StatusShare/Resources/values/colors.axml" Line="4" Column="4" />
-      <File FileName="Android-StatusShare/Resources/values/Strings.xml" Line="1" Column="1" />
-      <File FileName="Android-StatusShare/MainActivity.cs" Line="6" Column="6" />
+      <File FileName="Android-StatusShare/src.fragments/ShareListFragment.cs" Line="114" Column="114" />
+      <File FileName="Android-StatusShare/src.fragments/LoginFragment.cs" Line="58" Column="58" />
+      <File FileName="Android-StatusShare/src.fragments/UpdateDetailsFragment.cs" Line="28" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -27,6 +24,6 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-StatusShare MonoForAntroid.PreferredDevice="Nexus 4" />
   <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
+  <MonoDevelop.Ide.ItemProperties.Android-StatusShare MonoForAntroid.PreferredDevice="Nexus 4" />
 </Properties>

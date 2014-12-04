@@ -82,10 +82,35 @@ namespace AndroidStatusShare
 
 				};
 			}
-
-
-
 		}
+			
+		public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater) {
+			menu.Clear();
+			inflater.Inflate(Resource.Menu.menu_sharelist, menu);
+		}
+			
+		public override bool OnOptionsItemSelected(IMenuItem item) {
+			switch (item.ItemId){
+
+			case Resource.Id.menu_status_post:
+				((StatusShare) Activity).ReplaceFragment(new UpdateEditFragment(), true);
+				return (true);
+
+			case Resource.Id.menu_refresh:
+				adapter = null;
+				loadUpdates();
+				return true;
+
+			case Resource.Id.menu_sign_out:
+				KinveyService.logout ();
+				Activity.Finish ();
+
+				return true;
+			}
+
+			return base.OnOptionsItemSelected(item);
+		}
+
 	}
 }
 
