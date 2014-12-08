@@ -75,6 +75,11 @@ namespace KinveyXamarin
 		/// The payload of the request.
 		/// </summary>
         private IAuthenticator requestPayload;
+
+		/// <summary>
+		/// The third party identity, if there is one.
+		/// </summary>
+		private ThirdPartyIdentity identity;
 	
 		/// <summary>
 		/// The kinvey headers.
@@ -109,6 +114,32 @@ namespace KinveyXamarin
         }
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="baseUrl">Base URL.</param>
+		/// <param name="auth">authenticator to use.</param>
+		/// <param name="appKey">App key.</param>
+		/// <param name="identity">The third party identity.</param>
+		/// <param name="user">User.</param>
+		/// <param name="create">If set to <c>true</c> create.</param>
+		public KinveyAuthRequest(RestClient client, string baseUrl, HttpBasicAuthenticator auth, string appKey, ThirdPartyIdentity identity, User user, bool create)
+
+		{
+			this.client = client;
+			this.BaseUrl = baseUrl;
+			this.appKeyAuthentication = auth;
+			this.identity = identity;
+			if (user != null)
+			{
+				// TODO Add properties of user
+			}
+			this.create = create;
+			this.uriTemplateParameters = new Dictionary<string,string>();
+			this.uriTemplateParameters.Add("appKey", appKey);
+		}
+
+		/// <summary>
 		/// Builds the rest request.
 		/// </summary>
 		/// <returns>The rest request.</returns>
@@ -119,7 +150,9 @@ namespace KinveyXamarin
             if (this.requestPayload != null)
             {
                 restRequest.AddBody(JsonConvert.SerializeObject(this.requestPayload));
-            }
+            }else if (this.identity != null) {
+				restRequest.AddBody (JsonConvert.SerializeObject(this.requestPayload));
+			}
 
             restRequest.Resource = BaseUrl + "user/{appKey}/" + (this.create ? "" : "login");
 			restRequest.Method = this.create ? Method.POST : Method.PUT;
@@ -239,6 +272,8 @@ namespace KinveyXamarin
 
             private string appKey;
 
+			private ThirdPartyIdentity identity;
+
 			/// <summary>
 			/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest+Builder"/> class.
 			/// </summary>
@@ -272,12 +307,26 @@ namespace KinveyXamarin
                 this.username = username;
                 this.password = password;
             }
+
+
+			public Builder(RestClient transport, string BaseUrl, string appKey, string appSecret, ThirdPartyIdentity identity, User user)
+				: this(transport, BaseUrl, appKey, appSecret, user)
+			{
+				this.identity = identity;
+
+			}
+
+
 			/// <summary>
 			/// Build the Auth Request.
 			/// </summary>
             public KinveyAuthRequest build()
             {
-                return new KinveyAuthRequest(Client, BaseUrl, AppKeyAuthentication, AppKey, Username, Password, KinveyUser, this.create);
+				if (identity == null) {
+					return new KinveyAuthRequest (Client, BaseUrl, AppKeyAuthentication, AppKey, Username, Password, KinveyUser, this.create);
+				} else {
+					return new KinveyAuthRequest (Client, BaseUrl, AppKeyAuthentication, AppKey, identity, KinveyUser, this.create);
+				}
             }
 
 			/// <summary>
@@ -328,6 +377,12 @@ namespace KinveyXamarin
             {
                 get { return this.client; }
             }
+
+			public ThirdPartyIdentity Identity
+			{
+				get { return this.identity; }
+				set { this.identity = value;}
+			}
 
 			/// <summary>
 			/// Gets the app key authentication.

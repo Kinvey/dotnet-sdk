@@ -88,6 +88,23 @@ namespace KinveyXamarin
 
 
 		/// <summary>
+		/// Login with a third party identity
+		/// </summary>
+		/// <param name="identity">The Third party identity.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
+		public void Login(ThirdPartyIdentity identity, KinveyDelegate<User> delegates)
+		{
+			Task.Run (() => {
+				try{
+					User user = base.LoginBlocking(identity).Execute();
+					delegates.onSuccess(user);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+
+		/// <summary>
 		/// Logout the current user.
 		/// </summary>
 		public void logout()

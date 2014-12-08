@@ -38,7 +38,8 @@ namespace KinveyXamarin
         {
             IMPLICIT,
             KINVEY,
-            CREDENTIALSTORE
+            CREDENTIALSTORE,
+			THIRDPARTY
         }
 
 		/// <summary>
@@ -203,8 +204,12 @@ namespace KinveyXamarin
 		/// <param name="cred">Cred.</param>
 		public LoginRequest LoginBlocking(Credential cred) 
         {
-			return new LoginRequest(cred, this).buildAuthRequest();
+			return new LoginRequest (cred, this).buildAuthRequest ();
         }
+
+		public LoginRequest LoginBlocking(ThirdPartyIdentity identity){
+			return new LoginRequest (identity, this);
+		}
 
 		/// <summary>
 		/// Logins a user with a Kinvey Auth token synchronously.
@@ -216,7 +221,7 @@ namespace KinveyXamarin
         {
             this.AuthToken = authToken;
             this.Id = userId;
-            Credential c = Credential.From(this);
+			Credential c = Credential.From (this);
 			return LoginBlocking(c);
         }
 
@@ -259,7 +264,7 @@ namespace KinveyXamarin
             public LoginRequest(User user) 
             {
                 memberUser = user;
-                user.builder.Create = true;
+				memberUser.builder.Create = true;
                 this.type=LoginType.IMPLICIT;
             }
 
@@ -273,10 +278,10 @@ namespace KinveyXamarin
             public LoginRequest(string username, string password, bool setCreate, User user) 
             {
                 this.memberUser = user;
-                user.builder.Username = username;
-                user.builder.Password = password;
-                user.builder.Create = true;
-                user.builder.KinveyUser = user;
+				memberUser.builder.Username = username;
+				memberUser.builder.Password = password;
+				memberUser.builder.Create = true;
+				memberUser.builder.KinveyUser = user;
                 this.type = LoginType.KINVEY;
             }
 
@@ -292,6 +297,12 @@ namespace KinveyXamarin
                 this.type = LoginType.CREDENTIALSTORE;
             }
 
+			public LoginRequest(ThirdPartyIdentity identity, User user){
+				this.memberUser = user;
+				this.memberUser.builder.Identity = identity;
+				this.type = LoginType.THIRDPARTY;
+			}
+
 			/// <summary>
 			/// Builds the auth request.
 			/// </summary>
@@ -300,6 +311,8 @@ namespace KinveyXamarin
                 this.request = memberUser.builder.build();
                 return this;
             }
+
+
 
 //			public async Task<User> ExecuteAsync() 
 //            {
@@ -362,6 +375,9 @@ namespace KinveyXamarin
 						break;
 					case LoginType.KINVEY:
 						userType = "Kinvey";
+						break;
+					case LoginType.THIRDPARTY:
+						userType = "ThirdParty";
 						break;
 					default:
 						throw new ArgumentException("Invalid LoginType operation.");
