@@ -1,10 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Android-StatusShare/src.fragments/ShareListFragment.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Android-StatusShare/src.fragments/UpdateEditFragment.cs">
     <Files>
-      <File FileName="Android-StatusShare/src.fragments/ShareListFragment.cs" Line="114" Column="114" />
-      <File FileName="Android-StatusShare/src.fragments/LoginFragment.cs" Line="58" Column="58" />
-      <File FileName="Android-StatusShare/src.fragments/UpdateDetailsFragment.cs" Line="28" Column="28" />
+      <File FileName="Android-StatusShare/src.fragments/UpdateEditFragment.cs" Line="5" Column="5" />
+      <File FileName="Android-StatusShare/src.model/UpdateEntity.cs" Line="26" Column="26" />
+      <File FileName="Android-StatusShare/src.fragments/ShareListFragment.cs" Line="4" Column="4" />
+      <File FileName="Android-StatusShare/KinveyService.cs" Line="68" Column="68" />
+      <File FileName="Kinvey-Xamarin/File.cs" Line="3" Column="3" />
+      <File FileName="Kinvey-Xamarin/Async/AsyncFile.cs" Line="3" Column="3" />
+      <File FileName="Kinvey-Xamarin/AbstractClient.cs" Line="3" Column="3" />
+      <File FileName="Kinvey-Xamarin/Async/Client.cs" Line="30" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -24,6 +29,6 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
   <MonoDevelop.Ide.ItemProperties.Android-StatusShare MonoForAntroid.PreferredDevice="Nexus 4" />
+  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
 </Properties>

@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
+using Newtonsoft.Json;
 
 namespace KinveyXamarin
 {
@@ -185,6 +186,14 @@ namespace KinveyXamarin
             }
         }
 
+
+		public PingRequest pingBlocking(){
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer) RequestInitializer).AppKey);
+
+			return new PingRequest (this, urlParameters);
+		}
+
 		/// <summary>
 		/// Builder for this AbstractClient implementation.
 		/// </summary>
@@ -209,5 +218,23 @@ namespace KinveyXamarin
             }
 				
         }
+
+		/// <summary>
+		/// Ping Request
+		/// </summary>
+		[JsonObject(MemberSerialization.OptIn)]
+		public class PingRequest : AbstractKinveyClientRequest<PingResponse>
+		{
+
+			private const string REST_PATH = "{appkey}";
+
+			public PingRequest(AbstractClient client, Dictionary<string, string> urlProperties)
+				: base(client, "GET", REST_PATH, default(PingResponse), urlProperties)
+			{
+	
+			}
+
+		}
+
     }
 }

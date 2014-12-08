@@ -58,6 +58,16 @@ namespace AndroidTestDrive
 				.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
 				.setOfflinePlatform(new SQLitePlatformAndroid()).build();
 
+
+			kinveyClient.Ping (new KinveyDelegate<PingResponse>{
+				onSuccess = (response) => {
+					//ping successfull
+				},
+				onError = (error) => {
+					//something went wrong
+				}
+			});
+
 			kinveyClient.User ().Login (new KinveyDelegate<User>{ 
 				onSuccess =  (user) => { 
 					RunOnUiThread (() => {

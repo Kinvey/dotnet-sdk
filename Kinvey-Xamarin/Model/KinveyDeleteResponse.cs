@@ -18,6 +18,7 @@ namespace KinveyXamarin
 		/// Gets or sets the count of entities deleted.
 		/// </summary>
 		/// <value>The count.</value>
+		[JsonProperty]
 		public int count{get; set;}
 	}
 }

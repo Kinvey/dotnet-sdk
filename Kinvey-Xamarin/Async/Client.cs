@@ -1,6 +1,7 @@
 ﻿using System;
 using RestSharp;
 using SQLite.Net.Interop;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -77,6 +78,17 @@ namespace KinveyXamarin
 		/// <returns>A configured instance of File.</returns>
 		public new AsyncFile File(){
 			return new AsyncFile (this);
+		}
+
+		public void Ping(KinveyDelegate<PingResponse> delegates){
+			Task.Run (() => {
+				try {
+					PingResponse entity = base.pingBlocking ().Execute ();
+					delegates.onSuccess (entity);
+				} catch (Exception e) {
+					delegates.onError (e);
+				}
+			});
 		}
 
 	
@@ -170,6 +182,9 @@ namespace KinveyXamarin
 
 	
 		}
+
+
+
 	}
 }
 
