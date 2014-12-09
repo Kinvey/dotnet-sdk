@@ -107,7 +107,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Logout the current user.
 		/// </summary>
-		public void logout()
+		public void Logout()
 		{
 			Task.Run (() => {
 				try{
@@ -138,6 +138,91 @@ namespace KinveyXamarin
 			});
 		}
 
+
+		public void Retrieve(string userid, KinveyDelegate<User> delegates)
+		{
+			Task.Run (() => {
+				try{
+					User user = base.RetrieveBlocking(userid).Execute();
+					delegates.onSuccess(user);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+
+		public void Retrieve(string query, string[] resolves, int resolve_depth, bool retain, KinveyDelegate<User[]> delegates)
+		{
+			Task.Run (() => {
+				try{
+					User[] user = base.RetrieveBlocking(query, resolves, resolve_depth, retain).Execute();
+					delegates.onSuccess(user);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+
+		public void Update(KinveyDelegate<User> delegates)
+		{
+			Task.Run (() => {
+				try{
+					User user = base.UpdateBlocking(this).Execute();
+					delegates.onSuccess(user);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+
+		public void Update(User user, KinveyDelegate<User> delegates)
+		{
+			Task.Run (() => {
+				try{
+					User us = base.UpdateBlocking(user).Execute();
+					delegates.onSuccess(us);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+
+		public void ResetPassword(string userid, KinveyDelegate<User> delegates)
+		{
+			Task.Run (() => {
+				try{
+					User user = base.ResetPasswordBlocking(userid).Execute();
+					delegates.onSuccess(user);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+
+		public void Delete(string userid, bool hard, KinveyDelegate<KinveyDeleteResponse> delegates)
+		{
+			Task.Run (() => {
+				try{
+					KinveyDeleteResponse del = base.DeleteBlocking(userid, hard).Execute();
+					delegates.onSuccess(del);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+
+		public void EmailVerification(string userid, KinveyDelegate<User> delegates)
+		{
+			Task.Run (() => {
+				try{
+					User user = base.EmailVerificationBlocking(userid).Execute();
+					delegates.onSuccess(user);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
+			
 	}
 }
 

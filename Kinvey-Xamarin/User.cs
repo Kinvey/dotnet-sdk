@@ -246,18 +246,18 @@ namespace KinveyXamarin
         }
 
 
-		public Retrieve RetrieveBlocking(string userid){
+		public RetrieveRequest RetrieveBlocking(string userid){
 
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userid);
-			Retrieve retrieve = new Retrieve(client, userid, urlParameters);
+			RetrieveRequest retrieve = new RetrieveRequest(client, userid, urlParameters);
 			client.InitializeRequest(retrieve);
 
 			return retrieve;
 		}
 			
-		public RetrieveUsers RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain){
+		public RetrieveUsersRequest RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain){
 
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -270,7 +270,7 @@ namespace KinveyXamarin
 
 
 
-			RetrieveUsers retrieve = new RetrieveUsers (client, query, urlParameters);
+			RetrieveUsersRequest retrieve = new RetrieveUsersRequest (client, query, urlParameters);
 
 			client.InitializeRequest(retrieve);
 
@@ -280,12 +280,12 @@ namespace KinveyXamarin
 		}
 
 
-		public Update UpdateBlocking(){
+		public UpdateRequest UpdateBlocking(User u){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add("userID", this.id);
+			urlParameters.Add("userID", u.id);
 
-			Update update = new Update (client, this, urlParameters);
+			UpdateRequest update = new UpdateRequest (client, u, urlParameters);
 
 			client.InitializeRequest(update);
 
@@ -294,12 +294,12 @@ namespace KinveyXamarin
 
 		}
 
-		public ResetPassword ResetPasswordBlocking(string userid){
+		public ResetPasswordRequest ResetPasswordBlocking(string userid){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userid);
 
-			ResetPassword reset = new ResetPassword (client, userid, urlParameters);
+			ResetPasswordRequest reset = new ResetPasswordRequest (client, userid, urlParameters);
 
 			client.InitializeRequest(reset);
 
@@ -307,12 +307,25 @@ namespace KinveyXamarin
 
 		}
 
-		public EmailVerification EmailVerificationBlocking(string userid){
+		public DeleteRequest DeleteBlocking(string userid, bool hard){
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("userID", userid);
+			urlParameters.Add ("hard", hard.ToString());
+
+			DeleteRequest delete = new DeleteRequest (client, userid, hard, urlParameters);
+
+			client.InitializeRequest(delete);
+
+			return delete;		
+		}
+
+		public EmailVerificationRequest EmailVerificationBlocking(string userid){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userid);
 
-			EmailVerification email = new EmailVerification (client, userid, urlParameters);
+			EmailVerificationRequest email = new EmailVerificationRequest (client, userid, urlParameters);
 
 			client.InitializeRequest(email);
 
@@ -516,7 +529,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Retrieve a user
 		/// </summary>
-		public class Retrieve : AbstractKinveyClientRequest<User> {
+		public class RetrieveRequest : AbstractKinveyClientRequest<User> {
 			private const string REST_PATH = "user/{appKey}/{userID}";
 
 			[JsonProperty]
@@ -524,8 +537,8 @@ namespace KinveyXamarin
 
 			public User user;
 
-			public Retrieve(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
-			base(client, "DELETE", REST_PATH, default(User), urlProperties) {
+			public RetrieveRequest(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
+			base(client, "GET", REST_PATH, default(User), urlProperties) {
 				this.userID = userID;
 			}				
 		}
@@ -533,7 +546,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Retrieve users.
 		/// </summary>
-		public class RetrieveUsers : AbstractKinveyClientRequest<User[]> {
+		public class RetrieveUsersRequest : AbstractKinveyClientRequest<User[]> {
 			private const string REST_PATH = "user/{appKey}/{?query,resolve,resolve_depth,retainReference}";
 		
 			[JsonProperty("query")]
@@ -546,7 +559,7 @@ namespace KinveyXamarin
 			[JsonProperty("retainReferences")]
 			public string retainReferences;
 
-			public RetrieveUsers(AbstractClient client, string query, Dictionary<string, string> urlProperties):
+			public RetrieveUsersRequest(AbstractClient client, string query, Dictionary<string, string> urlProperties):
 			base(client, "GET", REST_PATH, default(User[]), urlProperties){
 				this.queryFilter = query;
 			}
@@ -555,7 +568,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Update a user
 		/// </summary>
-		public class Update : AbstractKinveyClientRequest<User> {
+		public class UpdateRequest : AbstractKinveyClientRequest<User> {
 			private const string REST_PATH = "user/{appKey}/{userID}";
 
 			[JsonProperty]
@@ -563,7 +576,7 @@ namespace KinveyXamarin
 
 			private User user;
 
-			public Update(AbstractClient client, User user, Dictionary<string, string> urlProperties) :
+			public UpdateRequest(AbstractClient client, User user, Dictionary<string, string> urlProperties) :
 			base(client, "PUT", REST_PATH, user, urlProperties){
 				this.userID = user.id;
 				this.user = user;
@@ -604,13 +617,13 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Reset password.
 		/// </summary>
-		public class ResetPassword : AbstractKinveyClientRequest<User> {
+		public class ResetPasswordRequest : AbstractKinveyClientRequest<User> {
 			private const string REST_PATH = "/rpc/{appKey}/{userID}/user-password-reset-initiate";
 
 			[JsonProperty]
 			public string userID;
 
-			public ResetPassword(AbstractClient client, string userid, Dictionary<string, string> urlProperties) :
+			public ResetPasswordRequest(AbstractClient client, string userid, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, default(User), urlProperties){
 				this.userID = userid;
 				this.RequireAppCredentials = true;
@@ -621,13 +634,13 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Email verification.
 		/// </summary>
-		public class EmailVerification : AbstractKinveyClientRequest<User> {
+		public class EmailVerificationRequest : AbstractKinveyClientRequest<User> {
 			private const string REST_PATH = "rpc/{appKey}/{userID}/user-email-verification-initiate";
 
 			[JsonProperty]
 			public string userID;
 
-			public EmailVerification(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
+			public EmailVerificationRequest(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, default(User), urlProperties){
 				this.userID = userID;
 				this.RequireAppCredentials = true;
