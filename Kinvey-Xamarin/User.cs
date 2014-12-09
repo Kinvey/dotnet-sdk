@@ -17,14 +17,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
 	/// <summary>
 	/// This class manages the state of a Kinvey user.  User methods can be accessed through this class, and this class represents the currently logged in user.
 	/// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
-    public class User
+	[JsonObject(MemberSerialization.OptOut)]
+    public class User : JObject
     {
 		/// <summary>
 		/// The name of the user collection.
@@ -34,7 +35,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// the available login types
 		/// </summary>
-        protected enum LoginType 
+        public enum LoginType 
         {
             IMPLICIT,
             KINVEY,
@@ -109,6 +110,12 @@ namespace KinveyXamarin
         private KinveyAuthRequest.Builder builder;
 
 		/// <summary>
+		/// The type of user
+		/// </summary>
+		private LoginType type {get; set;}
+
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
 		/// <param name="client">Client.</param>
@@ -130,7 +137,7 @@ namespace KinveyXamarin
 		/// <returns><c>true</c>, if user logged in was ised, <c>false</c> otherwise.</returns>
         public bool isUserLoggedIn()
         {
-            return (this.Id != null || this.AuthToken != null || this.UserName != null);
+            return (this.id != null || this.AuthToken != null || this.UserName != null);
         }
 
 		/// <summary>
@@ -141,7 +148,7 @@ namespace KinveyXamarin
 		/// <param name="userType">User type.</param>
         private User InitUser(KinveyAuthResponse response, string userType) 
         {
-            this.Id = response.UserId;
+            this.id = response.UserId;
             // TODO process Unknown keys
             // this.put("_kmd", response.getMetadata());
             // this.putAll(response.getUnknownKeys());
@@ -149,9 +156,9 @@ namespace KinveyXamarin
             //this.username = response
             this.AuthToken = response.AuthToken;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-            ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.Id);
-            KinveyClient.ClientUsers.AddUser(this.Id, userType);
-            KinveyClient.ClientUsers.CurrentUser = this.Id;
+            ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
+            KinveyClient.ClientUsers.AddUser(this.id, userType);
+            KinveyClient.ClientUsers.CurrentUser = this.id;
             return this;
         }
 
@@ -160,9 +167,9 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The user.</returns>
 		/// <param name="credential">Credential.</param>
-        private User initUser(Credential credential)
+        private User InitUser(Credential credential)
         {
-            this.Id = credential.UserId;
+            this.id = credential.UserId;
             this.AuthToken = credential.AuthToken;
             return this;
         }
@@ -183,7 +190,8 @@ namespace KinveyXamarin
 		/// <returns>The blocking.</returns>
 		public LoginRequest LoginBlocking()
         {
-            return new LoginRequest(this).buildAuthRequest();
+			this.type = LoginType.IMPLICIT;
+			return new LoginRequest(this).buildAuthRequest();
         }
 
 		/// <summary>
@@ -194,6 +202,7 @@ namespace KinveyXamarin
 		/// <param name="password">Password.</param>
 		public LoginRequest LoginBlocking(string username, string password)
         {
+			this.type = LoginType.KINVEY;
 			return new LoginRequest(username, password, false, this).buildAuthRequest();
         }
 
@@ -204,10 +213,12 @@ namespace KinveyXamarin
 		/// <param name="cred">Cred.</param>
 		public LoginRequest LoginBlocking(Credential cred) 
         {
+			this.type = LoginType.CREDENTIALSTORE;
 			return new LoginRequest (cred, this).buildAuthRequest ();
         }
 
 		public LoginRequest LoginBlocking(ThirdPartyIdentity identity){
+			this.type = LoginType.THIRDPARTY;
 			return new LoginRequest (identity, this);
 		}
 
@@ -220,7 +231,7 @@ namespace KinveyXamarin
 		public LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 
         {
             this.AuthToken = authToken;
-            this.Id = userId;
+            this.id = userId;
 			Credential c = Credential.From (this);
 			return LoginBlocking(c);
         }
@@ -234,6 +245,81 @@ namespace KinveyXamarin
             return new LogoutRequest(this.KinveyClient.Store, this);
         }
 
+
+		public Retrieve RetrieveBlocking(string userid){
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("userID", userid);
+			Retrieve retrieve = new Retrieve(client, userid, urlParameters);
+			client.InitializeRequest(retrieve);
+
+			return retrieve;
+		}
+			
+		public RetrieveUsers RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain){
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			urlParameters.Add("query", query);
+		
+			urlParameters.Add("resolve", string.Join(",", resolves));
+			urlParameters.Add("resolve_depth", resolve_depth > 0 ? resolve_depth.ToString() : "1");
+			urlParameters.Add("retainReferences",  retain.ToString());
+
+
+
+			RetrieveUsers retrieve = new RetrieveUsers (client, query, urlParameters);
+
+			client.InitializeRequest(retrieve);
+
+			return retrieve;
+
+
+		}
+
+
+		public Update UpdateBlocking(){
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("userID", this.id);
+
+			Update update = new Update (client, this, urlParameters);
+
+			client.InitializeRequest(update);
+
+			return update;
+
+
+		}
+
+		public ResetPassword ResetPasswordBlocking(string userid){
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("userID", userid);
+
+			ResetPassword reset = new ResetPassword (client, userid, urlParameters);
+
+			client.InitializeRequest(reset);
+
+			return reset;
+
+		}
+
+		public EmailVerification EmailVerificationBlocking(string userid){
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("userID", userid);
+
+			EmailVerification email = new EmailVerification (client, userid, urlParameters);
+
+			client.InitializeRequest(email);
+
+			return email;
+		}
+			
+
 		/// <summary>
 		/// Creates the User with a blocking implementation.
 		/// </summary>
@@ -242,6 +328,7 @@ namespace KinveyXamarin
 		/// <param name="password">the password for the user.</param>
 		public LoginRequest CreateBlocking(string username, string password) 
         {
+			this.type = LoginType.KINVEY;
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
@@ -261,11 +348,11 @@ namespace KinveyXamarin
 			/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.User+LoginRequest"/> class.
 			/// </summary>
 			/// <param name="user">User.</param>
-            public LoginRequest(User user) 
+			public LoginRequest(User user) 
             {
                 memberUser = user;
 				memberUser.builder.Create = true;
-                this.type=LoginType.IMPLICIT;
+				this.type = user.type;
             }
 
 			/// <summary>
@@ -275,14 +362,14 @@ namespace KinveyXamarin
 			/// <param name="password">Password.</param>
 			/// <param name="setCreate">If set to <c>true</c> set create.</param>
 			/// <param name="user">User.</param>
-            public LoginRequest(string username, string password, bool setCreate, User user) 
+			public LoginRequest(string username, string password, bool setCreate, User user) 
             {
                 this.memberUser = user;
 				memberUser.builder.Username = username;
 				memberUser.builder.Password = password;
 				memberUser.builder.Create = true;
 				memberUser.builder.KinveyUser = user;
-                this.type = LoginType.KINVEY;
+				this.type = user.type;
             }
 
 			/// <summary>
@@ -290,17 +377,17 @@ namespace KinveyXamarin
 			/// </summary>
 			/// <param name="credential">Credential.</param>
 			/// <param name="user">User.</param>
-            public LoginRequest(Credential credential, User user) 
+			public LoginRequest(Credential credential, User user) 
             {
                 this.memberUser = user;
                 this.credential = credential;
-                this.type = LoginType.CREDENTIALSTORE;
+				this.type = user.type;
             }
 
 			public LoginRequest(ThirdPartyIdentity identity, User user){
 				this.memberUser = user;
 				this.memberUser.builder.Identity = identity;
-				this.type = LoginType.THIRDPARTY;
+				this.type = user.type;
 			}
 
 			/// <summary>
@@ -364,24 +451,11 @@ namespace KinveyXamarin
 				string userType = "";
 				if (this.type == LoginType.CREDENTIALSTORE) 
 				{
-					return memberUser.initUser(credential);
+					return memberUser.InitUser(credential);
 				}
 				else 
 				{
-					switch (this.type)
-					{
-					case LoginType.IMPLICIT:
-						userType = "Implicit";
-						break;
-					case LoginType.KINVEY:
-						userType = "Kinvey";
-						break;
-					case LoginType.THIRDPARTY:
-						userType = "ThirdParty";
-						break;
-					default:
-						throw new ArgumentException("Invalid LoginType operation.");
-					}
+					userType = this.type.ToString ();
 				}
 				KinveyAuthResponse response = this.request.Execute();
 				return memberUser.InitUser(response, userType);
@@ -406,12 +480,160 @@ namespace KinveyXamarin
             public void Execute()
             {
                 CredentialManager manager = new CredentialManager(this.store);
-                manager.RemoveCredential(memberUser.Id);
+                manager.RemoveCredential(memberUser.id);
                 memberUser.KinveyClient.CurrentUser = null;
                 ((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
             }
         }
+			
+		/// <summary>
+		/// Deletes the user with the specified _id.
+		/// </summary>
+		[JsonObject(MemberSerialization.OptIn)]
+		public  class DeleteRequest : AbstractKinveyClientRequest<KinveyDeleteResponse> {
+			private const string REST_PATH = "user/{appKey}/{userID}?hard={hard}";
 
+			[JsonProperty]
+			public bool hard = false;
+
+			[JsonProperty]
+			public string userID;
+
+			public DeleteRequest(AbstractClient client, string userID, bool hard, Dictionary<string, string> urlProperties) :
+			base(client, "DELETE", REST_PATH, default(KinveyDeleteResponse), urlProperties){
+				this.userID = userID;
+				this.hard = hard;
+			}
+
+			public override KinveyDeleteResponse Execute() {
+				KinveyDeleteResponse resp = base.Execute();
+//				this.logout();
+
+				return resp;
+			}
+		}
+
+		/// <summary>
+		/// Retrieve a user
+		/// </summary>
+		public class Retrieve : AbstractKinveyClientRequest<User> {
+			private const string REST_PATH = "user/{appKey}/{userID}";
+
+			[JsonProperty]
+			public string userID;
+
+			public User user;
+
+			public Retrieve(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
+			base(client, "DELETE", REST_PATH, default(User), urlProperties) {
+				this.userID = userID;
+			}				
+		}
+
+		/// <summary>
+		/// Retrieve users.
+		/// </summary>
+		public class RetrieveUsers : AbstractKinveyClientRequest<User[]> {
+			private const string REST_PATH = "user/{appKey}/{?query,resolve,resolve_depth,retainReference}";
+		
+			[JsonProperty("query")]
+			public string queryFilter;
+
+			[JsonProperty("resolve")]
+			public string resolve;
+			[JsonProperty("resolve_depth")]
+			public string resolve_depth;
+			[JsonProperty("retainReferences")]
+			public string retainReferences;
+
+			public RetrieveUsers(AbstractClient client, string query, Dictionary<string, string> urlProperties):
+			base(client, "GET", REST_PATH, default(User[]), urlProperties){
+				this.queryFilter = query;
+			}
+		}
+
+		/// <summary>
+		/// Update a user
+		/// </summary>
+		public class Update : AbstractKinveyClientRequest<User> {
+			private const string REST_PATH = "user/{appKey}/{userID}";
+
+			[JsonProperty]
+			public string userID;
+
+			private User user;
+
+			public Update(AbstractClient client, User user, Dictionary<string, string> urlProperties) :
+			base(client, "PUT", REST_PATH, user, urlProperties){
+				this.userID = user.id;
+				this.user = user;
+
+			}
+
+			public override User Execute(){
+
+				User u = base.Execute();
+
+				if (u.id == (user.id)){
+					KinveyAuthResponse auth = new KinveyAuthResponse();
+
+					auth.Add("_id", u["_id"]);
+					KinveyAuthResponse.KinveyUserMetadata kmd = new KinveyAuthResponse.KinveyUserMetadata();
+					kmd.Add("lmt", u["_kmd.lmt"]) ;
+					kmd.Add("authtoken", u["_kmd.authtoken"]);
+					kmd.Add("_kmd", u["_kmd"]);
+					auth.Add("_kmd", kmd);
+					auth.Add("username", u["username"]);
+//					for (Object key : u.keySet()){
+//						if (!key.toString().equals("_kmd")){
+//							auth.put(key.toString(), u.get(key));
+//						}
+//					}
+
+					string utype = user.type.ToString();
+				
+					return this.user.InitUser(auth, utype);
+				}else{
+					return u;
+				}
+			}
+
+
+		}
+
+		/// <summary>
+		/// Reset password.
+		/// </summary>
+		public class ResetPassword : AbstractKinveyClientRequest<User> {
+			private const string REST_PATH = "/rpc/{appKey}/{userID}/user-password-reset-initiate";
+
+			[JsonProperty]
+			public string userID;
+
+			public ResetPassword(AbstractClient client, string userid, Dictionary<string, string> urlProperties) :
+			base(client, "POST", REST_PATH, default(User), urlProperties){
+				this.userID = userid;
+				this.RequireAppCredentials = true;
+
+			}
+		}
+
+		/// <summary>
+		/// Email verification.
+		/// </summary>
+		public class EmailVerification : AbstractKinveyClientRequest<User> {
+			private const string REST_PATH = "rpc/{appKey}/{userID}/user-email-verification-initiate";
+
+			[JsonProperty]
+			public string userID;
+
+			public EmailVerification(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
+			base(client, "POST", REST_PATH, default(User), urlProperties){
+				this.userID = userID;
+				this.RequireAppCredentials = true;
+			}
+		}
+			
     }
 }
 

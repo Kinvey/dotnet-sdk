@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
+using Newtonsoft.Json.Linq;
 
 
 namespace KinveyXamarin
@@ -25,8 +26,8 @@ namespace KinveyXamarin
 	/// <summary>
 	/// This class represents the response of a Kinvey Auth Request.
 	/// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
-    public class KinveyAuthResponse
+	[JsonObject]
+    public class KinveyAuthResponse : JObject
     {
 
 		/// <summary>
@@ -69,8 +70,8 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Kinvey user metadata.
 		/// </summary>
-        [JsonObject(MemberSerialization.OptIn)]
-        public class KinveyUserMetadata 
+        [JsonObject]
+		public class KinveyUserMetadata : JObject
         {
             [JsonProperty("lmt")]
             public string LastModifiedTime {get; set;}

@@ -107,10 +107,10 @@ namespace KinveyXamarin
 		/// <typeparam name="T">The response type of the request.</typeparam>
         public void Initialize<T>(AbstractKinveyClientRequest<T> request)
         {
-            if (credential != null && !request.RequireCredentials)
+            if (credential != null && !request.RequireAppCredentials)
             {
                 credential.Initialize(request);
-			}else if (!request.RequireCredentials)
+			}else if (!request.RequireAppCredentials)
             {
                 request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
             }

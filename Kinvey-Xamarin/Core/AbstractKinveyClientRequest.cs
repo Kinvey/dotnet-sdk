@@ -91,7 +91,7 @@ namespace KinveyXamarin
             this.uriTemplate = uriTemplate;
             this.requestContent = httpContent;
             this.uriResourceParameters = uriParameters;
-            this.RequireCredentials = false;
+            this.RequireAppCredentials = false;
         }
 
 		/// <summary>
@@ -185,11 +185,12 @@ namespace KinveyXamarin
 		/// Gets or sets a value indicating whether this <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> requires app credentials or user credentials.
 		/// </summary>
 		/// <value><c>true</c> if require app level credentials; otherwise, <c>false</c>.</value>
-        public bool RequireCredentials
+        public bool RequireAppCredentials
         {
             get;
             set;
         }
+			
 
 		/// <summary>
 		/// Builds the rest request.
