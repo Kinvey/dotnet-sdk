@@ -47,8 +47,8 @@ namespace KinveyXamarin
 		/// Gets or sets the Access Control List.
 		/// </summary>
 		/// <value>The acl.</value>
-		[JsonProperty("_acl")]
-		public KinveyMetaData.AccessControlList acl{get; set;}
+		[JsonProperty(AccessControlList.JSON_FIELD_NAME)]
+		public AccessControlList acl{get; set;}
 
 		/// <summary>
 		/// Gets or sets the upload URL.

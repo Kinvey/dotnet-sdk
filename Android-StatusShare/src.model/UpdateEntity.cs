@@ -24,15 +24,11 @@ namespace AndroidStatusShare
 		[JsonProperty("_kmd")]
 		public KinveyMetaData kmd;
 
-		[JsonProperty("_acl")]
-		public KinveyMetaData.AccessControlList acl;
+		[JsonProperty(AccessControlList.JSON_FIELD_NAME)]
+		public AccessControlList acl;
 
 		[JsonProperty]
-		public KinveyReference author;
-
-		[JsonProperty]
-		public List<KinveyReference> comments;
-
+		public KinveyReference<User> author;
 
 		//-----displayed inferred fields
 		public string authorName;

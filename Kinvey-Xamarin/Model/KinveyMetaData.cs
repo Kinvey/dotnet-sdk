@@ -19,7 +19,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The field name within every JSON object.
 		/// </summary>
-		public static string JSON_FIELD_NAME = "_kmd";
+		public const string JSON_FIELD_NAME = "_kmd";
 
 		/// <summary>
 		/// Gets or sets the last modified time.
@@ -34,23 +34,6 @@ namespace KinveyXamarin
 		/// <value>The entity creation time.</value>
 		[JsonProperty("ect")]
 		public String entityCreationTime{get; set;}
-
-
-		/// <summary>
-		/// JSON represention of the _acl fied present on every stored in Kinvey
-		/// </summary>
-		[JsonObject(MemberSerialization.OptIn)]
-		public class AccessControlList
-		{
-
-			/// <summary>
-			/// the field name within every JSON object.
-			/// </summary>
-			public static string JSON_FIELD_NAME = "_acl";
-
-		}
-
-
 	}
 }
 
