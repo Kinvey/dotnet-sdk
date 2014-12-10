@@ -50,7 +50,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The content of the request.
 		/// </summary>
-        private T requestContent;
+        private Object requestContent;
 		/// <summary>
 		/// The last response headers, in case the request is repeated.
 		/// </summary>
@@ -84,7 +84,7 @@ namespace KinveyXamarin
 		/// <param name="uriTemplate">URI template.</param>
 		/// <param name="httpContent">Http content.</param>
 		/// <param name="uriParameters">URI parameters.</param>
-        protected AbstractKinveyClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters)
+		protected AbstractKinveyClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
         {
             this.client = client;
             this.requestMethod = requestMethod;
@@ -126,7 +126,7 @@ namespace KinveyXamarin
 		/// Gets or sets the content of the http.
 		/// </summary>
 		/// <value>The content of the http.</value>
-        public T HttpContent
+        public Object HttpContent
         {
             get { return this.requestContent; }
 			set { this.requestContent = value;}
