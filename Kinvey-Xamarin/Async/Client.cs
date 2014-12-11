@@ -67,7 +67,7 @@ namespace KinveyXamarin
 		/// <param name="collectionName">The collection name associated with this instance of AppData.</param>
 		/// <param name="myClass">The Class associated with entites in the collection.</param>
 		/// <typeparam name="T">The Type of the entity in the collection.</typeparam>
-		public new AsyncAppData<T> AppData<T>(String collectionName, Type myClass)
+		public new AsyncAppData<T> AppData<T>(string collectionName, Type myClass)
 		{
 			return new AsyncAppData<T>(collectionName, myClass, this);
 		}
@@ -78,6 +78,10 @@ namespace KinveyXamarin
 		/// <returns>A configured instance of File.</returns>
 		public new AsyncFile File(){
 			return new AsyncFile (this);
+		}
+
+		public new AsyncCustomEndpoint<I, O> CustomEndpoint<I, O>(){
+			return new AsyncCustomEndpoint<I, O> (this);
 		}
 
 		public void Ping(KinveyDelegate<PingResponse> delegates){
