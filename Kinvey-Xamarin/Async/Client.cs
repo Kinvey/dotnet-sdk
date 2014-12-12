@@ -31,6 +31,12 @@ namespace KinveyXamarin
 		public ISQLitePlatform offline_platform { get; set; }
 
 		/// <summary>
+		/// Gets or sets the logger, this action is performed when writing to the logs.
+		/// </summary>
+		/// <value>The logger.</value>
+		public Action<string> logger {get; set;}
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Client"/> class.  Use a Client.Builder to create one.
 		/// </summary>
 		/// <param name="client">The RestClient.</param>
@@ -103,10 +109,23 @@ namespace KinveyXamarin
 		public new class Builder : AbstractClient.Builder
 		{
 
-			//A reference to the local file system -- going to be platform dependent
+			/// <summary>
+			/// A reference to the local file system -- going to be platform dependent
+			/// </summary>
+			/// <value>The file path.</value>
 			private string filePath {get; set;}
-			//a reference to the sqlite implementation -- going to be platform dependent
+
+			/// <summary>
+			///a reference to the sqlite implementation -- going to be platform dependent
+			/// </summary>
+			/// <value>The offline platform.</value>
 			private ISQLitePlatform offlinePlatform {get; set;}
+
+			/// <summary>
+			/// Gets or sets the log Action -- going to be platform dependent
+			/// </summary>
+			/// <value>The log.</value>
+			private Action<string> log{ get ; set;}
 		
 			//Constructor for a client builder, takes an app key and an app secret.
 			public Builder(string appKey, string appSecret) 
@@ -127,6 +146,7 @@ namespace KinveyXamarin
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 				c.offline_platform = this.offlinePlatform;
 				c.filePath = this.filePath;
+				c.logger = this.log;
 	
 				return c;
 			}
@@ -180,6 +200,16 @@ namespace KinveyXamarin
 			/// <param name="platform">Platform.</param>
 			public Builder setOfflinePlatform(ISQLitePlatform platform){
 				this.offlinePlatform = platform;
+				return this;
+			}
+
+			/// <summary>
+			/// Sets the logger action -- the ClientLogger class uses this to write to logs.
+			/// </summary>
+			/// <returns>The logger.</returns>
+			/// <param name="log">Log.</param>
+			public Builder setLogger(Action<string> log){
+				this.log = log;
 				return this;
 			}
 
