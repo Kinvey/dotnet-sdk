@@ -33,7 +33,6 @@ namespace RestSharp
         public virtual void Configure(IHttpRequest request)
         {
             this.Instance.UseDefaultCredentials = request.UseDefaultCredentials;
-            this.Instance.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip | DecompressionMethods.None;
 
             //TODO: Add PreAuthenticate header
             //this.Instance.PreAuthenticate = http.PreAuthenticate;
@@ -42,12 +41,7 @@ namespace RestSharp
             {
                 this.Instance.Credentials = request.Credentials;
             }
-
-            if (request.Proxy != null)
-            {
-                this.Instance.Proxy = request.Proxy;
-            }
-
+				
             //if (http.FollowRedirects && http.MaxRedirects.HasValue)
             //{
             //    this.Instance.MaxAutomaticRedirections = http.MaxRedirects.Value;

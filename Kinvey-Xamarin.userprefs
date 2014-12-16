@@ -1,10 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Async/AsyncUser.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Core/ClientLogger.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin/User.cs" Line="4" Column="4" />
-      <File FileName="Kinvey-Xamarin/Async/AsyncUser.cs" Line="6" Column="6" />
-      <File FileName="Android-StatusShare/KinveyService.cs" Line="38" Column="38" />
+      <File FileName="Kinvey-Xamarin/Core/ClientLogger.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Async/Client.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Async/AsyncUser.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Async/KinveyDelegate.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/AbstractClient.cs" Line="16" Column="16" />
+      <File FileName="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" Line="1" Column="1" />
+      <File FileName="Android-StatusShare/MainActivity.cs" Line="1" Column="1" />
+      <File FileName="Android-TestDrive/MainActivity.cs" Line="4" Column="4" />
+      <File FileName="Android-TestDrive/MyEntity.cs" Line="18" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -24,6 +31,6 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
   <MonoDevelop.Ide.ItemProperties.Android-StatusShare MonoForAntroid.PreferredDevice="Nexus 4" />
+  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
 </Properties>

@@ -68,8 +68,6 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MyEntity.cs" />
-    <Compile Include="ExpressionVisitor.cs" />
-    <Compile Include="DefaultContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

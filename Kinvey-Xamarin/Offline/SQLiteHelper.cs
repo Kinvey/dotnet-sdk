@@ -216,6 +216,9 @@ namespace KinveyXamarin
 
 			SQLTemplates.OfflineEntity entity = _dbConnection.Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefault ();
 
+			if (entity == default(SQLTemplates.OfflineEntity)) {
+				return default(T);
+			}
 			return JsonConvert.DeserializeObject<T> (entity.json);
 
 		}

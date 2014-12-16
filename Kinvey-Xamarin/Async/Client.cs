@@ -147,6 +147,8 @@ namespace KinveyXamarin
 				c.offline_platform = this.offlinePlatform;
 				c.filePath = this.filePath;
 				c.logger = this.log;
+
+				ClientLogger.initialize (c);
 	
 				return c;
 			}

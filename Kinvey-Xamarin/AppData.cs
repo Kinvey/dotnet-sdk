@@ -27,19 +27,19 @@ using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
-    /// <summary>
+	/// <summary>
 	/// Class for managing appData access to the Kinvey backend.
-    /// </summary>
+	/// </summary>
 	public class AppData<T> : KinveyQueryContext<T>,  IQueryContext<T>
-    {
+	{
 		/// <summary>
 		/// The name of the collection.
 		/// </summary>
-        private String collectionName;
+		private String collectionName;
 		/// <summary>
 		/// The Type of the class.
 		/// </summary>
-        private Type myClass;
+		private Type myClass;
 
 		/// <summary>
 		/// The cache.
@@ -66,7 +66,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The name of the identifier field.
 		/// </summary>
-        public const string IdFieldName = "_id";
+		public const string IdFieldName = "_id";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.Core.AppData`1"/> class.
@@ -74,50 +74,47 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">My class.</param>
 		/// <param name="client">Client.</param>
-		public AppData(string collectionName, Type myClass, AbstractClient client) : base(client)
-        {
-            this.collectionName = collectionName;
-            this.myClass = myClass;
+		public AppData (string collectionName, Type myClass, AbstractClient client) : base (client)
+		{
+			this.collectionName = collectionName;
+			this.myClass = myClass;
 			this.writer = new StringQueryBuilder ();
 		}
-			
+
 
 		/// <summary>
 		/// Gets or sets the name of the collection.
 		/// </summary>
 		/// <value>The name of the collection.</value>
-        public string CollectionName
-        {
-            get { return this.collectionName; }
-            set { this.collectionName = value; }
-        }
+		public string CollectionName {
+			get { return this.collectionName; }
+			set { this.collectionName = value; }
+		}
 
 		/// <summary>
 		/// Gets or sets the type of the current.
 		/// </summary>
 		/// <value>The type of the current.</value>
-        public Type CurrentType
-        {
-            get { return this.myClass; }
-            set { this.myClass = value; }
-        }
+		public Type CurrentType {
+			get { return this.myClass; }
+			set { this.myClass = value; }
+		}
 
 		/// <summary>
 		/// Gets or sets the kinvey client.
 		/// </summary>
 		/// <value>The kinvey client.</value>
-        public AbstractClient KinveyClient
-        {
-            get { return this.client; }
-            set { this.client = value; }
-        }
+		public AbstractClient KinveyClient {
+			get { return this.client; }
+			set { this.client = value; }
+		}
 
 		/// <summary>
 		/// Sets the cache.
 		/// </summary>
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Policy.</param>
-		public void setCache(Cache<String, T> cache, CachePolicy policy)
+		public void setCache (Cache<String, T> cache, CachePolicy policy)
 		{
 			this.cache = cache;
 			this.cachePolicy = policy;
@@ -128,7 +125,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Policy.</param>
-		public void setCache(Cache<String, T[]> cache, CachePolicy policy){
+		public void setCache (Cache<String, T[]> cache, CachePolicy policy)
+		{
 			this.queryCache = cache;
 			this.cachePolicy = policy;
 		}
@@ -138,30 +136,31 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="store">Store.</param>
 		/// <param name="policy">Policy.</param>
-		public void setOffline(IOfflineStore store, OfflinePolicy policy){
+		public void setOffline (IOfflineStore store, OfflinePolicy policy)
+		{
 
 			this.store = store;
 			this.offlinePolicy = policy;
 
-			this.store.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
-			this.store.platform = ((Client) KinveyClient).offline_platform;
+			this.store.dbpath = Path.Combine (((Client)KinveyClient).filePath, "kinveyOffline.sqlite");
+			this.store.platform = ((Client)KinveyClient).offline_platform;
 
 		}
-//
-//		/// <summary>
-//		/// Sets the offline store and policy for query requests
-//		/// </summary>
-//		/// <param name="store">Store.</param>
-//		/// <param name="policy">Policy.</param>
-//		public void setOffline(IOfflineStore<T[]> store, OfflinePolicy policy){
-//
-//			this.queryStore = store;
-//			this.offlinePolicy = policy;
-//
-//			this.queryStore.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
-//			this.queryStore.platform = ((Client) KinveyClient).offline_platform;
-//
-//		}
+		//
+		//		/// <summary>
+		//		/// Sets the offline store and policy for query requests
+		//		/// </summary>
+		//		/// <param name="store">Store.</param>
+		//		/// <param name="policy">Policy.</param>
+		//		public void setOffline(IOfflineStore<T[]> store, OfflinePolicy policy){
+		//
+		//			this.queryStore = store;
+		//			this.offlinePolicy = policy;
+		//
+		//			this.queryStore.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
+		//			this.queryStore.platform = ((Client) KinveyClient).offline_platform;
+		//
+		//		}
 
 
 		/// <summary>
@@ -169,48 +168,49 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The request, ready to execute..</returns>
 		/// <param name="entityId">Entity's _id.</param>
-		public GetEntityRequest GetEntityBlocking(string entityId)
-        {
-            var urlParameters = new Dictionary<string, string>();
-            urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-            urlParameters.Add("collectionName", CollectionName);
-            urlParameters.Add("entityId", entityId);
-			GetEntityRequest getEntity = new GetEntityRequest(entityId, myClass, client, urlParameters, CollectionName);
-            client.InitializeRequest(getEntity);
+		public GetEntityRequest GetEntityBlocking (string entityId)
+		{
+			var urlParameters = new Dictionary<string, string> ();
+			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add ("collectionName", CollectionName);
+			urlParameters.Add ("entityId", entityId);
+			GetEntityRequest getEntity = new GetEntityRequest (entityId, myClass, client, urlParameters, CollectionName);
+			client.InitializeRequest (getEntity);
 			getEntity.setCache (this.cache, this.cachePolicy);
 			getEntity.SetStore (this.store, this.offlinePolicy);
-            return getEntity;
-        }
+			return getEntity;
+		}
 
 		/// <summary>
 		/// gets all entities
 		/// </summary>
 		/// <returns>The blocking.</returns>
-		public GetRequest GetBlocking()
-        {
-            var urlParameters = new Dictionary<string, string>();
-            urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-            urlParameters.Add("collectionName", CollectionName);
-			GetRequest get = new GetRequest(myClass, client, urlParameters, collectionName);
-            client.InitializeRequest(get);
+		public GetRequest GetBlocking ()
+		{
+			var urlParameters = new Dictionary<string, string> ();
+			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add ("collectionName", CollectionName);
+			GetRequest get = new GetRequest (myClass, client, urlParameters, collectionName);
+			client.InitializeRequest (get);
 			get.setCache (this.queryCache, this.cachePolicy);
 			get.SetStore (this.store, this.offlinePolicy);
-            return get;
-        }
+			return get;
+		}
 
 		/// <summary>
 		///gets the specified query string
 		/// </summary>
 		/// <returns>The query blocking.</returns>
 		/// <param name="queryString">Query string.</param>
-		public GetQueryRequest getQueryBlocking(string queryString){
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add("collectionName", CollectionName);
-			urlParameters.Add("querystring", queryString);
+		public GetQueryRequest getQueryBlocking (string queryString)
+		{
+			var urlParameters = new Dictionary<string, string> ();
+			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add ("collectionName", CollectionName);
+			urlParameters.Add ("querystring", queryString);
 
-			GetQueryRequest getQuery = new GetQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
-			client.InitializeRequest(getQuery);
+			GetQueryRequest getQuery = new GetQueryRequest (queryString, myClass, client, urlParameters, CollectionName);
+			client.InitializeRequest (getQuery);
 			getQuery.setCache (this.queryCache, this.cachePolicy);
 			getQuery.SetStore (this.store, this.offlinePolicy);
 			return getQuery;
@@ -221,15 +221,15 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The blocking.</returns>
 		/// <param name="entity">Entity.</param>
-		public SaveRequest SaveBlocking(T entity)
-        {
-            SaveRequest save;
-			var urlParameters = new Dictionary<string, string>();
-            urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-            urlParameters.Add("collectionName", CollectionName);
+		public SaveRequest SaveBlocking (T entity)
+		{
+			SaveRequest save;
+			var urlParameters = new Dictionary<string, string> ();
+			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add ("collectionName", CollectionName);
 
 			SaveMode mode;
-			string id = JObject.FromObject (entity) ["_id"].ToString();
+			string id = JObject.FromObject (entity) ["_id"].ToString ();
 			if (id != null && id.Length > 0) {
 				mode = SaveMode.PUT;
 				urlParameters.Add ("entityId", id);
@@ -238,29 +238,29 @@ namespace KinveyXamarin
 			}
 				
 
-			save = new SaveRequest(entity,id, myClass, mode, client, urlParameters, this.CollectionName);
+			save = new SaveRequest (entity, id, myClass, mode, client, urlParameters, this.CollectionName);
 			save.SetStore (this.store, this.offlinePolicy);
-            client.InitializeRequest(save);
-            return save;
-        }
+			client.InitializeRequest (save);
+			return save;
+		}
 
 		/// <summary>
 		/// Deletes the specified entity
 		/// </summary>
 		/// <returns>The blocking.</returns>
 		/// <param name="entityId">Entity _id.</param>
-		public DeleteRequest DeleteBlocking(string entityId)
+		public DeleteRequest DeleteBlocking (string entityId)
 		{
 
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add("collectionName", CollectionName);
+			var urlParameters = new Dictionary<string, string> ();
+			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add ("collectionName", CollectionName);
 			urlParameters.Add ("entityID", entityId);
 
-			DeleteRequest delete = new DeleteRequest(entityId, myClass, client, urlParameters, this.CollectionName);
+			DeleteRequest delete = new DeleteRequest (entityId, myClass, client, urlParameters, this.CollectionName);
 			delete.SetStore (this.store, this.offlinePolicy);
 
-			client.InitializeRequest(delete);
+			client.InitializeRequest (delete);
 			return delete;
 		}
 
@@ -269,79 +269,80 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Save mode.
 		/// </summary>
-        public enum SaveMode
-        {
-            POST,
-            PUT
-        }
+		public enum SaveMode
+		{
+			POST,
+			PUT
+		}
 
 		/// <summary>
 		/// Executes the query.
 		/// </summary>
 		/// <returns>The query.</returns>
 		/// <param name="query">the results of the query, executed synchronously.</param>
-		protected override T[] executeQuery(string query){
-			return getQueryBlocking(query).Execute ();
+		protected override T[] executeQuery (string query)
+		{
+			return getQueryBlocking (query).Execute ();
 		}
 
 
 		/// <summary>
 		/// A Get request, which is implemented synchronously
 		/// </summary>
-        [JsonObject(MemberSerialization.OptIn)]
+		[JsonObject (MemberSerialization.OptIn)]
 		public class GetRequest : AbstractKinveyCachedClientRequest<T[]>
-        {
-            private const string REST_PATH = "appdata/{appKey}/{collectionName}/";
+		{
+			private const string REST_PATH = "appdata/{appKey}/{collectionName}/";
 
-            [JsonProperty]
-            public string collectionName { get; set; }
+			[JsonProperty]
+			public string collectionName { get; set; }
 
-			public GetRequest(Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T[]), urlParameters, collection)
-            {
-                this.collectionName = urlParameters["collectionName"];
-            }
+			public GetRequest (Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base (client, "GET", REST_PATH, default(T[]), urlParameters, collection)
+			{
+				this.collectionName = urlParameters ["collectionName"];
+			}
 
-            public override T[] Execute()
-            {
-                return base.Execute();
-            }
-        }
+			public override T[] Execute ()
+			{
+				return base.Execute ();
+			}
+		}
 
 		/// <summary>
 		/// Get entity request, which is implemented synchronously
 		/// </summary>
-        [JsonObject(MemberSerialization.OptIn)]
+		[JsonObject (MemberSerialization.OptIn)]
 		public class GetEntityRequest : AbstractKinveyCachedClientRequest<T>
-        {
-            private const string REST_PATH = "appdata/{appKey}/{collectionName}";
+		{
+			private const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityId}";
 
-            [JsonProperty]
-            public string EntityId { get; set; }
+			[JsonProperty]
+			public string EntityId { get; set; }
 
-            [JsonProperty]
-            public string collectionName;
+			[JsonProperty]
+			public string collectionName;
 
-			public GetEntityRequest(string entityId, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
-            {
-                this.collectionName = urlParameters["collectionName"];
-                this.EntityId = entityId;
+			public GetEntityRequest (string entityId, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base (client, "GET", REST_PATH, default(T), urlParameters, collection)
+			{
+				this.collectionName = urlParameters ["collectionName"];
+				this.EntityId = entityId;
 
-            }
+			}
 
-            public override T Execute()
-            {
-                T myEntity = base.Execute();
-                return myEntity;
-            }
+			public override T Execute ()
+			{
+				T myEntity = base.Execute ();
+				return myEntity;
+			}
 
-        }
+		}
 
 		/// <summary>
 		/// Get query request, which is implemented synchronously
 		/// </summary>
-		[JsonObject(MemberSerialization.OptIn)]
+		[JsonObject (MemberSerialization.OptIn)]
 		public class GetQueryRequest : AbstractKinveyCachedClientRequest<T[]>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/?query={querystring}";
@@ -353,17 +354,17 @@ namespace KinveyXamarin
 			public string collectionName;
 
 
-			public GetQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T[]), urlParameters, collection)
+			public GetQueryRequest (string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base (client, "GET", REST_PATH, default(T[]), urlParameters, collection)
 			{
 			
-				this.collectionName = urlParameters["collectionName"];
+				this.collectionName = urlParameters ["collectionName"];
 				this.QueryString = queryString;
 			}
 
-			public override T[] Execute()
+			public override T[] Execute ()
 			{
-				T[] myEntity = base.Execute();
+				T[] myEntity = base.Execute ();
 				return myEntity;
 			}
 
@@ -372,60 +373,59 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Save request, which is implemented synchronously.
 		/// </summary>
-        [JsonObject(MemberSerialization.OptIn)]
+		[JsonObject (MemberSerialization.OptIn)]
 		public class SaveRequest : AbstractKinveyOfflineClientRequest<T>
-        {
+		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}";
 
-            [JsonProperty]
-            public string CollectionName { get; set; }
+			[JsonProperty]
+			public string CollectionName { get; set; }
 
-            [JsonProperty]
-            public string EntityId { get; set; }
+			[JsonProperty]
+			public string EntityId { get; set; }
 
 
-			public SaveRequest(T entity, string entityId, Type myClass, SaveMode update, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
-				: base(client, update.ToString(), REST_PATH, entity, urlProperties, collectionName)
-            {
-                this.CollectionName = urlProperties["collectionName"];
-                if (update.Equals(SaveMode.PUT))
-                {
-                    this.EntityId = entityId;
+			public SaveRequest (T entity, string entityId, Type myClass, SaveMode update, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
+				: base (client, update.ToString (), REST_PATH, entity, urlProperties, collectionName)
+			{
+				this.CollectionName = urlProperties ["collectionName"];
+				if (update.Equals (SaveMode.PUT)) {
+					this.EntityId = entityId;
 					this.uriTemplate += "/{entityId}";
-                }
-            }
+				}
+			}
 
-			public override T Execute()
-            {
-                T myEntity = base.Execute();
-                return myEntity;
-            }
-        }
+			public override T Execute ()
+			{
+				T myEntity = base.Execute ();
+				return myEntity;
+			}
+		}
 
 		/// <summary>
 		/// Delete request, which is implemented synchronously.
 		/// </summary>
-		[JsonObject(MemberSerialization.OptIn)]
+		[JsonObject (MemberSerialization.OptIn)]
 		public class DeleteRequest : AbstractKinveyOfflineClientRequest<KinveyDeleteResponse>
 		{
 
 			private const string REST_PATH = "appdata/{appkey}/{collectionName}/{entityID}";
 
 			[JsonProperty]
-			public string CollectionName {get; set;}
+			public string CollectionName { get; set; }
 
 			[JsonProperty]
-			public string EntityId { get; set;}
+			public string EntityId { get; set; }
 
-			public DeleteRequest(string entityId, Type myClass, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
-				: base(client, "DELETE", REST_PATH, default(KinveyDeleteResponse), urlProperties, collectionName)
+			public DeleteRequest (string entityId, Type myClass, AbstractClient client, Dictionary<string, string> urlProperties, string collectionName)
+				: base (client, "DELETE", REST_PATH, default(KinveyDeleteResponse), urlProperties, collectionName)
 			{
-				this.CollectionName = urlProperties["collectionName"];
+				this.CollectionName = urlProperties ["collectionName"];
 				this.EntityId = entityId;
 
 			}
 
 		}
 			
-    }
+	}
 }

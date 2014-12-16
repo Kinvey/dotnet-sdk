@@ -190,8 +190,12 @@ namespace KinveyXamarin
 		public PingRequest pingBlocking(){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer) RequestInitializer).AppKey);
+		
+			PingRequest ping =  new PingRequest (this, urlParameters);
 
-			return new PingRequest (this, urlParameters);
+			InitializeRequest (ping);
+
+			return ping;
 		}
 
 		/// <summary>
@@ -226,7 +230,7 @@ namespace KinveyXamarin
 		public class PingRequest : AbstractKinveyClientRequest<PingResponse>
 		{
 
-			private const string REST_PATH = "{appkey}";
+			private const string REST_PATH = "appdata/{appKey}";
 
 			public PingRequest(AbstractClient client, Dictionary<string, string> urlProperties)
 				: base(client, "GET", REST_PATH, default(PingResponse), urlProperties)

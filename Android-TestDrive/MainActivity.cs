@@ -47,23 +47,33 @@ namespace AndroidTestDrive
 
 		protected override void OnCreate (Bundle bundle)
 		{
-
+		
 			base.OnCreate (bundle);
+
+			Console.WriteLine ("--------------------- onCreate");
 
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
 			kinveyClient = new Client.Builder(appKey, appSecret)
 				.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
-				.setOfflinePlatform(new SQLitePlatformAndroid()).build();
+				.setOfflinePlatform(new SQLitePlatformAndroid())
+				.setLogger(delegate(string msg) { Console.WriteLine(msg);})
+				.build();
+
+			ClientLogger.Log ("---------------------------------------------logger");
 
 
 			kinveyClient.Ping (new KinveyDelegate<PingResponse>{
 				onSuccess = (response) => {
-					//ping successfull
+					RunOnUiThread (() => {
+						Toast.MakeText(this, "Ping successful!", ToastLength.Short).Show();
+					});
 				},
 				onError = (error) => {
-					//something went wrong
+					RunOnUiThread (() => {
+						Toast.MakeText(this, "something went wrong: " + error.Message, ToastLength.Short).Show();
+					});
 				}
 			});
 
@@ -134,6 +144,7 @@ namespace AndroidTestDrive
 			MyEntity ent = new MyEntity();
 			ent.Email = "test@tester.com";
 			ent.Name = "James Dean";
+			ent.ID = STABLE_ID;
 			entityCollection.setOffline(new SQLiteOfflineStore(), OfflinePolicy.LOCAL_FIRST);
 			entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 
 				onSuccess = (entity) => { 

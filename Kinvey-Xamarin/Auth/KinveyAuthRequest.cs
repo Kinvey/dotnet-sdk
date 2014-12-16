@@ -154,7 +154,7 @@ namespace KinveyXamarin
 				restRequest.AddBody (JsonConvert.SerializeObject(this.requestPayload));
 			}
 
-            restRequest.Resource = BaseUrl + "user/{appKey}/" + (this.create ? "" : "login");
+            restRequest.Resource = "user/{appKey}/" + (this.create ? "" : "login");
 			restRequest.Method = this.create ? Method.POST : Method.PUT;
 
             foreach (var parameter in uriTemplateParameters)

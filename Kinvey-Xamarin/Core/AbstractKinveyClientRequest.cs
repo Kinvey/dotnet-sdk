@@ -198,7 +198,7 @@ namespace KinveyXamarin
 		/// <returns>The rest request.</returns>
 		public RestRequest BuildRestRequest() 
         {
-            RestRequest restRequest = new RestRequest();
+			RestRequest restRequest = new RestRequest (uriTemplate);
 
             switch (requestMethod)
             {
@@ -226,13 +226,11 @@ namespace KinveyXamarin
             foreach (var header in requestHeaders)
             {
 				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
-            }
-            restRequest.Resource = uriTemplate;
-            
-            foreach (var parameter in uriResourceParameters)
-            {
-                restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
-            }
+            }            
+			foreach (var parameter in uriResourceParameters)
+			{
+				restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
+			}
 				
 			auth.Authenticate (restRequest);
             return restRequest;           
@@ -268,10 +266,14 @@ namespace KinveyXamarin
             RestClient client = InitializeRestClient();
             RestRequest request = BuildRestRequest();
 
+			ClientLogger.Log (request);
+
             client.Authenticator = RequestAuth;
 
 			var req = client.ExecuteAsync(request);
 			var response = req.Result;
+
+			ClientLogger.Log (response);
 
             lastResponseCode = (int)response.StatusCode;
             lastResponseMessage = response.StatusDescription;

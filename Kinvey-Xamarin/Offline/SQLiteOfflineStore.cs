@@ -74,13 +74,15 @@ namespace KinveyXamarin
 				handler.enqueueRequest("QUERY", appData.CollectionName, query);
 				return ok;
 
-			} else if (idIndex == targetURI.Length || targetURI.Contains ("query")) {
+			} else if (idIndex == (targetURI.Length + 1)|| targetURI.Contains ("query")) {
 				//it's a get all request (no query, no id)
+				handler.createTable (appData.CollectionName);
 				List<T> ok = handler.getAll (appData.CollectionName);
 				return ok;
 			} else {
 				//it's a get by id
 				String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
+				handler.createTable (appData.CollectionName);
 				ret = (T)handler.getEntity (appData.CollectionName, targetID);
 
 				handler.enqueueRequest("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));

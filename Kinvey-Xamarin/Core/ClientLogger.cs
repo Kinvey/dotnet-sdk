@@ -36,13 +36,13 @@ namespace KinveyXamarin
 				return;
 			}
 			client.logger ("------------------------REQUEST");
-			client.logger (request.ToString ());
+			client.logger (request.Method + " -> " + request.Resource);
 			client.logger ("------------------------END REQUEST");
 
 
 		}
 
-		public static void Log(RestResponse response){
+		public static void Log(IRestResponse response){
 			if (!initialized) {
 				return;
 			}
@@ -56,4 +56,3 @@ namespace KinveyXamarin
 
 	}
 }
-

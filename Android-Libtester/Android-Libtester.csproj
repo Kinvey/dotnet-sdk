@@ -58,8 +58,6 @@
     <Compile Include="TestUser.cs" />
     <Compile Include="TestAppData.cs" />
     <Compile Include="ReflectionHelper.cs" />
-    <Compile Include="ExpressionVisitor.cs" />
-    <Compile Include="DefaultContext.cs" />
     <Compile Include="LinqBuilderTest.cs" />
     <Compile Include="MyEntity.cs" />
   </ItemGroup>
