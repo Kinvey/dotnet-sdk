@@ -13,7 +13,9 @@ namespace AndroidStatusShare
 
 		public static Client getClient(){
 			if (client == null){
-				client = new Client.Builder("kid_W1YYO1eOv","16e676441fe54f9994e565f637e16a21").build();
+				client = new Client.Builder("kid_W1YYO1eOv","16e676441fe54f9994e565f637e16a21")
+					.setLogger(delegate(string msg) { Console.WriteLine(msg);})
+					.build();
 			}
 			return client;
 		}

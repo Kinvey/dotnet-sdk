@@ -362,11 +362,11 @@ namespace KinveyXamarin
 				this.QueryString = queryString;
 			}
 
-			public override T[] Execute ()
-			{
-				T[] myEntity = base.Execute ();
-				return myEntity;
-			}
+//			public override T[] Execute ()
+//			{
+//				T[] myEntity = base.Execute ();
+//				return myEntity;
+//			}
 
 		}
 

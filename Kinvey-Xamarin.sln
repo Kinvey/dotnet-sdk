@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestSharp.Portable", "RestS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Android-StatusShare", "Android-StatusShare\Android-StatusShare.csproj", "{6CD7DF58-9BFE-4402-B3F3-BF2D4297F267}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinvey-Utils", "Kinvey-Utils\Kinvey-Utils.csproj", "{444456B1-5B55-48D6-9637-00ADCA92B7C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,12 @@ Global
 		AppStore|Any CPU = AppStore|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{444456B1-5B55-48D6-9637-00ADCA92B7C9}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{444456B1-5B55-48D6-9637-00ADCA92B7C9}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{444456B1-5B55-48D6-9637-00ADCA92B7C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{444456B1-5B55-48D6-9637-00ADCA92B7C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{444456B1-5B55-48D6-9637-00ADCA92B7C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{444456B1-5B55-48D6-9637-00ADCA92B7C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6644D98D-026B-48E9-95A3-61C4D98D82E7}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{6644D98D-026B-48E9-95A3-61C4D98D82E7}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 		{6644D98D-026B-48E9-95A3-61C4D98D82E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -50,6 +58,6 @@ Global
 		{CC4D99EF-0740-47BD-96AD-2FCD4C36C7FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Android-TestDrive\Android-TestDrive.csproj
+		StartupItem = Android-StatusShare\Android-StatusShare.csproj
 	EndGlobalSection
 EndGlobal

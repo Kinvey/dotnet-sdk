@@ -2,6 +2,7 @@
 using RestSharp;
 using SQLite.Net.Interop;
 using System.Threading.Tasks;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -59,7 +60,7 @@ namespace KinveyXamarin
 				if (user == null) {
 					var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
 					var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-					this.user = new AsyncUser(this, new KinveyAuthRequest.Builder(this.RestClient, this.BaseUrl, appKey, appSecret, null));
+					this.user = new AsyncUser(this, new KinveyAuthRequest.Builder(this, this.BaseUrl, appKey, appSecret, null));
 				}
 
 				return user;
@@ -148,7 +149,7 @@ namespace KinveyXamarin
 				c.filePath = this.filePath;
 				c.logger = this.log;
 
-				ClientLogger.initialize (c);
+				Logger.initialize (c.logger);
 	
 				return c;
 			}

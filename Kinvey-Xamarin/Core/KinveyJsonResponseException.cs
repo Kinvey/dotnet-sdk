@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.IO;
 using RestSharp;
 using KinveyXamarin;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -87,7 +88,7 @@ namespace KinveyXamarin
             }
             catch (IOException ex)
             {
-				ClientLogger.Log (ex.Message);
+				Logger.Log (ex.Message);
 
             } 
             

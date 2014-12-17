@@ -138,7 +138,7 @@ namespace KinveyXamarin
 		}
 
 
-		public List<T> getQuery (string queryString, string collection)
+		public T[] getQuery (string queryString, string collection)
 		{
 
 			SQLiteConnection _dbConnection = new SQLiteConnection (platform, databasePath);
@@ -157,10 +157,12 @@ namespace KinveyXamarin
 				entities.Add(_dbConnection.Table<SQLTemplates.OfflineEntity>().Where(t => t.id == id && t.collection == collection).FirstOrDefault());
 			}
 
-			List<T> results = new List<T> ();
-			foreach (SQLTemplates.OfflineEntity ent in entities) {
-				results.Add (JsonConvert.DeserializeObject<T> (ent.json));
+			T[] results = new T[ids.Length];
+
+			for (int i = 0; i < results.Length; i++){
+				results[i] = JsonConvert.DeserializeObject<T>(entities[i].json);
 			}
+				
 			return results;
 
 		}

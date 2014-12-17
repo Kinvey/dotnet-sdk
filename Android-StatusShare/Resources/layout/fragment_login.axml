@@ -18,6 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
+                android:textColor="@color/text_dark"
                 android:text="@string/login_username" />
             <EditText
                 android:id="@+id/et_login"
@@ -25,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
                 android:inputType="textEmailAddress"
+                android:textColor="@color/text_dark"
                 android:nextFocusDown="@+id/et_password" />
             <TextView
                 android:id="@+id/login_label_password"
@@ -32,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 android:paddingTop="10dp"
+                android:textColor="@color/text_dark"
                 android:text="@string/login_password" />
             <EditText
                 android:id="@+id/et_password"
@@ -39,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
+                android:textColor="@color/text_dark"
                 android:typeface="monospace" />
             <Button
                 android:layout_width="match_parent"

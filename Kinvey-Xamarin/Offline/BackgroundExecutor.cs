@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -101,7 +102,7 @@ namespace KinveyXamarin
 
 					},
 					onError = (error) => {
-						ClientLogger.Log(error);
+						Logger.Log(error);
 					}
 				
 				});
@@ -117,7 +118,7 @@ namespace KinveyXamarin
 						doneSuccessfully();
 					},
 					onError = (error) => {
-						ClientLogger.Log(error);
+						Logger.Log(error);
 					}
 				});
 
@@ -132,7 +133,7 @@ namespace KinveyXamarin
 						doneSuccessfully();
 					},
 					onError = (error) => {
-						ClientLogger.Log(error);
+						Logger.Log(error);
 					}
 				});
 

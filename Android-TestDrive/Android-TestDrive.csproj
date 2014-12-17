@@ -91,5 +91,9 @@
       <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
       <Name>Kinvey-Xamarin</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
+      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
+      <Name>Kinvey-Utils</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

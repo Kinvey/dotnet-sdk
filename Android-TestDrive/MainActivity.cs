@@ -28,6 +28,7 @@ using SQLite.Net.Platform.XamarinAndroid;
 using System.Linq;
 using LinqExtender;
 using System.Text;
+using KinveyUtils;
 
 namespace AndroidTestDrive
 {
@@ -50,8 +51,6 @@ namespace AndroidTestDrive
 		
 			base.OnCreate (bundle);
 
-			Console.WriteLine ("--------------------- onCreate");
-
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
@@ -61,7 +60,7 @@ namespace AndroidTestDrive
 				.setLogger(delegate(string msg) { Console.WriteLine(msg);})
 				.build();
 
-			ClientLogger.Log ("---------------------------------------------logger");
+			Logger.Log ("---------------------------------------------logger");
 
 
 			kinveyClient.Ping (new KinveyDelegate<PingResponse>{

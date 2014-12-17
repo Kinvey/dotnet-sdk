@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
 using RestSharp;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -57,7 +58,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The RestSharp client
 		/// </summary>
-        private RestClient client;
+		private AbstractKinveyClient client;
 		/// <summary>
 		/// The base URL of the request.
 		/// </summary>
@@ -74,7 +75,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The payload of the request.
 		/// </summary>
-        private IAuthenticator requestPayload;
+        private JObject requestPayload;
 
 		/// <summary>
 		/// The third party identity, if there is one.
@@ -97,13 +98,17 @@ namespace KinveyXamarin
 		/// <param name="password">Password.</param>
 		/// <param name="user">User.</param>
 		/// <param name="create">If set to <c>true</c> create.</param>
-        public KinveyAuthRequest(RestClient client, string baseUrl, HttpBasicAuthenticator auth, string appKey, string username, string password, User user, bool create)
+		public KinveyAuthRequest(AbstractKinveyClient client, string baseUrl, HttpBasicAuthenticator auth, string appKey, string username, string password, User user, bool create)
 			
 		{
             this.client = client;
             this.BaseUrl = baseUrl;
             this.appKeyAuthentication = auth;
-            this.requestPayload = (username == null || password == null) ? null : new HttpBasicAuthenticator(username, password);
+			if (username != null && password != null) {
+				this.requestPayload = new JObject ();
+				this.requestPayload ["username"] = username;
+				this.requestPayload ["password"] = password;
+			}
             if (user != null)
             {
                 // TODO Add properties of user
@@ -123,7 +128,7 @@ namespace KinveyXamarin
 		/// <param name="identity">The third party identity.</param>
 		/// <param name="user">User.</param>
 		/// <param name="create">If set to <c>true</c> create.</param>
-		public KinveyAuthRequest(RestClient client, string baseUrl, HttpBasicAuthenticator auth, string appKey, ThirdPartyIdentity identity, User user, bool create)
+		public KinveyAuthRequest(AbstractKinveyClient client, string baseUrl, HttpBasicAuthenticator auth, string appKey, ThirdPartyIdentity identity, User user, bool create)
 
 		{
 			this.client = client;
@@ -149,13 +154,14 @@ namespace KinveyXamarin
 			RestRequest restRequest = new RestRequest();
             if (this.requestPayload != null)
             {
-                restRequest.AddBody(JsonConvert.SerializeObject(this.requestPayload));
+				restRequest.AddParameter("applications/json", JsonConvert.SerializeObject(this.requestPayload), ParameterType.RequestBody);
             }else if (this.identity != null) {
 				restRequest.AddBody (JsonConvert.SerializeObject(this.requestPayload));
 			}
 
             restRequest.Resource = "user/{appKey}/" + (this.create ? "" : "login");
-			restRequest.Method = this.create ? Method.POST : Method.PUT;
+
+			restRequest.Method = (identity == null) ? Method.POST : Method.PUT;
 
             foreach (var parameter in uriTemplateParameters)
             {
@@ -179,9 +185,9 @@ namespace KinveyXamarin
 		/// <returns>The rest client.</returns>
         private RestClient InitializeRestClient()
         {
-            RestClient restClient = this.client;
-            restClient.BaseUrl = client.BaseUrl;
-            return restClient;
+			RestClient restClient = this.client.RestClient;
+			restClient.BaseUrl = client.BaseUrl;
+			return restClient;
         }
 
 		/// <summary>
@@ -256,7 +262,7 @@ namespace KinveyXamarin
         public class Builder
         {
 
-            private readonly RestClient client;
+			private readonly AbstractKinveyClient client;
 
             private readonly HttpBasicAuthenticator appKeyAuthentication;
 
@@ -282,7 +288,7 @@ namespace KinveyXamarin
 			/// <param name="appKey">App key.</param>
 			/// <param name="appSecret">App secret.</param>
 			/// <param name="user">User.</param>
-            public Builder(RestClient transport, string BaseUrl, string appKey, string appSecret, User user)
+			public Builder(AbstractKinveyClient transport, string BaseUrl, string appKey, string appSecret, User user)
             {
                 this.client = transport;
                 this.baseUrl = BaseUrl;
@@ -301,7 +307,7 @@ namespace KinveyXamarin
 			/// <param name="username">Username.</param>
 			/// <param name="password">Password.</param>
 			/// <param name="user">User.</param>
-            public Builder(RestClient transport, string BaseUrl, string appKey, string appSecret, string username, string password, User user)
+			public Builder(AbstractKinveyClient transport, string BaseUrl, string appKey, string appSecret, string username, string password, User user)
                 : this(transport, BaseUrl, appKey, appSecret, user)
             {
                 this.username = username;
@@ -309,7 +315,7 @@ namespace KinveyXamarin
             }
 
 
-			public Builder(RestClient transport, string BaseUrl, string appKey, string appSecret, ThirdPartyIdentity identity, User user)
+			public Builder(AbstractKinveyClient transport, string BaseUrl, string appKey, string appSecret, ThirdPartyIdentity identity, User user)
 				: this(transport, BaseUrl, appKey, appSecret, user)
 			{
 				this.identity = identity;
@@ -373,7 +379,7 @@ namespace KinveyXamarin
 			/// Gets the client.
 			/// </summary>
 			/// <value>The client.</value>
-            public RestClient Client
+			public AbstractKinveyClient Client
             {
                 get { return this.client; }
             }

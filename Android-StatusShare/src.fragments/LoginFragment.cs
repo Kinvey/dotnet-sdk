@@ -40,11 +40,15 @@ namespace AndroidStatusShare
 
 				KinveyService.login(username.Text, password.Text, new KinveyDelegate<User>{ 
 						onSuccess =  (user) => { 
-							Toast.MakeText(this.Activity, "logged in as: " + user.Id, ToastLength.Short).Show();
-							loggedIn();
+							Activity.RunOnUiThread (() => {
+								Toast.MakeText(this.Activity, "logged in as: " + user.Id, ToastLength.Short).Show();
+								loggedIn();
+							});
 						},
 						onError = (error) => {
-							Toast.MakeText(this.Activity, "something went wrong: " + error.Message, ToastLength.Short).Show();
+							Activity.RunOnUiThread (() => {
+								Toast.MakeText(this.Activity, "something went wrong: " + error.Message, ToastLength.Short).Show();
+							});
 						}
 					});
 			};
@@ -53,11 +57,15 @@ namespace AndroidStatusShare
 			registerButton.Click += (sender, e) => {
 				KinveyService.register(username.Text, password.Text, new KinveyDelegate<User>{ 
 					onSuccess =  (user) => { 
-						Toast.MakeText(this.Activity, "created: " + user.Id, ToastLength.Short).Show();
-						loggedIn();
+						Activity.RunOnUiThread (() => {
+							Toast.MakeText(this.Activity, "created: " + user.Id, ToastLength.Short).Show();
+							loggedIn();
+						});
 					},
 					onError = (error) => {
-						Toast.MakeText(this.Activity, "something went wrong: " + error.Message, ToastLength.Short).Show();
+						Activity.RunOnUiThread (() => {
+							Toast.MakeText(this.Activity, "something went wrong: " + error.Message, ToastLength.Short).Show();
+						});
 					}
 				});
 

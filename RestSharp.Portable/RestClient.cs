@@ -12,6 +12,9 @@
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //   See the License for the specific language governing permissions and
 //   limitations under the License. 
+using KinveyUtils;
+
+
 #endregion
 
 using System;
@@ -391,9 +394,25 @@ namespace RestSharp
 
                 var httpRequest = converter.ConvertTo(this, restRequest);
 
+				Logger.Log ("------------------------REQUEST");
+				Logger.Log(restRequest.Method + " -> " + httpRequest.Url.ToString());
+				foreach(HttpHeader h in httpRequest.Headers){
+					Logger.Log(h.Name + " -> " + h.Value.ToString());
+				}
+				if (httpRequest.HasBody){
+					Logger.Log(httpRequest.RequestBody);
+				}
+
+				Logger.Log ("------------------------END REQUEST");
+			
                 IHttp http = new Http(httpRequest);
 
                 var httpResponse = await getResponse(http, httpMethod, token);
+
+				Logger.Log ("------------------------RESPONSE");
+				Logger.Log(httpResponse.StatusCode.ToString());
+				Logger.Log(httpResponse.Content);
+				Logger.Log ("------------------------END RESPONSE");
 
                 response = converter.ConvertFrom(httpResponse);
                 response.Request = restRequest;

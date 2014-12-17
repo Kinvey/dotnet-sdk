@@ -58,7 +58,6 @@
     <Compile Include="Async\AsyncUser.cs" />
     <Compile Include="Async\KinveyDelegate.cs" />
     <Compile Include="Async\AsyncAppData.cs" />
-    <Compile Include="Core\ClientLogger.cs" />
     <Compile Include="Offline\AbstractKinveyOfflineClientRequest.cs" />
     <Compile Include="Offline\OfflinePolicy.cs" />
     <Compile Include="Offline\SQLiteHelper.cs" />
@@ -69,7 +68,6 @@
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
-    <Compile Include="Query\DefaultContext.cs" />
     <Compile Include="Query\ExpressionVisitor.cs" />
     <Compile Include="Query\KinveyQueryContext.cs" />
     <Compile Include="Query\IQueryBuilder.cs" />
@@ -137,6 +135,10 @@
     <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
       <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
       <Name>RestSharp.Portable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
+      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
+      <Name>Kinvey-Utils</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

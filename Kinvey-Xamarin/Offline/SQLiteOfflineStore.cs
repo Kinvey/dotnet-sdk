@@ -68,7 +68,7 @@ namespace KinveyXamarin
 
 				handler.createTable (appData.CollectionName);
 
-				List<T> ok = handler.getQuery(appData.CollectionName,  query);
+				T[] ok = handler.getQuery(appData.CollectionName,  query);
 
 
 				handler.enqueueRequest("QUERY", appData.CollectionName, query);

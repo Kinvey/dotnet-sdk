@@ -21,6 +21,7 @@ using System.IO;
 using RestSharp;
 using System.Net.Http;
 using KinveyXamarin;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -221,7 +222,7 @@ namespace KinveyXamarin
             }
             else
             {
-                restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
+				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
             }
             foreach (var header in requestHeaders)
             {
@@ -266,14 +267,10 @@ namespace KinveyXamarin
             RestClient client = InitializeRestClient();
             RestRequest request = BuildRestRequest();
 
-			ClientLogger.Log (request);
-
             client.Authenticator = RequestAuth;
 
 			var req = client.ExecuteAsync(request);
 			var response = req.Result;
-
-			ClientLogger.Log (response);
 
             lastResponseCode = (int)response.StatusCode;
             lastResponseMessage = response.StatusDescription;
@@ -313,12 +310,12 @@ namespace KinveyXamarin
 
             catch(ArgumentException ex)
             {
-				ClientLogger.Log (ex.Message);  
+				Logger.Log (ex.Message);  
                 return default(T);
             }
             catch (NullReferenceException ex)
             {
-				ClientLogger.Log (ex.Message);
+				Logger.Log (ex.Message);
                 return default(T);
             }
 

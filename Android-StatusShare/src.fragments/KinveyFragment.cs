@@ -41,10 +41,6 @@ namespace AndroidStatusShare
 
 		public abstract void populateViews ();
 
-
-
-
-
 	}
 }
 

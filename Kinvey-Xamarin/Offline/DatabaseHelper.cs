@@ -51,7 +51,7 @@ namespace KinveyXamarin
 		/// <returns>The query.</returns>
 		/// <param name="queryString">Query string.</param>
 		/// <param name="collection">Collection.</param>
-		List<T> getQuery (string queryString, string collection);
+		T[] getQuery (string queryString, string collection);
 
 		/// <summary>
 		/// Saves the query and the _ids associated with it's results

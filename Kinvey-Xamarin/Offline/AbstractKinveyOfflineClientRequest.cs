@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -125,7 +126,7 @@ namespace KinveyXamarin
 					try {
 						ret = offlineFromService ();
 					} catch (Exception e) {
-						ClientLogger.Log (e);
+						Logger.Log (e);
 					}
 				}
 
@@ -133,7 +134,7 @@ namespace KinveyXamarin
 				try {
 					ret = offlineFromService ();
 				} catch (Exception e) {
-					ClientLogger.Log (e);
+					Logger.Log (e);
 					ret = offlineFromStore ();
 				}
 			}

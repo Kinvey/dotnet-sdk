@@ -380,7 +380,7 @@ namespace KinveyXamarin
                 this.memberUser = user;
 				memberUser.builder.Username = username;
 				memberUser.builder.Password = password;
-				memberUser.builder.Create = true;
+				memberUser.builder.Create = setCreate;
 				memberUser.builder.KinveyUser = user;
 				this.type = user.type;
             }
