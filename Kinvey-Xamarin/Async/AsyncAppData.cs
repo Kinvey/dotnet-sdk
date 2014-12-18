@@ -36,6 +36,10 @@ namespace KinveyXamarin
 			});
 
 		}
+
+		public async Task<T> agetEntity(string entityId){
+			return await GetEntityBlocking (entityId).ExecuteAsync ();
+		}
 			
 		/// <summary>
 		/// Get all entities from a Kinvey collection.

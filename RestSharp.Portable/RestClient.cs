@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Net.Http;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RestSharp
 {
@@ -397,9 +398,10 @@ namespace RestSharp
 				Logger.Log ("------------------------REQUEST");
 				Logger.Log(restRequest.Method + " -> " + httpRequest.Url.ToString());
 				foreach(HttpHeader h in httpRequest.Headers){
-					Logger.Log(h.Name + " -> " + h.Value.ToString());
+					Logger.Log(h.Name + " -> " + h.Value.FirstOrDefault().ToString());
 				}
 				if (httpRequest.HasBody){
+
 					Logger.Log(httpRequest.RequestBody);
 				}
 

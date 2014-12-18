@@ -25,10 +25,11 @@ namespace AndroidStatusShare
 		public static string COL_UPDATES = "Updates";
 		public static string COL_COMMENTS = "Comments";
 
-		private static int PICK_FROM_CAMERA = 1;
-		private static int PICK_FROM_FILE = 2;
-
 		private Uri mImageCaptureUri;
+
+		public int width { get; set;}
+		public Java.IO.File file { get; set;}
+
 
 		public Bitmap bitmap = null;
 		public String path = null;
@@ -54,7 +55,22 @@ namespace AndroidStatusShare
 			ft.Commit();
 		}
 
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
 
+			// make it available in the gallery
+			Intent mediaScanIntent = new Intent(Intent.ActionMediaScannerScanFile);
+			Android.Net.Uri contentUri = Android.Net.Uri.FromFile(file);
+			mediaScanIntent.SetData(contentUri);
+			this.SendBroadcast(mediaScanIntent);
+
+			// display in ImageView. We will resize the bitmap to fit the display
+			// Loading the full sized image will consume to much memory 
+			// and cause the application to crash.
+			int height = Resources.DisplayMetrics.HeightPixels;
+			bitmap = UpdateEntity.LoadAndResizeBitmap (file.Path, width, height);
+		}
 	
 	}
 }

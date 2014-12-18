@@ -146,7 +146,7 @@ namespace KinveyXamarin
 		public class DownloadMetadataAndFile : KinveyFileRequest
 		{
 
-			private const string REST_PATH = "blob/{appkey}/{fileID}";
+			private const string REST_PATH = "blob/{appKey}/{fileID}";
 
 			[JsonProperty]
 			public string fileID { get; set;}
@@ -167,7 +167,7 @@ namespace KinveyXamarin
 		public class UploadMetadataAndFile : KinveyFileRequest
 		{
 
-			private const string REST_PATH = "blob/{appkey}";
+			private const string REST_PATH = "blob/{appKey}";
 
 			[JsonProperty]
 			public string fileID { get; set;}
@@ -191,7 +191,7 @@ namespace KinveyXamarin
 		public class DownloadMetadata : KinveyFileRequest
 		{
 
-			private const string REST_PATH = "blob/{appkey}/{fileID}";
+			private const string REST_PATH = "blob/{appKey}/{fileID}";
 
 			[JsonProperty]
 			public string fileID { get; set;}
@@ -212,7 +212,7 @@ namespace KinveyXamarin
 		public class UploadMetadata : KinveyFileRequest
 		{
 
-			private const string REST_PATH = "blob/{appkey}/{fileID}";
+			private const string REST_PATH = "blob/{appKey}/{fileID}";
 
 			[JsonProperty]
 			public string fileID { get; set;}
@@ -231,7 +231,7 @@ namespace KinveyXamarin
 		public class DeleteMetadataAndFile : AbstractKinveyClientRequest<KinveyDeleteResponse>
 		{
 
-			private const string REST_PATH = "blob/{appkey}/{fileID}";
+			private const string REST_PATH = "blob/{appKey}/{fileID}";
 
 			[JsonProperty]
 			public string fileID { get; set;}

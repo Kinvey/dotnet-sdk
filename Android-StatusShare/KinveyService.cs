@@ -41,14 +41,30 @@ namespace AndroidStatusShare
 			getClient ().User ().Logout ();
 		}
 
-		public static void saveUpdate(UpdateEntity entity, byte[] bytes, KinveyDelegate<UpdateEntity> delegates, KinveyDelegate<FileMetaData> fileDelegate){
+		public static void saveUpdate(UpdateEntity entity, byte[] bytes, KinveyDelegate<UpdateEntity> delegates){
 			AsyncAppData<UpdateEntity> appData = getClient().AppData<UpdateEntity> (update_collection, typeof(UpdateEntity));
 
-			appData.Save(entity, delegates);
+			FileMetaData fm  = new FileMetaData();
+			fm.acl = entity.acl;
+			fm._public = true;
 
-			getClient().File().upload(new FileMetaData(), bytes, fileDelegate);
+			getClient().File().upload(fm, bytes, new KinveyDelegate<FileMetaData>{ 
+				onSuccess =  (meta) => { 
+
+					entity.attachement = new KinveyFile(meta.id);
+					appData.Save(entity, delegates);
+
+				},
+				onError = (error) => {
+
+				}
+			});
 
 
+		}
+
+		public static string getCurrentUserId(){
+			return getClient ().User ().Id;
 		}
 
 

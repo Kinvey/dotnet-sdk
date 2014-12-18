@@ -16,6 +16,8 @@ using Android.Content.PM;
 using Java.IO;
 using Android.Net;
 using System;
+using KinveyXamarin;
+using System.IO;
 
 namespace AndroidStatusShare
 {
@@ -27,9 +29,7 @@ namespace AndroidStatusShare
 		private EditText updateText;
 		private Bitmap image;
 
-		public static File file;
-		public static File dir;     
-		public static Bitmap bitmap;
+		public static Java.IO.File dir;     
 
 		public UpdateEntity entity;
 
@@ -48,12 +48,15 @@ namespace AndroidStatusShare
 			attachmentImage = v.FindViewById<ImageView> (Resource.Id.preview);
 			updateText = v.FindViewById<EditText> (Resource.Id.update);
 
+			CreateDirectoryForPictures();
+
 			attachmentImage.Click += ((object sender, System.EventArgs e) => {
 				Intent intent = new Intent (MediaStore.ActionImageCapture);
 
-				file = new File (dir, String.Format ("update_{0}.jpg", Guid.NewGuid ()));
+				((StatusShare)Activity).file = new Java.IO.File (dir, String.Format ("update_{0}.jpg", Guid.NewGuid ()));
+				((StatusShare)Activity).width = attachmentImage.Width;
 
-				intent.PutExtra (MediaStore.ExtraOutput, Android.Net.Uri.FromFile (file));
+				intent.PutExtra (MediaStore.ExtraOutput, Android.Net.Uri.FromFile (((StatusShare)Activity).file));
 
 				StartActivityForResult (intent, 0);
 
@@ -73,7 +76,7 @@ namespace AndroidStatusShare
 
 		private void CreateDirectoryForPictures()
 		{
-			dir = new File(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures), "Status-Share");
+			dir = new Java.IO.File(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures), "Status-Share");
 			if (!dir.Exists())
 			{
 				dir.Mkdirs();
@@ -86,7 +89,7 @@ namespace AndroidStatusShare
 
 			// make it available in the gallery
 			Intent mediaScanIntent = new Intent(Intent.ActionMediaScannerScanFile);
-			Android.Net.Uri contentUri = Android.Net.Uri.FromFile(file);
+			Android.Net.Uri contentUri = Android.Net.Uri.FromFile(((StatusShare)Activity).file);
 			mediaScanIntent.SetData(contentUri);
 			Activity.SendBroadcast(mediaScanIntent);
 
@@ -94,8 +97,10 @@ namespace AndroidStatusShare
 			// Loading the full sized image will consume to much memory 
 			// and cause the application to crash.
 			int height = Resources.DisplayMetrics.HeightPixels;
-			int width = attachmentImage.Width ;
-			bitmap = UpdateEntity.LoadAndResizeBitmap (file.Path, width, height);
+			((StatusShare)Activity).bitmap = UpdateEntity.LoadAndResizeBitmap (((StatusShare)Activity).file.Path, ((StatusShare)Activity).width, height);
+			attachmentImage.SetImageResource (Android.Resource.Color.Transparent);
+			attachmentImage.SetImageBitmap (((StatusShare)Activity).bitmap);
+
 		}
 
 
@@ -115,14 +120,30 @@ namespace AndroidStatusShare
 		}
 
 		public void doUpdate(){
-			KinveyService.saveUpdate (entity, new byte[0], new KinveyXamarin.KinveyDelegate<UpdateEntity>(){
+			entity.text = updateText.Text;
+			entity.author = new KinveyReference<KinveyXamarin.User> ("user", KinveyService.getCurrentUserId());
 
+			byte[] bytes;
+			using (var stream = new MemoryStream())
+			{
+				((StatusShare)Activity).bitmap.Compress(Bitmap.CompressFormat.Png, 0, stream);
+				bytes = stream.ToArray();
+			}
+				
 
+			KinveyService.saveUpdate (entity, bytes, new KinveyXamarin.KinveyDelegate<UpdateEntity>(){
 
-
-			}, new KinveyXamarin.KinveyDelegate<KinveyXamarin.FileMetaData>(){
-
-
+				onSuccess =  (update) => { 
+					Activity.RunOnUiThread (() => {
+						Toast.MakeText(this.Activity, "uplaoded: " + update.ID, ToastLength.Short).Show();
+						((StatusShare)this.Activity).ReplaceFragment (new ShareListFragment (), false);
+					});
+				},
+				onError = (error) => {
+					Activity.RunOnUiThread (() => {
+						Toast.MakeText(this.Activity, "something went wrong: " + error.Message, ToastLength.Short).Show();
+					});
+				}
 
 
 			});

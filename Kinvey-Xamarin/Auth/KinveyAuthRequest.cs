@@ -154,9 +154,9 @@ namespace KinveyXamarin
 			RestRequest restRequest = new RestRequest();
             if (this.requestPayload != null)
             {
-				restRequest.AddParameter("applications/json", JsonConvert.SerializeObject(this.requestPayload), ParameterType.RequestBody);
+				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.requestPayload), ParameterType.RequestBody);
             }else if (this.identity != null) {
-				restRequest.AddBody (JsonConvert.SerializeObject(this.requestPayload));
+				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.identity), ParameterType.RequestBody);
 			}
 
             restRequest.Resource = "user/{appKey}/" + (this.create ? "" : "login");

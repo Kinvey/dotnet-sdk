@@ -291,6 +291,35 @@ namespace KinveyXamarin
         }
 
 
+		public async Task<RestResponse> ExecuteUnparsedAsync()
+		{
+			RestClient client = InitializeRestClient();
+			RestRequest request = BuildRestRequest();
+
+			client.Authenticator = RequestAuth;
+
+			var response = await client.ExecuteAsync(request);
+
+
+			lastResponseCode = (int)response.StatusCode;
+			lastResponseMessage = response.StatusDescription;
+			lastResponseHeaders = new List<Parameter>();
+			foreach (var header in response.Headers)
+			{
+				lastResponseHeaders.Add(header);
+			}
+
+
+			if (response.ErrorException != null)
+			{
+				throw NewExceptionOnError(response);
+			}
+
+
+			return (RestResponse) response;
+		}
+
+
 		/// <summary>
 		/// Execute this request.
 		/// </summary>
@@ -320,6 +349,31 @@ namespace KinveyXamarin
             }
 
         }
+
+		public virtual async Task<T> ExecuteAsync(){
+			var response = await ExecuteUnparsedAsync();
+
+			// special case to handle void or empty responses
+			if (response.Content == null) 
+			{
+				return default(T);
+			}
+			try
+			{
+				return JsonConvert.DeserializeObject<T>(response.Content);
+			}
+
+			catch(ArgumentException ex)
+			{
+				Logger.Log (ex.Message);  
+				return default(T);
+			}
+			catch (NullReferenceException ex)
+			{
+				Logger.Log (ex.Message);
+				return default(T);
+			}
+		}
 			
     }
 }

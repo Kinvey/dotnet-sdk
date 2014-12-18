@@ -52,9 +52,12 @@ namespace AndroidStatusShare
 
 			KinveyService.getUpdates (new KinveyDelegate<UpdateEntity[]>{ 
 				onSuccess =  (updates) => { 
+					this.Activity.RunOnUiThread (() => {
 
-					((StatusShare)this.Activity).shareList = updates;
-					setAdapter();
+						((StatusShare)this.Activity).shareList = updates;
+						setAdapter();
+
+					});
 
 
 				},

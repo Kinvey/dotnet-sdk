@@ -28,6 +28,9 @@ namespace AndroidStatusShare
 		public AccessControlList acl;
 
 		[JsonProperty]
+		public KinveyFile attachement;
+
+		[JsonProperty]
 		public KinveyReference<User> author;
 
 		//-----displayed inferred fields

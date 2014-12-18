@@ -20,6 +20,7 @@ namespace AndroidStatusShare
 		public override void OnCreate (Bundle savedInstanceState)
 		{
 			base.OnCreate (savedInstanceState);
+			SetHasOptionsMenu (true);
 
 			// Create your fragment here
 		}

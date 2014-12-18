@@ -25,10 +25,10 @@ namespace AndroidStatusShare
 			if (convertView == null) {
 				convertView = inflater.Inflate (Resource.Layout.row_update, null);
 				holder = new UpdateViewHolder (convertView);
-				convertView.SetTag (0, holder);
+				convertView.SetTag (Resource.Id.empty_list, holder);
 			}
 
-			holder = (UpdateViewHolder) convertView.GetTag (0);
+			holder = (UpdateViewHolder) convertView.GetTag (Resource.Id.empty_list);
 
 			UpdateEntity rowData = GetItem (position);
 
