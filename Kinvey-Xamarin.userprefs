@@ -1,15 +1,17 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Android-StatusShare/KinveyService.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.FA45DWM10788" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../../ksamples/StatusShare-Xamarin/android/KinveyService.cs">
     <Files>
-      <File FileName="Android-StatusShare/KinveyService.cs" Line="4" Column="4" />
-      <File FileName="Android-StatusShare/src.fragments/LoginFragment.cs" Line="6" Column="6" />
-      <File FileName="Android-StatusShare/src.model/UpdateEntity.cs" Line="33" Column="33" />
-      <File FileName="Kinvey-Xamarin/File/FileMetaData.cs" Line="4" Column="4" />
-      <File FileName="Android-StatusShare/src.fragments/UpdateEditFragment.cs" Line="42" Column="42" />
-      <File FileName="Kinvey-Xamarin/File/KinveyFileRequest.cs" Line="3" Column="3" />
-      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="9" Column="9" />
-      <File FileName="Kinvey-Xamarin/File.cs" Line="57" Column="57" />
+      <File FileName="Android-StatusShare/KinveyService.cs" Line="1" Column="1" />
+      <File FileName="Android-StatusShare/src.fragments/LoginFragment.cs" Line="1" Column="1" />
+      <File FileName="Android-StatusShare/src.model/UpdateEntity.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/File/FileMetaData.cs" Line="1" Column="1" />
+      <File FileName="Android-StatusShare/src.fragments/UpdateEditFragment.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/File/KinveyFileRequest.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/File.cs" Line="1" Column="1" />
+      <File FileName="Android-TestDrive/MainActivity.cs" Line="19" Column="19" />
+      <File FileName="../../ksamples/StatusShare-Xamarin/android/KinveyService.cs" Line="60" Column="60" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -58,6 +60,6 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-StatusShare MonoForAntroid.PreferredDevice="Nexus 4" />
   <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
+  <MonoDevelop.Ide.ItemProperties.Android-StatusShare MonoForAntroid.PreferredDevice="Nexus 4" />
 </Properties>
