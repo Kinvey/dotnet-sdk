@@ -9,8 +9,10 @@ namespace KinveyUtils
 		public static Action<string> logIt {get; set;}
 
 		public static void initialize(Action<string> logAction){
-			logIt = logAction;
-			initialized = true;
+			if (logAction != null) {
+				logIt = logAction;
+				initialized = true;
+			}
 		}
 
 
