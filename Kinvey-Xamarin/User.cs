@@ -411,45 +411,7 @@ namespace KinveyXamarin
                 this.request = memberUser.builder.build();
                 return this;
             }
-
-
-
-//			public async Task<User> ExecuteAsync() 
-//            {
-//                if (memberUser.isUserLoggedIn())
-//                {
-//                    throw new KinveyException("Attempting to login when a user is already logged in",
-//                            "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
-//                            "Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended");
-//                }
-//                string userType = "";
-//                if (this.type == LoginType.CREDENTIALSTORE) 
-//                {
-//                    return memberUser.initUser(credential);
-//                }
-//                else 
-//                {
-//                    switch (this.type)
-//                    {
-//                        case LoginType.IMPLICIT:
-//                            userType = "Implicit";
-//                            break;
-//                        case LoginType.KINVEY:
-//                            userType = "Kinvey";
-//                            break;
-//                        default:
-//                            throw new ArgumentException("Invalid LoginType operation.");
-//                    }
-//                }
-////				this.request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
-//
-////				client.InitializeRequest(this.request);
-////				this.request.
-//
-//				KinveyAuthResponse response = await this.request.ExecuteAsync();
-//                return memberUser.InitUser(response, userType);
-//            }
-
+				
 			/// <summary>
 			/// Execute this instance.
 			/// </summary>

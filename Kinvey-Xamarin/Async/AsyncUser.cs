@@ -33,7 +33,7 @@ namespace KinveyXamarin
 				}
 			});
 		}
-
+			
 		/// <summary>
 		/// Login with a specified username and password.
 		/// </summary>
