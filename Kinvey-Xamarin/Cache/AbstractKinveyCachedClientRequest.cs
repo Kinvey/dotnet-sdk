@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -103,6 +104,28 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Froms the service.
+		/// </summary>
+		/// <returns>The service.</returns>
+		/// <param name="persist">If set to <c>true</c> persist.</param>
+		public async Task<T> fromServiceAsync(bool persist){
+			T ret = await base.ExecuteAsync ();
+			if (persist && ret != null && cache != null) {
+
+				var key = base.uriTemplate;
+				foreach (var p in base.uriResourceParameters)
+				{
+					key = key.Replace("{" + p.Key + "}", p.Value.ToString());
+				}
+
+				lock (locker) {
+					this.cache.put (key, ret);
+				}	
+			}
+			return ret;
+		}
+
+		/// <summary>
 		/// Execute this request.
 		/// </summary>
 		public override T Execute ()
@@ -131,6 +154,38 @@ namespace KinveyXamarin
 					ret = fromCache ();
 				}
 				
+			}
+
+			return ret;
+
+		}
+
+		public async override Task<T> ExecuteAsync(){
+
+			T ret = default(T);
+
+			if (cachePolicy == CachePolicy.NO_CACHE) {
+				ret = await fromServiceAsync (false);
+
+			} else if (cachePolicy == CachePolicy.CACHE_ONLY) {
+				ret = fromCache ();
+
+			} else if (cachePolicy == CachePolicy.CACHE_FIRST) {
+				ret = fromCache ();
+				if (ret == null) {
+					ret = await fromServiceAsync (true);
+				}
+			} else if (cachePolicy == CachePolicy.CACHE_FIRST_NOREFRESH) {
+				ret = fromCache ();
+				if (ret == null) {
+					ret = await fromServiceAsync(false);
+				}
+			} else if (cachePolicy == CachePolicy.NETWORK_FIRST) {
+				ret = await fromServiceAsync (true);
+				if (ret == null) {
+					ret = fromCache ();
+				}
+
 			}
 
 			return ret;

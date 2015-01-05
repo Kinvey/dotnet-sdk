@@ -75,9 +75,9 @@ namespace KinveyXamarin
 		/// Creates an Offline Table, which manages all offline collection features.
 		/// </summary>
 		/// <param name="collectionName">Collection name.</param>
-		public void createTable (string collectionName)
+		public async void createTableAsync (string collectionName)
 		{
-			onCreate (collectionName);
+			await onCreateAsync (collectionName);
 		}
 
 
@@ -85,16 +85,13 @@ namespace KinveyXamarin
 		/// Gets the collection tables.
 		/// </summary>
 		/// <returns>The collection tables.</returns>
-		public List<string> getCollectionTables ()
+		public async Task<List<string>> getCollectionTablesAsync ()
 		{
-
-
-			Task<List<SQLTemplates.TableItem>> result = getConnection().Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToListAsync ();
+			List<SQLTemplates.TableItem> result = await getConnection().Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToListAsync ();
 			List<string> collections = new List<string> ();
 
-			var res = result.Result;
 
-			foreach (SQLTemplates.TableItem item in res) {
+			foreach (SQLTemplates.TableItem item in result) {
 				collections.Add (item.name);
 			}
 
@@ -106,10 +103,10 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The contents of table.</returns>
 		/// <param name="collection">Collection.</param>
-		public int deleteContentsOfTable (string collection)
+		public async Task<int> deleteContentsOfTableAsync (string collection)
 		{
-			Task<int> result = getConnection().DropTableAsync<SQLTemplates.TableItem> ();
-			return result.Result;
+			int result = await getConnection().DropTableAsync<SQLTemplates.TableItem> ();
+			return result;
 		
 		}
 
@@ -117,17 +114,19 @@ namespace KinveyXamarin
 		/// Creates all the tables associated with a collection
 		/// </summary>
 		/// <param name="collection">Collection.</param>
-		public void onCreate(string collection){
-			getConnection().CreateTableAsync<SQLTemplates.TableItem> ();
-			getConnection().CreateTableAsync<SQLTemplates.QueueItem> ();
-			getConnection().CreateTableAsync<SQLTemplates.QueryItem> ();
-			getConnection().CreateTableAsync<SQLTemplates.OfflineEntity> ();
+		public async Task<int> onCreateAsync(string collection){
+			await getConnection().CreateTableAsync<SQLTemplates.TableItem> ();
+			await getConnection().CreateTableAsync<SQLTemplates.QueueItem> ();
+			await getConnection().CreateTableAsync<SQLTemplates.QueryItem> ();
+			await getConnection().CreateTableAsync<SQLTemplates.OfflineEntity> ();
 
 
 			//create the collection item and store it in the collection list
 			SQLTemplates.TableItem table = new SQLTemplates.TableItem ();
 			table.name = collection;
-			getConnection().InsertAsync(table);
+			await getConnection().InsertAsync(table);
+
+			return 0;
 		}
 
 
@@ -137,34 +136,36 @@ namespace KinveyXamarin
 		/// <param name="id">Identifier.</param>
 		/// <param name="collection">Collection.</param>
 		/// <param name="json">Json.</param>
-		public void upsertEntity(string id, string collection, string json){
+		public async Task<T> upsertEntityAsync(string id, string collection, string json){
 			SQLTemplates.OfflineEntity entity = new SQLTemplates.OfflineEntity ();
 			entity.id = id;
 			entity.json = json;
 			entity.collection = collection;
 
 
-			Task<int> count = getConnection().UpdateAsync (entity);
-			if (count.Result == 0) {
-				getConnection().InsertAsync (entity);
+			int count = await getConnection().UpdateAsync (entity);
+			if (count == 0) {
+				await getConnection().InsertAsync (entity);
 			}
+
+			return JsonConvert.DeserializeObject<T> (json);
 		
 		}
 
 
-		public T[] getQuery (string queryString, string collection)
+		public async Task<T[]> getQueryAsync (string queryString, string collection)
 		{
 
 		
-			Task<SQLTemplates.QueryItem> query = getConnection().Table<SQLTemplates.QueryItem>().Where(t => t.query == queryString && t.collection == collection).FirstOrDefaultAsync();
+			SQLTemplates.QueryItem query = await getConnection().Table<SQLTemplates.QueryItem>().Where(t => t.query == queryString && t.collection == collection).FirstOrDefaultAsync();
 
-			if (query == null || query.Result == null) {
+			if (query == null) {
 				return null;
 			}
 
 			List<SQLTemplates.OfflineEntity> entities = new List<SQLTemplates.OfflineEntity>();
 
-			string[] ids = query.Result.commaDelimitedIds.Split (',');
+			string[] ids = query.commaDelimitedIds.Split (',');
 
 			foreach (string id in ids){
 				entities.Add(getConnection().Table<SQLTemplates.OfflineEntity>().Where(t => t.id == id && t.collection == collection).FirstOrDefaultAsync().Result);
@@ -180,7 +181,7 @@ namespace KinveyXamarin
 
 		}
 
-		public void saveQueryResults (string queryString, string collection, List<string> ids)
+		public async Task<int> saveQueryResultsAsync (string queryString, string collection, List<string> ids)
 		{
 			SQLTemplates.QueryItem query = new SQLTemplates.QueryItem ();
 			query.query = queryString;
@@ -188,14 +189,16 @@ namespace KinveyXamarin
 			query.commaDelimitedIds = String.Join (",", ids); 
 
 
-			int count = getConnection().UpdateAsync (query).Result;
+			int count = await getConnection().UpdateAsync (query);
 			if (count == 0) {
-				getConnection().InsertAsync (query);
+				await getConnection().InsertAsync (query);
 			}
+
+			return 0;
 		}
 
 
-		public void enqueueRequest (string action, string collection, string id)
+		public async Task<int> enqueueRequestAsync (string action, string collection, string id)
 		{
 			SQLTemplates.QueueItem queue = new SQLTemplates.QueueItem ();
 			queue.action = action;
@@ -203,14 +206,15 @@ namespace KinveyXamarin
 			queue.id = id;
 
 
-			getConnection().InsertAsync (queue);
+			await getConnection().InsertAsync (queue);
 
+			return 0;
 		}
 
-		public List<T> getAll (string collection)
+		public async Task<List<T>> getAllAsync (string collection)
 		{
 
-			List<SQLTemplates.OfflineEntity> entities = getConnection().Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection).ToListAsync ().Result;
+			List<SQLTemplates.OfflineEntity> entities = await getConnection().Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection).ToListAsync ();
 
 			List<T> results = new List<T>();
 
@@ -222,10 +226,10 @@ namespace KinveyXamarin
 		}
 			
 
-		public T getEntity (string collection, string id)
+		public async Task<T> getEntityAsync (string collection, string id)
 		{
 
-			SQLTemplates.OfflineEntity entity = getConnection().Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefaultAsync ().Result;
+			SQLTemplates.OfflineEntity entity = await getConnection().Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefaultAsync ();
 
 			if (entity == default(SQLTemplates.OfflineEntity)) {
 				return default(T);
@@ -234,12 +238,12 @@ namespace KinveyXamarin
 
 		}
 
-		public KinveyDeleteResponse delete(string collection, string id)
+		public async Task<KinveyDeleteResponse> deleteAsync(string collection, string id)
 		{
 
-			SQLTemplates.OfflineEntity entity = getConnection().Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefaultAsync ().Result;
+			SQLTemplates.OfflineEntity entity = await getConnection().Table<SQLTemplates.OfflineEntity> ().Where (t => t.collection == collection && t.id == id).FirstOrDefaultAsync ();
 
-			int count = getConnection().DeleteAsync (entity.id).Result;
+			int count = await getConnection().DeleteAsync (entity.id);
 
 
 			KinveyDeleteResponse resp = new KinveyDeleteResponse ();
@@ -248,16 +252,17 @@ namespace KinveyXamarin
 			return resp;
 		}
 
-		public SQLTemplates.QueueItem popQueue (){
-			SQLTemplates.QueueItem item = getConnection().Table<SQLTemplates.QueueItem> ().FirstOrDefaultAsync ().Result;
+		public async Task<SQLTemplates.QueueItem> popQueueAsync (){
+			SQLTemplates.QueueItem item = await getConnection().Table<SQLTemplates.QueueItem> ().FirstOrDefaultAsync ();
 			return item;
 
 		}
 
-		public void removeFromQueue (int primaryKey)
+		public async Task<int> removeFromQueueAsync (int primaryKey)
 		{
 
-			getConnection().DeleteAsync<SQLTemplates.QueueItem> (primaryKey);
+			await getConnection().DeleteAsync<SQLTemplates.QueueItem> (primaryKey);
+			return 1;
 
 		}
 		#endregion

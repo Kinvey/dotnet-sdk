@@ -1,5 +1,6 @@
 ﻿using System;
 using SQLite.Net.Interop;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -28,7 +29,7 @@ namespace KinveyXamarin
 		/// <param name="appdata">Appdata.</param>
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
-		object executeGet<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
+		Task<object> executeGetAsync<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
 
 		/// <summary>
 		/// Executes a save request.
@@ -38,7 +39,7 @@ namespace KinveyXamarin
 		/// <param name="appdata">Appdata.</param>
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
-		object executeSave<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
+		Task<object> executeSaveAsync<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
 
 		/// <summary>
 		/// Executes a delete request.
@@ -48,7 +49,7 @@ namespace KinveyXamarin
 		/// <param name="appdata">Appdata.</param>
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
-		KinveyDeleteResponse executeDelete<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
+		Task<KinveyDeleteResponse> executeDeleteAsync<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
 
 		/// <summary>
 		/// Inserts an entity directly into the database.
@@ -57,7 +58,7 @@ namespace KinveyXamarin
 		/// <param name="appdata">Appdata.</param>
 		/// <param name="entity">Entity.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
-		void insertEntity<T>(AbstractKinveyClient client, AppData<T> appdata, T entity);
+		Task<int> insertEntityAsync<T>(AbstractKinveyClient client, AppData<T> appdata, T entity);
 
 
 

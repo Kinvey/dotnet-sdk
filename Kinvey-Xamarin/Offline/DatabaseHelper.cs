@@ -16,26 +16,26 @@ namespace KinveyXamarin
 		/// Creates a new table
 		/// </summary>
 		/// <param name="collectionName">Collection name.</param>
-		void createTable(string collectionName);
+		void createTableAsync(string collectionName);
 
 		/// <summary>
 		/// Returns a list of all collections currently stored offline
 		/// </summary>
 		/// <returns>The collection tables.</returns>
-		List<string> getCollectionTables ();
+		Task<List<string>> getCollectionTablesAsync ();
 
 		/// <summary>
 		/// Deletes the contents of table.
 		/// </summary>
 		/// <returns>The contents of table.</returns>
 		/// <param name="str">String.</param>
-		int deleteContentsOfTable (string str);
+		Task<int> deleteContentsOfTableAsync (string str);
 
 		/// <summary>
 		/// Creates all the defaults for a new collection
 		/// </summary>
 		/// <param name="collectionName">Collection name.</param>
-		void onCreate(string collectionName);
+		Task<int> onCreateAsync(string collectionName);
 
 		/// <summary>
 		/// Upsertsa specific entity
@@ -43,7 +43,7 @@ namespace KinveyXamarin
 		/// <param name="id">Identifier.</param>
 		/// <param name="collection">Collection.</param>
 		/// <param name="json">Json.</param>
-		void upsertEntity(string id, string collection, string json);
+		Task<T> upsertEntityAsync(string id, string collection, string json);
 
 		/// <summary>
 		/// Gets the results of a query
@@ -51,7 +51,7 @@ namespace KinveyXamarin
 		/// <returns>The query.</returns>
 		/// <param name="queryString">Query string.</param>
 		/// <param name="collection">Collection.</param>
-		T[] getQuery (string queryString, string collection);
+		Task<T[]> getQueryAsync (string queryString, string collection);
 
 		/// <summary>
 		/// Saves the query and the _ids associated with it's results
@@ -59,7 +59,7 @@ namespace KinveyXamarin
 		/// <param name="queryString">Query string.</param>
 		/// <param name="collection">Collection.</param>
 		/// <param name="ids">Identifiers.</param>
-		void saveQueryResults (string queryString, string collection, List<string> ids);
+		Task<int> saveQueryResultsAsync (string queryString, string collection, List<string> ids);
 
 		/// <summary>
 		/// Enqueues the request.
@@ -67,14 +67,14 @@ namespace KinveyXamarin
 		/// <param name="action">Action.</param>
 		/// <param name="collection">Collection.</param>
 		/// <param name="id">Identifier.</param>
-		void enqueueRequest (string action, string collection, string id);
+		Task<int> enqueueRequestAsync (string action, string collection, string id);
 
 		/// <summary>
 		/// Gets all entites in a collection
 		/// </summary>
 		/// <returns>The entities.</returns>
 		/// <param name="collection">Collection.</param>
-		List<T> getAll (string collection);
+		Task<List<T>> getAllAsync (string collection);
 
 		/// <summary>
 		/// Gets a specific entity.
@@ -82,26 +82,26 @@ namespace KinveyXamarin
 		/// <returns>The entity.</returns>
 		/// <param name="collection">Collection.</param>
 		/// <param name="id">_id.</param>
-		T getEntity (string collection, string id);
+		Task<T> getEntityAsync (string collection, string id);
 
 		/// <summary>
 		/// Delete the specified _id in the collection.
 		/// </summary>
 		/// <param name="collection">Collection.</param>
 		/// <param name="id">_id to delete.</param>
-		KinveyDeleteResponse delete(string collection, string id);
+		Task<KinveyDeleteResponse> deleteAsync(string collection, string id);
 
 		/// <summary>
 		/// Pops the queue.
 		/// </summary>
 		/// <returns>the next request ot execute.</returns>
-		SQLTemplates.QueueItem popQueue ();
+		Task<SQLTemplates.QueueItem> popQueueAsync ();
 
 		/// <summary>
 		/// Removes from queue.
 		/// </summary>
 		/// <param name="primaryKey">Primary key of the queue item to remove.</param>
-		void removeFromQueue (int primaryKey);
+		Task<int> removeFromQueueAsync (int primaryKey);
 	}
 }
 

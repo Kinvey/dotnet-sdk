@@ -73,29 +73,21 @@ namespace KinveyXamarin
 			T ret = default(T);
 
 			if (verb.Equals ("GET")) {
-				lock (locker) {
-					ret = (T) store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-				}
+				ret = (T) store.executeGetAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
 			} else if (verb.Equals ("PUT")) {
-				lock (locker) {
-					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-				}
+				ret = (T) store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
 			} else if (verb.Equals ("POST")) {
-				lock (locker) {
-					JObject jobj = JObject.FromObject (this.HttpContent);
-					jobj["_id"] = getGUID ();
-					this.HttpContent = jobj.ToObject<T>();
+				JObject jobj = JObject.FromObject (this.HttpContent);
+				jobj["_id"] = getGUID ();
+				this.HttpContent = jobj.ToObject<T>();
 
-					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-				}
+				ret = (T) store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
+
 			} else if (verb.Equals ("DELETE")) {
-				lock (locker) {
-
-					KinveyDeleteResponse resp = store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+				KinveyDeleteResponse resp = store.executeDeleteAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
 //					return resp;
 					//TODO
-					return default(T);
-				}
+				return default(T);
 			}
 
 			return ret;
@@ -114,29 +106,21 @@ namespace KinveyXamarin
 			T ret = default(T);
 
 			if (verb.Equals ("GET")) {
-				lock (locker) {
-					ret = (T) store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-				}
+				ret = (T) await store.executeGetAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 			} else if (verb.Equals ("PUT")) {
-				lock (locker) {
-					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-				}
+				ret = (T) await store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
 			} else if (verb.Equals ("POST")) {
-				lock (locker) {
-					JObject jobj = JObject.FromObject (this.HttpContent);
-					jobj["_id"] = getGUID ();
-					this.HttpContent = jobj.ToObject<T>();
+				JObject jobj = JObject.FromObject (this.HttpContent);
+				jobj["_id"] = getGUID ();
+				this.HttpContent = jobj.ToObject<T>();
 
-					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-				}
+				ret = (T) await store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+
 			} else if (verb.Equals ("DELETE")) {
-				lock (locker) {
-
-					KinveyDeleteResponse resp = store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-					//					return resp;
-					//TODO
-					return default(T);
-				}
+				KinveyDeleteResponse resp = await store.executeDeleteAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+				//					return resp;
+				//TODO
+				return default(T);
 			}
 
 			return ret;

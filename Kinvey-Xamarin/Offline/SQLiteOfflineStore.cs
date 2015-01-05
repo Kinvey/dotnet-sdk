@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using SQLite.Net.Interop;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -42,7 +43,7 @@ namespace KinveyXamarin
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
 		/// <param name="appData">App data.</param>
-		public object executeGet<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
+		public async Task<object> executeGetAsync<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
 			//expand the URL
@@ -66,26 +67,26 @@ namespace KinveyXamarin
 				query = query.Replace("?query=","");
 				query = WebUtility.UrlDecode(query);
 
-				handler.createTable (appData.CollectionName);
+				handler.createTableAsync (appData.CollectionName);
 
-				T[] ok = handler.getQuery(appData.CollectionName,  query);
+				T[] ok = await handler.getQueryAsync(appData.CollectionName,  query);
 
 
-				handler.enqueueRequest("QUERY", appData.CollectionName, query);
+				await handler.enqueueRequestAsync("QUERY", appData.CollectionName, query);
 				return ok;
 
 			} else if (idIndex == (targetURI.Length + 1)|| targetURI.Contains ("query")) {
 				//it's a get all request (no query, no id)
-				handler.createTable (appData.CollectionName);
-				List<T> ok = handler.getAll (appData.CollectionName);
+				handler.createTableAsync (appData.CollectionName);
+				List<T> ok = await handler.getAllAsync (appData.CollectionName);
 				return ok;
 			} else {
 				//it's a get by id
 				String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
-				handler.createTable (appData.CollectionName);
-				ret = (T)handler.getEntity (appData.CollectionName, targetID);
+				handler.createTableAsync (appData.CollectionName);
+				ret = (T) await handler.getEntityAsync (appData.CollectionName, targetID);
 
-				handler.enqueueRequest("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
+				await handler.enqueueRequestAsync("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 			}
 
 
@@ -101,7 +102,7 @@ namespace KinveyXamarin
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
 		/// <param name="appData">App data.</param>
-		public object executeSave<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
+		public async Task<object> executeSaveAsync<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
 			//grab json content and put it in the store
@@ -116,10 +117,10 @@ namespace KinveyXamarin
 			string id = (string)token.SelectToken("_id");
 
 			//insert the entity into the database
-			handler.createTable (appData.CollectionName);
-			handler.upsertEntity(id, appData.CollectionName, jsonContent);
+			handler.createTableAsync (appData.CollectionName);
+			await handler.upsertEntityAsync(id, appData.CollectionName, jsonContent);
 			//enque the request
-			handler.enqueueRequest("PUT", appData.CollectionName, id);
+			await handler.enqueueRequestAsync("PUT", appData.CollectionName, id);
 
 			return request.HttpContent;
 		}
@@ -133,7 +134,7 @@ namespace KinveyXamarin
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
 		/// <param name="appData">App data.</param>
-		public KinveyDeleteResponse executeDelete<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
+		public async Task<KinveyDeleteResponse> executeDeleteAsync<T>(AbstractKinveyClient client, AppData<T> appData, AbstractKinveyOfflineClientRequest<T> request){
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
 			//expand the URL
@@ -149,10 +150,10 @@ namespace KinveyXamarin
 
 
 
-			handler.createTable (appData.CollectionName);
-			KinveyDeleteResponse ret = handler.delete(appData.CollectionName, targetID);
+			handler.createTableAsync (appData.CollectionName);
+			KinveyDeleteResponse ret = await handler.deleteAsync(appData.CollectionName, targetID);
 
-			handler.enqueueRequest("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
+			await handler.enqueueRequestAsync("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
 			return ret;
 		}
 
@@ -164,7 +165,7 @@ namespace KinveyXamarin
 		/// <param name="entity">Entity.</param>
 		/// <typeparam name="T">The type of the response.</typeparam>
 		/// <param name="appData">App data.</param>
-		public void insertEntity<T>(AbstractKinveyClient client, AppData<T> appData, T entity){
+		public async Task<int> insertEntityAsync<T>(AbstractKinveyClient client, AppData<T> appData, T entity){
 
 			DatabaseHelper<T> handler = getDatabaseHelper<T> ();
 
@@ -174,9 +175,10 @@ namespace KinveyXamarin
 			JToken token = JObject.Parse(jsonContent);
 			string id = (string)token.SelectToken("_id");
 
-			handler.createTable (appData.CollectionName);
+			handler.createTableAsync (appData.CollectionName);
 
-			handler.upsertEntity( id, appData.CollectionName, jsonContent);
+			await handler.upsertEntityAsync( id, appData.CollectionName, jsonContent);
+			return 0;
 
 		}
 

@@ -56,7 +56,7 @@ namespace KinveyXamarin
 		private void getFromStoreAndExecute(){
 			DatabaseHelper<T> handler = getDatabaseHelper ();
 
-			SQLTemplates.QueueItem req = handler.popQueue ();
+			SQLTemplates.QueueItem req = handler.popQueueAsync ().Result;
 
 			if (req != null) {
 				buildAndExecuteRequest (handler, req);
@@ -90,14 +90,14 @@ namespace KinveyXamarin
 							string entJSON = JsonConvert.SerializeObject(ent);
 							string entID = JObject.FromObject (ent) ["_id"].ToString();
 
-							handler.upsertEntity(entID, collection, entJSON);
+							handler.upsertEntityAsync(entID, collection, entJSON);
 
 							idresults.Add(entID);
 						}
 
-						handler.saveQueryResults(id, collection, idresults);
+						handler.saveQueryResultsAsync(id, collection, idresults);
 
-						handler.removeFromQueue(item.key);
+						handler.removeFromQueueAsync(item.key);
 						doneSuccessfully();
 
 					},
@@ -108,13 +108,13 @@ namespace KinveyXamarin
 				});
 				break;
 			case "PUT":
-				T entity = handler.getEntity (collection, id);
+				T entity = handler.getEntityAsync (collection, id).Result;
 
 				appdata.Save (entity, new KinveyDelegate<T> { 
 					onSuccess = (T) => { 
 						string json = JsonConvert.SerializeObject(T);
-						handler.upsertEntity(id, collection, json);
-						handler.removeFromQueue(item.key);
+						handler.upsertEntityAsync(id, collection, json);
+						handler.removeFromQueueAsync(item.key);
 						doneSuccessfully();
 					},
 					onError = (error) => {
@@ -128,8 +128,8 @@ namespace KinveyXamarin
 				appdata.GetEntity (id, new KinveyDelegate<T> { 
 					onSuccess = (T) => { 
 						string json = JsonConvert.SerializeObject(T);
-						handler.upsertEntity(id, collection, json);
-						handler.removeFromQueue(item.key);
+						handler.upsertEntityAsync(id, collection, json);
+						handler.removeFromQueueAsync(item.key);
 						doneSuccessfully();
 					},
 					onError = (error) => {
