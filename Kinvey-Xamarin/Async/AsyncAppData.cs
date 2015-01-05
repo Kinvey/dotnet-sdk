@@ -40,7 +40,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Get a single entity stored in a Kinvey collection.
 		/// </summary>
-		/// <returns>The async Task.</returns>
+		/// <returns>The async task.</returns>
 		/// <param name="entityId">Entity identifier.</param>
 		public async Task<T> GetEntityAsync(string entityId){
 			return await GetEntityBlocking (entityId).ExecuteAsync ();
@@ -65,7 +65,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Get all entities from a Kinvey collection.
 		/// </summary>
-		/// <returns>The async Task.</returns>
+		/// <returns>The async task.</returns>
 		public async Task<T[]> GetAsync(){
 			return await GetBlocking ().ExecuteAsync ();
 		}
@@ -90,7 +90,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Save the specified entity to a Kinvey collection.
 		/// </summary>
-		/// <returns>The async Task.</returns>
+		/// <returns>The async task.</returns>
 		/// <param name="entity">the entity to save.</param>
 		public async Task<T> SaveAsync(T entity){
 			return await SaveBlocking (entity).ExecuteAsync ();
@@ -116,10 +116,10 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Returns the results of a kinvey-style mongodb raw query.  Note this class also supports LINQ for querying.
 		/// </summary>
-		/// <returns>The async Task.</returns>
+		/// <returns>The async task.</returns>
 		/// <param name="query">The raw query string to execute.</param>
 		public async Task<T[]> getAsync(string query){
-			return getQueryBlocking (query).ExecuteAsync ();
+			return await getQueryBlocking (query).ExecuteAsync ();
 		}
 	}
 }
