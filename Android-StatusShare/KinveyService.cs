@@ -66,11 +66,6 @@ namespace AndroidStatusShare
 		public static string getCurrentUserId(){
 			return getClient ().User ().Id;
 		}
-
-
-
-
-
 	}
 }
 

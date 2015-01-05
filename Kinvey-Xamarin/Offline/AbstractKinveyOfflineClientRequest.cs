@@ -102,11 +102,61 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Executes the request from the offline store
+		/// </summary>
+		/// <returns>The response, if there is one, from the offline store.</returns>
+		public async Task<T> offlineFromStoreAsync(){
+			if (store == null) {
+				return default(T);
+			}
+
+			string verb = base.RequestMethod;
+			T ret = default(T);
+
+			if (verb.Equals ("GET")) {
+				lock (locker) {
+					ret = (T) store.executeGet ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+				}
+			} else if (verb.Equals ("PUT")) {
+				lock (locker) {
+					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+				}
+			} else if (verb.Equals ("POST")) {
+				lock (locker) {
+					JObject jobj = JObject.FromObject (this.HttpContent);
+					jobj["_id"] = getGUID ();
+					this.HttpContent = jobj.ToObject<T>();
+
+					ret = (T) store.executeSave ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+				}
+			} else if (verb.Equals ("DELETE")) {
+				lock (locker) {
+
+					KinveyDeleteResponse resp = store.executeDelete ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
+					//					return resp;
+					//TODO
+					return default(T);
+				}
+			}
+
+			return ret;
+		}
+
+		/// <summary>
 		/// Executes the request over the network
 		/// </summary>
 		/// <returns>The entity from the service.</returns>
 		public T offlineFromService(){
 			T ret = base.Execute ();
+			return ret;
+		}
+
+		/// <summary>
+		/// Executes the request over the network using async/await
+		/// </summary>
+		/// <returns>The from service async.</returns>
+		public async Task<T> offlineFromServiceAsync(){
+			var ret = await base.ExecuteAsync ();
 			return ret;
 		}
 
@@ -142,6 +192,37 @@ namespace KinveyXamarin
 			kickOffSync ();
 
 			return ret;
+		}
+
+		public async override Task<T> ExecuteAsync(){
+			T ret =  default(T);
+
+			if (policy == OfflinePolicy.ALWAYS_ONLINE) {
+				ret = await offlineFromServiceAsync ();
+
+			} else if (policy == OfflinePolicy.LOCAL_FIRST) {
+				ret = await offlineFromStoreAsync ();
+				if (ret == null) {
+					try {
+						ret = await offlineFromServiceAsync ();
+					} catch (Exception e) {
+						Logger.Log (e);
+					}
+				}
+
+			} else if (policy == OfflinePolicy.ONLINE_FIRST) {
+				try {
+					ret = await offlineFromServiceAsync ();
+				} catch (Exception e) {
+					Logger.Log (e);
+					ret = await offlineFromStoreAsync ();
+				}
+			}
+
+			kickOffSync ();
+
+			return ret;
+
 		}
 	
 		/// <summary>

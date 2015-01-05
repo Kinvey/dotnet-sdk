@@ -59,6 +59,8 @@ namespace KinveyXamarin
 		/// <typeparam name="T">The type of the response.</typeparam>
 		void insertEntity<T>(AbstractKinveyClient client, AppData<T> appdata, T entity);
 
+
+
 		/// <summary>
 		/// Clears the storage.
 		/// </summary>
