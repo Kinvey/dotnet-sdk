@@ -18,9 +18,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-
 namespace iOSTestDrive
 {
+
 	[JsonObject(MemberSerialization.OptIn)]
 	public class MyEntity
 	{

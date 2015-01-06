@@ -46,7 +46,7 @@ namespace AndroidTestDrive
 		Client kinveyClient;
 		InMemoryCache<MyEntity> myCache = new InMemoryCache<MyEntity>();
 
-		protected override void OnCreate (Bundle bundle)
+		protected override async void OnCreate (Bundle bundle)
 		{
 		
 			base.OnCreate (bundle);
@@ -62,7 +62,6 @@ namespace AndroidTestDrive
 
 			Logger.Log ("---------------------------------------------logger");
 
-
 			kinveyClient.Ping (new KinveyDelegate<PingResponse>{
 				onSuccess = (response) => {
 					RunOnUiThread (() => {
@@ -76,19 +75,8 @@ namespace AndroidTestDrive
 				}
 			});
 
-			kinveyClient.User ().Login (new KinveyDelegate<User>{ 
-				onSuccess =  (user) => { 
-					RunOnUiThread (() => {
-						Toast.MakeText(this, "logged in as: " + user.Id, ToastLength.Short).Show();
-					});
-				},
-				onError = (error) => {
-					RunOnUiThread (() => {
-						Toast.MakeText(this, "something went wrong: " + error.Message, ToastLength.Short).Show();
-					});
-				}
-			});
-
+			User user = await kinveyClient.User ().LoginAsync ();
+			Toast.MakeText(this, "logged in as: " + user.Id, ToastLength.Short).Show();
 
 			// Get our button from the layout resource,
 			// and attach an event to it
@@ -103,9 +91,6 @@ namespace AndroidTestDrive
 					saveAndToast ()
 				).Start ();
 			};
-
-//			save.Click += async (sender, e) => {};
-
 
 			Button load = FindViewById<Button> (Resource.Id.loadButton);
 			load.Click += delegate {
@@ -136,7 +121,7 @@ namespace AndroidTestDrive
 
 
 
-		private void saveAndToast(){
+		private async void saveAndToast(){
 		
 			AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 
@@ -145,60 +130,26 @@ namespace AndroidTestDrive
 			ent.Name = "James Dean";
 			ent.ID = STABLE_ID;
 			entityCollection.setOffline(new SQLiteOfflineStore(), OfflinePolicy.LOCAL_FIRST);
-			entityCollection.Save (ent, new KinveyDelegate<MyEntity> { 
-				onSuccess = (entity) => { 
-					RunOnUiThread (() => {
-						Toast.MakeText (this, "saved: " + entity.Name, ToastLength.Short).Show ();
-					});
-				},
-				onError = (error) => {
-					RunOnUiThread (() => {
-						Toast.MakeText (this, "something went wrong: " + error.Message, ToastLength.Short).Show ();
-					});
-				}
-			});
-		
-		
+
+			MyEntity entity = await entityCollection.SaveAsync (ent);
+			Toast.MakeText (this, "saved: " + entity.Name, ToastLength.Short).Show ();
 		}
 
-		private void loadAndToast(){
-			AppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
+		private async void loadAndToast(){
+			AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 			entityCollection.setOffline(new SQLiteOfflineStore(), OfflinePolicy.LOCAL_FIRST);
-			MyEntity res = null;
-			try{
-				res = entityCollection.GetEntityBlocking (STABLE_ID).Execute ();
-			}catch(Exception e){
-				Console.WriteLine ("Uh oh! " + e);
-				RunOnUiThread (() => {
-					Toast.MakeText(this, "something went wrong: " + e.Message, ToastLength.Short).Show();
-				});
-				return;
-			}
 
-
-			RunOnUiThread ( () => {
-				Toast.MakeText(this, "got: " + res.Name, ToastLength.Short).Show();
-			});
-		
+			MyEntity res = await entityCollection.GetEntityAsync (STABLE_ID);
+			Toast.MakeText(this, "got: " + res.Name, ToastLength.Short).Show();
 		}
 
-		private void loadFromCacheAndToast(){
+		private async void loadFromCacheAndToast(){
 			AsyncAppData<MyEntity> entityCollection = kinveyClient.AppData<MyEntity>(COLLECTION, typeof(MyEntity));
 			entityCollection.setCache (myCache, CachePolicy.CACHE_FIRST);
 
 
-			entityCollection.GetEntity (STABLE_ID, new KinveyDelegate<MyEntity> { 
-				onSuccess = (entity) => { 
-					RunOnUiThread (() => {
-						Toast.MakeText (this, "got: " + entity.Name, ToastLength.Short).Show ();
-					});
-				},
-				onError = (error) => {
-					RunOnUiThread (() => {
-						Toast.MakeText (this, "something went wrong: " + error.Message, ToastLength.Short).Show ();
-					});
-				}
-			});
+			MyEntity entity = await entityCollection.GetEntityAsync (STABLE_ID);
+			Toast.MakeText (this, "got: " + entity.Name, ToastLength.Short).Show ();
 					
 		}
 
@@ -211,6 +162,8 @@ namespace AndroidTestDrive
 			var query1 = from cust in query
 			             where cust.Name == "James Dean"
 			             select cust;
+
+
 
 			Task.Run (() => {
 				foreach (MyEntity e in query1){

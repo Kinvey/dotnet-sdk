@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{9793087D-3A1D-4080-A8F3-F79471708DFB}</ProjectGuid>
+    <ProjectGuid>{75F00D3F-B9B5-4F6F-9315-53D287C3DD48}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>iOSTestDrive</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
@@ -95,6 +95,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="LinqExtender">
+      <HintPath>..\packages\LinqExtender.3.0.1\lib\LinqExtender.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
@@ -110,10 +113,23 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="iOS-TestDriveViewController.cs" />
+    <Compile Include="iOS-TestDriveViewController.designer.cs">
+      <DependentUpon>iOS-TestDriveViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="MyEntity.cs" />
+    <Compile Include="ExpressionVisitor.cs" />
+    <Compile Include="DefaultContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="MainStoryboard_iPhone.storyboard" />
+    <InterfaceDefinition Include="MainStoryboard_iPad.storyboard" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <InterfaceDefinition Include="Main.storyboard" />
+    <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">
+      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
+      <Name>Kinvey-Xamarin</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
