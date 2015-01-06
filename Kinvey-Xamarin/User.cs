@@ -436,6 +436,11 @@ namespace KinveyXamarin
 				return memberUser.InitUser(response, userType);
 			}
 
+
+			/// <summary>
+			/// Executes this auth request async
+			/// </summary>
+			/// <returns>The async task.</returns>
 			public async Task<User> ExecuteAsync(){
 				if (memberUser.isUserLoggedIn())
 				{
