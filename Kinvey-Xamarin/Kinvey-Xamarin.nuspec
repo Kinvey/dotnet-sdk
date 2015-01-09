@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Kinvey</id>
+    <version>1.0.0</version>
+    <title>Kinvey-Xamarin</title>
+    <authors>Kinvey</authors>
+    <owners>Kinvey</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Build Xamarin apps which leverage the power of Kinvey's BaaS, with support for users, data, and files, with caching and offline.  Check out http://devcenter.kinvey.com/xamarin for guides, tutorials, and sample apps.  </description>
+    <releaseNotes>Initial Release with support for User management, application data with caching and offline, and file operations.</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Kinvey BaaS</tags>
+  </metadata>
+</package>
