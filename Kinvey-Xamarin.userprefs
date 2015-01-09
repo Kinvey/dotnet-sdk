@@ -1,5 +1,5 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.Nexus 5 (KitKat)" />
   <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
@@ -34,8 +34,7 @@
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestUser.cs" line="21" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestUser.cs" line="35" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestUser.cs" line="49" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-TestDrive/MainActivity.cs" line="87" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-TestDrive/MainActivity.cs" line="74" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-TestDrive/MainActivity.cs" line="73" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Async/AsyncAppData.cs" line="107" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-StatusShare/src.fragments/LoginFragment.cs" line="67" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-StatusShare/src.fragments/LoginFragment.cs" line="50" column="1" />
@@ -46,6 +45,4 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Kinvey-Xamarin/Core/KinveyJsonResponseException.cs" line="45" offsetX="623" offsetY="660" expression="response" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
-  <MonoDevelop.Ide.ItemProperties.Android-StatusShare MonoForAntroid.PreferredDevice="Nexus 4" />
-  <MonoDevelop.Ide.ItemProperties.Android-TestDrive MonoForAntroid.PreferredDevice="3.7&quot; WVGA (Nexus One)" AndroidDeviceId-Debug="6da39684" />
 </Properties>
