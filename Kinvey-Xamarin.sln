@@ -96,6 +96,6 @@ Global
 		{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Kinvey-Xamarin\Kinvey-Xamarin.csproj
+		StartupItem = Android-Libtester\Android-Libtester.csproj
 	EndGlobalSection
 EndGlobal

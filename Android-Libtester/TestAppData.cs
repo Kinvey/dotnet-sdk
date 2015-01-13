@@ -85,6 +85,25 @@ namespace AndroidLibtester
 
 		}
 
+		[Test()]
+		public void TestDeleteEntity()
+		{
+			string someID = "some id";
+			AppData<MyEntity>.DeleteRequest req = testData.DeleteBlocking (someID);
+
+			RestRequest restReq = req.BuildRestRequest ();
+			Assert.True (restReq.Method == Method.DELETE);
+			Assert.True (restReq.Parameters.FindAll (delegate(Parameter p){
+				return p.Type == ParameterType.UrlSegment;
+			}).Count >= 1);
+
+			Assert.True (restReq.Parameters.FindAll (delegate(Parameter p){
+				return p.Type == ParameterType.HttpHeader;
+			}).Count >= 3);
+
+		}
+
+
 	}
 }
 

@@ -34,11 +34,6 @@ namespace KinveyXamarin
 		private OfflinePolicy policy = OfflinePolicy.ALWAYS_ONLINE;
 
 		/// <summary>
-		/// The lock for database access
-		/// </summary>
-		private Object locker = new Object();
-
-		/// <summary>
 		/// The name of the collection.
 		/// </summary>
 		private string collectionName;

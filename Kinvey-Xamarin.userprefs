@@ -1,6 +1,22 @@
-﻿<Properties>
+﻿<Properties StartupItem="Android-Libtester/Android-Libtester.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.Nexus 5 (KitKat)" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Model/ThirdPartyIdentity.cs">
+    <Files>
+      <File FileName="Android-Libtester/TestAppData.cs" Line="1" Column="1" />
+      <File FileName="Android-Libtester/MainActivity.cs" Line="35" Column="35" />
+      <File FileName="Android-Libtester/LinqBuilderTest.cs" Line="1" Column="1" />
+      <File FileName="Android-Libtester/TestClient.cs" Line="1" Column="1" />
+      <File FileName="Android-Libtester/TestUser.cs" Line="1" Column="1" />
+      <File FileName="Kinvey-Xamarin/File.cs" Line="57" Column="57" />
+      <File FileName="Kinvey-Xamarin/File/KinveyFileRequest.cs" Line="19" Column="19" />
+      <File FileName="RestSharp.Portable/RestRequest.cs" Line="35" Column="35" />
+      <File FileName="RestSharp.Portable/HttpConverter.cs" Line="22" Column="22" />
+      <File FileName="RestSharp.Portable/HttpRequest.cs" Line="37" Column="37" />
+      <File FileName="RestSharp.Portable/HttpFile.cs" Line="2" Column="2" />
+      <File FileName="RestSharp.Portable/DefaultRequestMessage.cs" Line="63" Column="63" />
+      <File FileName="Kinvey-Xamarin/Model/ThirdPartyIdentity.cs" Line="53" Column="53" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/edwardflemingiii/Projects/Kinvey-Xamarin/Kinvey-Xamarin/Offline/SQLiteHelper.cs" line="150" column="1" />
@@ -33,7 +49,7 @@
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestClient.cs" line="29" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestUser.cs" line="21" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestUser.cs" line="35" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestUser.cs" line="49" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-Libtester/TestUser.cs" line="48" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-TestDrive/MainActivity.cs" line="73" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Async/AsyncAppData.cs" line="107" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Android-StatusShare/src.fragments/LoginFragment.cs" line="67" column="1" />

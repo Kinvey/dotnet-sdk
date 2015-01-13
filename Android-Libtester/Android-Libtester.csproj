@@ -60,6 +60,7 @@
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="LinqBuilderTest.cs" />
     <Compile Include="MyEntity.cs" />
+    <Compile Include="TestIntAppData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

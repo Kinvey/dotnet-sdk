@@ -37,7 +37,6 @@ namespace AndroidLibtester
 			KinveyAuthRequest.LoginType lgType = (KinveyAuthRequest.LoginType) ReflectionHelper.getFieldValue (req, "type");
 			User memberUser = (User) ReflectionHelper.getFieldValue(req, "memberUser");
 		
-//			Assert.Equals (lgType, Kinvey.DotNet.Framework.Auth.KinveyAuthRequest.LoginType.IMPLICIT);
 			Assert.True(lgType == KinveyAuthRequest.LoginType.IMPLICIT);
 			Assert.That (ReferenceEquals (memberUser, testUser));
 

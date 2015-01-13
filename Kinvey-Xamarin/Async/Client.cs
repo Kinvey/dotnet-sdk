@@ -60,7 +60,7 @@ namespace KinveyXamarin
 				if (user == null) {
 					var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
 					var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-					this.user = new AsyncUser(this, new KinveyAuthRequest.Builder(this, this.BaseUrl, appKey, appSecret, null));
+					this.user = new AsyncUser(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
 				}
 
 				return user;
@@ -87,6 +87,12 @@ namespace KinveyXamarin
 			return new AsyncFile (this);
 		}
 
+		/// <summary>
+		/// Execute custom endpoints
+		/// </summary>
+		/// <returns>A configured instance of the Custom Endpoint object.</returns>
+		/// <typeparam name="I">The Type of the input.</typeparam>
+		/// <typeparam name="O">The Type of the output.</typeparam>
 		public new AsyncCustomEndpoint<I, O> CustomEndpoint<I, O>(){
 			return new AsyncCustomEndpoint<I, O> (this);
 		}
@@ -100,6 +106,10 @@ namespace KinveyXamarin
 					delegates.onError (e);
 				}
 			});
+		}
+
+		public async Task<PingResponse> PingAsync(){
+			return await base.pingBlocking().ExecuteAsync();
 		}
 
 	
