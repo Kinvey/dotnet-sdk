@@ -144,6 +144,93 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Login with Facebook Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">Facebook Access token.</param>
+		public async Task<User> LoginFacebookAsync(string accessToken){
+			Provider provider = new Provider ();
+			provider.facebook = new FacebookCredential (accessToken);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with Twitter Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accesstoken">Twitter Accesstoken.</param>
+		/// <param name="accesstokensecret">Twitter Accesstokensecret.</param>
+		/// <param name="consumerkey">Twitter Consumerkey.</param>
+		/// <param name="consumersecret">Twitter Consumersecret.</param>
+		public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret){
+			Provider provider = new Provider ();
+			provider.twitter = new TwitterCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with Google Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">Google Access token.</param>
+		public async Task<User> LoginGoogleAsync(string accessToken){
+			Provider provider = new Provider ();
+			provider.google = new GoogleCredential (accessToken);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with LinkedIn Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accesstoken">Linkedin Accesstoken.</param>
+		/// <param name="accesstokensecret">Linkedin Accesstokensecret.</param>
+		/// <param name="consumerkey">Linkedin Consumerkey.</param>
+		/// <param name="consumersecret">Linkedin Consumersecret.</param>
+		public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret){
+			Provider provider = new Provider ();
+			provider.linkedin = new LinkedInCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with Auth Link Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accesstoken">Auth Link Accesstoken.</param>
+		/// <param name="refreshtoken">Auth Link Refreshtoken.</param>
+		public async Task<User> LoginAuthlinkAsync(string accesstoken, string refreshtoken){
+			Provider provider = new Provider ();
+			provider.authlink = new AuthLinkCredential (accesstoken, refreshtoken);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with Salesforce Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="access">Salesforce Access.</param>
+		/// <param name="reauth">Salesforce Reauth.</param>
+		/// <param name="clientid">Salesforce Clientid.</param>
+		/// <param name="id">Salesforce Identifier.</param>
+		public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id){
+			Provider provider = new Provider ();
+			provider.salesforce = new SalesforceCredential (access, reauth, clientid, id);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with MIC Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">MIC Access token.</param>
+		public async Task<User> LoginMICAsync(string accessToken){
+			Provider provider = new Provider ();
+			provider.kinveyAuth = new MICCredential (accessToken);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+			
+		/// <summary>
 		/// Logout the current user.
 		/// </summary>
 		public void Logout()
@@ -211,6 +298,10 @@ namespace KinveyXamarin
 		/// <param name="userid">Userid.</param>
 		public async Task<User> RetrieveAsync(string userid){
 			return await base.RetrieveBlocking (userid).ExecuteAsync ();
+		}
+
+		public async Task<User> RetrieveAsync(){
+			return await RetrieveAsync (this.Id);
 		}
 
 		/// <summary>

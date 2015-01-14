@@ -121,6 +121,15 @@ namespace KinveyXamarin
 		public async Task<T[]> getAsync(string query){
 			return await getQueryBlocking (query).ExecuteAsync ();
 		}
+
+		/// <summary>
+		/// Deletes the entity associated with the provided id
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="entityId">the _id of the entity to delete.</param>
+		public async Task<KinveyDeleteResponse> DeleteAsync(string entityId){
+			return await DeleteBlocking (entityId).ExecuteAsync ();
+		}
 	}
 }
 
