@@ -4,7 +4,7 @@ namespace KinveyUtils
 {
 	public class Logger
 	{
-		public static bool initialized {get; set;} = false;
+		public static bool initialized {get; set;}
 
 		public static Action<string> logIt {get; set;}
 
@@ -12,6 +12,8 @@ namespace KinveyUtils
 			if (logAction != null) {
 				logIt = logAction;
 				initialized = true;
+			} else {
+				initialized = false;
 			}
 		}
 

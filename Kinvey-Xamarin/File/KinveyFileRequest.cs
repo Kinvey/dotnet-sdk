@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using RestSharp;
 using System.IO;
+using System.Net.Http;
+using ModernHttpClient;
 
 namespace KinveyXamarin
 {
@@ -42,6 +44,12 @@ namespace KinveyXamarin
 		public FileMetaData executeAndUploadFrom(byte[] input){
 			FileMetaData metadata = base.Execute ();
 			uploadFile (metadata, input);
+			return metadata;
+		}
+
+		public FileMetaData executeAndUploadFrom(Stream stream){
+			FileMetaData metadata = base.Execute ();
+			uploadFile (metadata, stream);
 			return metadata;
 		}
 			
@@ -83,12 +91,42 @@ namespace KinveyXamarin
 			} else {
 				request.Method = Method.POST;
 			}
-
+				
 			//TODO what are these parameters for `name` and `filename` used for?
 			request.AddFile ("test", input, "filenameTest");
 
 			var req = client.ExecuteAsync (request);
 			var response = req.Result;
+		}
+
+		private void uploadFile(FileMetaData metadata, Stream input){
+			string uploadURL = metadata.uploadUrl;
+
+			var httpClient = new HttpClient(new NativeMessageHandler());
+			Uri requestURI = new Uri (uploadURL);
+
+			foreach (string key in metadata.headers.Keys) {
+				httpClient.DefaultRequestHeaders.Add(key, metadata.headers[key]);
+
+
+			}
+
+			//StreamContent content = new StreamContent ();
+			if (input.CanSeek) {
+				input.Position = 0;
+		//	httpClient.DefaultRequestHeaders.Add ("Content-Length", "1024");
+		//	httpClient.
+			}
+
+			//var content = new MultipartContent ();
+			//content.Add(new StreamContent(input));
+
+			 
+			var req = httpClient.PutAsync(requestURI, new StreamContent(input));
+			var response = req.Result;
+			response.EnsureSuccessStatusCode();
+
+
 		}
 	}
 }

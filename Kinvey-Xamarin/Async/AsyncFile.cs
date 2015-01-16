@@ -88,6 +88,23 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Upload the specified stream to Kinvey's file storage.  The FileMetaData contains extra data about the file.
+		/// </summary>
+		/// <param name="metadata">Metadata associated with the file, supports arbitrary key/value pairs</param>
+		/// <param name="content">the actual bytes of the file to upload.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
+		public void upload(FileMetaData metadata, Stream content, KinveyDelegate<FileMetaData> delegates){
+			Task.Run (() => {
+				try {
+					FileMetaData entity = base.uploadBlocking (metadata).executeAndUploadFrom (content);
+					delegates.onSuccess (entity);
+				} catch (Exception e) {
+					delegates.onError (e);
+				}
+			});
+		}
+
+		/// <summary>
 		/// Uploads metadata associated with a file, without changing the file itself.  Do not modify the id or filename using this method-- it's for any other key/value pairs.
 		/// </summary>
 		/// <param name="metadata">The updated FileMetaData to upload to Kinvey.</param>

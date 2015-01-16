@@ -13,6 +13,7 @@
 
 using System;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
@@ -83,6 +84,9 @@ namespace KinveyXamarin
 		/// <value><c>true</c> if public; otherwise, <c>false</c>.</value>
 		[JsonProperty("_public")]
 		public bool _public {get; set;}
+
+		[JsonProperty("_requiredHeaders")]
+		public Dictionary<string, string> headers;
 	}
 }
 

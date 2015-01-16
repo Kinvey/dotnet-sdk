@@ -190,10 +190,15 @@ namespace KinveyXamarin
 				}
 
 			} else if (policy == OfflinePolicy.ONLINE_FIRST) {
+				bool failed = false;
 				try {
 					ret = await offlineFromServiceAsync ();
 				} catch (Exception e) {
 					Logger.Log (e);
+					failed = true;
+
+				}
+				if (failed) {
 					ret = await offlineFromStoreAsync ();
 				}
 			}
