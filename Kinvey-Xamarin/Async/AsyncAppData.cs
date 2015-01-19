@@ -70,6 +70,10 @@ namespace KinveyXamarin
 			return await GetBlocking ().ExecuteAsync ();
 		}
 
+		public async Task<T[]> GetAsync(string queryString){
+			return await base.getQueryBlocking (queryString).ExecuteAsync ();
+		}
+
 		/// <summary>
 		/// Save the specified entity to a Kinvey collection.
 		/// </summary>

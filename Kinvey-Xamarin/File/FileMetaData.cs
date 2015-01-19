@@ -29,6 +29,14 @@ namespace KinveyXamarin
 		public FileMetaData ()
 		{
 		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.FileMetaData"/> class with the specified _id
+		/// </summary>
+		/// <param name="id">the _id of the file.</param>
+		public FileMetaData(string id){
+			this.id = id;
+		}
 		/// <summary>
 		/// Gets or sets the identifier.
 		/// </summary>

@@ -88,9 +88,10 @@ namespace KinveyXamarin
 		/// Creates an Offline Table, which manages all offline collection features.
 		/// </summary>
 		/// <param name="collectionName">Collection name.</param>
-		public async void createTableAsync (string collectionName)
+		public async Task<int> createTableAsync (string collectionName)
 		{
 			await onCreateAsync (collectionName);
+			return 0;
 		}
 
 

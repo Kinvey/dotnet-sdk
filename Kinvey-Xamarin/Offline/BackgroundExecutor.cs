@@ -85,7 +85,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="handler">Handler to access database.</param>
 		/// <param name="item">The queued representation of the request.</param>
-		private void buildAndExecuteRequest(DatabaseHelper<T> handler, SQLTemplates.QueueItem item){
+		private async void buildAndExecuteRequest(DatabaseHelper<T> handler, SQLTemplates.QueueItem item){
 			string collection = item.collection;
 			string verb = item.action;
 			string id = item.id;
@@ -93,32 +93,24 @@ namespace KinveyXamarin
 
 			switch (verb) {
 			case "QUERY":
-				appdata.Get (id, new KinveyDelegate<T[]>{ 
-					onSuccess = (results) => { 
 
-						List<string> idresults = new List<string>();
+				break;
+				T[] results = await appdata.GetAsync (id);
+				List<string> idresults = new List<string>();
+				foreach ( T ent in results){
 
-						foreach ( T ent in results){
-						
-							string entJSON = JsonConvert.SerializeObject(ent);
-							string entID = JObject.FromObject (ent) ["_id"].ToString();
+					string entJSON = JsonConvert.SerializeObject(ent);
+					string entID = JObject.FromObject (ent) ["_id"].ToString();
 
-							handler.upsertEntityAsync(entID, collection, entJSON);
+					await handler.upsertEntityAsync(entID, collection, entJSON);
 
-							idresults.Add(entID);
-						}
+					idresults.Add(entID);
+				}
+				await handler.saveQueryResultsAsync(id, collection, idresults);
 
-						handler.saveQueryResultsAsync(id, collection, idresults);
+				await handler.removeFromQueueAsync(item.key);
+				doneSuccessfully();
 
-						handler.removeFromQueueAsync(item.key);
-						doneSuccessfully();
-
-					},
-					onError = (error) => {
-						Logger.Log(error);
-					}
-				
-				});
 				break;
 			case "PUT":
 				T entity = handler.getEntityAsync (collection, id).Result;

@@ -80,7 +80,7 @@ namespace KinveyXamarin
 				query = query.Replace("?query=","");
 				query = WebUtility.UrlDecode(query);
 
-				handler.createTableAsync (appData.CollectionName);
+				await handler.createTableAsync (appData.CollectionName);
 
 				T[] ok = await handler.getQueryAsync(appData.CollectionName,  query);
 
@@ -90,13 +90,13 @@ namespace KinveyXamarin
 
 			} else if (idIndex == (targetURI.Length + 1)|| targetURI.Contains ("query")) {
 				//it's a get all request (no query, no id)
-				handler.createTableAsync (appData.CollectionName);
+				await handler.createTableAsync (appData.CollectionName);
 				List<T> ok = await handler.getAllAsync (appData.CollectionName);
 				return ok;
 			} else {
 				//it's a get by id
 				String targetID = targetURI.Substring(idIndex, targetURI.Length - idIndex);
-				handler.createTableAsync (appData.CollectionName);
+				await handler.createTableAsync (appData.CollectionName);
 				ret = (T) await handler.getEntityAsync (appData.CollectionName, targetID);
 
 				await handler.enqueueRequestAsync("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
@@ -130,7 +130,7 @@ namespace KinveyXamarin
 			string id = (string)token.SelectToken("_id");
 
 			//insert the entity into the database
-			handler.createTableAsync (appData.CollectionName);
+			await handler.createTableAsync (appData.CollectionName);
 			await handler.upsertEntityAsync(id, appData.CollectionName, jsonContent);
 			//enque the request
 			await handler.enqueueRequestAsync("PUT", appData.CollectionName, id);
@@ -163,7 +163,7 @@ namespace KinveyXamarin
 
 
 
-			handler.createTableAsync (appData.CollectionName);
+			await handler.createTableAsync (appData.CollectionName);
 			KinveyDeleteResponse ret = await handler.deleteAsync(appData.CollectionName, targetID);
 
 			await handler.enqueueRequestAsync("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
@@ -188,7 +188,7 @@ namespace KinveyXamarin
 			JToken token = JObject.Parse(jsonContent);
 			string id = (string)token.SelectToken("_id");
 
-			handler.createTableAsync (appData.CollectionName);
+			await handler.createTableAsync (appData.CollectionName);
 
 			await handler.upsertEntityAsync( id, appData.CollectionName, jsonContent);
 			return 0;

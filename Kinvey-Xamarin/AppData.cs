@@ -303,10 +303,7 @@ namespace KinveyXamarin
 				this.collectionName = urlParameters ["collectionName"];
 			}
 
-			public override T[] Execute ()
-			{
-				return base.Execute ();
-			}
+
 		}
 
 		/// <summary>
@@ -331,11 +328,7 @@ namespace KinveyXamarin
 
 			}
 
-			public override T Execute ()
-			{
-				T myEntity = base.Execute ();
-				return myEntity;
-			}
+
 
 		}
 
@@ -362,11 +355,6 @@ namespace KinveyXamarin
 				this.QueryString = queryString;
 			}
 
-//			public override T[] Execute ()
-//			{
-//				T[] myEntity = base.Execute ();
-//				return myEntity;
-//			}
 
 		}
 
@@ -395,11 +383,6 @@ namespace KinveyXamarin
 				}
 			}
 
-			public override T Execute ()
-			{
-				T myEntity = base.Execute ();
-				return myEntity;
-			}
 		}
 
 		/// <summary>

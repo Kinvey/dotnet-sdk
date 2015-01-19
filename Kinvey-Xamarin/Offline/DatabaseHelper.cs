@@ -29,7 +29,7 @@ namespace KinveyXamarin
 		/// Creates a new table
 		/// </summary>
 		/// <param name="collectionName">Collection name.</param>
-		void createTableAsync(string collectionName);
+		Task<int> createTableAsync(string collectionName);
 
 		/// <summary>
 		/// Returns a list of all collections currently stored offline
