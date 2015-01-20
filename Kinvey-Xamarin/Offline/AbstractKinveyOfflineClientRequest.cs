@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using KinveyUtils;
+using System.Reflection;
 
 namespace KinveyXamarin
 {
@@ -213,9 +214,19 @@ namespace KinveyXamarin
 		/// Kicks off the background sync thread
 		/// </summary>
 		public void kickOffSync(){
-			Task.Run (() => {
-				new BackgroundExecutor<T> ((Client)Client).RunSync ();
-			});
+			Type parameterType = typeof(T);
+			if (parameterType.IsArray) {
+				parameterType = parameterType.GetElementType ();
+			}
+
+			Type executor = typeof(BackgroundExecutor<>);
+			Type gen = executor.MakeGenericType (parameterType);
+
+			foreach (var ctor in gen.GetTypeInfo().DeclaredConstructors) {
+				Task.Run (() => {
+					ctor.Invoke (new object[1]{ (Client)Client });
+				});
+			}
 		}
 
 		/// <summary>

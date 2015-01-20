@@ -51,6 +51,7 @@ namespace KinveyXamarin
 			this.dbpath = Path.Combine(client.filePath,  "kinveyOffline.sqlite") ;
 			this.platform = client.offline_platform;
 			this.client = client;
+			RunSync ();
 		}
 
 		/// <summary>
@@ -93,8 +94,7 @@ namespace KinveyXamarin
 
 			switch (verb) {
 			case "QUERY":
-
-				break;
+			
 				T[] results = await appdata.GetAsync (id);
 				List<string> idresults = new List<string>();
 				foreach ( T ent in results){
