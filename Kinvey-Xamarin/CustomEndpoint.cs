@@ -85,10 +85,6 @@ namespace KinveyXamarin
 			}
 		}
 
-
-
-
-
 	}
 }
 
