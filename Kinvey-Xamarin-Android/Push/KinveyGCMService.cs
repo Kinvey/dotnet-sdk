@@ -24,7 +24,7 @@ namespace KinveyXamarinAndroid
 				{
 					var pm = PowerManager.FromContext(context);
 					sWakeLock = pm.NewWakeLock(
-						WakeLockFlags.Partial, "My WakeLock Tag");
+						WakeLockFlags.Partial, "KinveyGCM");
 				}
 			}
 
@@ -42,7 +42,8 @@ namespace KinveyXamarinAndroid
 
 				if (action.Equals("com.google.android.c2dm.intent.REGISTRATION"))
 				{
-					onRegistered(intent.GetStringExtra("REGISTERED"));
+					string gcmID = intent.GetStringExtra("sender");
+					onRegistered(gcmID);
 				}
 				else if (action.Equals("com.google.android.c2dm.intent.RECEIVE"))
 				{

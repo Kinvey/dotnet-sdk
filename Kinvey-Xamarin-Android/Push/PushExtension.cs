@@ -12,11 +12,6 @@ namespace KinveyXamarinAndroid
 			return new Push (client);
 
 		}
-
-
-
-
-
 	}
 }
 

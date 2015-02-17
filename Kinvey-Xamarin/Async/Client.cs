@@ -51,6 +51,12 @@ namespace KinveyXamarin
 		public Action<string> logger {get; set;}
 
 		/// <summary>
+		/// The Sender ID for GCM Push
+		/// </summary>
+		/// <value>The sender ID.</value>
+		public string senderID { get; set;}
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Client"/> class.  Use a Client.Builder to create one.
 		/// </summary>
 		/// <param name="client">The RestClient.</param>
@@ -150,6 +156,8 @@ namespace KinveyXamarin
 			/// </summary>
 			/// <value>The log.</value>
 			private Action<string> log{ get ; set;}
+
+			private string senderID { get ; set;}
 		
 			//Constructor for a client builder, takes an app key and an app secret.
 			public Builder(string appKey, string appSecret) 
@@ -159,7 +167,7 @@ namespace KinveyXamarin
 			/// <summary>
 			/// This method creates and initializes a client for use with Kinvey.
 			/// </summary>
-			public Client build() {
+			public virtual Client build() {
 				if (this.filePath != null && offlinePlatform != null && this.Store == null) {
 					this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
 				} else if (this.Store == null){
@@ -171,6 +179,7 @@ namespace KinveyXamarin
 				c.offline_platform = this.offlinePlatform;
 				c.filePath = this.filePath;
 				c.logger = this.log;
+				c.senderID = this.senderID;
 
 				Logger.initialize (c.logger);
 	
@@ -239,6 +248,13 @@ namespace KinveyXamarin
 				return this;
 			}
 
+			public Builder SetProjectId(string senderid){
+				this.senderID = senderid;
+				return this;
+			}
+
+
+				
 
 	
 		}
