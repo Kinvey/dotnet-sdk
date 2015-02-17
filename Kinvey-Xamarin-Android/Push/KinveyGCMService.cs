@@ -4,8 +4,13 @@ using Android.OS;
 using Android.Content;
 using Android.Gms.Gcm;
 
+
 namespace KinveyXamarinAndroid
 {
+
+
+
+
 	public abstract class KinveyGCMService : IntentService
 	{
 		public KinveyGCMService ()
@@ -16,7 +21,7 @@ namespace KinveyXamarinAndroid
 		private const string MESSAGE_FROM_GCM = "msg";
 
 
-		public static void RunIntentInService(Context context, Intent intent)
+		public void RunIntentInService(Context context, Intent intent)
 		{
 			lock (LOCK)
 			{
@@ -29,20 +34,23 @@ namespace KinveyXamarinAndroid
 			}
 
 			sWakeLock.Acquire();
-			intent.SetClass(context, typeof(KinveyGCMService));
-			context.StartService(intent);
+			OnHandleIntent (intent);
+			//intent.SetClass(context, typeof(KinveyGCMService));
+			//context.StartService(intent);
+
+
+
 		}
 
 		protected override void OnHandleIntent(Intent intent)
 		{
 			try
 			{
-				Context context = this.ApplicationContext;
 				string action = intent.Action;
 
 				if (action.Equals("com.google.android.c2dm.intent.REGISTRATION"))
 				{
-					string gcmID = intent.GetStringExtra("sender");
+					string gcmID = intent.GetStringExtra("registration_id");
 					onRegistered(gcmID);
 				}
 				else if (action.Equals("com.google.android.c2dm.intent.RECEIVE"))
