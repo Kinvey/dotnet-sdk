@@ -3,14 +3,11 @@ using Android.App;
 using Android.OS;
 using Android.Content;
 using Android.Gms.Gcm;
+using KinveyUtils;
 
 
 namespace KinveyXamarinAndroid
 {
-
-
-
-
 	public abstract class KinveyGCMService : IntentService
 	{
 		public KinveyGCMService ()
@@ -28,17 +25,17 @@ namespace KinveyXamarinAndroid
 				if (sWakeLock == null)
 				{
 					var pm = PowerManager.FromContext(context);
-					sWakeLock = pm.NewWakeLock(
-						WakeLockFlags.Partial, "KinveyGCM");
+					sWakeLock = pm.NewWakeLock(WakeLockFlags.Partial, "KinveyGCM");
 				}
 			}
 
 			sWakeLock.Acquire();
-			OnHandleIntent (intent);
+			//OnHandleIntent (intent);
+
+	//		//Logger.Log ("categories -> " + intent.Categories.ToString());
+
 			//intent.SetClass(context, typeof(KinveyGCMService));
-			//context.StartService(intent);
-
-
+			context.StartService(intent);
 
 		}
 

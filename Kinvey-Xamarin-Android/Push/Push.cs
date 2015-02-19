@@ -8,12 +8,14 @@ using Android.Content;
 using Android.App;
 using Android.Gms.Gcm;
 using System.Threading;
+using Android.Preferences;
 
 namespace KinveyXamarinAndroid
 {
 	public class Push
 	{
 		private Client client;
+		private const string GCM_ID = "gcmid";
 
 
 		public Push (Client client)
@@ -22,46 +24,56 @@ namespace KinveyXamarinAndroid
 		}
 
 
-		public async void Initialize(Context appContext){
+		public void Initialize(Context appContext){
 
 			string senders = this.client.senderID;
 
-			ThreadPool.QueueUserWorkItem(o =>
-				{
-					var gcm = GoogleCloudMessaging.GetInstance(appContext);
-					var gcmID = gcm.Register(senders);  
-					//
-					Logger.Log ("-------sender ID is: " + senders);
-					Logger.Log ("-------GCM ID is: " + gcmID);
-					//
-					PushPayload response =  EnablePushViaRest (gcmID).Execute();
-					//
-					//
+			ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences (appContext);
+			string alreadyInitialized = prefs.GetString (GCM_ID, "");
 
-					Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
-					intent.SetPackage("com.google.android.gsf");
-					intent.PutExtra("app", PendingIntent.GetBroadcast(appContext, 0, new Intent(), 0));
-					intent.PutExtra("sender", senders);
-					//intent.PutExtra ("gcmID", gcmID);
-					appContext.StartService(intent);
-				});
+			if (alreadyInitialized.Length > 0) {
+				//this device has already registered for push
+				return;
+			}
 
-//			var gcm = GoogleCloudMessaging.GetInstance(appContext);
-//			string gcmID = gcm.Register (senders);
-//
-//			Logger.Log ("-------sender ID is: " + senders);
-//			Logger.Log ("-------GCM ID is: " + gcmID);
-////
-//			PushPayload response = await EnablePushViaRest (gcmID).ExecuteAsync();
-////
-////
-//
-//			Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
-//			intent.SetPackage("com.google.android.gsf");
-//			intent.PutExtra("app", PendingIntent.GetBroadcast(appContext, 0, new Intent(), 0));
-//			intent.PutExtra("sender", senders);
-//			//intent.PutExtra ("gcmID", gcmID);
-//			appContext.StartService(intent);
+			ThreadPool.QueueUserWorkItem(o => {
+				var gcm = GoogleCloudMessaging.GetInstance(appContext);
+				var gcmID = gcm.Register(senders);  
+					//
+				Logger.Log ("-------sender ID is: " + senders);
+				Logger.Log ("-------GCM ID is: " + gcmID);
+
+				//Response contains No Content
+				EnablePushViaRest (gcmID).Execute();
+
+				ISharedPreferencesEditor editor = prefs.Edit ();
+				editor.PutString (GCM_ID, gcmID);
+				editor.Apply();  
+
+				Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
+				intent.SetPackage("com.google.android.gsf");
+				intent.PutExtra("app", PendingIntent.GetBroadcast(appContext, 0, new Intent(), 0));
+				intent.PutExtra("sender", senders);
+				//intent.PutExtra ("gcmID", gcmID);
+				appContext.StartService(intent);
+			});
+		}
+
+
+		public void DisablePush(Context appContext){
+			ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences (appContext);
+			string alreadyInitialized = prefs.GetString (GCM_ID, "");
+
+			if (alreadyInitialized.Length == 0) {
+				//this device has not already registered for push
+				return;
+			}
+
+			ThreadPool.QueueUserWorkItem (o => {
+				DisablePushViaRest(alreadyInitialized).Execute();
+			});
+
+
 		}
 
 		public EnablePush EnablePushViaRest(string deviceId){
@@ -78,13 +90,13 @@ namespace KinveyXamarinAndroid
 			return enable;
 		}
 
-		public DisablePush DisablePushViaRest(string deviceId){
+		public RemovePush DisablePushViaRest(string deviceId){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
 			PushPayload input = new PushPayload ();
 
-			DisablePush disable = new DisablePush (client, input, urlParameters);
+			RemovePush disable = new RemovePush (client, input, urlParameters);
 
 			client.InitializeRequest(disable);
 
@@ -101,10 +113,10 @@ namespace KinveyXamarinAndroid
 			}
 		}
 
-		public class DisablePush : AbstractKinveyClientRequest<PushPayload> {
+		public class RemovePush : AbstractKinveyClientRequest<PushPayload> {
 			private const string REST_PATH = "push/{appKey}/unregister-device";
 
-			public DisablePush(AbstractKinveyClient client, PushPayload input, Dictionary<string, string> urlProperties) :
+			public RemovePush(AbstractKinveyClient client, PushPayload input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties){
 
 			}
