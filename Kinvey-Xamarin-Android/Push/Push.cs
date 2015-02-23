@@ -31,7 +31,7 @@ namespace KinveyXamarinAndroid
 			ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences (appContext);
 			string alreadyInitialized = prefs.GetString (GCM_ID, "");
 
-			if (false && alreadyInitialized.Length > 0) {
+			if (alreadyInitialized.Length > 0) {
 				//this device has already registered for push
 				return;
 			}
@@ -42,8 +42,7 @@ namespace KinveyXamarinAndroid
 
 				try{
 					var gcm = GoogleCloudMessaging.GetInstance(appContext);
-					var gcmID = gcm.Register("12   3"); 
-					//var gcmID = gcm.Register(senders); 
+					var gcmID = gcm.Register(senders); 
 
 					Logger.Log ("-------sender ID is: " + senders);
 					Logger.Log ("-------GCM ID is: " + gcmID);

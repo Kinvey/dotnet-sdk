@@ -19,7 +19,7 @@ namespace KinveyXamarinAndroid
 		private const string MESSAGE_FROM_GCM = "msg";
 
 
-		public static void RunIntentInService(Context context, Intent intent)
+		public static void AcquireWakeLock(Context context, Intent intent)
 		{
 			lock (LOCK)
 			{
@@ -35,6 +35,19 @@ namespace KinveyXamarinAndroid
 
 		protected override void OnHandleIntent(Intent intent)
 		{
+
+			lock (LOCK)
+			{
+				if (sWakeLock == null)
+				{
+					var pm = PowerManager.FromContext(this.ApplicationContext);
+					sWakeLock = pm.NewWakeLock(WakeLockFlags.Partial, "KinveyGCM");
+				}
+			}
+
+			sWakeLock.Acquire();
+
+
 			try
 			{
 				string action = intent.Action;
