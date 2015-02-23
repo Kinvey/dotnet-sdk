@@ -8,6 +8,7 @@ using KinveyUtils;
 
 namespace KinveyXamarinAndroid
 {
+	[Service]
 	public abstract class KinveyGCMService : IntentService
 	{
 		public KinveyGCMService ()
@@ -18,7 +19,7 @@ namespace KinveyXamarinAndroid
 		private const string MESSAGE_FROM_GCM = "msg";
 
 
-		public void RunIntentInService(Context context, Intent intent)
+		public static void RunIntentInService(Context context, Intent intent)
 		{
 			lock (LOCK)
 			{
@@ -30,13 +31,6 @@ namespace KinveyXamarinAndroid
 			}
 
 			sWakeLock.Acquire();
-			//OnHandleIntent (intent);
-
-	//		//Logger.Log ("categories -> " + intent.Categories.ToString());
-
-			//intent.SetClass(context, typeof(KinveyGCMService));
-			context.StartService(intent);
-
 		}
 
 		protected override void OnHandleIntent(Intent intent)
@@ -59,7 +53,7 @@ namespace KinveyXamarinAndroid
 					onDelete(intent.GetIntExtra("DELETED", 0));
 
 				}
-				else if (action.Equals(GoogleCloudMessaging.MessageTypeSendError))
+				else if (action.Equals("com.kinvey.xamarin.android.ERROR"))
 				{
 					onError(intent.GetStringExtra("ERROR"));
 				}
