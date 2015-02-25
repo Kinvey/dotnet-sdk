@@ -49,7 +49,6 @@ namespace KinveyXamarinAndroid
 				else if (action.Equals(GoogleCloudMessaging.MessageTypeDeleted))
 				{
 					onDelete(intent.GetIntExtra("DELETED", 0));
-
 				}
 				else if (action.Equals("com.kinvey.xamarin.android.ERROR"))
 				{
