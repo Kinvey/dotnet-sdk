@@ -229,7 +229,11 @@ namespace KinveyXamarin
 			urlParameters.Add ("collectionName", CollectionName);
 
 			SaveMode mode;
-			string id = JObject.FromObject (entity) ["_id"].ToString ();
+			JToken idToken = JObject.FromObject (entity) ["_id"];
+			string id = null;
+			if (idToken != null) {
+				id = idToken.ToString ();
+			}
 			if (id != null && id.Length > 0) {
 				mode = SaveMode.PUT;
 				urlParameters.Add ("entityId", id);

@@ -50,6 +50,18 @@ namespace KinveyXamarin
             this.fix = fix;
             this.explanation = explanation;
         }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
+		/// </summary>
+		/// <param name="reason">Reason.</param>
+		/// <param name="fix">Fix.</param>
+		/// <param name="explanation">Explanation.</param>
+		public KinveyException(string reason)
+			: base(FormatMessage(reason))
+		{
+			this.reason = reason;
+		}
 			
 		/// <summary>
 		/// Gets or sets the reason.
@@ -93,6 +105,16 @@ namespace KinveyXamarin
         {
             return "\nREASON: " + reason + "\n" + "FIX: " + fix + "\n" + "EXPLANATION: " + explanation + "\n";
         }
+
+		/// <summary>
+		/// Formats the message.
+		/// </summary>
+		/// <returns>The message.</returns>
+		/// <param name="reason">Reason.</param>
+		private static String FormatMessage(string reason)
+		{
+			return "\nREASON: " + reason;
+		}
 
     }
 }
