@@ -272,6 +272,10 @@ namespace KinveyXamarin
 			var req = client.ExecuteAsync(request);
 			var response = req.Result;
 
+			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
+				throw new KinveyException ("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
+			}
+
             lastResponseCode = (int)response.StatusCode;
             lastResponseMessage = response.StatusDescription;
             lastResponseHeaders = new List<Parameter>();
@@ -300,10 +304,15 @@ namespace KinveyXamarin
 
 			var response = await client.ExecuteAsync(request);
 
+			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
+				throw new KinveyException ("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
+
+			}
 
 			lastResponseCode = (int)response.StatusCode;
 			lastResponseMessage = response.StatusDescription;
 			lastResponseHeaders = new List<Parameter>();
+
 			foreach (var header in response.Headers)
 			{
 				lastResponseHeaders.Add(header);
