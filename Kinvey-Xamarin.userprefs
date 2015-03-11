@@ -1,13 +1,12 @@
-﻿<Properties StartupItem="../../ksamples/xamarin/TestDrive-Xamarin/android/Android-TestDrive.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.SelectDevice" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Kinvey-Xamarin/Core/KinveyHeaders.cs">
+﻿<Properties StartupItem="../../ksamples/xamarin/StatusShare-Xamarin/android/Android-StatusShare.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.lollipop" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../../ksamples/xamarin/StatusShare-Xamarin/android/src.model/UpdateEntity.cs">
     <Files>
-      <File FileName="Kinvey-Xamarin-Android/Push/KinveyGCMService.cs" Line="6" Column="6" />
-      <File FileName="../../ksamples/xamarin/TestDrive-Xamarin/android/MyGCMBroadcastReceiver.cs" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin-Android/Push/Push.cs" Line="1" Column="1" />
-      <File FileName="../../ksamples/xamarin/TestDrive-Xamarin/android/MyIntentService.cs" Line="1" Column="1" />
-      <File FileName="../../ksamples/xamarin/TestDrive-Xamarin/android/Properties/AndroidManifest.xml" Line="1" Column="1" />
-      <File FileName="Kinvey-Xamarin/Core/KinveyHeaders.cs" Line="41" Column="41" />
+      <File FileName="../../ksamples/xamarin/StatusShare-Xamarin/android/src.component/MyGCMBroadcastReceiver.cs" Line="37" Column="37" />
+      <File FileName="../../ksamples/xamarin/StatusShare-Xamarin/android/src.component/UpdateAdapter.cs" Line="1" Column="1" />
+      <File FileName="../../ksamples/xamarin/StatusShare-Xamarin/android/src.component/MyIntentService.cs" Line="1" Column="1" />
+      <File FileName="../../ksamples/xamarin/StatusShare-Xamarin/android/src.model/UpdateEntity.cs" Line="4" Column="4" />
+      <File FileName="Kinvey-Xamarin/File/KinveyFileRequest.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -51,28 +50,21 @@
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/File/KinveyFileRequest.cs" line="131" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/File/KinveyFileRequest.cs" line="129" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/File/KinveyFileRequest.cs" line="107" column="1" />
-      <Breakpoint file="/Users/edward/code/ksamples/xamarin/StatusShare-Xamarin/android/src.component/UpdateAdapter.cs" line="47" column="1" />
-      <Breakpoint file="/Users/edward/code/ksamples/xamarin/StatusShare-Xamarin/android/src.model/UpdateEntity.cs" line="84" column="1" />
-      <Breakpoint file="/Users/edward/code/ksamples/xamarin/StatusShare-Xamarin/android/src.model/UpdateEntity.cs" line="93" column="1" />
-      <Breakpoint file="/Users/edward/code/ksamples/xamarin/StatusShare-Xamarin/android/src.fragments/ShareListFragment.cs" line="72" column="1" />
-      <Breakpoint file="/Users/edward/code/ksamples/xamarin/StatusShare-Xamarin/android/src.model/UpdateEntity.cs" line="89" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/File/KinveyFileRequest.cs" line="34" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/File/KinveyFileRequest.cs" line="40" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/File/KinveyFileRequest.cs" line="69" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/File/KinveyFileRequest.cs" line="70" column="16" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Async/AsyncAppData.cs" line="74" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/RestSharp.Portable/RestClient.cs" line="308" column="26" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/RestSharp.Portable/RestClient.cs" line="324" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Offline/AbstractKinveyOfflineClientRequest.cs" line="140" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="357" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Offline/BackgroundExecutor.cs" line="170" column="9" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="296" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="300" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin-Android/Push/Push.cs" line="118" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="354" column="1" />
       <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin-Android/Push/KinveyGCMService.cs" line="36" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin-Android/Push/Push.cs" line="64" column="1" />
-      <Breakpoint file="/Users/edward/code/ksamples/xamarin/TestDrive-Xamarin/android/MyIntentService.cs" line="30" column="1" />
-      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin-Android/Push/Push.cs" line="60" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="372" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="382" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="377" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="363" column="1" />
+      <Breakpoint file="/Users/edward/code/klibs/Kinvey-Xamarin/Kinvey-Xamarin/Core/AbstractKinveyClientRequest.cs" line="307" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>

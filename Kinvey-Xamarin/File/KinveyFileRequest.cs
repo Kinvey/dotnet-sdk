@@ -35,9 +35,9 @@ namespace KinveyXamarin
 			return metadata;
 		}
 			
-		public FileMetaData executeAndDownloadTo(Stream stream){
+		public FileMetaData executeAndDownloadTo(ref Stream stream){
 			FileMetaData metadata = base.Execute ();
-			downloadFile (metadata, stream);
+			downloadFile (metadata, ref stream);
 			return metadata;
 		}
 
@@ -53,7 +53,7 @@ namespace KinveyXamarin
 			return metadata;
 		}
 			
-		private void downloadFile(FileMetaData metadata, Stream stream){
+		private void downloadFile(FileMetaData metadata, ref Stream stream){
 			string downloadURL = metadata.downloadURL;
 
 			RestClient client = new RestClient (downloadURL);
@@ -61,11 +61,16 @@ namespace KinveyXamarin
 
 			request.Method = Method.GET;
 
-			request.ResponseWriter = (responseStream) => responseStream.CopyTo (stream);
+			//request.ResponseWriter = (responseStream) => responseStream.CopyTo (stream);
 
 			var req = client.DownloadDataAsync (request);
 			var response = req.Result;
 
+
+//stream = new MemoryStream();
+//stream.Write(response, 0, response.Length);
+//stream.
+//
 			stream = new MemoryStream (response);
 			var x = 123;
 		}

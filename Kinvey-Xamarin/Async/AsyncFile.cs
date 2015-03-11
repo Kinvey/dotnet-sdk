@@ -36,12 +36,14 @@ namespace KinveyXamarin
 		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
 		/// <param name="content">Where the contents of the file will be streamed.</param>
 		/// <param name="delegates">Delegates for success or failure.</param>
-		public void download(FileMetaData metadata, Stream content, KinveyDelegate<FileMetaData> delegates)
+		public void download(FileMetaData metadata, Stream content, KinveyFileDelegate delegates)
 		{
 			Task.Run (() => {
 				try {
-					FileMetaData entity = base.downloadBlocking (metadata).executeAndDownloadTo (content);
-					delegates.onSuccess (entity);
+					Stream stream = new MemoryStream();
+					FileMetaData entity = base.downloadBlocking (metadata).executeAndDownloadTo (ref stream);
+					//delegates.onSuccess (entity);
+					delegates.onDownload(stream);
 				} catch (Exception e) {
 					delegates.onError (e);
 				}
@@ -55,7 +57,7 @@ namespace KinveyXamarin
 		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
 		/// <param name="content">Content.</param>
 		/// <param name="delegates">Delegates for success or failure.</param>
-		public void download(FileMetaData metadata, byte[] content, KinveyDelegate<FileMetaData> delegates)
+		public void download(FileMetaData metadata,  byte[] content, KinveyDelegate<FileMetaData> delegates)
 		{
 			Task.Run (() => {
 				try {
