@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -38,6 +39,41 @@ namespace KinveyXamarin
 		/// The rest client.
 		/// </summary>
         private RestClient restClient;
+
+		private string clientAppVersion = null;
+
+		private JObject customRequestProperties = new JObject();
+
+		public void SetClientAppVersion(string appVersion){
+			this.clientAppVersion = appVersion;	
+		}
+
+		public void SetClientAppVersion(int major, int minor, int revision){
+			SetClientAppVersion(major + "." + minor + "." + revision);
+		}
+
+		public string GetClientAppVersion(){
+			return this.clientAppVersion;
+		}
+
+		public void SetCustomRequestProperties(JObject customheaders){
+			this.customRequestProperties = customheaders;
+		}
+
+		public void SetCustomRequestProperty(string key, JObject value){
+			if (this.customRequestProperties == null){
+				this.customRequestProperties = new JObject();
+			}
+			this.customRequestProperties.Add (key, value);
+		}
+
+		public void ClearCustomRequestProperties(){
+			this.customRequestProperties = new JObject();
+		}
+
+		public JObject GetCustomRequestProperties(){
+			return this.customRequestProperties;
+		}
        
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient"/> class.

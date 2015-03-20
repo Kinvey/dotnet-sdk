@@ -228,6 +228,14 @@ namespace KinveyXamarin
             {
 				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
             }            
+
+			if (client.GetClientAppVersion () != null && client.GetClientAppVersion ().Length > 0) {
+				restRequest.AddHeader ("X-Kinvey-Client-App-Version", client.GetClientAppVersion());
+			}
+			if (client.GetCustomRequestProperties () != null && client.GetCustomRequestProperties ().Count > 0) {
+				restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", JsonConvert.SerializeObject (client.GetCustomRequestProperties ()));
+			}
+
 			foreach (var parameter in uriResourceParameters)
 			{
 				restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
