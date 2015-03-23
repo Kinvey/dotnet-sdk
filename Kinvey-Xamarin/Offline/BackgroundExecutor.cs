@@ -75,9 +75,6 @@ namespace KinveyXamarin
 			if (req != null) {
 				buildAndExecuteRequest (handler, req);
 			}
-
-
-
 		}
 
 
@@ -89,13 +86,16 @@ namespace KinveyXamarin
 		private async void buildAndExecuteRequest(DatabaseHelper<T> handler, SQLTemplates.QueueItem item){
 			string collection = item.collection;
 			string verb = item.action;
-			string id = item.id;
+			SQLTemplates.OfflineMetaData meta = JsonConvert.DeserializeObject<SQLTemplates.OfflineMetaData>(item.OfflineMetaDataAsJson);
+
 			AsyncAppData<T> appdata = client.AppData<T> (collection, typeof(T));
 
 			switch (verb) {
 			case "QUERY":
-			
-				T[] results = await appdata.GetAsync (id);
+				
+				appdata.SetCustomRequestProperties (meta.customHeaders);
+				appdata.SetClientAppVersion (meta.clientVersion);
+				T[] results = await appdata.GetAsync (meta.id);
 				List<string> idresults = new List<string>();
 				foreach ( T ent in results){
 
@@ -106,19 +106,22 @@ namespace KinveyXamarin
 
 					idresults.Add(entID);
 				}
-				await handler.saveQueryResultsAsync(id, collection, idresults);
+				await handler.saveQueryResultsAsync(meta.id, collection, idresults);
 
 				await handler.removeFromQueueAsync(item.key);
 				doneSuccessfully();
 
 				break;
 			case "PUT":
-				T entity = handler.getEntityAsync (collection, id).Result;
 
+
+				T entity = handler.getEntityAsync (collection, meta.id).Result;
+				appdata.SetCustomRequestProperties (meta.customHeaders);
+				appdata.SetClientAppVersion (meta.clientVersion);
 				appdata.Save (entity, new KinveyDelegate<T> { 
 					onSuccess = (T) => { 
 						string json = JsonConvert.SerializeObject(T);
-						handler.upsertEntityAsync(id, collection, json);
+						handler.upsertEntityAsync(meta.id, collection, json);
 						handler.removeFromQueueAsync(item.key);
 						doneSuccessfully();
 					},
@@ -130,10 +133,12 @@ namespace KinveyXamarin
 
 				break;
 			case "GET":
-				appdata.GetEntity (id, new KinveyDelegate<T> { 
+				appdata.SetCustomRequestProperties (meta.customHeaders);
+				appdata.SetClientAppVersion (meta.clientVersion);
+				appdata.GetEntity (meta.id, new KinveyDelegate<T> { 
 					onSuccess = (T) => { 
 						string json = JsonConvert.SerializeObject(T);
-						handler.upsertEntityAsync(id, collection, json);
+						handler.upsertEntityAsync(meta.id, collection, json);
 						handler.removeFromQueueAsync(item.key);
 						doneSuccessfully();
 					},

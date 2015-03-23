@@ -68,6 +68,42 @@ namespace KinveyXamarin
 		/// </summary>
 		public const string IdFieldName = "_id";
 
+
+		private string clientAppVersion = null;
+
+		private JObject customRequestProperties = new JObject();
+
+		public void SetClientAppVersion(string appVersion){
+			this.clientAppVersion = appVersion;	
+		}
+
+		public void SetClientAppVersion(int major, int minor, int revision){
+			SetClientAppVersion(major + "." + minor + "." + revision);
+		}
+
+		public string GetClientAppVersion(){
+			return this.clientAppVersion;
+		}
+
+		public void SetCustomRequestProperties(JObject customheaders){
+			this.customRequestProperties = customheaders;
+		}
+
+		public void SetCustomRequestProperty(string key, JObject value){
+			if (this.customRequestProperties == null){
+				this.customRequestProperties = new JObject();
+			}
+			this.customRequestProperties.Add (key, value);
+		}
+
+		public void ClearCustomRequestProperties(){
+			this.customRequestProperties = new JObject();
+		}
+
+		public JObject GetCustomRequestProperties(){
+			return this.customRequestProperties;
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.Core.AppData`1"/> class.
 		/// </summary>
@@ -79,6 +115,8 @@ namespace KinveyXamarin
 			this.collectionName = collectionName;
 			this.myClass = myClass;
 			this.writer = new StringQueryBuilder ();
+			this.customRequestProperties = client.GetCustomRequestProperties ();
+			this.clientAppVersion = client.GetClientAppVersion ();
 		}
 
 
@@ -146,23 +184,7 @@ namespace KinveyXamarin
 			this.store.platform = ((Client)KinveyClient).offline_platform;
 
 		}
-		//
-		//		/// <summary>
-		//		/// Sets the offline store and policy for query requests
-		//		/// </summary>
-		//		/// <param name="store">Store.</param>
-		//		/// <param name="policy">Policy.</param>
-		//		public void setOffline(IOfflineStore<T[]> store, OfflinePolicy policy){
-		//
-		//			this.queryStore = store;
-		//			this.offlinePolicy = policy;
-		//
-		//			this.queryStore.dbpath = Path.Combine(((Client) KinveyClient).filePath,  "kinveyOffline.sqlite") ;
-		//			this.queryStore.platform = ((Client) KinveyClient).offline_platform;
-		//
-		//		}
-
-
+			
 		/// <summary>
 		/// gets the specified entity.
 		/// </summary>
@@ -178,6 +200,8 @@ namespace KinveyXamarin
 			client.InitializeRequest (getEntity);
 			getEntity.setCache (this.cache, this.cachePolicy);
 			getEntity.SetStore (this.store, this.offlinePolicy);
+			getEntity.clientAppVersion = this.GetClientAppVersion ();
+			getEntity.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getEntity;
 		}
 
@@ -194,6 +218,8 @@ namespace KinveyXamarin
 			client.InitializeRequest (get);
 			get.setCache (this.queryCache, this.cachePolicy);
 			get.SetStore (this.store, this.offlinePolicy);
+			get.clientAppVersion = this.GetClientAppVersion ();
+			get.customRequestHeaders = this.GetCustomRequestProperties ();
 			return get;
 		}
 
@@ -213,6 +239,8 @@ namespace KinveyXamarin
 			client.InitializeRequest (getQuery);
 			getQuery.setCache (this.queryCache, this.cachePolicy);
 			getQuery.SetStore (this.store, this.offlinePolicy);
+			getQuery.clientAppVersion = this.GetClientAppVersion ();
+			getQuery.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getQuery;
 		}
 
@@ -245,6 +273,8 @@ namespace KinveyXamarin
 			save = new SaveRequest (entity, id, myClass, mode, client, urlParameters, this.CollectionName);
 			save.SetStore (this.store, this.offlinePolicy);
 			client.InitializeRequest (save);
+			save.clientAppVersion = this.GetClientAppVersion ();
+			save.customRequestHeaders = this.GetCustomRequestProperties ();
 			return save;
 		}
 
@@ -265,6 +295,8 @@ namespace KinveyXamarin
 			delete.SetStore (this.store, this.offlinePolicy);
 
 			client.InitializeRequest (delete);
+			delete.clientAppVersion = this.GetClientAppVersion ();
+			delete.customRequestHeaders = this.GetCustomRequestProperties ();
 			return delete;
 		}
 

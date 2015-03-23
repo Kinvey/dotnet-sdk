@@ -217,8 +217,14 @@ namespace KinveyXamarin
 			SQLTemplates.QueueItem queue = new SQLTemplates.QueueItem ();
 			queue.action = action;
 			queue.collection = collection;
-			queue.id = id;
 
+			SQLTemplates.OfflineMetaData metadata = new SQLTemplates.OfflineMetaData ();
+			metadata.id = id;
+			metadata.clientVersion = req.clientAppVersion;
+			metadata.customHeaders = req.customRequestHeaders;
+
+			queue.OfflineMetaDataAsJson = JsonConvert.SerializeObject (metadata);
+			//queue.id = metadata;
 
 			await getConnection().InsertAsync (queue);
 

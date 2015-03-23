@@ -13,7 +13,8 @@
 
 using System;
 using System.Collections.Generic;
-using SQLite.Net.Attributes; 
+using SQLite.Net.Attributes;
+using Newtonsoft.Json.Linq; 
 
 namespace KinveyXamarin
 {
@@ -45,7 +46,7 @@ namespace KinveyXamarin
 		public class QueueItem{
 			[PrimaryKey, AutoIncrement] 
 			public int key { get; set; } 
-			public string id { get; set; }
+			public String OfflineMetaDataAsJson { get; set; }
 			public string collection { get; set; }
 			public string action { get; set; }
 
@@ -62,6 +63,24 @@ namespace KinveyXamarin
 			public string collection { get; set; }
 				
 		}
+
+		/// <summary>
+		/// This maintains the custom request parameters, client app verison, and _id of a queued request
+		/// </summary>
+		public class OfflineMetaData{
+			public string id;
+			public JObject customHeaders;
+			public string clientVersion;
+
+			public OfflineMetaData(string id, JObject customHeaders, string clientVersion){
+				this.id = id;
+				this.customHeaders = customHeaders;
+				this.clientVersion = clientVersion;
+			}
+
+			public OfflineMetaData(){}
+		}
+
 	}
 }
 

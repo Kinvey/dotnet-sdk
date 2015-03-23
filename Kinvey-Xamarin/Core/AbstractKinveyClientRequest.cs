@@ -22,6 +22,7 @@ using RestSharp;
 using System.Net.Http;
 using KinveyXamarin;
 using KinveyUtils;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -77,6 +78,9 @@ namespace KinveyXamarin
 		/// </summary>
         private IAuthenticator auth;
 
+		public String clientAppVersion { get; set;}
+		public JObject customRequestHeaders {get; set;}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
 		/// </summary>
@@ -93,6 +97,9 @@ namespace KinveyXamarin
             this.requestContent = httpContent;
             this.uriResourceParameters = uriParameters;
             this.RequireAppCredentials = false;
+			this.customRequestHeaders = client.GetCustomRequestProperties();
+			this.clientAppVersion = client.GetClientAppVersion ();
+
         }
 
 		/// <summary>
@@ -230,10 +237,10 @@ namespace KinveyXamarin
             }            
 
 			if (client.GetClientAppVersion () != null && client.GetClientAppVersion ().Length > 0) {
-				restRequest.AddHeader ("X-Kinvey-Client-App-Version", client.GetClientAppVersion());
+				restRequest.AddHeader ("X-Kinvey-Client-App-Version", this.clientAppVersion);
 			}
 			if (client.GetCustomRequestProperties () != null && client.GetCustomRequestProperties ().Count > 0) {
-				restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", JsonConvert.SerializeObject (client.GetCustomRequestProperties ()));
+				restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", JsonConvert.SerializeObject (this.customRequestHeaders));
 			}
 
 			foreach (var parameter in uriResourceParameters)

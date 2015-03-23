@@ -67,6 +67,13 @@ namespace KinveyXamarin
 			this.customRequestProperties.Add (key, value);
 		}
 
+		public void SetCustomRequestProperty(string key, string value){
+			if (this.customRequestProperties == null){
+				this.customRequestProperties = new JObject();
+			}
+			this.customRequestProperties.Add (key, value);
+		}
+
 		public void ClearCustomRequestProperties(){
 			this.customRequestProperties = new JObject();
 		}
