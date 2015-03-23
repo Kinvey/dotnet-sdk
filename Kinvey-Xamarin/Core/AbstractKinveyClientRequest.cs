@@ -240,7 +240,13 @@ namespace KinveyXamarin
 				restRequest.AddHeader ("X-Kinvey-Client-App-Version", this.clientAppVersion);
 			}
 			if (client.GetCustomRequestProperties () != null && client.GetCustomRequestProperties ().Count > 0) {
-				restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", JsonConvert.SerializeObject (this.customRequestHeaders));
+				string jsonHeaders = JsonConvert.SerializeObject (this.customRequestHeaders);
+				if (Encoding.UTF8.GetByteCount(jsonHeaders) < 2000){
+					restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", jsonHeaders);
+				}else{
+					throw new KinveyException("Cannot attach more than 2k of Custom Request Properties");
+				}
+
 			}
 
 			foreach (var parameter in uriResourceParameters)
