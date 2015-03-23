@@ -212,7 +212,7 @@ namespace KinveyXamarin
 		}
 
 
-		public async Task<int> enqueueRequestAsync (string action, string collection, string id)
+		public async Task<int> enqueueRequestAsync (string action, string collection, string id, AbstractKinveyOfflineClientRequest<T> req)
 		{
 			SQLTemplates.QueueItem queue = new SQLTemplates.QueueItem ();
 			queue.action = action;

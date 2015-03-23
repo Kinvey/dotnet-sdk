@@ -80,7 +80,7 @@ namespace KinveyXamarin
 		/// <param name="action">Action.</param>
 		/// <param name="collection">Collection.</param>
 		/// <param name="id">Identifier.</param>
-		Task<int> enqueueRequestAsync (string action, string collection, string id);
+		Task<int> enqueueRequestAsync (string action, string collection, string id, AbstractKinveyOfflineClientRequest<T> req);
 
 		/// <summary>
 		/// Gets all entites in a collection

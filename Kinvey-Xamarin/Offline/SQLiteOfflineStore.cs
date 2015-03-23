@@ -85,7 +85,7 @@ namespace KinveyXamarin
 				T[] ok = await handler.getQueryAsync(appData.CollectionName,  query);
 
 
-				await handler.enqueueRequestAsync("QUERY", appData.CollectionName, query);
+				await handler.enqueueRequestAsync("QUERY", appData.CollectionName, query, request);
 				return ok;
 
 			} else if (idIndex == (targetURI.Length + 1)|| targetURI.Contains ("query")) {
@@ -99,7 +99,7 @@ namespace KinveyXamarin
 				await handler.createTableAsync (appData.CollectionName);
 				ret = (T) await handler.getEntityAsync (appData.CollectionName, targetID);
 
-				await handler.enqueueRequestAsync("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
+				await handler.enqueueRequestAsync("GET", appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex), request);
 			}
 
 
@@ -133,7 +133,7 @@ namespace KinveyXamarin
 			await handler.createTableAsync (appData.CollectionName);
 			await handler.upsertEntityAsync(id, appData.CollectionName, jsonContent);
 			//enque the request
-			await handler.enqueueRequestAsync("PUT", appData.CollectionName, id);
+			await handler.enqueueRequestAsync("PUT", appData.CollectionName, id, request);
 
 			return request.HttpContent;
 		}
@@ -166,7 +166,7 @@ namespace KinveyXamarin
 			await handler.createTableAsync (appData.CollectionName);
 			KinveyDeleteResponse ret = await handler.deleteAsync(appData.CollectionName, targetID);
 
-			await handler.enqueueRequestAsync("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex));
+			await handler.enqueueRequestAsync("DELETE",appData.CollectionName, targetURI.Substring(idIndex, targetURI.Length - idIndex), request);
 			return ret;
 		}
 
