@@ -358,16 +358,18 @@ namespace KinveyXamarin
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
 			//        client_id:  The appKey (kid) of the app
 
-			Map<String, String> data = new HashMap<String, String>();
-			data.put("grant_type", "authorization_code");
-			data.put("code", code);
-			data.put("redirect_uri", User.this.MICRedirectURI);
-			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("grant_type", "authorization_code");
+			data.Add("code", code);
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
-			HttpContent content = new UrlEncodedContent(data) ;
-			GetMICAccessToken getToken = new GetMICAccessToken(content);
-			getToken.setRequireAppCredentials(true);
-			client.initializeRequest(getToken);
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			GetMICAccessToken getToken = new GetMICAccessToken(client, data, urlParameters);
+			getToken.RequireAppCredentials =  true;
+			client.InitializeRequest(getToken);
 			return getToken;
 		}
 
@@ -377,16 +379,18 @@ namespace KinveyXamarin
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
 			//        client_id:  The appKey (kid) of the app
 
-			Map<String, String> data = new HashMap<String, String>();
-			data.put("grant_type", "refresh_token");
-			data.put("refresh_token", refreshToken);
-			data.put("redirect_uri", User.this.MICRedirectURI);
-			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("grant_type", "refresh_token");
+			data.Add("refresh_token", refreshToken);
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
-			HttpContent content = new UrlEncodedContent(data) ;
-			GetMICAccessToken getToken = new GetMICAccessToken(content);
-			getToken.setRequireAppCredentials(true);
-			client.initializeRequest(getToken);
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			GetMICAccessToken getToken = new GetMICAccessToken(client, data, urlParameters);
+			getToken.RequireAppCredentials = true;
+			client.InitializeRequest(getToken);
 			return getToken;
 
 
@@ -398,15 +402,17 @@ namespace KinveyXamarin
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
 			//    	response_type:  this is always set to “code”
 
-			Map<String, String> data = new HashMap<String, String>();
-			data.put("response_type", "code");
-			data.put("redirect_uri", User.this.MICRedirectURI);
-			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("response_type", "code");
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
-			HttpContent content = new UrlEncodedContent(data) ;
-			GetMICTempURL getTemp = new GetMICTempURL(content);
-			getTemp.setRequireAppCredentials(true);
-			client.initializeRequest(getTemp);
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			GetMICTempURL getTemp = new GetMICTempURL(client, data, urlParameters);
+			getTemp.RequireAppCredentials = true;
+			client.InitializeRequest(getTemp);
 			return getTemp;  	
 
 		}
@@ -421,17 +427,19 @@ namespace KinveyXamarin
 			//    	password
 
 
-			Map<String, String> data = new HashMap<String, String>();
-			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
-			data.put("redirect_uri", User.this.MICRedirectURI);
-			data.put("response_type", "code");
-			data.put("username", username);
-			data.put("password", password);
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("response_type", "code");
+			data.Add("username", username);
+			data.Add("password", password);
 
-			HttpContent content = new UrlEncodedContent(data) ;
-			LoginToTempURL loginTemp = new LoginToTempURL(tempURL, content);
-			loginTemp.setRequireAppCredentials(true);
-			client.initializeRequest(loginTemp);
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			LoginToTempURL loginTemp = new LoginToTempURL(client, tempURL, data, urlParameters);
+			loginTemp.RequireAppCredentials = true;
+			client.InitializeRequest(loginTemp);
 			return loginTemp;  	
 
 		}
@@ -551,8 +559,6 @@ namespace KinveyXamarin
 				}
 				KinveyAuthResponse response = await this.request.ExecuteAsync();
 				return memberUser.InitUser(response, userType);
-
-
 			}
         }
 
@@ -661,7 +667,6 @@ namespace KinveyXamarin
 			base(client, "PUT", REST_PATH, user, urlProperties){
 				this.userID = user.id;
 				this.user = user;
-
 			}
 
 			public override User Execute(){
@@ -691,8 +696,6 @@ namespace KinveyXamarin
 					return u;
 				}
 			}
-
-
 		}
 
 		/// <summary>
@@ -760,14 +763,10 @@ namespace KinveyXamarin
 				}
 
 				String accesstoken = newLocation.Substring(codeIndex + 5, newLocation.Length);
-				//client.User().getMi
 
-				return client.User ().getMICToken (accesstoken);
-			
+				return client.User ().getMICToken (accesstoken).Execute();
 			}
-
 		}
-			
     }
 }
 

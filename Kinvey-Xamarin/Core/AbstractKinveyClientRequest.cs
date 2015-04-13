@@ -237,6 +237,7 @@ namespace KinveyXamarin
             {
 				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
             }
+
             foreach (var header in requestHeaders)
             {
 				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
