@@ -119,6 +119,17 @@ namespace KinveyXamarin
 		/// </summary>
 		public string MICRedirectURI {get; set;}
 
+		public string baseURL { 
+			get{ return this.baseURL;}
+			set{
+				if (!baseURL.StartsWith("https")){
+					throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + baseURL);
+				}
+				if (!baseURL.EndsWith ("/")) {
+					baseURL += "/";
+				}
+			}}
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
@@ -735,7 +746,7 @@ namespace KinveyXamarin
 			private const string REST_PATH = "oauth/token";
 
 			public GetMICAccessToken(AbstractClient client, Object content, Dictionary<string, string> urlProperties) : 
-			base(client, "POST", REST_PATH, content, urlProperties) {
+			base(client, baseURL, "POST", REST_PATH, content, urlProperties) {
 				
 			}
 		}
@@ -744,14 +755,14 @@ namespace KinveyXamarin
 			private const string REST_PATH = "oauth/auth";
 
 			public GetMICTempURL(AbstractClient client, Object content, Dictionary<string, string> urlProperties) :
-			base(client, "POST", REST_PATH, content, urlProperties ){
+			base(client, baseURL, "POST", REST_PATH, content, urlProperties ){
 			}
 		} 
 
 		public class LoginToTempURL : AbstractKinveyClientRequest<JObject>{
 
 			public LoginToTempURL(AbstractClient client, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
-			base(client, "POST", tempURL, httpContent, urlProperties){
+			base(client, baseURL, "POST", tempURL, httpContent, urlProperties){
 				this.OverrideRedirect = true;
 			}
 

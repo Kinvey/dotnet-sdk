@@ -78,8 +78,10 @@ namespace KinveyXamarin
 		/// </summary>
         private IAuthenticator auth;
 
-		public String clientAppVersion { get; set;}
+		public string clientAppVersion { get; set;}
 		public JObject customRequestHeaders {get; set;}
+
+		private string baseURL {get; set;}
 
 
 		/// <summary>
@@ -95,18 +97,32 @@ namespace KinveyXamarin
 		/// <param name="uriTemplate">URI template.</param>
 		/// <param name="httpContent">Http content.</param>
 		/// <param name="uriParameters">URI parameters.</param>
-		protected AbstractKinveyClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
-        {
-            this.client = client;
-            this.requestMethod = requestMethod;
-            this.uriTemplate = uriTemplate;
-            this.requestContent = httpContent;
-            this.uriResourceParameters = uriParameters;
-            this.RequireAppCredentials = false;
+		protected AbstractKinveyClientRequest (AbstractKinveyClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters) :
+			this (client, client.BaseUrl, requestMethod, uriTemplate, httpContent, uriParameters)
+		{}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="requestMethod">Request method.</param>
+		/// <param name="uriTemplate">URI template.</param>
+		/// <param name="httpContent">Http content.</param>
+		/// <param name="uriParameters">URI parameters.</param>
+		protected AbstractKinveyClientRequest(AbstractKinveyClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
+		{
+			this.client = client;
+			this.requestMethod = requestMethod;
+			this.uriTemplate = uriTemplate;
+			this.requestContent = httpContent;
+			this.uriResourceParameters = uriParameters;
+			this.RequireAppCredentials = false;
 			this.customRequestHeaders = client.GetCustomRequestProperties();
 			this.clientAppVersion = client.GetClientAppVersion ();
+			this.baseURL = baseURL;
 
-        }
+		}
+
 
 		/// <summary>
 		/// Gets the client.
@@ -276,7 +292,7 @@ namespace KinveyXamarin
         private RestClient InitializeRestClient()
         {
             RestClient restClient = this.client.RestClient;
-            restClient.BaseUrl = client.BaseUrl;
+			restClient.BaseUrl = this.baseURL;
             return restClient;
         }
 
