@@ -22,6 +22,17 @@ namespace KinveyXamarin
 	/// </summary>
 	public class AsyncUser: User
 	{
+
+		/// <summary>
+		/// The hostname to use for MIC authentication
+		/// </summary>
+		public String MICHostName = "https://auth.kinvey.com/";
+
+		/// <summary>
+		/// The callback for the MIC login, this is used after the redirect
+		/// </summary>
+		protected KinveyDelegate<User> MICDelegate;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AsyncUser"/> class.
 		/// </summary>
@@ -30,7 +41,7 @@ namespace KinveyXamarin
 		public AsyncUser (AbstractClient client, KinveyAuthRequest.Builder builder) : base(client, builder)
 		{
 		}
-
+			
 		/// <summary>
 		/// Login (and create) an new kinvey user without any specified details.
 		/// </summary>
@@ -145,6 +156,28 @@ namespace KinveyXamarin
 					delegates.onError(e);
 				}
 			});
+		}
+
+		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> delegates){
+			//return URL for login page
+			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>i&redirect_uri=<redirect_uri>&response_type=code
+
+			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
+			string myURLToRender = MICHostName + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
+			//keep a reference to the callback and redirect uri for later
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+			if (delegates != null) {
+				delegates.OnReadyToRender (myURLToRender);
+			}
+		}
+
+		public void LoginWithAuthorizationCodeAPI(string username, string password, string redirectURI, KinveyDelegate<User> delegates){
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+
+			//TODO
+
 		}
 
 		/// <summary>

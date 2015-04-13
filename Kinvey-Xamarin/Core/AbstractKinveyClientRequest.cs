@@ -81,6 +81,12 @@ namespace KinveyXamarin
 		public String clientAppVersion { get; set;}
 		public JObject customRequestHeaders {get; set;}
 
+
+		/// <summary>
+		/// Should the request intercept redirects and route them to an override
+		/// </summary>
+		public bool OverrideRedirect {get; set; }= false;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
 		/// </summary>
@@ -244,7 +250,7 @@ namespace KinveyXamarin
 				if (Encoding.UTF8.GetByteCount(jsonHeaders) < 2000){
 					restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", jsonHeaders);
 				}else{
-					throw new KinveyException("Cannot attach more than 2k of Custom Request Properties");
+					throw new KinveyException("Cannot attach more than 2000 bytes of Custom Request Properties");
 				}
 
 			}
@@ -252,6 +258,10 @@ namespace KinveyXamarin
 			foreach (var parameter in uriResourceParameters)
 			{
 				restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
+			}
+
+			if (OverrideRedirect) {
+				restRequest.MaxAutomaticRedirects = 0;
 			}
 				
 			auth.Authenticate (restRequest);
@@ -357,6 +367,10 @@ namespace KinveyXamarin
         {
             var response = ExecuteUnparsed();
 
+			if (OverrideRedirect){
+				return onRedirect(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.Equals("Location")).ToString());
+			}
+
             // special case to handle void or empty responses
 			if (response.Content == null) 
             {
@@ -403,6 +417,11 @@ namespace KinveyXamarin
 				Logger.Log (ex.Message);
 				return default(T);
 			}
+		}
+
+		public virtual T onRedirect(String newLocation){
+			Logger.Log ("Override Redirect in response is expected, but not implemented!");  
+			return default(T);
 		}
 			
     }

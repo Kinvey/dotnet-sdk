@@ -114,6 +114,11 @@ namespace KinveyXamarin
 		/// </summary>
 		private LoginType type {get; set;}
 
+		/// <summary>
+		/// The redirect URI for MIC login requests
+		/// </summary>
+		public string MICRedirectURI {get; set;}
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
@@ -344,6 +349,93 @@ namespace KinveyXamarin
 			this.type = LoginType.KINVEY;
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
+
+
+		public GetMICAccessToken getMICToken(String code){
+
+			//        grant_type: "authorization_code" - this is always set to this value
+			//        code: use the ‘code’ returned in the callback 
+			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
+			//        client_id:  The appKey (kid) of the app
+
+			Map<String, String> data = new HashMap<String, String>();
+			data.put("grant_type", "authorization_code");
+			data.put("code", code);
+			data.put("redirect_uri", User.this.MICRedirectURI);
+			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
+
+			HttpContent content = new UrlEncodedContent(data) ;
+			GetMICAccessToken getToken = new GetMICAccessToken(content);
+			getToken.setRequireAppCredentials(true);
+			client.initializeRequest(getToken);
+			return getToken;
+		}
+
+		public GetMICAccessToken useRefreshToken(String refreshToken) {
+			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
+			//        refresh_token: use the refresh token 
+			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
+			//        client_id:  The appKey (kid) of the app
+
+			Map<String, String> data = new HashMap<String, String>();
+			data.put("grant_type", "refresh_token");
+			data.put("refresh_token", refreshToken);
+			data.put("redirect_uri", User.this.MICRedirectURI);
+			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
+
+			HttpContent content = new UrlEncodedContent(data) ;
+			GetMICAccessToken getToken = new GetMICAccessToken(content);
+			getToken.setRequireAppCredentials(true);
+			client.initializeRequest(getToken);
+			return getToken;
+
+
+		}
+
+		public GetMICTempURL getMICTempURL() {
+
+			//    	client_id:  this is the app’s appKey (the KID)
+			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
+			//    	response_type:  this is always set to “code”
+
+			Map<String, String> data = new HashMap<String, String>();
+			data.put("response_type", "code");
+			data.put("redirect_uri", User.this.MICRedirectURI);
+			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
+
+			HttpContent content = new UrlEncodedContent(data) ;
+			GetMICTempURL getTemp = new GetMICTempURL(content);
+			getTemp.setRequireAppCredentials(true);
+			client.initializeRequest(getTemp);
+			return getTemp;  	
+
+		}
+
+
+		public LoginToTempURL MICLoginToTempURL(String username, String password, String tempURL){
+
+			//    	client_id:  this is the app’s appKey (the KID)
+			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
+			//    	response_type:  this is always set to “code”
+			//    	username
+			//    	password
+
+
+			Map<String, String> data = new HashMap<String, String>();
+			data.put("client_id", ((KinveyClientRequestInitializer) getClient().getKinveyRequestInitializer()).getAppKey());
+			data.put("redirect_uri", User.this.MICRedirectURI);
+			data.put("response_type", "code");
+			data.put("username", username);
+			data.put("password", password);
+
+			HttpContent content = new UrlEncodedContent(data) ;
+			LoginToTempURL loginTemp = new LoginToTempURL(tempURL, content);
+			loginTemp.setRequireAppCredentials(true);
+			client.initializeRequest(loginTemp);
+			return loginTemp;  	
+
+		}
+
 
 
 		/// <summary>
@@ -634,6 +726,46 @@ namespace KinveyXamarin
 				this.userID = userID;
 				this.RequireAppCredentials = true;
 			}
+		}
+
+		public class GetMICAccessToken : AbstractKinveyClientRequest<JObject>{
+			private const string REST_PATH = "oauth/token";
+
+			public GetMICAccessToken(AbstractClient client, Object content, Dictionary<string, string> urlProperties) : 
+			base(client, "POST", REST_PATH, content, urlProperties) {
+				
+			}
+		}
+
+		public class GetMICTempURL : AbstractKinveyClientRequest<JObject>{
+			private const string REST_PATH = "oauth/auth";
+
+			public GetMICTempURL(AbstractClient client, Object content, Dictionary<string, string> urlProperties) :
+			base(client, "POST", REST_PATH, content, urlProperties ){
+			}
+		} 
+
+		public class LoginToTempURL : AbstractKinveyClientRequest<JObject>{
+
+			public LoginToTempURL(AbstractClient client, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
+			base(client, "POST", tempURL, httpContent, urlProperties){
+				this.OverrideRedirect = true;
+			}
+
+			public override JObject onRedirect (string newLocation)
+			{
+				int codeIndex = newLocation.IndexOf("code=");
+				if (codeIndex == -1){
+					throw new KinveyException("Redirect does not contain `code=`, was: " + newLocation);
+				}
+
+				String accesstoken = newLocation.Substring(codeIndex + 5, newLocation.Length);
+				//client.User().getMi
+
+				return client.User ().getMICToken (accesstoken);
+			
+			}
+
 		}
 			
     }
