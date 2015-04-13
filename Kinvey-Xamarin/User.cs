@@ -378,7 +378,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICAccessToken getToken = new GetMICAccessToken(client, data, urlParameters);
+			GetMICAccessToken getToken = new GetMICAccessToken(client, baseURL, data, urlParameters);
 			getToken.RequireAppCredentials =  true;
 			client.InitializeRequest(getToken);
 			return getToken;
@@ -399,7 +399,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICAccessToken getToken = new GetMICAccessToken(client, data, urlParameters);
+			GetMICAccessToken getToken = new GetMICAccessToken(client, baseURL, data, urlParameters);
 			getToken.RequireAppCredentials = true;
 			client.InitializeRequest(getToken);
 			return getToken;
@@ -421,7 +421,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICTempURL getTemp = new GetMICTempURL(client, data, urlParameters);
+			GetMICTempURL getTemp = new GetMICTempURL(client, baseURL, data, urlParameters);
 			getTemp.RequireAppCredentials = true;
 			client.InitializeRequest(getTemp);
 			return getTemp;  	
@@ -745,7 +745,7 @@ namespace KinveyXamarin
 		public class GetMICAccessToken : AbstractKinveyClientRequest<JObject>{
 			private const string REST_PATH = "oauth/token";
 
-			public GetMICAccessToken(AbstractClient client, Object content, Dictionary<string, string> urlProperties) : 
+			public GetMICAccessToken(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) : 
 			base(client, baseURL, "POST", REST_PATH, content, urlProperties) {
 				
 			}
@@ -754,7 +754,7 @@ namespace KinveyXamarin
 		public class GetMICTempURL : AbstractKinveyClientRequest<JObject>{
 			private const string REST_PATH = "oauth/auth";
 
-			public GetMICTempURL(AbstractClient client, Object content, Dictionary<string, string> urlProperties) :
+			public GetMICTempURL(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) :
 			base(client, baseURL, "POST", REST_PATH, content, urlProperties ){
 			}
 		} 
@@ -762,7 +762,7 @@ namespace KinveyXamarin
 		public class LoginToTempURL : AbstractKinveyClientRequest<JObject>{
 
 			public LoginToTempURL(AbstractClient client, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
-			base(client, baseURL, "POST", tempURL, httpContent, urlProperties){
+			base(client, tempURL, "POST", "", httpContent, urlProperties){
 				this.OverrideRedirect = true;
 			}
 

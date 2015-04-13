@@ -81,6 +81,10 @@ namespace KinveyXamarin
 		public string clientAppVersion { get; set;}
 		public JObject customRequestHeaders {get; set;}
 
+		/// <summary>
+		/// The base URL for this request
+		/// </summary>
+		/// <value>The base UR.</value>
 		private string baseURL {get; set;}
 
 
@@ -88,6 +92,9 @@ namespace KinveyXamarin
 		/// Should the request intercept redirects and route them to an override
 		/// </summary>
 		public bool OverrideRedirect {get; set; }= false;
+
+
+		public RequestPayloadType PayloadType { get; set;} = new JSONPayload();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
@@ -251,7 +258,7 @@ namespace KinveyXamarin
             }
             else
             {
-				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
+				restRequest.AddParameter(PayloadType.getContentType(), PayloadType.getHttpContent(HttpContent), ParameterType.RequestBody);
             }
 
             foreach (var header in requestHeaders)
@@ -439,6 +446,31 @@ namespace KinveyXamarin
 		public virtual T onRedirect(String newLocation){
 			Logger.Log ("Override Redirect in response is expected, but not implemented!");  
 			return default(T);
+		}
+
+		public abstract class RequestPayloadType{
+
+			public abstract string getContentType ();
+			public abstract Object getHttpContent(object HttpContent);
+		}
+
+		public class JSONPayload : RequestPayloadType{
+			public override string getContentType (){
+				return "application/json";
+				
+			}
+			public override Object getHttpContent(object HttpContent){
+				return JsonConvert.SerializeObject(HttpContent);
+			}
+		}
+
+		public class URLEncodedPayload : RequestPayloadType{
+			public override string getContentType (){
+				return "application/x-www-form-urlencoded";
+			}
+			public override Object getHttpContent(object HttpContent){
+				return null;
+			}
 		}
 			
     }
