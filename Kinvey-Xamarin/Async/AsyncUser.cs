@@ -14,6 +14,7 @@
 using System;
 using System.Threading.Tasks;
 using KinveyUtils;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -176,7 +177,27 @@ namespace KinveyXamarin
 			this.MICDelegate = delegates;
 			this.MICRedirectURI = redirectURI;
 
-			//TODO
+			Task.Run (() => {
+				try{
+					JObject tempResult = getMICTempURL().Execute();
+					string tempURL = tempResult["temp_login_uri"].ToString();
+					JObject accessResult = MICLoginToTempURL(username, password, tempURL).Execute();
+					string accessToken = accessResult["access_token"].ToString();
+
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (accessToken);
+					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+
+					//TODO credential management
+					delegates.onSuccess(u);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			
+			});
+
+
+		
 
 		}
 
