@@ -747,7 +747,7 @@ namespace KinveyXamarin
 
 			public GetMICAccessToken(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) : 
 			base(client, baseURL, "POST", REST_PATH, content, urlProperties) {
-				
+				this.PayloadType = new URLEncodedPayload();
 			}
 		}
 
@@ -756,7 +756,9 @@ namespace KinveyXamarin
 
 			public GetMICTempURL(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) :
 			base(client, baseURL, "POST", REST_PATH, content, urlProperties ){
+				this.PayloadType = new URLEncodedPayload();
 			}
+
 		} 
 
 		public class LoginToTempURL : AbstractKinveyClientRequest<JObject>{

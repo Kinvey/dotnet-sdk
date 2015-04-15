@@ -319,6 +319,7 @@ namespace KinveyXamarin
 		/// <returns>The unparsed.</returns>
         public RestResponse ExecuteUnparsed()
         {
+			try{
             RestClient client = InitializeRestClient();
             RestRequest request = BuildRestRequest();
 
@@ -347,6 +348,9 @@ namespace KinveyXamarin
 
 
             return (RestResponse) response;
+			}catch(Exception e){
+					throw new NullReferenceException();
+				}
         }
 
 
