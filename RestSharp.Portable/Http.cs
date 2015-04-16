@@ -49,9 +49,10 @@ namespace RestSharp
         /// <summary>
         /// Default constructor
         /// </summary>
-        public Http(IHttpRequest request)
+		public Http(IHttpRequest request, bool followRedirects)
         {
             var handler = new DefaultMessageHandler();
+			handler.Instance.AllowAutoRedirect = followRedirects;
             var message = new DefaultRequestMessage();
             var client = new HttpClientWrapper(handler);
             

@@ -786,7 +786,8 @@ namespace KinveyXamarin
 					throw new KinveyException("Redirect does not contain `code=`, was: " + newLocation);
 				}
 
-				String accesstoken = newLocation.Substring(codeIndex + 5, newLocation.Length);
+
+				String accesstoken = newLocation.Substring (codeIndex + 5);
 
 				return user.getMICToken (accesstoken).Execute();
 			}

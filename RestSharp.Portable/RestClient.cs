@@ -407,12 +407,15 @@ namespace RestSharp
 
 				Logger.Log ("------------------------END REQUEST");
 			
-                IHttp http = new Http(httpRequest);
+				IHttp http = new Http(httpRequest, this.FollowRedirects);
 
                 var httpResponse = await getResponse(http, httpMethod, token);
 
 				Logger.Log ("------------------------RESPONSE");
 				Logger.Log(httpResponse.StatusCode.ToString());
+				foreach(HttpHeader h in httpResponse.Headers){
+					Logger.Log(h.Name + " -> " + h.Value.FirstOrDefault().ToString());
+				}
 				Logger.Log(httpResponse.Content);
 				Logger.Log ("------------------------END RESPONSE");
 

@@ -285,9 +285,6 @@ namespace KinveyXamarin
 				restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
 			}
 
-			if (OverrideRedirect) {
-				restRequest.MaxAutomaticRedirects = 1;
-			}
 
 				
 			auth.Authenticate (restRequest);
@@ -302,6 +299,11 @@ namespace KinveyXamarin
         {
             RestClient restClient = this.client.RestClient;
 			restClient.BaseUrl = this.baseURL;
+
+			if (OverrideRedirect) {
+				restClient.FollowRedirects = false;
+			}
+
             return restClient;
         }
 
@@ -394,7 +396,8 @@ namespace KinveyXamarin
             var response = ExecuteUnparsed();
 
 			if (OverrideRedirect){
-				return onRedirect(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.Equals("Location")).ToString());
+				var locList = response.Headers.FirstOrDefault(HeaderToCheck => HeaderToCheck.Name.Equals("Location")).Value;
+				return onRedirect((locList as List<string>)[0]);
 			}
 
             // special case to handle void or empty responses
