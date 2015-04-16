@@ -372,7 +372,7 @@ namespace KinveyXamarin
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("grant_type", "authorization_code");
 			data.Add("code", code);
-			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("redirect_uri",this.MICRedirectURI);
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
 			var urlParameters = new Dictionary<string, string>();
@@ -393,7 +393,7 @@ namespace KinveyXamarin
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("grant_type", "refresh_token");
 			data.Add("refresh_token", refreshToken);
-			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("redirect_uri", this.MICRedirectURI);
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
 			var urlParameters = new Dictionary<string, string>();
@@ -415,7 +415,7 @@ namespace KinveyXamarin
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("response_type", "code");
-			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("redirect_uri", this.MICRedirectURI);
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
 			var urlParameters = new Dictionary<string, string>();
@@ -440,7 +440,7 @@ namespace KinveyXamarin
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
-			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("redirect_uri", this.MICRedirectURI);
 			data.Add("response_type", "code");
 			data.Add("username", username);
 			data.Add("password", password);
@@ -448,7 +448,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			LoginToTempURL loginTemp = new LoginToTempURL(client, tempURL, data, urlParameters);
+			LoginToTempURL loginTemp = new LoginToTempURL(client, this, tempURL, data, urlParameters);
 			loginTemp.RequireAppCredentials = true;
 			client.InitializeRequest(loginTemp);
 			return loginTemp;  	
@@ -769,9 +769,14 @@ namespace KinveyXamarin
 
 		public class LoginToTempURL : AbstractKinveyClientRequest<JObject>{
 
-			public LoginToTempURL(AbstractClient client, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
+			private User user;
+
+
+			public LoginToTempURL(AbstractClient client, User user, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
 			base(client, tempURL, "POST", "", httpContent, urlProperties){
+				this.PayloadType = new URLEncodedPayload();
 				this.OverrideRedirect = true;
+				this.user = user;
 			}
 
 			public override JObject onRedirect (string newLocation)
@@ -783,7 +788,7 @@ namespace KinveyXamarin
 
 				String accesstoken = newLocation.Substring(codeIndex + 5, newLocation.Length);
 
-				return client.User ().getMICToken (accesstoken).Execute();
+				return user.getMICToken (accesstoken).Execute();
 			}
 		}
 			

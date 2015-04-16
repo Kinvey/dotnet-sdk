@@ -110,7 +110,8 @@ namespace KinveyXamarin
             if (credential != null && !request.RequireAppCredentials)
             {
                 credential.Initialize(request);
-			}else if (!request.RequireAppCredentials)
+			}
+			if (request.RequireAppCredentials)
             {
                 request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
             }

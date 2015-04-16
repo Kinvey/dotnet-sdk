@@ -106,7 +106,7 @@ namespace KinveyXamarin
             this.servicePath = NormalizeServicePath(servicePath);
         }
 
-		public abstract User User ();
+		//public abstract User User ();
 
 		/// <summary>
 		/// Gets the root URL.

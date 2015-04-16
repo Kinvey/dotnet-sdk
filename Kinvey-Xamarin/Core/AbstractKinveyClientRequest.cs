@@ -286,7 +286,7 @@ namespace KinveyXamarin
 			}
 
 			if (OverrideRedirect) {
-				restRequest.MaxAutomaticRedirects = 0;
+				restRequest.MaxAutomaticRedirects = 1;
 			}
 
 				
@@ -474,7 +474,15 @@ namespace KinveyXamarin
 				return "application/x-www-form-urlencoded";
 			}
 			public override Object getHttpContent(object HttpContent){
-				return new object();
+//				return new object();
+				var dict = HttpContent as Dictionary<string, string>;
+
+//				var array = (from key in dict.AllKeys
+//					from value in dict.GetValues(key)
+//					select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(value)))
+//					.ToArray();
+				return String.Join("&", dict.Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), "=", Uri.EscapeDataString(kvp.Value.ToString()))));
+
 			}
 		}
 			

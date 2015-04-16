@@ -73,7 +73,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Access the `User` API through this.  The User object is initialized to the currently logged in user.
 		/// </summary>
-		public override User User()
+		public User User()
         {
             lock (Lock)
             {
@@ -202,7 +202,7 @@ namespace KinveyXamarin
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer) RequestInitializer).AppKey);
 		
 			PingRequest ping =  new PingRequest (this, urlParameters);
-
+			ping.RequireAppCredentials = true;
 			InitializeRequest (ping);
 
 			return ping;
