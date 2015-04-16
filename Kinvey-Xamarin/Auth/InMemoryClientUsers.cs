@@ -26,7 +26,7 @@ namespace KinveyXamarin
     {
 		/// <summary>
 		/// The user list, backing this implementation.
-		/// <summary>
+		/// </summary>
         private Dictionary<string, string> userList;
 		/// <summary>
 		/// The active user.

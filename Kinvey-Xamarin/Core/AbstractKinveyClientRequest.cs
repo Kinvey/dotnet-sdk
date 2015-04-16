@@ -78,25 +78,10 @@ namespace KinveyXamarin
 		/// </summary>
         private IAuthenticator auth;
 
-		public string clientAppVersion { get; set;}
+		public String clientAppVersion { get; set;}
 		public JObject customRequestHeaders {get; set;}
 
 		/// <summary>
-		/// The base URL for this request
-		/// </summary>
-		/// <value>The base UR.</value>
-		private string baseURL {get; set;}
-
-
-		/// <summary>
-		/// Should the request intercept redirects and route them to an override
-		/// </summary>
-		public bool OverrideRedirect {get; set; }= false;
-
-
-		public RequestPayloadType PayloadType { get; set;} = new JSONPayload();
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
 		/// </summary>
 		/// <param name="client">Client.</param>
@@ -104,32 +89,18 @@ namespace KinveyXamarin
 		/// <param name="uriTemplate">URI template.</param>
 		/// <param name="httpContent">Http content.</param>
 		/// <param name="uriParameters">URI parameters.</param>
-		protected AbstractKinveyClientRequest (AbstractKinveyClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters) :
-			this (client, client.BaseUrl, requestMethod, uriTemplate, httpContent, uriParameters)
-		{}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="requestMethod">Request method.</param>
-		/// <param name="uriTemplate">URI template.</param>
-		/// <param name="httpContent">Http content.</param>
-		/// <param name="uriParameters">URI parameters.</param>
-		protected AbstractKinveyClientRequest(AbstractKinveyClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
-		{
-			this.client = client;
-			this.requestMethod = requestMethod;
-			this.uriTemplate = uriTemplate;
-			this.requestContent = httpContent;
-			this.uriResourceParameters = uriParameters;
-			this.RequireAppCredentials = false;
+		protected AbstractKinveyClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
+        {
+            this.client = client;
+            this.requestMethod = requestMethod;
+            this.uriTemplate = uriTemplate;
+            this.requestContent = httpContent;
+            this.uriResourceParameters = uriParameters;
+            this.RequireAppCredentials = false;
 			this.customRequestHeaders = client.GetCustomRequestProperties();
 			this.clientAppVersion = client.GetClientAppVersion ();
-			this.baseURL = baseURL;
 
-		}
-
+        }
 
 		/// <summary>
 		/// Gets the client.
@@ -258,9 +229,8 @@ namespace KinveyXamarin
             }
             else
             {
-				restRequest.AddParameter(PayloadType.getContentType(), PayloadType.getHttpContent(HttpContent), ParameterType.RequestBody);
+				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
             }
-
             foreach (var header in requestHeaders)
             {
 				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
@@ -274,7 +244,7 @@ namespace KinveyXamarin
 				if (Encoding.UTF8.GetByteCount(jsonHeaders) < 2000){
 					restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", jsonHeaders);
 				}else{
-					throw new KinveyException("Cannot attach more than 2000 bytes of Custom Request Properties");
+					throw new KinveyException("Cannot attach more than 2k of Custom Request Properties");
 				}
 
 			}
@@ -282,10 +252,6 @@ namespace KinveyXamarin
 			foreach (var parameter in uriResourceParameters)
 			{
 				restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
-			}
-
-			if (OverrideRedirect) {
-				restRequest.MaxAutomaticRedirects = 0;
 			}
 				
 			auth.Authenticate (restRequest);
@@ -299,7 +265,7 @@ namespace KinveyXamarin
         private RestClient InitializeRestClient()
         {
             RestClient restClient = this.client.RestClient;
-			restClient.BaseUrl = this.baseURL;
+            restClient.BaseUrl = client.BaseUrl;
             return restClient;
         }
 
@@ -319,7 +285,6 @@ namespace KinveyXamarin
 		/// <returns>The unparsed.</returns>
         public RestResponse ExecuteUnparsed()
         {
-			try{
             RestClient client = InitializeRestClient();
             RestRequest request = BuildRestRequest();
 
@@ -348,9 +313,6 @@ namespace KinveyXamarin
 
 
             return (RestResponse) response;
-			}catch(Exception e){
-					throw new NullReferenceException();
-				}
         }
 
 
@@ -394,10 +356,6 @@ namespace KinveyXamarin
         public virtual T Execute()
         {
             var response = ExecuteUnparsed();
-
-			if (OverrideRedirect){
-				return onRedirect(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.Equals("Location")).ToString());
-			}
 
             // special case to handle void or empty responses
 			if (response.Content == null) 
@@ -444,36 +402,6 @@ namespace KinveyXamarin
 			{
 				Logger.Log (ex.Message);
 				return default(T);
-			}
-		}
-
-		public virtual T onRedirect(String newLocation){
-			Logger.Log ("Override Redirect in response is expected, but not implemented!");  
-			return default(T);
-		}
-
-		public abstract class RequestPayloadType{
-
-			public abstract string getContentType ();
-			public abstract Object getHttpContent(object HttpContent);
-		}
-
-		public class JSONPayload : RequestPayloadType{
-			public override string getContentType (){
-				return "application/json";
-				
-			}
-			public override Object getHttpContent(object HttpContent){
-				return JsonConvert.SerializeObject(HttpContent);
-			}
-		}
-
-		public class URLEncodedPayload : RequestPayloadType{
-			public override string getContentType (){
-				return "application/x-www-form-urlencoded";
-			}
-			public override Object getHttpContent(object HttpContent){
-				return null;
 			}
 		}
 			

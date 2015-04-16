@@ -21,7 +21,7 @@ using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
-    public abstract class AbstractKinveyClient
+    public class AbstractKinveyClient
     {
 		/// <summary>
 		/// The kinvey request initializer.
@@ -105,8 +105,6 @@ namespace KinveyXamarin
             this.rootUrl = NormalizeRootUrl(rootUrl);
             this.servicePath = NormalizeServicePath(servicePath);
         }
-
-		public abstract User User ();
 
 		/// <summary>
 		/// Gets the root URL.
