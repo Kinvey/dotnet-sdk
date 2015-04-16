@@ -141,6 +141,7 @@ namespace KinveyXamarin
             this.client = client;
             this.builder = builder;
             builder.KinveyUser = this;
+			this.baseURL = "https://auth.kinvey.com/";
         }
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
