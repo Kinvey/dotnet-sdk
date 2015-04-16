@@ -119,16 +119,16 @@ namespace KinveyXamarin
 		/// </summary>
 		public string MICRedirectURI {get; set;}
 
-		private string baseURL { get; set;} = "https://auth.kinvey.com/";
+		protected string MICHostName { get; set;} = "https://auth.kinvey.com/";
 
-		public void setMICBaseURL(string value){
+		public void setMICHostName(string value){
 			if (!value.StartsWith("https")){
-				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + baseURL);
+				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + MICHostName);
 			}	
 			if (!value.EndsWith ("/")) {
 				value += "/";
 			}
-			baseURL = value;
+			MICHostName = value;
 		}
 			
 		/// <summary>
@@ -378,7 +378,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICAccessToken getToken = new GetMICAccessToken(client, baseURL, data, urlParameters);
+			GetMICAccessToken getToken = new GetMICAccessToken(client, MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials =  true;
 			client.InitializeRequest(getToken);
 			return getToken;
@@ -399,7 +399,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICAccessToken getToken = new GetMICAccessToken(client, baseURL, data, urlParameters);
+			GetMICAccessToken getToken = new GetMICAccessToken(client, MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials = true;
 			client.InitializeRequest(getToken);
 			return getToken;
@@ -421,7 +421,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICTempURL getTemp = new GetMICTempURL(client, baseURL, data, urlParameters);
+			GetMICTempURL getTemp = new GetMICTempURL(client, MICHostName, data, urlParameters);
 			getTemp.RequireAppCredentials = true;
 			client.InitializeRequest(getTemp);
 			return getTemp;  	

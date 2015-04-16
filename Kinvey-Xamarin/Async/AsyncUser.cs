@@ -14,6 +14,7 @@
 using System;
 using System.Threading.Tasks;
 using KinveyUtils;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -22,6 +23,11 @@ namespace KinveyXamarin
 	/// </summary>
 	public class AsyncUser: User
 	{
+		/// <summary>
+		/// The callback for the MIC login, this is used after the redirect
+		/// </summary>
+		protected KinveyDelegate<User> MICDelegate;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AsyncUser"/> class.
 		/// </summary>
@@ -241,6 +247,48 @@ namespace KinveyXamarin
 			Provider provider = new Provider ();
 			provider.kinveyAuth = new MICCredential (accessToken);
 			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> delegates){
+			//return URL for login page
+			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>i&redirect_uri=<redirect_uri>&response_type=code
+
+			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
+			string myURLToRender = MICHostName + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
+			//keep a reference to the callback and redirect uri for later
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+			if (delegates != null) {
+				delegates.OnReadyToRender (myURLToRender);
+			}
+		}
+
+		public void LoginWithAuthorizationCodeAPI(string username, string password, string redirectURI, KinveyDelegate<User> delegates){
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+
+			Task.Run (() => {
+				try{
+					JObject tempResult = getMICTempURL().Execute();
+					string tempURL = tempResult["temp_login_uri"].ToString();
+					JObject accessResult = MICLoginToTempURL(username, password, tempURL).Execute();
+					string accessToken = accessResult["access_token"].ToString();
+
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (accessToken);
+					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+
+					//TODO credential management
+					delegates.onSuccess(u);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+
+			});
+
+
+
+
 		}
 			
 		/// <summary>
