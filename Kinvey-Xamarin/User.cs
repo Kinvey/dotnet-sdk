@@ -236,7 +236,7 @@ namespace KinveyXamarin
 
 		public LoginRequest LoginBlocking(ThirdPartyIdentity identity){
 			this.type = LoginType.THIRDPARTY;
-			return new LoginRequest (identity, this);
+			return new LoginRequest (identity, this).buildAuthRequest ();
 		}
 
 		/// <summary>
