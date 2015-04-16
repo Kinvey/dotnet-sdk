@@ -73,7 +73,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Access the `User` API through this.  The User object is initialized to the currently logged in user.
 		/// </summary>
-		public User User()
+		public override User User()
         {
             lock (Lock)
             {

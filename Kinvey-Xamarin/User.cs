@@ -114,7 +114,23 @@ namespace KinveyXamarin
 		/// </summary>
 		private LoginType type {get; set;}
 
+		/// <summary>
+		/// The redirect URI for MIC login requests
+		/// </summary>
+		public string MICRedirectURI {get; set;}
 
+		private string baseURL { get; set;} = "https://auth.kinvey.com/";
+
+		public void setMICBaseURL(string value){
+			if (!value.StartsWith("https")){
+				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + baseURL);
+			}	
+			if (!value.EndsWith ("/")) {
+				value += "/";
+			}
+			baseURL = value;
+		}
+			
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
@@ -125,6 +141,7 @@ namespace KinveyXamarin
             this.client = client;
             this.builder = builder;
             builder.KinveyUser = this;
+
         }
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
@@ -344,6 +361,100 @@ namespace KinveyXamarin
 			this.type = LoginType.KINVEY;
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
+
+		public GetMICAccessToken getMICToken(String code){
+
+			//        grant_type: "authorization_code" - this is always set to this value
+			//        code: use the ‘code’ returned in the callback 
+			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
+			//        client_id:  The appKey (kid) of the app
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("grant_type", "authorization_code");
+			data.Add("code", code);
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			GetMICAccessToken getToken = new GetMICAccessToken(client, baseURL, data, urlParameters);
+			getToken.RequireAppCredentials =  true;
+			client.InitializeRequest(getToken);
+			return getToken;
+		}
+
+		public GetMICAccessToken useRefreshToken(String refreshToken) {
+			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
+			//        refresh_token: use the refresh token 
+			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
+			//        client_id:  The appKey (kid) of the app
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("grant_type", "refresh_token");
+			data.Add("refresh_token", refreshToken);
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			GetMICAccessToken getToken = new GetMICAccessToken(client, baseURL, data, urlParameters);
+			getToken.RequireAppCredentials = true;
+			client.InitializeRequest(getToken);
+			return getToken;
+
+
+		}
+
+		public GetMICTempURL getMICTempURL() {
+
+			//    	client_id:  this is the app’s appKey (the KID)
+			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
+			//    	response_type:  this is always set to “code”
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("response_type", "code");
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			GetMICTempURL getTemp = new GetMICTempURL(client, baseURL, data, urlParameters);
+			getTemp.RequireAppCredentials = true;
+			client.InitializeRequest(getTemp);
+			return getTemp;  	
+
+		}
+
+
+		public LoginToTempURL MICLoginToTempURL(String username, String password, String tempURL){
+
+			//    	client_id:  this is the app’s appKey (the KID)
+			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
+			//    	response_type:  this is always set to “code”
+			//    	username
+			//    	password
+
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+			data.Add("redirect_uri", client.User().MICRedirectURI);
+			data.Add("response_type", "code");
+			data.Add("username", username);
+			data.Add("password", password);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			LoginToTempURL loginTemp = new LoginToTempURL(client, tempURL, data, urlParameters);
+			loginTemp.RequireAppCredentials = true;
+			client.InitializeRequest(loginTemp);
+			return loginTemp;  	
+
+		}
+
 
 
 		/// <summary>
@@ -633,6 +744,46 @@ namespace KinveyXamarin
 			base(client, "POST", REST_PATH, default(User), urlProperties){
 				this.userID = userID;
 				this.RequireAppCredentials = true;
+			}
+		}
+
+
+		public class GetMICAccessToken : AbstractKinveyClientRequest<JObject>{
+			private const string REST_PATH = "oauth/token";
+
+			public GetMICAccessToken(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) : 
+			base(client, baseURL, "POST", REST_PATH, content, urlProperties) {
+				this.PayloadType = new URLEncodedPayload();
+			}
+		}
+
+		public class GetMICTempURL : AbstractKinveyClientRequest<JObject>{
+			private const string REST_PATH = "oauth/auth";
+
+			public GetMICTempURL(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) :
+			base(client, baseURL, "POST", REST_PATH, content, urlProperties ){
+				this.PayloadType = new URLEncodedPayload();
+			}
+
+		} 
+
+		public class LoginToTempURL : AbstractKinveyClientRequest<JObject>{
+
+			public LoginToTempURL(AbstractClient client, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
+			base(client, tempURL, "POST", "", httpContent, urlProperties){
+				this.OverrideRedirect = true;
+			}
+
+			public override JObject onRedirect (string newLocation)
+			{
+				int codeIndex = newLocation.IndexOf("code=");
+				if (codeIndex == -1){
+					throw new KinveyException("Redirect does not contain `code=`, was: " + newLocation);
+				}
+
+				String accesstoken = newLocation.Substring(codeIndex + 5, newLocation.Length);
+
+				return client.User ().getMICToken (accesstoken).Execute();
 			}
 		}
 			
