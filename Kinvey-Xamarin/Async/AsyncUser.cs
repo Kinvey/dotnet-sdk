@@ -310,6 +310,7 @@ namespace KinveyXamarin
 						Logger.Log("MIC Delegate is null in Async User");
 					}
 				}
+			});
 		}
 			
 		/// <summary>
