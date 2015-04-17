@@ -285,10 +285,31 @@ namespace KinveyXamarin
 				}
 
 			});
+		}
 
+		public void getMICAccessToken(String token){
+			Task.Run (() => {
+				try{
+					JObject result = this.getMICToken(token).Execute();
+					string accessToken = result["access_token"].ToString();
 
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (accessToken);
+					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
 
-
+					//todo credential management
+					if (MICDelegate != null){
+						MICDelegate.onSuccess(u);
+					}else{
+						Logger.Log("MIC Delegate is null in Async User");
+					}
+				}catch(Exception e){
+					if (MICDelegate != null){
+						MICDelegate.onError(e);
+					}else{
+						Logger.Log("MIC Delegate is null in Async User");
+					}
+				}
 		}
 			
 		/// <summary>

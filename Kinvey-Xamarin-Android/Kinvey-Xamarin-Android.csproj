@@ -61,6 +61,7 @@
     <Compile Include="Push\KinveyGCMService.cs" />
     <Compile Include="Push\Push.cs" />
     <Compile Include="Push\PushExtension.cs" />
+    <Compile Include="User\UserExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -86,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Push\" />
+    <Folder Include="User\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googleplayservices">
