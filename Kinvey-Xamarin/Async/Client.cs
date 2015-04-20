@@ -170,7 +170,9 @@ namespace KinveyXamarin
 			public virtual Client build() {
 				if (this.filePath != null && offlinePlatform != null && this.Store == null) {
 					this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
-				} else if (this.Store == null){
+				}
+
+				if (this.Store == null){
 					this.Store = new InMemoryCredentialStore();
 				}
 
