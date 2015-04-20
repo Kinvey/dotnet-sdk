@@ -279,7 +279,11 @@ namespace KinveyXamarin
 					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
 
 					//TODO credential management
-					delegates.onSuccess(u);
+					if (MICDelegate != null){
+						MICDelegate.onSuccess(u);
+					}else{
+						Logger.Log("MIC Delegate is null in Async User");
+					}
 				}catch(Exception e){
 					delegates.onError(e);
 				}
@@ -297,7 +301,7 @@ namespace KinveyXamarin
 					provider.kinveyAuth = new MICCredential (accessToken);
 					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
 
-					//todo credential management
+					//TODO credential management
 					if (MICDelegate != null){
 						MICDelegate.onSuccess(u);
 					}else{

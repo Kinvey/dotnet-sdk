@@ -512,6 +512,8 @@ namespace KinveyXamarin
 				this.memberUser = user;
 				this.memberUser.builder.Identity = identity;
 				this.type = user.type;
+				this.memberUser.builder.Create = true;
+
 			}
 
 			/// <summary>
