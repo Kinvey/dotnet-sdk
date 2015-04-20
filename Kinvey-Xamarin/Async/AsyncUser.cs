@@ -287,7 +287,7 @@ namespace KinveyXamarin
 			});
 		}
 
-		public void getMICAccessToken(String token){
+		public void GetMICAccessToken(String token){
 			Task.Run (() => {
 				try{
 					JObject result = this.getMICToken(token).Execute();
