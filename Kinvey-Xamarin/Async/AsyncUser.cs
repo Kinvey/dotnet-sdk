@@ -278,7 +278,11 @@ namespace KinveyXamarin
 					provider.kinveyAuth = new MICCredential (accessToken);
 					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
 
-					//TODO credential management
+					//store the new refresh token
+					Credential currentCred = KinveyClient.Store.Load(KinveyClient.User().Id);
+					currentCred.RefreshToken = accessResult["refresh_token"].ToString();
+					KinveyClient.Store.Store(KinveyClient.User().Id, currentCred);
+
 					if (MICDelegate != null){
 						MICDelegate.onSuccess(u);
 					}else{
@@ -301,7 +305,11 @@ namespace KinveyXamarin
 					provider.kinveyAuth = new MICCredential (accessToken);
 					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
 
-					//TODO credential management
+					//store the new refresh token
+					Credential currentCred = KinveyClient.Store.Load(KinveyClient.User().Id);
+					currentCred.RefreshToken = result["refresh_token"].ToString();
+					KinveyClient.Store.Store(KinveyClient.User().Id, currentCred);
+
 					if (MICDelegate != null){
 						MICDelegate.onSuccess(u);
 					}else{
