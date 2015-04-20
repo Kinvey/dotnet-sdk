@@ -102,7 +102,7 @@ namespace KinveyXamarin
 			[JsonProperty]
 			public string endpoint;
 
-			public CustomCommand(AbstractKinveyClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
+			public CustomCommand(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties){
 				this.endpoint = endpoint;
 			}
@@ -118,7 +118,7 @@ namespace KinveyXamarin
 			[JsonProperty]
 			public string endpoint;
 
-			public CustomCommandArray(AbstractKinveyClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
+			public CustomCommandArray(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties){
 				this.endpoint = endpoint;
 			}

@@ -117,7 +117,7 @@ namespace KinveyXamarinAndroid
 		public class EnablePush : AbstractKinveyClientRequest<PushPayload> {
 			private const string REST_PATH = "push/{appKey}/register-device";
 
-			public EnablePush(AbstractKinveyClient client, PushPayload input, Dictionary<string, string> urlProperties) :
+			public EnablePush(AbstractClient client, PushPayload input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties){
 
 			}
@@ -126,7 +126,7 @@ namespace KinveyXamarinAndroid
 		public class RemovePush : AbstractKinveyClientRequest<PushPayload> {
 			private const string REST_PATH = "push/{appKey}/unregister-device";
 
-			public RemovePush(AbstractKinveyClient client, PushPayload input, Dictionary<string, string> urlProperties) :
+			public RemovePush(AbstractClient client, PushPayload input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties){
 
 			}

@@ -36,7 +36,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// the Kinvey Client which created this request.
 		/// </summary>
-		protected readonly AbstractKinveyClient client;
+		protected readonly AbstractClient client;
 		/// <summary>
 		/// The request method.
 		/// </summary>
@@ -87,6 +87,10 @@ namespace KinveyXamarin
 		/// <value>The base UR.</value>
 		private string baseURL {get; set;}
 
+		/// <summary>
+		/// Used for MIC to indicate if a request has been repeated after getting a refresh token
+		/// </summary>
+		private bool hasRetryed = false;
 
 		/// <summary>
 		/// Should the request intercept redirects and route them to an override
@@ -107,7 +111,7 @@ namespace KinveyXamarin
 		/// <param name="uriTemplate">URI template.</param>
 		/// <param name="httpContent">Http content.</param>
 		/// <param name="uriParameters">URI parameters.</param>
-		protected AbstractKinveyClientRequest (AbstractKinveyClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters) :
+		protected AbstractKinveyClientRequest (AbstractClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters) :
 		this (client, client.BaseUrl, requestMethod, uriTemplate, httpContent, uriParameters)
 		{}
 
@@ -119,7 +123,7 @@ namespace KinveyXamarin
 		/// <param name="uriTemplate">URI template.</param>
 		/// <param name="httpContent">Http content.</param>
 		/// <param name="uriParameters">URI parameters.</param>
-		protected AbstractKinveyClientRequest(AbstractKinveyClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
+		protected AbstractKinveyClientRequest(AbstractClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
         {
             this.client = client;
             this.requestMethod = requestMethod;
@@ -136,7 +140,7 @@ namespace KinveyXamarin
 		/// Gets the client.
 		/// </summary>
 		/// <value>The client.</value>
-        public AbstractKinveyClient Client
+        public AbstractClient Client
         {
             get { return this.client; }
         }
@@ -343,6 +347,39 @@ namespace KinveyXamarin
                 lastResponseHeaders.Add(header);
             }
 
+			//process refresh token needed
+			if ((int)response.StatusCode == 401 && !hasRetryed){
+
+				//get the refresh token
+				Credential cred = Client.Store.Load(Client.User().Id);
+				String refreshToken = null;
+				if (cred != null){
+					refreshToken = cred.RefreshToken;
+				}
+
+				if (refreshToken != null ){
+					//logout the current user
+
+					Client.User().logoutBlocking().Execute();
+
+					//use the refresh token for a new access token
+					JObject result = Client.User().UseRefreshToken(refreshToken).Execute();
+
+					//login with the access token
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
+					User u = Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+
+
+					//store the new refresh token
+					Credential currentCred = Client.Store.Load(Client.User().Id);
+					currentCred.RefreshToken = result["refresh_token"].ToString();
+					Client.Store.Store(Client.User().Id, currentCred);
+					hasRetryed = true;
+					return ExecuteUnparsed();
+				}
+			}
+
 
             if (response.ErrorException != null)
             {
@@ -377,6 +414,38 @@ namespace KinveyXamarin
 				lastResponseHeaders.Add(header);
 			}
 
+			//process refresh token needed
+			if ((int)response.StatusCode == 401 && !hasRetryed){
+
+				//get the refresh token
+				Credential cred = Client.Store.Load(Client.User().Id);
+				String refreshToken = null;
+				if (cred != null){
+					refreshToken = cred.RefreshToken;
+				}
+
+				if (refreshToken != null ){
+					//logout the current user
+
+					Client.User().logoutBlocking().Execute();
+
+					//use the refresh token for a new access token
+					JObject result = Client.User().UseRefreshToken(refreshToken).Execute();
+
+					//login with the access token
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
+					User u = Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+
+
+					//store the new refresh token
+					Credential currentCred = Client.Store.Load(Client.User().Id);
+					currentCred.RefreshToken = result["refresh_token"].ToString();
+					Client.Store.Store(Client.User().Id, currentCred);
+					hasRetryed = true;
+					return await ExecuteUnparsedAsync();
+				}
+			}
 
 			if (response.ErrorException != null)
 			{

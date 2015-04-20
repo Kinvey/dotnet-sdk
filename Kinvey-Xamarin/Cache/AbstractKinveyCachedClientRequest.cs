@@ -45,7 +45,7 @@ namespace KinveyXamarin
 		/// <param name="httpContent">Http content.</param>
 		/// <param name="uriParameters">URI parameters.</param>
 		/// <param name="collection">Collection.</param>
-		protected AbstractKinveyCachedClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters, string collection) 
+		protected AbstractKinveyCachedClientRequest(AbstractClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters, string collection) 
 			: base (client, requestMethod, uriTemplate, httpContent, uriParameters, collection)
 		{
 		}

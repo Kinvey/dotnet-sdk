@@ -40,7 +40,7 @@ namespace KinveyXamarin
 		private string collectionName;
 
 
-		protected AbstractKinveyOfflineClientRequest(AbstractKinveyClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters, string collection) 
+		protected AbstractKinveyOfflineClientRequest(AbstractClient client, string requestMethod, string uriTemplate, T httpContent, Dictionary<string, string> uriParameters, string collection) 
 			: base (client, requestMethod, uriTemplate, httpContent, uriParameters)
 		{
 			this.collectionName = collection;

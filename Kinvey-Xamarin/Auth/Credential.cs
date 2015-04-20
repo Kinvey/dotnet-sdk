@@ -38,6 +38,12 @@ namespace KinveyXamarin
 		private string authToken;
 
 		/// <summary>
+		/// The refresh token.
+		/// </summary>
+		[DataMember]
+		public string RefreshToken { get; set; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
 		internal Credential() { }
@@ -47,10 +53,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="userId">User _id.</param>
 		/// <param name="authToken">Auth token.</param>
-		public Credential(string userId, string authToken)
+		public Credential(string userId, string authToken, string refresh)
 		{
 			this.userId = userId;
 			this.authToken = authToken;
+			this.RefreshToken = refresh;
 		}
 		/// <summary>
 		/// Gets or sets the user _id.
@@ -91,7 +98,7 @@ namespace KinveyXamarin
 		/// <param name="response">The response of a Kinvey login/create request.</param>
 		public static Credential From(KinveyAuthResponse response)
 		{
-			return new Credential(response.UserId, response.AuthToken);
+			return new Credential(response.UserId, response.AuthToken, null);
 		}
 
 		/// <summary>
@@ -100,7 +107,7 @@ namespace KinveyXamarin
 		/// <param name="user">User.</param>
 		public static Credential From(User user)
 		{
-			return new Credential(user.Id, user.AuthToken);
+			return new Credential(user.Id, user.AuthToken, null);
 		}
 	}
 }

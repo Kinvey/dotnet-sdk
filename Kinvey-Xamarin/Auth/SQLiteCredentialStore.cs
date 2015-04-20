@@ -56,7 +56,7 @@ namespace KinveyXamarin
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.userID == userId).FirstOrDefault ();
 			Credential cred = null;
 			if (sqlcred != null) {
-				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken);
+				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken);
 			}
 			return cred;
 		}
@@ -71,6 +71,7 @@ namespace KinveyXamarin
 			SQLCredential cred = new SQLCredential();
 			cred.userID = credential.UserId;
 			cred.AuthToken = credential.AuthToken;
+			cred.RefreshToken = credential.RefreshToken;
 			_dbConnection.Insert(cred);
 		}
 
@@ -99,9 +100,15 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Gets or sets the user I.
 		/// </summary>
-		/// <value>The user I.</value>
+		/// <value>The user Id.</value>
 		[PrimaryKey]
 		public string userID {get; set;}
+
+		/// <summary>
+		/// Gets or sets the refresh token.
+		/// </summary>
+		/// <value>The refresh token.</value>
+		public string RefreshToken {get; set;}
 
 	}
 }

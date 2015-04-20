@@ -23,7 +23,7 @@ namespace KinveyXamarin
 	public class KinveyFileRequest : AbstractKinveyClientRequest<FileMetaData>
 	{
 
-		public KinveyFileRequest (AbstractKinveyClient client, string requestMethod, string uriTemplate, FileMetaData httpContent, Dictionary<string, string> uriParameters)
+		public KinveyFileRequest (AbstractClient client, string requestMethod, string uriTemplate, FileMetaData httpContent, Dictionary<string, string> uriParameters)
 			: base(client, requestMethod, uriTemplate, httpContent, uriParameters)
 		{
 		}

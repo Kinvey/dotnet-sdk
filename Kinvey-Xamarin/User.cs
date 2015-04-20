@@ -384,7 +384,7 @@ namespace KinveyXamarin
 			return getToken;
 		}
 
-		public GetMICAccessToken useRefreshToken(String refreshToken) {
+		public GetMICAccessToken UseRefreshToken(String refreshToken) {
 			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
 			//        refresh_token: use the refresh token 
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
