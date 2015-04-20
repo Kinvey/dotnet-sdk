@@ -150,12 +150,12 @@ namespace KinveyXamarin
             {
 				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.requestPayload), ParameterType.RequestBody);
             }else if (this.identity != null) {
-				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.identity), ParameterType.RequestBody);
+				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.identity, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore}), ParameterType.RequestBody);
 			}
 
             restRequest.Resource = "user/{appKey}/" + (this.create ? "" : "login");
 
-			restRequest.Method = (identity == null) ? Method.POST : Method.PUT;
+			restRequest.Method = Method.POST;
 
             foreach (var parameter in uriTemplateParameters)
             {

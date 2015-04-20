@@ -251,7 +251,7 @@ namespace KinveyXamarin
 
 		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> delegates){
 			//return URL for login page
-			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>i&redirect_uri=<redirect_uri>&response_type=code
+			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
 			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
 			string myURLToRender = MICHostName + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
