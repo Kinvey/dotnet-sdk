@@ -40,7 +40,7 @@ namespace KinveyXamarin
 		/// <param name="store">Store.</param>
         public CredentialManager(ICredentialStore store)
         {
-            if (credentialStore == null)
+            if (store == null)
             {
                 this.credentialStore = new InMemoryCredentialStore();
             }
