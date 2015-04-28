@@ -95,13 +95,13 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Should the request intercept redirects and route them to an override
 		/// </summary>
-		public bool OverrideRedirect {get; set; } = false;
+		public bool OverrideRedirect {get; set; }
 	
 		/// <summary>
 		/// The type of payload
 		/// </summary>
 		/// <value>The type of the payload.</value>
-		public RequestPayloadType PayloadType { get; set;} = new JSONPayload();
+		public RequestPayloadType PayloadType { get; set;} 
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
@@ -134,6 +134,9 @@ namespace KinveyXamarin
 			this.customRequestHeaders = client.GetCustomRequestProperties();
 			this.clientAppVersion = client.GetClientAppVersion ();
 			this.baseURL = baseURL;
+			this.PayloadType = new JSONPayload();
+			this.OverrideRedirect = false;
+
         }
 
 		/// <summary>

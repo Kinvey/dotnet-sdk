@@ -119,7 +119,7 @@ namespace KinveyXamarin
 		/// </summary>
 		public string MICRedirectURI {get; set;}
 
-		protected string MICHostName { get; set;} = "https://auth.kinvey.com/";
+		protected string MICHostName { get; set;}
 
 		public void setMICHostName(string value){
 			if (!value.StartsWith("https")){
@@ -141,12 +141,14 @@ namespace KinveyXamarin
             this.client = client;
             this.builder = builder;
             builder.KinveyUser = this;
-
+			this.MICHostName = "https://auth.kinvey.com";
         }
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
-        public User() { }
+        public User() {
+			this.MICHostName = "https://auth.kinvey.com";
+		}
 
 		/// <summary>
 		/// checks if there is currently a logged in user.
