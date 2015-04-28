@@ -16,11 +16,11 @@ namespace KinveyXamarin
 			this.client = client;
 		}
 
-		public EnablePush EnablePushViaRest(string deviceId){
+		public EnablePush EnablePushViaRest(string platform, string deviceId){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload (deviceId);
+			PushPayload input = new PushPayload (platform, deviceId);
 
 
 			EnablePush enable = new EnablePush (client, input, urlParameters);
@@ -30,11 +30,11 @@ namespace KinveyXamarin
 			return enable;
 		}
 
-		public RemovePush DisablePushViaRest(string deviceId){
+		public RemovePush DisablePushViaRest(string platform, string deviceId){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload ();
+			PushPayload input = new PushPayload (platform);
 
 			RemovePush disable = new RemovePush (client, input, urlParameters);
 
@@ -72,12 +72,12 @@ namespace KinveyXamarin
 			[JsonProperty]
 			private String deviceId {get; set;}
 
-			public PushPayload() {
-				this.platform = "android";
+			public PushPayload(string platform) {
+				this.platform = platform;
 			}
 
-			public PushPayload(String deviceId) {
-				this.platform = "android";
+			public PushPayload(string platform, string deviceId) {
+				this.platform = platform;
 				this.deviceId = deviceId;
 			}
 		}

@@ -19,7 +19,6 @@ namespace KinveyXamarinAndroid
 
 		public Push (Client client) : base(client){}
 
-
 		public void Initialize(Context appContext){
 
 			string senders = base.client.senderID;
@@ -44,7 +43,7 @@ namespace KinveyXamarinAndroid
 					Logger.Log ("-------GCM ID is: " + gcmID);
 
 					//Response contains No Content
-					EnablePushViaRest (gcmID).Execute();
+					EnablePushViaRest ("android", gcmID).Execute();
 
 					ISharedPreferencesEditor editor = prefs.Edit ();
 					editor.PutString (GCM_ID, gcmID);
@@ -76,7 +75,7 @@ namespace KinveyXamarinAndroid
 			}
 
 			ThreadPool.QueueUserWorkItem (o => {
-				DisablePushViaRest(alreadyInitialized).Execute();
+				DisablePushViaRest("android", alreadyInitialized).Execute();
 			});
 		}
 	}

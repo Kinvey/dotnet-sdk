@@ -1,11 +1,13 @@
 ﻿using System;
+using KinveyXamarin;
 
 namespace KinveyXamariniOS
 {
-	public class PushExtension
+	public static class PushExtension
 	{
-		public PushExtension ()
-		{
+		public static Push Push (this Client client){
+			return new Push (client);
+
 		}
 	}
 }
