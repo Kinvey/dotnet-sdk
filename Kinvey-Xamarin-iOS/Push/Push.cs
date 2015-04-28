@@ -22,8 +22,6 @@ namespace KinveyXamariniOS
 				EnablePushViaRest ("ios", deviceToken).Execute();
 			
 			});
-			
-
 		}
 
 		public void DisablePush(){
