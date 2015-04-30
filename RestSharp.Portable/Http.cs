@@ -12,6 +12,9 @@
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //   See the License for the specific language governing permissions and
 //   limitations under the License. 
+using KinveyUtils;
+
+
 #endregion
 
 using System;
@@ -132,6 +135,20 @@ namespace RestSharp
             var httpResponse = new HttpResponse();
 
             //token.ThrowIfCancellationRequested();
+
+
+			Logger.Log ("------------------------REQUEST");
+			Logger.Log(this._message.Instance.Method + " -> " + this._message.Instance.RequestUri.ToString());
+			foreach(var h in this._message.Instance.Headers){
+				Logger.Log(h.Key + " -> " + h.Value.FirstOrDefault().ToString());
+			}
+			Logger.Log ("User-Agent -> (" + this._message.Instance.Headers.UserAgent + ")" );
+			Logger.Log ("Accepts -> (" + this._message.Instance.Headers.Accept + ")" );
+			if (this._message.Instance.Content != null){
+				Logger.Log(this._message.Instance.Content);
+			}
+
+			Logger.Log ("------------------------END REQUEST");
 
             try
             {

@@ -57,12 +57,12 @@ namespace RestSharp
 
 			// register default handlers
 			AddHandler("application/json", new JsonDeserializer());
-			AddHandler("application/xml", new XmlDeserializer());
-			AddHandler("text/json", new JsonDeserializer());
-			AddHandler("text/x-json", new JsonDeserializer());
-			AddHandler("text/javascript", new JsonDeserializer());
-			AddHandler("text/xml", new XmlDeserializer());
-			AddHandler("*", new JsonDeserializer());
+//			AddHandler("application/xml", new XmlDeserializer());
+//			AddHandler("text/json", new JsonDeserializer());
+//			AddHandler("text/x-json", new JsonDeserializer());
+//			AddHandler("text/javascript", new JsonDeserializer());
+//			AddHandler("text/xml", new XmlDeserializer());
+//			AddHandler("*", new JsonDeserializer());
 
 			FollowRedirects = true;
 		}
@@ -395,17 +395,7 @@ namespace RestSharp
 
                 var httpRequest = converter.ConvertTo(this, restRequest);
 
-				Logger.Log ("------------------------REQUEST");
-				Logger.Log(restRequest.Method + " -> " + httpRequest.Url.ToString());
-				foreach(HttpHeader h in httpRequest.Headers){
-					Logger.Log(h.Name + " -> " + h.Value.FirstOrDefault().ToString());
-				}
-				if (httpRequest.HasBody){
-
-					Logger.Log(httpRequest.RequestBody);
-				}
-
-				Logger.Log ("------------------------END REQUEST");
+	
 			
 				IHttp http = new Http(httpRequest, this.FollowRedirects);
 
