@@ -145,7 +145,7 @@ namespace RestSharp
 			Logger.Log ("User-Agent -> (" + this._message.Instance.Headers.UserAgent + ")" );
 			Logger.Log ("Accepts -> (" + this._message.Instance.Headers.Accept + ")" );
 			if (this._message.Instance.Content != null){
-				Logger.Log(this._message.Instance.Content);
+				Logger.Log(this._message.Instance.Content.ToString());
 			}
 
 			Logger.Log ("------------------------END REQUEST");

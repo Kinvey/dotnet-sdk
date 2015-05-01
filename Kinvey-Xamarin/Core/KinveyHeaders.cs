@@ -28,7 +28,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The version of the library.
 		/// </summary>
-		private static string version = "1.4.0";
+		public static string VERSION = "1.4.0";
 
 		/// <summary>
 		/// The kinvey API version key.
@@ -46,7 +46,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The user agent.
 		/// </summary>
-        private string userAgent = "xamarin-kinvey-http/" + version;
+		private string userAgent = "xamarin-kinvey-http/" + VERSION;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyHeaders"/> class.

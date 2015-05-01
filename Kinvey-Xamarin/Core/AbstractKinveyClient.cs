@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
 using Newtonsoft.Json.Linq;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -104,6 +105,7 @@ namespace KinveyXamarin
             this.kinveyRequestInitializer = initializer;
             this.rootUrl = NormalizeRootUrl(rootUrl);
             this.servicePath = NormalizeServicePath(servicePath);
+			Logger.Log ("Kinvey Client created, running version: " + KinveyHeaders.VERSION);
         }
 
 		//public abstract User User ();
