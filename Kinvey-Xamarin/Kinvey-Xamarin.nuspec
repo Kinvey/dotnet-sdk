@@ -2,14 +2,22 @@
 <package >
   <metadata>
     <id>Kinvey</id>
-    <version>1.2.0</version>
+    <version>//TODO</version>
     <title>Kinvey-Xamarin</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Build Xamarin apps which leverage the power of Kinvey's BaaS, with support for users, data, and files, with caching and offline.  Check out http://devcenter.kinvey.com/xamarin for guides, tutorials, and sample apps.  </description>
-    <releaseNotes>Initial Release with support for User management, application data with caching and offline, and file operations.</releaseNotes>
+    <releaseNotes>//TODO</releaseNotes>
     <copyright>Copyright 2015</copyright>
+    <projectUrl>http://devcenter.kinvey.com/xamarin/</projectUrl>
     <tags>Kinvey BaaS</tags>
+    <dependencies>
+        <dependency id="LinqExtender" version="3.0.1" />
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
+        <dependency id="Microsoft.Net.Http" version="2.2.29" />
+    </dependencies>
   </metadata>
 </package>
+
+
