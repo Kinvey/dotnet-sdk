@@ -18,6 +18,11 @@
         <dependency id="Microsoft.Net.Http" version="2.2.29" />
         <dependency id="Newtonsoft.Json" version="6.0.7" />
         <dependency id="SQLite.Net.Async-PCL" version="2.5" />
+        <dependency id="ModernHttpClient" version="2.4.0" />
     </dependencies>
+    <frameworkAssemblies>
+        <frameworkAssembly assemblyName="System.ServiceModel" />
+        <frameworkAssembly assemblyName="System.SomethingElse"  />
+    </frameworkAssemblies>
   </metadata>
 </package>
