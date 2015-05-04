@@ -509,7 +509,9 @@ namespace KinveyXamarin
 			{
 				return JsonConvert.DeserializeObject<T>(response.Content);
 			}
-
+			catch(JsonException ex){
+				throw new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
+			}
 			catch(ArgumentException ex)
 			{
 				Logger.Log (ex.Message);  
