@@ -694,13 +694,13 @@ namespace KinveyXamarin
 				if (u.id == (user.id)){
 					KinveyAuthResponse auth = new KinveyAuthResponse();
 
-					auth.Add("_id", u["_id"]);
+					auth.UserId =  u["_id"].ToString();
 					KinveyAuthResponse.KinveyUserMetadata kmd = new KinveyAuthResponse.KinveyUserMetadata();
 					kmd.Add("lmt", u["_kmd.lmt"]) ;
 					kmd.Add("authtoken", u["_kmd.authtoken"]);
 					kmd.Add("_kmd", u["_kmd"]);
-					auth.Add("_kmd", kmd);
-					auth.Add("username", u["username"]);
+					auth.UserMetadata = kmd;
+					auth.username =  u["username"].ToString();
 //					for (Object key : u.keySet()){
 //						if (!key.toString().equals("_kmd")){
 //							auth.put(key.toString(), u.get(key));

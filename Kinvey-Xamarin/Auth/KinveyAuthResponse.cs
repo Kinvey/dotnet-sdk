@@ -26,23 +26,13 @@ namespace KinveyXamarin
 	/// <summary>
 	/// This class represents the response of a Kinvey Auth Request.
 	/// </summary>
-	[JsonObject]
-    public class KinveyAuthResponse : JObject
+	public class KinveyAuthResponse : JObject
     {
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthResponse"/> class.
 		/// </summary>
         public KinveyAuthResponse() { }
-
-		/// <summary>
-		/// Parse the specified response into an instance of a KinveyAuthResponse.
-		/// </summary>
-		/// <param name="response">Response.</param>
-		private static KinveyAuthResponse Parse(IRestResponse response)
-        {
-            return JsonConvert.DeserializeObject<KinveyAuthResponse>(response.Content);
-        }
 
 		/// <summary>
 		/// Gets or sets the user identifier.
@@ -57,6 +47,13 @@ namespace KinveyXamarin
 		/// <value>The user metadata.</value>
         [JsonProperty("_kmd")]
         public KinveyUserMetadata UserMetadata { get; set; }
+
+		/// <summary>
+		/// Gets or sets the username.
+		/// </summary>
+		/// <value>The username.</value>
+		[JsonProperty("username")]
+		public string username { get; set; }
 
 		/// <summary>
 		/// Gets the auth token.

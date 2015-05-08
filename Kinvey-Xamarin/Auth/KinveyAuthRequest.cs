@@ -84,6 +84,8 @@ namespace KinveyXamarin
 		/// </summary>
         private static KinveyHeaders kinveyHeaders = new KinveyHeaders();
 
+		public KinveyAuthRequest(){}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest"/> class.
 		/// </summary>
@@ -229,7 +231,9 @@ namespace KinveyXamarin
 		/// </summary>
 		public KinveyAuthResponse Execute()
         {
-			return JsonConvert.DeserializeObject<KinveyAuthResponse>( ExecuteUnparsed().Content);
+			return (KinveyAuthResponse) JsonConvert.DeserializeObject (ExecuteUnparsed().Content, typeof(KinveyAuthResponse)); 
+			//return (KinveyAuthResponse) JsonConvert.DeserializeObject (ExecuteUnparsed().Content, typeof(KinveyAuthResponse));
+//			return JsonConvert.DeserializeObject<KinveyAuthResponse>( ExecuteUnparsed().Content);
         }
 
 		/// <summary>
@@ -238,7 +242,17 @@ namespace KinveyXamarin
 		/// <returns>The async request.</returns>
 		public async Task<KinveyAuthResponse> ExecuteAsync()
 		{
+//			var content = (await ExecuteUnparsedAsync ()).Content;
+			KinveyAuthResponse resp = new KinveyAuthResponse();
+//
+//			var ok = JsonConvert.DeserializeObject (content);
+//			return (KinveyAuthResponse) ok;
+				
+			//{"username":"14a26e1d-b216-4438-95a6-7c8cf9019340","password":"db58975f-0a07-4003-b9b5-65f8a894e19d","_kmd":{"lmt":"2015-05-05T21:28:21.935Z","ect":"2015-05-05T21:28:21.935Z","authtoken":"c3764d9f-dd37-4db1-a3fc-87d59276cad0.0wK/2LghDM2uLKewvcAaV0kOMhmw2ak+29b2Im9viss="},"_id":"554935f50efb6e3c2000f7e5","_acl":{"creator":"554935f50efb6e3c2000f7e5"}}
+			//return JsonConvert.DeserializeObject ((await ExecuteUnparsedAsync()).Content, typeof(KinveyAuthResponse)); 
 			return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
+
+//			return (KinveyAuthResponse) JsonConvert.DeserializeObject ((await ExecuteUnparsedAsync()).Content, typeof(JObject));
 		}
 		/// <summary>
 		/// Throw an expection when an error occurs.
