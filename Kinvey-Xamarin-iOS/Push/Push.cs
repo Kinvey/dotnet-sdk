@@ -17,6 +17,7 @@ namespace KinveyXamariniOS
 		public void Initialize(string deviceToken){
 			if (deviceToken == null) {
 				Logger.Log ("Cannot Initialize for push, device Token cannot be null!");
+				return;
 			}
 
 			NSUserDefaults.StandardUserDefaults.SetString(deviceToken, APN_Token); 
