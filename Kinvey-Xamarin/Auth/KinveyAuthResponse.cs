@@ -26,6 +26,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// This class represents the response of a Kinvey Auth Request.
 	/// </summary>
+	[JsonObject]
 	public class KinveyAuthResponse : JObject
     {
 
