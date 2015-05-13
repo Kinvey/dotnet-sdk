@@ -25,6 +25,10 @@ namespace KinveyUtils
 			logIt (message);
 		}
 
+		public static void Log(int message){
+			Log (message.ToString ());
+		}
+
 
 		public static void Log(Exception e){
 			if (!initialized) {
