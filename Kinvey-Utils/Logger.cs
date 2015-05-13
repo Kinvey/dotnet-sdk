@@ -25,7 +25,7 @@ namespace KinveyUtils
 			logIt (message);
 		}
 
-		public static void Log(int message){
+		public static void Log(object message){
 			Log (message.ToString ());
 		}
 
