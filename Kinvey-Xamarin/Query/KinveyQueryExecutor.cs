@@ -144,8 +144,38 @@ namespace KinveyXamarin
 				writer.Write (":");
 				writer.Write (equality.Right);
 			}else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso")){
-				
+				BinaryExpression and = whereClause.Predicate as BinaryExpression;
+				//recursively traverse tree
+//				var rightSide = and.Right as BinaryExpression;
+//				if (rightSide != null){
+//					
+//				}
+				VisitWhereClause(new WhereClause(and.Right), queryModel, index);
+				writer.Write (",");
+				VisitWhereClause(new WhereClause(and.Left), queryModel, index);
+					
+
+
+//				Logger.Log (and.Right.ToString());
+//				Logger.Log (and.Left.ToString());
+
+
 			}else if (whereClause.Predicate.NodeType.ToString().Equals("OrElse")){
+				BinaryExpression or = whereClause.Predicate as BinaryExpression;
+
+				writer.Write ("$or:");
+				writer.Write("[");
+				writer.Write ("{");
+				VisitWhereClause (new WhereClause(or.Left), queryModel, index);
+				writer.Write ("},");
+				writer.Write ("{");
+				VisitWhereClause (new WhereClause(or.Right), queryModel, index);
+				writer.Write ("}");
+				writer.Write ("]");
+
+
+				Logger.Log (or.Right.ToString());
+				Logger.Log (or.Left.ToString());
 
 			} else {
 				Logger.Log (whereClause.Predicate);
