@@ -60,7 +60,11 @@ namespace KinveyXamarin
 				{
 					Name = "Name " + i,
 					Description = "This describes the item in position " + i,
-					lowercasetest  = "name " + i
+					lowercasetest  = "name " + i,
+					ID = i.ToString(),
+					IsAvailable = false
+
+						
 				};
 
 				// Use the projector to convert (if necessary) the current item to what is being selected and return it.
@@ -85,6 +89,8 @@ namespace KinveyXamarin
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public string lowercasetest {get; set;}
+		public string ID {get; set;}
+		public bool IsAvailable { get; set;}
 	}
 
 	public class SampleQueryable<T> : QueryableBase<T>
@@ -125,13 +131,23 @@ namespace KinveyXamarin
 			base.VisitOrderings (orderings, queryModel, orderByClause);
 
 			Logger.Log ("visiting ordering clause");
+			foreach (var ordering in orderings) {
+				var member = ordering.Expression as MemberExpression;
+
+
+				string sort = "&sort={\"" + member.Member.Name + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
+				writer.Dangle (sort);
+
+				Logger.Log (ordering.OrderingDirection);
+//				ordering.OrderingDirection
+			}
 		}
 
-		protected override void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel)
-		{
-			base.VisitResultOperators (resultOperators, queryModel);
-			Logger.Log ("visiting result clause");
-		}
+//		protected override void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel)
+//		{
+//			base.VisitResultOperators (resultOperators, queryModel);
+//			Logger.Log ("visiting result clause");
+//		}
 
 		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index){
 			base.VisitWhereClause (whereClause, queryModel, index);
@@ -187,10 +203,14 @@ namespace KinveyXamarin
 
 		}
 
-		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index){
-			base.VisitOrderByClause (orderByClause, queryModel, index);
-			Logger.Log ("visiting orderby clause");
-		}
+//		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index){
+//			base.VisitOrderByClause (orderByClause, queryModel, index);
+//			Logger.Log ("visiting orderby clause");
+//			foreach (var ordering in orderByClause.Orderings) {
+//				Logger.Log (ordering.Expression);
+//			}
+//
+//		}
 //		public virtual void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index);
 //
 //		public virtual void VisitGroupJoinClause (GroupJoinClause groupJoinClause, QueryModel queryModel, int index);
