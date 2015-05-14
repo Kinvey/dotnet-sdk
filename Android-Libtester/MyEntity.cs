@@ -6,7 +6,6 @@ namespace AndroidLibtester
 {
 	public class MyEntity
 	{
-
 		public MyEntity(string id){
 			this.ID = id;
 		}

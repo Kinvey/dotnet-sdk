@@ -116,7 +116,7 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">My class.</param>
 		/// <param name="client">Client.</param>
-		public AppData (string collectionName, Type myClass, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>())
+		public AppData (string collectionName, Type myClass, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), myClass)
 		{
 			this.collectionName = collectionName;
 			this.myClass = myClass;
@@ -325,7 +325,6 @@ namespace KinveyXamarin
 		public override object executeQuery (string query)
 		{
 			return getQueryBlocking (query).Execute ();
-			//return new T[1];
 		}
 
 

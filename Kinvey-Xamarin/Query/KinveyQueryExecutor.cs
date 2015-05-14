@@ -8,6 +8,9 @@ using System.Linq;
 using Remotion.Linq.Parsing.Structure;
 using System.Collections.ObjectModel;
 using KinveyUtils;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Reflection;
 
 namespace KinveyXamarin
 {
@@ -22,7 +25,7 @@ namespace KinveyXamarin
 		
 			writer.Reset ();
 
-			KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer);
+			KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer, typeof(K));
 
 			writer.Write ("{");
 			queryModel.Accept (visitor);
@@ -62,7 +65,7 @@ namespace KinveyXamarin
 	{
 		public StringQueryBuilder writer;
 
-		public KinveyQueryable(IQueryParser queryParser, IQueryExecutor executor)
+		public KinveyQueryable(IQueryParser queryParser, IQueryExecutor executor, Type myClass)
 			: base(new DefaultQueryProvider(typeof(KinveyQueryable<>), queryParser, executor))
 		{
 			var kExecutor = executor as KinveyQueryExecutor<T>;
@@ -93,22 +96,47 @@ namespace KinveyXamarin
 	public class KinveyQueryVisitor : QueryModelVisitorBase {
 
 		private IQueryBuilder writer;
+		private Dictionary<string, string> keyMap;
 
-		public KinveyQueryVisitor(IQueryBuilder builder){
+		public KinveyQueryVisitor(IQueryBuilder builder, Type type){
 			writer = builder;
+
+//			Type.GetTypeInfo (type).GetCustomAttributes(
+
+			var scratch = Activator.CreateInstance (type);
+			loadKeyMap (type);
 		}
+
+		private void loadKeyMap(Type type){
+			keyMap = new Dictionary<string, string> ();
+			var properties = type.GetRuntimeProperties ();
+			foreach (PropertyInfo prop in properties) {
+				var attrs = prop.GetCustomAttributes(true);
+				foreach (var attr in attrs) {
+					JsonPropertyAttribute jprop = attr as JsonPropertyAttribute;
+					if (jprop != null) {
+						if (jprop.PropertyName == null) {
+							keyMap.Add (prop.Name, prop.Name);
+						}else{
+							keyMap.Add (prop.Name, jprop.PropertyName);
+						}
+					}
+				}
+			}
+		}
+
+	
 
 		public override void VisitQueryModel (QueryModel queryModel){
 			base.VisitQueryModel (queryModel);
-//			Logger.Log ("visiting querymodel");
 		}
 
 		
-		protected override void VisitBodyClauses (ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
-		{
-			base.VisitBodyClauses (bodyClauses, queryModel);
-//			Logger.Log ("visiting body clause");
-		}
+//		protected override void VisitBodyClauses (ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
+//		{
+//			base.VisitBodyClauses (bodyClauses, queryModel);
+////			Logger.Log ("visiting body clause");
+//		}
 
 		protected override void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause)
 		{
@@ -118,12 +146,10 @@ namespace KinveyXamarin
 			foreach (var ordering in orderings) {
 				var member = ordering.Expression as MemberExpression;
 
-
-				string sort = "&sort={\"" + member.Member.Name + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
+				string sort = "&sort={\"" + keyMap[member.Member.Name] + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
 				writer.Dangle (sort);
 
 //				Logger.Log (ordering.OrderingDirection);
-//				ordering.OrderingDirection
 			}
 		}
 
@@ -140,7 +166,7 @@ namespace KinveyXamarin
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
 
-				writer.Write ("\"" + member.Member.Name + "\"");
+				writer.Write ("\"" + keyMap[member.Member.Name] + "\"");
 				writer.Write (":");
 				writer.Write (equality.Right);
 			}else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso")){
