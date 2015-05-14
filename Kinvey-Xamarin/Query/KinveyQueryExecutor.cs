@@ -30,9 +30,10 @@ namespace KinveyXamarin
 
 			Logger.Log (writer.GetFullString ());
 
-			K[] results =  queryable.executeQuery (writer.GetFullString ());
-
-			yield return default(T);
+			T[] results = (T[]) queryable.executeQuery (writer.GetFullString ());
+			foreach (T res in results) {
+				yield return res;
+			}
 		
 		}
 
@@ -83,9 +84,9 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The query.</returns>
 		/// <param name="query">Query.</param>
-		public virtual T[] executeQuery(string query){
+		public virtual object executeQuery(string query){
 			Logger.Log ("can't execute a query without overriding this method!");
-			return default(T[]);
+			return default(object);
 		}
 	}
 

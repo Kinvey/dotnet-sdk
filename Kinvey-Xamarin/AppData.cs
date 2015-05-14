@@ -31,7 +31,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Class for managing appData access to the Kinvey backend.
 	/// </summary>
-	public class AppData<T>// : KinveyQueryable<T>
+	public class AppData<T> : KinveyQueryable<T>
 	{
 		/// <summary>
 		/// The name of the collection.
@@ -116,7 +116,7 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">My class.</param>
 		/// <param name="client">Client.</param>
-		public AppData (string collectionName, Type myClass, AbstractClient client) //: base (QueryParser.CreateDefault(), new KinveyQueryExecutor())
+		public AppData (string collectionName, Type myClass, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>())
 		{
 			this.collectionName = collectionName;
 			this.myClass = myClass;
@@ -322,10 +322,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The query.</returns>
 		/// <param name="query">the results of the query, executed synchronously.</param>
-//		public override T[] executeQuery (string query)
-//		{
-//			return getQueryBlocking (query).Execute ();
-//		}
+		public override object executeQuery (string query)
+		{
+			return getQueryBlocking (query).Execute ();
+			//return new T[1];
+		}
 
 
 		/// <summary>
