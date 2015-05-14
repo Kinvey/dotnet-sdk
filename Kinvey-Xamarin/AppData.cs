@@ -24,13 +24,14 @@ using System.Collections;
 using LinqExtender;
 using Ast = LinqExtender.Ast;
 using Newtonsoft.Json.Linq;
+using Remotion.Linq.Parsing.Structure;
 
 namespace KinveyXamarin
 {
 	/// <summary>
 	/// Class for managing appData access to the Kinvey backend.
 	/// </summary>
-	public class AppData<T> : KinveyQueryContext<T>,  IQueryContext<T>
+	public class AppData<T>// : KinveyQueryable<T>
 	{
 		/// <summary>
 		/// The name of the collection.
@@ -40,6 +41,11 @@ namespace KinveyXamarin
 		/// The Type of the class.
 		/// </summary>
 		private Type myClass;
+
+		/// <summary>
+		/// The client.
+		/// </summary>
+		protected AbstractClient client;
 
 		/// <summary>
 		/// The cache.
@@ -110,11 +116,11 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">My class.</param>
 		/// <param name="client">Client.</param>
-		public AppData (string collectionName, Type myClass, AbstractClient client) : base (client)
+		public AppData (string collectionName, Type myClass, AbstractClient client) //: base (QueryParser.CreateDefault(), new KinveyQueryExecutor())
 		{
 			this.collectionName = collectionName;
 			this.myClass = myClass;
-			this.writer = new StringQueryBuilder ();
+			this.client = client;
 			this.customRequestProperties = client.GetCustomRequestProperties ();
 			this.clientAppVersion = client.GetClientAppVersion ();
 		}
@@ -316,10 +322,10 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The query.</returns>
 		/// <param name="query">the results of the query, executed synchronously.</param>
-		protected override T[] executeQuery (string query)
-		{
-			return getQueryBlocking (query).Execute ();
-		}
+//		public override T[] executeQuery (string query)
+//		{
+//			return getQueryBlocking (query).Execute ();
+//		}
 
 
 		/// <summary>

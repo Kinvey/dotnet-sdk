@@ -11,29 +11,16 @@ using KinveyUtils;
 
 namespace KinveyXamarin
 {
-	public class KinveyQueryExecutor : IQueryExecutor
+	public class KinveyQueryExecutor<K> : IQueryExecutor
 	{
-
-		// Set up a proeprty that will hold the current item being enumerated.
-		public SampleDataSourceItem Current { get; private set; }
-
-		private StringQueryBuilder writer;
+		
+		public StringQueryBuilder writer;
+		public KinveyQueryable<K> queryable;
 
 		public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
 		{
-	
-			// Create an expression that returns the current item when invoked.
-			Expression currentItemExpression = Expression.Property(Expression.Constant(this), "Current");
-
-			// Now replace references like the "i" in "select i" that refers to the "i" in "from i in items"
-			var mapping = new QuerySourceMapping();
-			mapping.AddMapping(queryModel.MainFromClause, currentItemExpression);
-			queryModel.TransformExpressions(e =>
-				ReferenceReplacingExpressionTreeVisitor.ReplaceClauseReferences(e, mapping, true));
-
-
-			writer = new StringQueryBuilder ();
 		
+			writer.Reset ();
 
 			KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer);
 
@@ -43,33 +30,10 @@ namespace KinveyXamarin
 
 			Logger.Log (writer.GetFullString ());
 
+			K[] results =  queryable.executeQuery (writer.GetFullString ());
 
-			// Create a lambda that takes our SampleDataSourceItem and passes it through the select clause
-			// to produce a type of T.  (T may be SampleDataSourceItem, in which case this is an identity function.)
-			var currentItemProperty = Expression.Parameter(typeof(SampleDataSourceItem));
-			var projection = Expression.Lambda<Func<SampleDataSourceItem, T>>(queryModel.SelectClause.Selector, currentItemProperty);
-			var projector = projection.Compile();
-
-
-
-			// Pretend we're getting SampleDataSourceItems from somewhere...
-			for (var i = 0; i < 10; i++)
-			{
-				// Set the current item so currentItemExpression can access it.
-				Current = new SampleDataSourceItem
-				{
-					Name = "Name " + i,
-					Description = "This describes the item in position " + i,
-					lowercasetest  = "name " + i,
-					ID = i.ToString(),
-					IsAvailable = false
-
-						
-				};
-
-				// Use the projector to convert (if necessary) the current item to what is being selected and return it.
-				yield return projector(Current);
-			}
+			yield return default(T);
+		
 		}
 
 		public T ExecuteSingle<T>(QueryModel queryModel, bool returnDefaultWhenEmpty)
@@ -93,16 +57,35 @@ namespace KinveyXamarin
 		public bool IsAvailable { get; set;}
 	}
 
-	public class SampleQueryable<T> : QueryableBase<T>
+	public class KinveyQueryable<T> : QueryableBase<T>
 	{
-		public SampleQueryable(IQueryParser queryParser, IQueryExecutor executor)
-			: base(new DefaultQueryProvider(typeof(SampleQueryable<>), queryParser, executor))
+		public StringQueryBuilder writer;
+
+		public KinveyQueryable(IQueryParser queryParser, IQueryExecutor executor)
+			: base(new DefaultQueryProvider(typeof(KinveyQueryable<>), queryParser, executor))
+		{
+			var kExecutor = executor as KinveyQueryExecutor<T>;
+			if (kExecutor != null) {
+				writer = new StringQueryBuilder ();
+				kExecutor.writer = writer;
+				kExecutor.queryable = this;
+			}
+
+		}
+
+		public KinveyQueryable(IQueryProvider provider, Expression expression)
+			: base(provider, expression)
 		{
 		}
 
-		public SampleQueryable(IQueryProvider provider, Expression expression)
-			: base(provider, expression)
-		{
+		/// <summary>
+		/// Executes the query.
+		/// </summary>
+		/// <returns>The query.</returns>
+		/// <param name="query">Query.</param>
+		public virtual T[] executeQuery(string query){
+			Logger.Log ("can't execute a query without overriding this method!");
+			return default(T[]);
 		}
 	}
 
@@ -116,21 +99,21 @@ namespace KinveyXamarin
 
 		public override void VisitQueryModel (QueryModel queryModel){
 			base.VisitQueryModel (queryModel);
-			Logger.Log ("visiting querymodel");
+//			Logger.Log ("visiting querymodel");
 		}
 
 		
 		protected override void VisitBodyClauses (ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
 		{
 			base.VisitBodyClauses (bodyClauses, queryModel);
-			Logger.Log ("visiting body clause");
+//			Logger.Log ("visiting body clause");
 		}
 
 		protected override void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause)
 		{
 			base.VisitOrderings (orderings, queryModel, orderByClause);
 
-			Logger.Log ("visiting ordering clause");
+//			Logger.Log ("visiting ordering clause");
 			foreach (var ordering in orderings) {
 				var member = ordering.Expression as MemberExpression;
 
@@ -138,7 +121,7 @@ namespace KinveyXamarin
 				string sort = "&sort={\"" + member.Member.Name + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
 				writer.Dangle (sort);
 
-				Logger.Log (ordering.OrderingDirection);
+//				Logger.Log (ordering.OrderingDirection);
 //				ordering.OrderingDirection
 			}
 		}
@@ -151,7 +134,7 @@ namespace KinveyXamarin
 
 		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index){
 			base.VisitWhereClause (whereClause, queryModel, index);
-			Logger.Log ("visiting where clause");
+//			Logger.Log ("visiting where clause");
 			if (whereClause.Predicate.NodeType.ToString ().Equals ("Equal")) {
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
@@ -190,12 +173,12 @@ namespace KinveyXamarin
 				writer.Write ("]");
 
 
-				Logger.Log (or.Right.ToString());
-				Logger.Log (or.Left.ToString());
+//				Logger.Log (or.Right.ToString());
+//				Logger.Log (or.Left.ToString());
 
 			} else {
-				Logger.Log (whereClause.Predicate);
-				Logger.Log (whereClause.Predicate.NodeType.ToString());
+//				Logger.Log (whereClause.Predicate);
+//				Logger.Log (whereClause.Predicate.NodeType.ToString());
 
 			}
 

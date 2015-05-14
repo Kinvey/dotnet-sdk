@@ -29,18 +29,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="LinqExtender">
-      <HintPath>..\packages\LinqExtender.3.0.1\lib\LinqExtender.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha-003\lib\net40\Remotion.Linq.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test.cs" />
     <Compile Include="TestAppData.cs" />
-    <Compile Include="ExpressionVisitor.cs" />
-    <Compile Include="DefaultContext.cs" />
     <Compile Include="MyEntity.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using KinveyXamarin;
 using System.Reflection;
 using RestSharp;
-using LinqExtender;
+
 
 namespace AndroidLibtester
 {
