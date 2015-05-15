@@ -25,6 +25,7 @@ using LinqExtender;
 using Ast = LinqExtender.Ast;
 using Newtonsoft.Json.Linq;
 using Remotion.Linq.Parsing.Structure;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -240,6 +241,7 @@ namespace KinveyXamarin
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("collectionName", CollectionName);
 			urlParameters.Add ("querystring", queryString);
+		
 
 			GetQueryRequest getQuery = new GetQueryRequest (queryString, myClass, client, urlParameters, CollectionName);
 			client.InitializeRequest (getQuery);
@@ -394,7 +396,24 @@ namespace KinveyXamarin
 			{
 			
 				this.collectionName = urlParameters ["collectionName"];
-				this.QueryString = queryString;
+				string queryBuilder = "query=" + urlParameters["querystring"];
+			
+				var decodedQueryMap = queryBuilder.Split('&')
+						.ToDictionary(c => c.Split('=')[0],
+						c => Uri.UnescapeDataString(c.Split('=')[1]));
+			
+				if (decodedQueryMap.ContainsKey("skip")){
+					this.uriTemplate += "&skip={skip}";
+					this.uriResourceParameters.Add("skip", decodedQueryMap["skip"]);
+				}
+				if (decodedQueryMap.ContainsKey("limit")){
+					this.uriTemplate += "&limit={limit}";
+					this.uriResourceParameters.Add("limit", decodedQueryMap["limit"]);		
+				}
+
+				this.QueryString = decodedQueryMap["query"];
+				this.uriResourceParameters["querystring"] = this.QueryString;
+
 			}
 
 

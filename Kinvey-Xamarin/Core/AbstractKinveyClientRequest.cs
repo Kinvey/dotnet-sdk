@@ -266,7 +266,6 @@ namespace KinveyXamarin
             }
             else
             {
-				//restRequest.AddParameter("application/json", JsonConvert.SerializeObject(HttpContent), ParameterType.RequestBody);
 				restRequest.AddParameter(PayloadType.getContentType(), PayloadType.getHttpContent(HttpContent), ParameterType.RequestBody);
             }
             foreach (var header in requestHeaders)

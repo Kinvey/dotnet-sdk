@@ -11,6 +11,7 @@ using KinveyUtils;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Reflection;
+using Remotion.Linq.Clauses.ResultOperators;
 
 namespace KinveyXamarin
 {
@@ -129,20 +130,22 @@ namespace KinveyXamarin
 
 		public override void VisitQueryModel (QueryModel queryModel){
 			base.VisitQueryModel (queryModel);
+		
+
 		}
 
 		
-//		protected override void VisitBodyClauses (ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
-//		{
-//			base.VisitBodyClauses (bodyClauses, queryModel);
-////			Logger.Log ("visiting body clause");
-//		}
+		protected override void VisitBodyClauses (ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
+		{
+			base.VisitBodyClauses (bodyClauses, queryModel);
+			Logger.Log ("visiting body clause");
+		}
 
 		protected override void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause)
 		{
 			base.VisitOrderings (orderings, queryModel, orderByClause);
 
-//			Logger.Log ("visiting ordering clause");
+			Logger.Log ("visiting ordering clause");
 			foreach (var ordering in orderings) {
 				var member = ordering.Expression as MemberExpression;
 
@@ -156,12 +159,36 @@ namespace KinveyXamarin
 //		protected override void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel)
 //		{
 //			base.VisitResultOperators (resultOperators, queryModel);
-//			Logger.Log ("visiting result clause");
+//			Logger.Log ("visiting result clauses:");
+//			foreach (var res in resultOperators) {
+//				Logger.Log (res.ToString ());
+//			}
 //		}
+
+		public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index){
+			base.VisitResultOperator (resultOperator, queryModel, index);
+
+
+			Logger.Log ("visiting result clause:" + resultOperator.ToString ());
+			if (resultOperator.ToString ().Contains ("Skip")) {
+				SkipResultOperator skip = resultOperator as SkipResultOperator;
+//				Logger.Log (skip.Count);
+//				Logger.Log(skip.
+				writer.Dangle("&skip=" + skip.Count);
+
+			}else if (resultOperator.ToString().Contains("Take")){
+				TakeResultOperator take = resultOperator as TakeResultOperator;
+				writer.Dangle("&limit=" + take.Count);
+			}
+				
+
+
+
+		}
 
 		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index){
 			base.VisitWhereClause (whereClause, queryModel, index);
-//			Logger.Log ("visiting where clause");
+			Logger.Log ("visiting where clause: " + whereClause.Predicate.ToString());
 			if (whereClause.Predicate.NodeType.ToString ().Equals ("Equal")) {
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
@@ -213,14 +240,14 @@ namespace KinveyXamarin
 
 		}
 
-//		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index){
-//			base.VisitOrderByClause (orderByClause, queryModel, index);
-//			Logger.Log ("visiting orderby clause");
-//			foreach (var ordering in orderByClause.Orderings) {
-//				Logger.Log (ordering.Expression);
-//			}
-//
-//		}
+		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index){
+			base.VisitOrderByClause (orderByClause, queryModel, index);
+			Logger.Log ("visiting orderby clause");
+			foreach (var ordering in orderByClause.Orderings) {
+				Logger.Log (ordering.Expression);
+			}
+
+		}
 //		public virtual void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index);
 //
 //		public virtual void VisitGroupJoinClause (GroupJoinClause groupJoinClause, QueryModel queryModel, int index);
