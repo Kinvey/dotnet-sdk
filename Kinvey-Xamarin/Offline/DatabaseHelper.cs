@@ -83,6 +83,15 @@ namespace KinveyXamarin
 		Task<int> enqueueRequestAsync (string action, string collection, string id, AbstractKinveyOfflineClientRequest<T> req);
 
 		/// <summary>
+		///Enqueues the request from metadata.
+		/// </summary>
+		/// <returns>The request async.</returns>
+		/// <param name="action">Action.</param>
+		/// <param name="collection">Collection.</param>
+		/// <param name="metadata">Metadata.</param>
+		Task<int> enqueueRequestAsync (string action, string collection,SQLTemplates.OfflineMetaData metadata);
+
+		/// <summary>
 		/// Gets all entites in a collection
 		/// </summary>
 		/// <returns>The entities.</returns>

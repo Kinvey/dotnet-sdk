@@ -185,7 +185,14 @@ namespace KinveyXamarin
 				c.senderID = this.senderID;
 
 				if (currentCredential != null){
-					c.User ().Login (currentCredential, null);
+					c.User ().Login (currentCredential, new KinveyDelegate<User> { 
+						onSuccess = (T) => { 
+							Logger.Log("logged in");
+						},
+						onError = (error) => {
+							Logger.Log(error);
+						}
+					});
 				}
 
 				Logger.initialize (c.logger);

@@ -98,8 +98,11 @@ namespace KinveyXamarin
 				T[] results = default(T[]);
 				try{
 					results = await appdata.GetAsync (meta.id);
-				}catch(Exception e){
-					Logger.Log (e.Message);
+				}catch(Exception error){
+					if (!((KinveyJsonResponseException) error).Details.Debug.Contains("InsufficientCredentials")){
+						handler.enqueueRequestAsync("QUERY", collection, meta);
+					}
+					Logger.Log(error);
 				}
 
 				List<string> idresults = new List<string>();
@@ -114,7 +117,6 @@ namespace KinveyXamarin
 				}
 				await handler.saveQueryResultsAsync(meta.id, collection, idresults);
 
-				await handler.removeFromQueueAsync(item.key);
 				doneSuccessfully();
 
 				break;
@@ -128,10 +130,12 @@ namespace KinveyXamarin
 					onSuccess = (T) => { 
 						string json = JsonConvert.SerializeObject(T);
 						handler.upsertEntityAsync(meta.id, collection, json);
-						handler.removeFromQueueAsync(item.key);
 						doneSuccessfully();
 					},
 					onError = (error) => {
+						if (!((KinveyJsonResponseException) error).Details.Error.Contains("InsufficientCredentials")){
+							handler.enqueueRequestAsync("PUT", collection, meta);
+						}
 						Logger.Log(error);
 					}
 				});
@@ -145,11 +149,13 @@ namespace KinveyXamarin
 					onSuccess = (T) => { 
 						string json = JsonConvert.SerializeObject(T);
 						handler.upsertEntityAsync(meta.id, collection, json);
-						handler.removeFromQueueAsync(item.key);
 						doneSuccessfully();
 					},
 					onError = (error) => {
-						Logger.Log(error);
+						if (!((KinveyJsonResponseException) error).Details.Debug.Contains("InsufficientCredentials")){
+							handler.enqueueRequestAsync("GET", collection, meta);
+						}
+						Logger.Log(error);					
 					}
 				});
 

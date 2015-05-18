@@ -190,6 +190,10 @@ namespace KinveyXamarin
         {
             this.id = credential.UserId;
             this.AuthToken = credential.AuthToken;
+			CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
+			((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).KinveyCredential = credential;
+			KinveyClient.ClientUsers.AddUser(this.id, "Credential");
+			KinveyClient.ClientUsers.CurrentUser = this.id;
             return this;
         }
 

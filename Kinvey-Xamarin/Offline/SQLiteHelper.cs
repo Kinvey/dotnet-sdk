@@ -231,6 +231,19 @@ namespace KinveyXamarin
 			return 0;
 		}
 
+		public async Task<int> enqueueRequestAsync (string action, string collection,SQLTemplates.OfflineMetaData metadata)
+		{
+			SQLTemplates.QueueItem queue = new SQLTemplates.QueueItem ();
+			queue.action = action;
+			queue.collection = collection;
+
+			queue.OfflineMetaDataAsJson = JsonConvert.SerializeObject (metadata);
+
+			await getConnection().InsertAsync (queue);
+
+			return 0;
+		}
+
 		public async Task<List<T>> getAllAsync (string collection)
 		{
 
