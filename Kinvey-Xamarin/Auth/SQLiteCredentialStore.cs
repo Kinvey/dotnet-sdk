@@ -84,6 +84,15 @@ namespace KinveyXamarin
 			_dbConnection.Delete<SQLCredential> (userId);
 		}
 
+		public Credential getActiveUser (){
+			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
+			Credential cred = null;
+			if (sqlcred != null) {
+				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken);
+			}
+			return cred;
+		}
+
 		#endregion
 	}
 

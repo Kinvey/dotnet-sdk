@@ -42,5 +42,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
         void Delete(string userId);
+
+		/// <summary>
+		/// Gets the active user.
+		/// </summary>
+		/// <returns>The active user.</returns>
+		Credential getActiveUser ();
     }
 }

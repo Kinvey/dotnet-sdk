@@ -274,6 +274,7 @@ namespace KinveyXamarin
 
 		public async Task<SQLTemplates.QueueItem> popQueueAsync (){
 			SQLTemplates.QueueItem item = await getConnection().Table<SQLTemplates.QueueItem> ().FirstOrDefaultAsync ();
+			await removeFromQueueAsync (item.key);
 			return item;
 
 		}

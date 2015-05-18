@@ -72,5 +72,10 @@ namespace KinveyXamarin
                 store.Remove(userId);
             }
         }
+
+		public Credential getActiveUser (){
+			return store.FirstOrDefault ().Value;
+		}
+
     }
 }

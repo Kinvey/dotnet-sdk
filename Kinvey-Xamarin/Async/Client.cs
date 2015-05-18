@@ -176,12 +176,17 @@ namespace KinveyXamarin
 					this.Store = new InMemoryCredentialStore();
 				}
 
+				Credential currentCredential = this.Store.getActiveUser ();
 
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 				c.offline_platform = this.offlinePlatform;
 				c.filePath = this.filePath;
 				c.logger = this.log;
 				c.senderID = this.senderID;
+
+				if (currentCredential != null){
+					c.User ().Login (currentCredential, null);
+				}
 
 				Logger.initialize (c.logger);
 	

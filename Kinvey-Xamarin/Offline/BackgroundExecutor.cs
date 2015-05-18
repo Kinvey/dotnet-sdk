@@ -95,7 +95,13 @@ namespace KinveyXamarin
 				
 				appdata.SetCustomRequestProperties (meta.customHeaders);
 				appdata.SetClientAppVersion (meta.clientVersion);
-				T[] results = await appdata.GetAsync (meta.id);
+				T[] results = default(T[]);
+				try{
+					results = await appdata.GetAsync (meta.id);
+				}catch(Exception e){
+					Logger.Log (e.Message);
+				}
+
 				List<string> idresults = new List<string>();
 				foreach ( T ent in results){
 

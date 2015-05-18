@@ -173,29 +173,7 @@ namespace KinveyXamarin
         {
             get { return store; }
         }
-
-		/// <summary>
-		/// Gets the credential for a specified user._id
-		/// </summary>
-		/// <returns><c>true</c>, if credential was loaded, <c>false</c> otherwise.</returns>
-		/// <param name="userId">User identifier.</param>
-        private bool GetCredential(String userId) 
-        {
-
-            CredentialManager credentialManager = new CredentialManager(store);
-            Credential storedCredential = credentialManager.LoadCredential(userId);
-            if (storedCredential != null) 
-            {
-                var kinveyRequestInitializer = ((KinveyClientRequestInitializer) this.RequestInitializer);
-				kinveyRequestInitializer.KinveyCredential = new Credential(userId, storedCredential.AuthToken, null);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+			
 
 		public PingRequest pingBlocking(){
 			var urlParameters = new Dictionary<string, string>();
@@ -230,6 +208,29 @@ namespace KinveyXamarin
                 get { return this.store; }
                 set { this.store = value; }
             }
+
+			/// <summary>
+			/// Gets the credential for a specified user._id
+			/// </summary>
+			/// <returns><c>true</c>, if credential was loaded, <c>false</c> otherwise.</returns>
+			/// <param name="userId">User identifier.</param>
+			protected bool GetCredential(String userId) 
+			{
+
+				CredentialManager credentialManager = new CredentialManager(store);
+				Credential storedCredential = credentialManager.LoadCredential(userId);
+				if (storedCredential != null) 
+				{
+					var kinveyRequestInitializer = ((KinveyClientRequestInitializer) this.RequestInitializer);
+					kinveyRequestInitializer.KinveyCredential = new Credential(userId, storedCredential.AuthToken, null);
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+
 				
         }
 
