@@ -32,7 +32,7 @@ namespace KinveyXamarin
 			queryModel.Accept (visitor);
 			writer.Write ("}");
 
-			Logger.Log (writer.GetFullString ());
+			//Logger.Log (writer.GetFullString ());
 
 			T[] results = (T[]) queryable.executeQuery (writer.GetFullString ());
 			foreach (T res in results) {
@@ -138,14 +138,14 @@ namespace KinveyXamarin
 		protected override void VisitBodyClauses (ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
 		{
 			base.VisitBodyClauses (bodyClauses, queryModel);
-			Logger.Log ("visiting body clause");
+			//Logger.Log ("visiting body clause");
 		}
 
 		protected override void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause)
 		{
 			base.VisitOrderings (orderings, queryModel, orderByClause);
 
-			Logger.Log ("visiting ordering clause");
+			//Logger.Log ("visiting ordering clause");
 			foreach (var ordering in orderings) {
 				var member = ordering.Expression as MemberExpression;
 
@@ -169,7 +169,7 @@ namespace KinveyXamarin
 			base.VisitResultOperator (resultOperator, queryModel, index);
 
 
-			Logger.Log ("visiting result clause:" + resultOperator.ToString ());
+			//Logger.Log ("visiting result clause:" + resultOperator.ToString ());
 			if (resultOperator.ToString ().Contains ("Skip")) {
 				SkipResultOperator skip = resultOperator as SkipResultOperator;
 //				Logger.Log (skip.Count);
@@ -188,7 +188,7 @@ namespace KinveyXamarin
 
 		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index){
 			base.VisitWhereClause (whereClause, queryModel, index);
-			Logger.Log ("visiting where clause: " + whereClause.Predicate.ToString());
+			//Logger.Log ("visiting where clause: " + whereClause.Predicate.ToString());
 			if (whereClause.Predicate.NodeType.ToString ().Equals ("Equal")) {
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
@@ -242,10 +242,10 @@ namespace KinveyXamarin
 
 		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index){
 			base.VisitOrderByClause (orderByClause, queryModel, index);
-			Logger.Log ("visiting orderby clause");
-			foreach (var ordering in orderByClause.Orderings) {
-				Logger.Log (ordering.Expression);
-			}
+			//Logger.Log ("visiting orderby clause");
+//			foreach (var ordering in orderByClause.Orderings) {
+//				Logger.Log (ordering.Expression);
+//			}
 
 		}
 //		public virtual void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index);

@@ -153,18 +153,13 @@ namespace KinveyXamarin
 			} else if (policy == OfflinePolicy.LOCAL_FIRST) {
 				ret = offlineFromStore ();
 				if (ret == null) {
-					try {
-						ret = offlineFromService ();
-					} catch (Exception e) {
-						Logger.Log (e);
-					}
+					ret = offlineFromService ();
 				}
 
 			} else if (policy == OfflinePolicy.ONLINE_FIRST) {
 				try {
 					ret = offlineFromService ();
 				} catch (Exception e) {
-					Logger.Log (e);
 					ret = offlineFromStore ();
 				}
 			}
@@ -183,11 +178,7 @@ namespace KinveyXamarin
 			} else if (policy == OfflinePolicy.LOCAL_FIRST) {
 				ret = await offlineFromStoreAsync ();
 				if (ret == null) {
-					try {
-						ret = await offlineFromServiceAsync ();
-					} catch (Exception e) {
-						Logger.Log (e);
-					}
+					ret = await offlineFromServiceAsync ();
 				}
 
 			} else if (policy == OfflinePolicy.ONLINE_FIRST) {
@@ -195,9 +186,7 @@ namespace KinveyXamarin
 				try {
 					ret = await offlineFromServiceAsync ();
 				} catch (Exception e) {
-					Logger.Log (e);
 					failed = true;
-
 				}
 				if (failed) {
 					ret = await offlineFromStoreAsync ();
