@@ -21,8 +21,6 @@ using KinveyXamarin;
 using System.IO;
 using System.Linq.Expressions;
 using System.Collections;
-using LinqExtender;
-using Ast = LinqExtender.Ast;
 using Newtonsoft.Json.Linq;
 using Remotion.Linq.Parsing.Structure;
 using KinveyUtils;

@@ -304,8 +304,12 @@ namespace KinveyXamarin
 			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, User user)
                 : this(transport, appKey, appSecret, user)
             {
+				this.client = transport;
+				this.appKeyAuthentication = new HttpBasicAuthenticator(appKey, appSecret);
+				this.appKey = appKey;
                 this.username = username;
                 this.password = password;
+				this.user = user;
             }
 
 

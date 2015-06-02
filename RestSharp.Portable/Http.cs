@@ -150,6 +150,8 @@ namespace RestSharp
 
 			Logger.Log ("------------------------END REQUEST");
 
+
+
             try
             {
                 var responseMessage = await this._client.Instance.SendAsync(this._message.Instance, token);

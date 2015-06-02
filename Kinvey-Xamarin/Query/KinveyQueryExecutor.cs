@@ -3,7 +3,7 @@ using Remotion.Linq;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+//using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using System.Linq;
 using Remotion.Linq.Parsing.Structure;
 using System.Collections.ObjectModel;

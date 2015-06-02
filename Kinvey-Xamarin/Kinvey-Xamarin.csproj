@@ -68,8 +68,6 @@
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
-    <Compile Include="Query\ExpressionVisitor.cs" />
-    <Compile Include="Query\KinveyQueryContext.cs" />
     <Compile Include="Query\IQueryBuilder.cs" />
     <Compile Include="Query\StringQueryBuilder.cs" />
     <Compile Include="File.cs" />
@@ -89,7 +87,6 @@
     <Compile Include="Async\KinveyFileDelegate.cs" />
     <Compile Include="Async\KinveyMICDelegate.cs" />
     <Compile Include="AbstractPush.cs" />
-    <Compile Include="DefaultContext.cs" />
     <Compile Include="Query\KinveyQueryExecutor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
@@ -117,9 +114,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net45+wp80+win8+wpa81+aspnetcore50\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="LinqExtender">
-      <HintPath>..\packages\LinqExtender.3.0.1\lib\LinqExtender.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.dll</HintPath>
     </Reference>
@@ -129,11 +123,14 @@
     <Reference Include="System.Net.Http.Extensions">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Linq">
-      <HintPath>..\packages\Remotion.Linq.2.0.0-alpha-003\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wp8+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wp8+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="ModernHttpClient">
-      <HintPath>..\packages\modernhttpclient.2.4.1\lib\Portable-Net45+WinRT45+WP8+WPA81\ModernHttpClient.dll</HintPath>
+      <HintPath>..\packages\modernhttpclient.2.4.2\lib\Portable-Net45+WinRT45+WP8+WPA81\ModernHttpClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +141,10 @@
     <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
       <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
       <Name>Kinvey-Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\thirdparty\csharp\Relinq\Core\Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
