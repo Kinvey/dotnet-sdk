@@ -17,15 +17,16 @@
         <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
         <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
         <dependency id="Microsoft.Net.Http" version="2.2.29" />
-        <dependency id="ModernHttpClient" version="2.4.2" />
+        <dependency id="modernhttpclient" version="2.4.2" />
         <dependency id="Newtonsoft.Json" version="6.0.8" />
-        <dependency id="Remotion.Linq" version="2.0.0-alpha-003" />
         <dependency id="SQLite.Net.Async-PCL" version="3.0.5" />
         <dependency id="SQLite.Net-PCL" version="3.0.5" />
     </dependencies>
-    <frameworkAssemblies>
-        <frameworkAssembly assemblyName="System.ServiceModel" />
-        <frameworkAssembly assemblyName="System.SomethingElse"  />
-    </frameworkAssemblies>
   </metadata>
+  <files>
+    <file src="Kinvey-Utils/obj/Release/Kinvey-Utils.dll" target="lib"/>
+    <file src="RestSharp.Portable/obj/Release/RestSharp.Portable.dll" target="lib"/>
+    <file src="Kinvey-Xamarin/obj/Release/Kinvey-Xamarin.dll" target="lib"/>
+    <file src="dependencies/Remotion.Linq.dll" target="lib"/>
+  </files>
 </package>
