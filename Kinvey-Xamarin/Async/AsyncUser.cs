@@ -254,7 +254,11 @@ namespace KinveyXamarin
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
 			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
-			string myURLToRender = MICHostName + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
+			string hostname = MICHostName;
+			if (MICApiVersion != null && MICApiVersion.Length > 0) {
+				hostname += MICApiVersion + "/";
+			}
+			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
 			//keep a reference to the callback and redirect uri for later
 			this.MICDelegate = delegates;
 			this.MICRedirectURI = redirectURI;

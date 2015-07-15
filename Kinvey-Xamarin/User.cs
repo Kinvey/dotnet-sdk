@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -785,6 +786,7 @@ namespace KinveyXamarin
 				if (urlProperties.ContainsKey("MICApiVersion")){
 					string micVersion = urlProperties["MICApiVersion"];
 					this.uriTemplate = micVersion + "/" + REST_PATH;
+					urlProperties.Remove("MICApiVersion");
 				}
 				this.PayloadType = new URLEncodedPayload();
 			}
@@ -798,6 +800,7 @@ namespace KinveyXamarin
 
 			public LoginToTempURL(AbstractClient client, User user, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
 			base(client, tempURL, "POST", "", httpContent, urlProperties){
+				
 				this.PayloadType = new URLEncodedPayload();
 				this.OverrideRedirect = true;
 				this.user = user;
