@@ -68,6 +68,7 @@ namespace KinveyXamarin
 		/// <param name="credential">Credential.</param>
 		public void Store (string userId, Credential credential)
 		{
+			Delete (userId);
 			SQLCredential cred = new SQLCredential();
 			cred.userID = credential.UserId;
 			cred.AuthToken = credential.AuthToken;

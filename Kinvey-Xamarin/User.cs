@@ -121,6 +121,8 @@ namespace KinveyXamarin
 
 		protected string MICHostName { get; set;}
 
+		protected string MICApiVersion { get; set;}
+
 		public void setMICHostName(string value){
 			if (!value.StartsWith("https")){
 				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + MICHostName);
@@ -129,6 +131,13 @@ namespace KinveyXamarin
 				value += "/";
 			}
 			MICHostName = value;
+		}
+
+		public void setMICApiVersion(string version){
+			if (!version.StartsWith("v")){
+				version = "v" + version;
+			}	
+			MICApiVersion = version;
 		}
 			
 		/// <summary>
@@ -141,13 +150,13 @@ namespace KinveyXamarin
             this.client = client;
             this.builder = builder;
             builder.KinveyUser = this;
-			this.MICHostName = "https://auth.kinvey.com";
+			this.MICHostName = "https://auth.kinvey.com/";
         }
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
         public User() {
-			this.MICHostName = "https://auth.kinvey.com";
+			this.MICHostName = "https://auth.kinvey.com/";
 		}
 
 		/// <summary>
@@ -426,6 +435,9 @@ namespace KinveyXamarin
 
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			if (this.MICApiVersion != null && this.MICApiVersion.Length > 0) {
+				urlParameters.Add ("MICApiVersion", this.MICApiVersion);
+			}
 
 			GetMICTempURL getTemp = new GetMICTempURL(client, MICHostName, data, urlParameters);
 			getTemp.RequireAppCredentials = true;
@@ -770,6 +782,10 @@ namespace KinveyXamarin
 
 			public GetMICTempURL(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) :
 			base(client, baseURL, "POST", REST_PATH, content, urlProperties ){
+				if (urlProperties.ContainsKey("MICApiVersion")){
+					string micVersion = urlProperties["MICApiVersion"];
+					this.uriTemplate = micVersion + "/" + REST_PATH;
+				}
 				this.PayloadType = new URLEncodedPayload();
 			}
 
