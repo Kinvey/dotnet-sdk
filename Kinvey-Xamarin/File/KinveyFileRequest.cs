@@ -61,18 +61,11 @@ namespace KinveyXamarin
 
 			request.Method = Method.GET;
 
-			//request.ResponseWriter = (responseStream) => responseStream.CopyTo (stream);
-
 			var req = client.DownloadDataAsync (request);
 			var response = req.Result;
 
-
-//stream = new MemoryStream();
-//stream.Write(response, 0, response.Length);
-//stream.
-//
 			stream = new MemoryStream (response);
-			var x = 123;
+
 		}
 
 		private void downloadFile(FileMetaData metadata, byte[] output){

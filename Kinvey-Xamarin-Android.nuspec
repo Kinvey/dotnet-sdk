@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Kinvey-Android</id>
-    <version>1.5.0</version>
-    <releaseNotes> * Full support for iOS, with release of Kinvey-Xamarin-ios library * Refactoring LINQ implementation * Updating SQLite dependencies </releaseNotes>
+    <version>1.5.1</version>
+    <releaseNotes> * Added support setting MIC Api Version </releaseNotes>
     <title>Kinvey-Xamarin-Android</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
@@ -21,7 +21,7 @@
         <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="SQLite.Net.Async-PCL" version="3.0.5" />
         <dependency id="SQLite.Net-PCL" version="3.0.5" />
-        <dependency id="Kinvey" version="1.5.0" />
+        <dependency id="Kinvey" version="1.5.1" />
     </dependencies>
   </metadata>
   <files>

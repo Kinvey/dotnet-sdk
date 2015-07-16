@@ -378,7 +378,7 @@ namespace KinveyXamarin
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
-		public GetMICAccessToken getMICToken(String code){
+		public RetrieveMICAccessToken getMICToken(String code){
 
 			//        grant_type: "authorization_code" - this is always set to this value
 			//        code: use the ‘code’ returned in the callback 
@@ -394,13 +394,13 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICAccessToken getToken = new GetMICAccessToken(client, MICHostName, data, urlParameters);
+			RetrieveMICAccessToken getToken = new RetrieveMICAccessToken(client, MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials =  true;
 			client.InitializeRequest(getToken);
 			return getToken;
 		}
 
-		public GetMICAccessToken UseRefreshToken(String refreshToken) {
+		public RetrieveMICAccessToken UseRefreshToken(String refreshToken) {
 			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
 			//        refresh_token: use the refresh token 
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
@@ -415,7 +415,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			GetMICAccessToken getToken = new GetMICAccessToken(client, MICHostName, data, urlParameters);
+			RetrieveMICAccessToken getToken = new RetrieveMICAccessToken(client, MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials = true;
 			client.InitializeRequest(getToken);
 			return getToken;
@@ -769,10 +769,10 @@ namespace KinveyXamarin
 		}
 
 
-		public class GetMICAccessToken : AbstractKinveyClientRequest<JObject>{
+		public class RetrieveMICAccessToken : AbstractKinveyClientRequest<JObject>{
 			private const string REST_PATH = "oauth/token";
 
-			public GetMICAccessToken(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) : 
+			public RetrieveMICAccessToken(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) : 
 			base(client, baseURL, "POST", REST_PATH, content, urlProperties) {
 				this.PayloadType = new URLEncodedPayload();
 			}
