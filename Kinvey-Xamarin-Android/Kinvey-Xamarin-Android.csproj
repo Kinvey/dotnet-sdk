@@ -11,7 +11,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
-    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
     <AssemblyName>Kinvey-Xamarin-Android</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
@@ -48,6 +48,9 @@
     </Reference>
     <Reference Include="Xamarin.Android.Support.v7.MediaRouter">
       <HintPath>..\packages\Xamarin.Android.Support.v7.MediaRouter.22.2.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.MediaRouter.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Base">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Base.25.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
@@ -112,9 +115,6 @@
     <Reference Include="GooglePlayServicesLib">
       <HintPath>..\packages\Xamarin.GooglePlayServices.25.0.0.0\lib\MonoAndroid41\GooglePlayServicesLib.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
@@ -133,26 +133,30 @@
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <ItemGroup>
+    <Folder Include="Push\" />
+    <Folder Include="User\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
       <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
       <Name>Kinvey-Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">
-      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
-      <Name>Kinvey-Xamarin</Name>
     </ProjectReference>
     <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
       <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
       <Name>RestSharp.Portable</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Push\" />
-    <Folder Include="User\" />
+    <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">
+      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
+      <Name>Kinvey-Xamarin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\thirdparty\csharp\Relinq\Core\Core.csproj">
+      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googleplayservices">
-      <Version>22.0.0.0</Version>
+      <Version>25.0.0.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
