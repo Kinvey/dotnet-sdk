@@ -81,6 +81,13 @@ namespace KinveyXamarin
 			public OfflineMetaData(){}
 		}
 
+		/// <summary>
+		/// This maintains the version of the offline implementation's schema.
+		/// </summary>
+		public class OfflineVersion{
+			public int currentVersion {get; set;}
+		}
+
 	}
 }
 

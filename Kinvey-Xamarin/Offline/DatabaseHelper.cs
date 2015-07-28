@@ -124,6 +124,19 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="primaryKey">Primary key of the queue item to remove.</param>
 		Task<int> removeFromQueueAsync (int primaryKey);
+
+		/// <summary>
+		/// Gets the DB schema version.
+		/// </summary>
+		/// <returns>The DB schema version.</returns>
+		Task<SQLTemplates.OfflineVersion> getDBSchemaVersion ();
+
+		/// <summary>
+		/// Updates the DB schema version.
+		/// </summary>
+		/// <returns>The DB schema version.</returns>
+		/// <param name="newVersion">New version.</param>
+		Task<int> updateDBSchemaVersion (int newVersion);
 	}
 }
 

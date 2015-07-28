@@ -28,12 +28,32 @@ namespace KinveyXamarin
 	/// </summary>
 	public class SQLiteOfflineStore : IOfflineStore
 	{
+
+		//The version of the internal structure of the database.
+		private int databaseSchemaVersion = 1;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteOfflineStore"/> class.
 		/// </summary>
-		public SQLiteOfflineStore ()
-		{
+		public SQLiteOfflineStore (){
+			new Task( () =>kickOffUpgrade() ).Start();
+//			Task.Run (kickOffUpgrade ());
 		}
+
+		public async Task<int> kickOffUpgrade(){
+			//get stored version number, if it's null set it to the current dbscheme version and save it it
+			//call onupgrade with current version number and dbsv.
+			DatabaseHelper<JObject> handler = getDatabaseHelper<JObject> ();
+			SQLTemplates.OfflineVersion ver = await handler.getDBSchemaVersion ();
+			if (ver == null) {
+				ver = new SQLTemplates.OfflineVersion ();
+				ver.currentVersion = databaseSchemaVersion;
+				await handler.updateDBSchemaVersion (ver.currentVersion);
+			}
+			int newVersion = onUpgrade (ver.currentVersion, databaseSchemaVersion);
+			return newVersion;
+		}
+
 
 		/// <summary>
 		/// Gets or sets the platform.
@@ -46,6 +66,19 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <value>The dbpath.</value>
 		public string dbpath{ get; set;}
+
+
+		private int onUpgrade(int currentVersion, int newVersion){
+			while (currentVersion < newVersion) {
+				//if (currentVersion == 1){
+					//upgrade to 2
+				//}
+
+				currentVersion++;
+			}
+
+			return currentVersion;
+		}
 
 		/// <summary>
 		/// Executes a get request.

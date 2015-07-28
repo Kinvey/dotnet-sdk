@@ -299,6 +299,28 @@ namespace KinveyXamarin
 			return 1;
 
 		}
+
+		/// <summary>
+		/// Gets the DB schema version.
+		/// </summary>
+		/// <returns>The DB schema version.</returns>
+		public async Task<SQLTemplates.OfflineVersion> getDBSchemaVersion (){
+			SQLTemplates.OfflineVersion ver =  await getConnection ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
+			return ver;
+		}
+
+		/// <summary>
+		/// Updates the DB schema version.
+		/// </summary>
+		/// <returns>The DB schema version.</returns>
+		/// <param name="newVersion">New version.</param>
+		public async Task<int> updateDBSchemaVersion (int newVersion){
+			SQLTemplates.OfflineVersion ver = new SQLTemplates.OfflineVersion ();
+			ver.currentVersion = newVersion;
+	
+			await getConnection().InsertAsync (ver);
+			return 0;
+		}
 		#endregion
 	}
 }
