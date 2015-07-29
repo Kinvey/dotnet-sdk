@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Kinvey-ios</id>
-    <version>1.5.1</version>
-    <releaseNotes> * Added support for using MIC as an auth provider * Added support setting MIC Api Version </releaseNotes>
+    <version>1.5.2</version>
+    <releaseNotes> * Fixed a build issue with Google Play Services </releaseNotes>
     <title>Kinvey-Xamarin-iOS</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
@@ -18,10 +18,10 @@
         <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
         <dependency id="Microsoft.Net.Http" version="2.2.29" />
         <dependency id="modernhttpclient" version="2.4.2" />
-        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="SQLite.Net.Async-PCL" version="3.0.5" />
         <dependency id="SQLite.Net-PCL" version="3.0.5" />
-        <dependency id="Kinvey" version="1.5.1" />
+        <dependency id="Kinvey" version="1.5.2" />
     </dependencies>
   </metadata>
   <files>
