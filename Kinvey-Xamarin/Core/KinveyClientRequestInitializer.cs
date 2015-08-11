@@ -107,6 +107,13 @@ namespace KinveyXamarin
 		/// <typeparam name="T">The response type of the request.</typeparam>
         public void Initialize<T>(AbstractKinveyClientRequest<T> request)
         {
+			
+			if (!request.RequireAppCredentials){
+				KAssert.notNull(credential, "No Active User - please login a user by calling myClient.User().Login( ... ) before retrying this request.");
+				KAssert.notNull(credential.UserId, "No Active User - please login a user by calling myClient.User().Login( ... ) before retrying this request.");
+				KAssert.notNull(credential.AuthToken, "No Active User - please login a user by calling myClient.User().Login( ... ) before retrying this request.");
+			}
+
             if (credential != null && !request.RequireAppCredentials)
             {
                 credential.Initialize(request);

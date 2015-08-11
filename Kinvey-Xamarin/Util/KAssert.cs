@@ -33,6 +33,13 @@ namespace KinveyXamarin
 			}
 			return toAssert;
 		}
+
+		public static Object notNull(Object toAssert, string message){
+			if (toAssert == null) {
+				throw new ArgumentNullException (message);
+			}
+			return toAssert;
+		}
 	}
 }
 
