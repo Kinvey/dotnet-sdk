@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Kinvey</id>
-    <version>1.5.2</version>
-    <releaseNotes> * Fixed a build issue with Google Play Services </releaseNotes>
+    <version>1.5.3</version>
+    <releaseNotes> * Improved error messaging when there is no logged in user</releaseNotes>
     <title>Kinvey-Xamarin</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>

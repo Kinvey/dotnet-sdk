@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Kinvey-ios</id>
-    <version>1.5.2</version>
-    <releaseNotes> * Fixed a build issue with Google Play Services </releaseNotes>
+    <version>1.5.3</version>
+    <releaseNotes> * Improved error messaging when there is no logged in user </releaseNotes>
     <title>Kinvey-Xamarin-iOS</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
@@ -21,7 +21,7 @@
         <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="SQLite.Net.Async-PCL" version="3.0.5" />
         <dependency id="SQLite.Net-PCL" version="3.0.5" />
-        <dependency id="Kinvey" version="1.5.2" />
+        <dependency id="Kinvey" version="1.5.3" />
     </dependencies>
   </metadata>
   <files>
