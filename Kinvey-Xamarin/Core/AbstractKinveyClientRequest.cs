@@ -260,16 +260,19 @@ namespace KinveyXamarin
 					restRequest.Method = Method.DELETE;
 					break;
             }
-			if (this.HttpContent == null && requestMethod.Equals(HttpMethod.Post) )
-            {
-                restRequest.AddBody(new object());
-            }
+
+
+			if (this.HttpContent == null && requestMethod.Equals (HttpMethod.Post)) {
+				restRequest.AddBody (new object ());
+			} else if (this.HttpContent == null ) {
+				//don't add a request body
+			}
             else
             {
 				restRequest.AddParameter(PayloadType.getContentType(), PayloadType.getHttpContent(HttpContent), ParameterType.RequestBody);
             }
-            foreach (var header in requestHeaders)
-            {
+
+            foreach (var header in requestHeaders){
 				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
             }            
 

@@ -451,7 +451,7 @@ namespace KinveyXamarin
 		public class DeleteRequest : AbstractKinveyOfflineClientRequest<KinveyDeleteResponse>
 		{
 
-			private const string REST_PATH = "appdata/{appkey}/{collectionName}/{entityID}";
+			private const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";
 
 			[JsonProperty]
 			public string CollectionName { get; set; }
