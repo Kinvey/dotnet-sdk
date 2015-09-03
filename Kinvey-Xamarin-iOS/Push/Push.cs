@@ -30,7 +30,7 @@ namespace KinveyXamariniOS
 		
 		}
 
-		public void Initialize(string deviceToken){
+		public async void Initialize(string deviceToken){
 			if (deviceToken == null) {
 				Logger.Log ("Cannot Initialize for push, device Token cannot be null!");
 				return;
@@ -49,11 +49,22 @@ namespace KinveyXamariniOS
 
 			NSUserDefaults.StandardUserDefaults.SetString(deviceToken, APN_Token); 
 			NSUserDefaults.StandardUserDefaults.Synchronize ();
+			try{
+			  await EnablePushAsync("ios", deviceToken);
+			}catch(Exception e){
+//				Console.WriteLine ("wtf");
+				//throw e;
+			}
 
-			ThreadPool.QueueUserWorkItem (o => {
-				EnablePushViaRest ("ios", deviceToken).Execute();
-			
-			});
+//			ThreadPool.QueueUserWorkItem (o => {
+//				try{
+//					EnablePushViaRest ("ios", deviceToken).Execute();
+//				} catch (Exception e){
+//					delegates.onError(e);
+//					throw e;
+//				}
+//			
+//			});
 		}
 
 		public void DisablePush(){
@@ -64,8 +75,14 @@ namespace KinveyXamariniOS
 				return;
 			}
 
+
+
 			ThreadPool.QueueUserWorkItem (o => {
-				DisablePushViaRest("ios", value).Execute();
+//				try{
+					DisablePushViaRest("ios", value).Execute();
+//				} catch (Exception e){
+//					throw e;
+//				}
 			});
 		}
 

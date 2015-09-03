@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Kinvey</id>
-    <version>1.5.3</version>
-    <releaseNotes> * Improved error messaging when there is no logged in user</releaseNotes>
+    <version>1.5.4</version>
+    <releaseNotes> * Fixed an issue with AppData delete's URL generation  </releaseNotes>
     <title>Kinvey-Xamarin</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>

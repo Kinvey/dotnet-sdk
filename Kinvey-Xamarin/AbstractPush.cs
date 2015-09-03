@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -14,6 +15,14 @@ namespace KinveyXamarin
 		public AbstractPush (Client client)
 		{
 			this.client = client;
+		}
+
+		public async Task<PushPayload> EnablePushAsync(string platform, string entityId){
+			return await EnablePushViaRest (platform, entityId).ExecuteAsync ();
+		}
+
+		public async Task<PushPayload> DisablePushAsync(string platform, string entityId){
+			return await DisablePushViaRest (platform, entityId).ExecuteAsync ();
 		}
 
 		public EnablePush EnablePushViaRest(string platform, string deviceId){
