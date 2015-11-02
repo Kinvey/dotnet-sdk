@@ -96,6 +96,8 @@ namespace KinveyXamarin
 		/// <param name="delegates">Delegates for success or failure.</param>
 		public void Login(Credential cred, KinveyDelegate<User> delegates)
 		{
+			this.Id = cred.UserId;
+			this.AuthToken = cred.AuthToken;
 			Task.Run (() => {
 				try{
 					User user = base.LoginBlocking(cred).Execute();

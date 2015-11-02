@@ -549,7 +549,7 @@ namespace KinveyXamarin
 			/// </summary>
 			public User Execute() 
 			{
-				if (memberUser.isUserLoggedIn())
+				if (memberUser.isUserLoggedIn() && memberUser.type != LoginType.CREDENTIALSTORE)
 				{
 					throw new KinveyException("Attempting to login when a user is already logged in",
 						"call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
@@ -574,7 +574,7 @@ namespace KinveyXamarin
 			/// </summary>
 			/// <returns>The async task.</returns>
 			public async Task<User> ExecuteAsync(){
-				if (memberUser.isUserLoggedIn())
+				if (memberUser.isUserLoggedIn() && memberUser.type != LoginType.CREDENTIALSTORE)
 				{
 					throw new KinveyException("Attempting to login when a user is already logged in",
 						"call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",

@@ -176,7 +176,6 @@ namespace KinveyXamarin
 					this.Store = new InMemoryCredentialStore();
 				}
 
-				Credential currentCredential = this.Store.getActiveUser ();
 
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 				c.offline_platform = this.offlinePlatform;
@@ -184,9 +183,11 @@ namespace KinveyXamarin
 				c.logger = this.log;
 				c.senderID = this.senderID;
 
+				Logger.initialize (c.logger);
+				Credential currentCredential = this.Store.getActiveUser ();
 				if (currentCredential != null){
 					c.User ().Login (currentCredential, new KinveyDelegate<User> { 
-						onSuccess = (T) => { 
+						onSuccess = (T) => {
 							//Logger.Log("logged in");
 						},
 						onError = (error) => {
@@ -195,7 +196,7 @@ namespace KinveyXamarin
 					});
 				}
 
-				Logger.initialize (c.logger);
+
 	
 				return c;
 			}
