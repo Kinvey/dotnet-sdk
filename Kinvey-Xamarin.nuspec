@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Kinvey</id>
-    <version>1.5.4</version>
-    <releaseNotes> * Fixed an issue with AppData delete's URL generation  </releaseNotes>
+    <version>1.5.5</version>
+    <releaseNotes> * Fixed an issue with push registration on iOS 9 devices * Fixed an issue with a login race condition </releaseNotes>
     <title>Kinvey-Xamarin</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
