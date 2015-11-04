@@ -39,6 +39,42 @@ nuget:
 	nuget pack Kinvey-Xamarin.nuspec
 	nuget pack Kinvey-Xamarin-iOS.nuspec
 	nuget pack Kinvey-Xamarin-Android.nuspec
+	
+show-version:
+	@cat Kinvey-Xamarin/Core/KinveyHeaders.cs | grep 'public static string VERSION = "\d.\d.\d";' | awk '{$$1=$$1;print}' | awk {'print $$6'} | sed s/[\"\;]//g | xargs echo 'KinveyHeaders.cs      '
+	@xml sel -t -v package/metadata/version Kinvey-Xamarin.nuspec | xargs echo 'Kinvey-Xamarin        '
+	@xml sel -t -v package/metadata/version Kinvey-Xamarin-iOS.nuspec | xargs -I version echo 'Kinvey-Xamarin-iOS    ' version '-> Kinvey-Xamarin Dependency:' $(shell xml sel -t -v "package/metadata/dependencies/dependency[@id='Kinvey']/@version" Kinvey-Xamarin-iOS.nuspec)
+	@xml sel -t -v package/metadata/version Kinvey-Xamarin-Android.nuspec | xargs -I version echo Kinvey-Xamarin-Android version '-> Kinvey-Xamarin Dependency:' $(shell xml sel -t -v "package/metadata/dependencies/dependency[@id='Kinvey']/@version" Kinvey-Xamarin-Android.nuspec)
+	
+set-version:
+	@cat Kinvey-Xamarin/Core/KinveyHeaders.cs | sed 's/public static string VERSION = \"[0-9]*.[0-9]*.[0-9]*\"\;/public static string VERSION = \"$(filter-out $@,$(MAKECMDGOALS))\";/g' > Kinvey-Xamarin/Core/KinveyHeaders-new.cs
+	@rm Kinvey-Xamarin/Core/KinveyHeaders.cs
+	@mv Kinvey-Xamarin/Core/KinveyHeaders-new.cs Kinvey-Xamarin/Core/KinveyHeaders.cs
+	
+	@xml ed -u package/metadata/version -v $(filter-out $@,$(MAKECMDGOALS)) Kinvey-Xamarin.nuspec > Kinvey-Xamarin-new.nuspec
+	@rm Kinvey-Xamarin.nuspec
+	@mv Kinvey-Xamarin-new.nuspec Kinvey-Xamarin.nuspec
+	
+	@xml ed -u package/metadata/version -v $(filter-out $@,$(MAKECMDGOALS)) Kinvey-Xamarin-iOS.nuspec > Kinvey-Xamarin-iOS-new.nuspec
+	@rm Kinvey-Xamarin-iOS.nuspec
+	@mv Kinvey-Xamarin-iOS-new.nuspec Kinvey-Xamarin-iOS.nuspec
+	
+	@xml ed -u "package/metadata/dependencies/dependency[@id='Kinvey']/@version" -v $(filter-out $@,$(MAKECMDGOALS)) Kinvey-Xamarin-iOS.nuspec > Kinvey-Xamarin-iOS-new.nuspec
+	@rm Kinvey-Xamarin-iOS.nuspec
+	@mv Kinvey-Xamarin-iOS-new.nuspec Kinvey-Xamarin-iOS.nuspec
+	
+	@xml ed -u package/metadata/version -v $(filter-out $@,$(MAKECMDGOALS)) Kinvey-Xamarin-Android.nuspec > Kinvey-Xamarin-Android-new.nuspec
+	@rm Kinvey-Xamarin-Android.nuspec
+	@mv Kinvey-Xamarin-Android-new.nuspec Kinvey-Xamarin-Android.nuspec
+	
+	@xml ed -u "package/metadata/dependencies/dependency[@id='Kinvey']/@version" -v $(filter-out $@,$(MAKECMDGOALS)) Kinvey-Xamarin-Android.nuspec > Kinvey-Xamarin-Android-new.nuspec
+	@rm Kinvey-Xamarin-Android.nuspec
+	@mv Kinvey-Xamarin-Android-new.nuspec Kinvey-Xamarin-Android.nuspec
+	
+	@$(MAKE) show-version
+	
+%:
+	@:
 
 clean:
 	rm -Rf api
