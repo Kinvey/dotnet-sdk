@@ -34,6 +34,11 @@ doc:
 	
 	find ./api/reference/html/ -name "*.html" | xargs sed -i -e 's/Documentation for this section has not yet been entered.//g'
 	find ./api/reference/html/ -name "*.html" | xargs sed -i -e 's/To be added.//g'
+	
+nuget:
+	nuget pack Kinvey-Xamarin.nuspec
+	nuget pack Kinvey-Xamarin-iOS.nuspec
+	nuget pack Kinvey-Xamarin-Android.nuspec
 
 clean:
 	rm -Rf api
