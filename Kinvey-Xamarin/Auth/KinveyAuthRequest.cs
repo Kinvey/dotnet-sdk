@@ -108,7 +108,13 @@ namespace KinveyXamarin
 			}
             if (user != null)
             {
-                // TODO Add properties of user
+				if (this.requestPayload == null) {
+					this.requestPayload = new JObject ();
+				}
+				var keys = user.Properties().Select(p => p.Name).ToList();
+				foreach (string key in keys) {
+					this.requestPayload.Add (key, user [key]);	
+				}
             }
             this.create = create;
             this.uriTemplateParameters = new Dictionary<string,string>();
@@ -133,6 +139,7 @@ namespace KinveyXamarin
 			this.identity = identity;
 			if (user != null)
 			{
+				this.requestPayload = new JObject ();
 				// TODO Add properties of user
 			}
 			this.create = create;
