@@ -140,6 +140,16 @@ namespace KinveyXamarin
 			if (user != null)
 			{
 				this.requestPayload = new JObject ();
+				if (identity.provider.kinveyAuth != null)
+				{
+					var accessToken = new JObject ();
+					accessToken ["access_token"] = identity.provider.kinveyAuth.accessToken;
+
+					var kinveyAuth = new JObject ();
+					kinveyAuth ["kinveyAuth"] = accessToken;
+
+					this.requestPayload ["_socialIdentity"] = kinveyAuth;
+				}
 				// TODO Add properties of user
 			}
 			this.create = create;
@@ -162,7 +172,7 @@ namespace KinveyXamarin
 				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.identity, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore}), ParameterType.RequestBody);
 			}
 
-            restRequest.Resource = "user/{appKey}/" + (this.create ? "" : "login");
+            restRequest.Resource = "user/{appKey}/login";
 
 			restRequest.Method = Method.POST;
 
