@@ -309,7 +309,12 @@ namespace KinveyXamarin
 
 					Provider provider = new Provider ();
 					provider.kinveyAuth = new MICCredential (accessToken);
-					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+					Task<User> userTask = LoginMICAsync(accessToken);
+					userTask.Wait();
+					if (userTask.Exception != null) {
+						throw userTask.Exception;
+					}
+					User u = userTask.Result;
 
 					//store the new refresh token
 					Credential currentCred = KinveyClient.Store.Load(u.Id);
