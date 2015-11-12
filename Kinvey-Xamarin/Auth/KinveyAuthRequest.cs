@@ -147,6 +147,20 @@ namespace KinveyXamarin
 			this.uriTemplateParameters.Add("appKey", appKey);
 		}
 
+		public void buildRequestPayload()
+		{
+			if (identity.provider.kinveyAuth.accessToken != null) {
+				var kinveyAuth = new JObject ();
+				kinveyAuth ["access_token"] = identity.provider.kinveyAuth.accessToken;
+
+				var socialIdentity = new JObject ();
+				socialIdentity ["kinveyAuth"] = kinveyAuth;
+
+				this.requestPayload = new JObject ();
+				this.requestPayload ["_socialIdentity"] = socialIdentity;
+			}
+		}
+
 		/// <summary>
 		/// Builds the rest request.
 		/// </summary>
