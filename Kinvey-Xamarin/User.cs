@@ -255,6 +255,11 @@ namespace KinveyXamarin
 			return new LoginRequest (identity, this).buildAuthRequest ();
 		}
 
+		public MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity){
+			this.type = LoginType.THIRDPARTY;
+			return new MICLoginRequest (identity, this).buildAuthRequest ();
+		}
+
 		/// <summary>
 		/// Logins a user with a Kinvey Auth token synchronously.
 		/// </summary>
@@ -474,7 +479,28 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// A synchronous MIC login request.
+		/// </summary>
+		public class MICLoginRequest : LoginRequest
+		{
 
+			public MICLoginRequest(ThirdPartyIdentity identity, User user) : base(identity, user)
+			{
+				memberUser.builder.Create = false;
+			}
+
+			/// <summary>
+			/// Builds the auth request.
+			/// </summary>
+			/// <returns>The auth request.</returns>
+			public MICLoginRequest buildAuthRequest() {
+				base.buildAuthRequest ();
+				request.buildRequestPayload ();
+				return this;
+			}
+
+		}
 
 		/// <summary>
 		/// A synchronous login request.
@@ -483,8 +509,8 @@ namespace KinveyXamarin
         {
             Credential credential;
             LoginType type;
-            KinveyAuthRequest request;
-            User memberUser;
+            protected KinveyAuthRequest request;
+			protected User memberUser;
 
 
 			/// <summary>

@@ -165,6 +165,15 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Login with a third party identity
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="identity">The Third party identity.</param>
+		public async Task<User> MICLoginAsync(ThirdPartyIdentity identity){
+			return await base.MICLoginBlocking (identity).ExecuteAsync();
+		}
+
+		/// <summary>
 		/// Login with Facebook Credentials
 		/// </summary>
 		/// <returns>The async task.</returns>
@@ -248,7 +257,7 @@ namespace KinveyXamarin
 		public async Task<User> LoginMICAsync(string accessToken){
 			Provider provider = new Provider ();
 			provider.kinveyAuth = new MICCredential (accessToken);
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await MICLoginAsync(new ThirdPartyIdentity(provider));
 		}
 
 		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> delegates){
@@ -309,7 +318,12 @@ namespace KinveyXamarin
 
 					Provider provider = new Provider ();
 					provider.kinveyAuth = new MICCredential (accessToken);
-					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+					Task<User> userTask = LoginMICAsync(accessToken);
+					userTask.Wait();
+					if (userTask.Exception != null) {
+						throw userTask.Exception;
+					}
+					User u = userTask.Result;
 
 					//store the new refresh token
 					Credential currentCred = KinveyClient.Store.Load(u.Id);
