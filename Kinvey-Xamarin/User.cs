@@ -166,7 +166,7 @@ namespace KinveyXamarin
 		/// <returns><c>true</c>, if user logged in was ised, <c>false</c> otherwise.</returns>
         public bool isUserLoggedIn()
         {
-            return (this.id != null || this.AuthToken != null || this.UserName != null);
+             return (this.id != null || this.AuthToken != null || this.UserName != null);
         }
 
 		/// <summary>
@@ -615,9 +615,10 @@ namespace KinveyXamarin
             {
                 CredentialManager manager = new CredentialManager(this.store);
                 manager.RemoveCredential(memberUser.id);
+				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
                 memberUser.KinveyClient.CurrentUser = null;
-                ((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
             }
+
         }
 			
 		/// <summary>

@@ -28,11 +28,6 @@ namespace KinveyXamarin
 	{
 
 		/// <summary>
-		/// This maintains the current logged in user
-		/// </summary>
-		private AsyncUser user;
-
-		/// <summary>
 		/// The file path for writing to disk is platform specific, so this is maintained in the client.
 		/// </summary>
 		/// <value>The file path.</value>
@@ -68,6 +63,11 @@ namespace KinveyXamarin
 			: base(client, rootUrl, servicePath, initializer, store) {}
 
 
+		protected override User GetUser ()
+		{
+			return this.User ();
+		}
+
 		/// <summary>
 		/// Use this accessor to get a configurared instance of the <see cref="KinveyXamarin.AsyncUser"/> class. 
 		/// </summary>
@@ -76,13 +76,13 @@ namespace KinveyXamarin
 		{
 			lock (Lock)
 			{
-				if (user == null) {
+				if (currentUser == null) {
 					var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
 					var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-					this.user = new AsyncUser(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
+					currentUser = new AsyncUser(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
 				}
 
-				return user;
+				return (AsyncUser) currentUser;
 			}
 		}
 
@@ -268,12 +268,31 @@ namespace KinveyXamarin
 				return this;
 			}
 
-
-				
-
 	
 		}
 
+
+		/// <summary>
+		/// Gets or sets the current user.
+		/// </summary>
+		/// <value>The current user.</value>
+//		public override User CurrentUser
+//		{
+//			get
+//			{
+//				lock (Lock)
+//				{
+//					return user;
+//				}
+//			}
+//			set 
+//			{ 
+//				lock (Lock)
+//				{
+//					user = (AsyncUser) value;
+//				}
+//			}
+//		}
 
 
 	}
