@@ -75,7 +75,7 @@ namespace KinveyXamarin
 		/// </summary>
 		protected abstract User GetUser();
 
-		public virtual User User()
+		public User User()
         {
 			return this.GetUser ();
         }

@@ -271,30 +271,6 @@ namespace KinveyXamarin
 	
 		}
 
-
-		/// <summary>
-		/// Gets or sets the current user.
-		/// </summary>
-		/// <value>The current user.</value>
-//		public override User CurrentUser
-//		{
-//			get
-//			{
-//				lock (Lock)
-//				{
-//					return user;
-//				}
-//			}
-//			set 
-//			{ 
-//				lock (Lock)
-//				{
-//					user = (AsyncUser) value;
-//				}
-//			}
-//		}
-
-
 	}
 }
 
