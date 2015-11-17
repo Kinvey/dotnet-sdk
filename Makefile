@@ -1,3 +1,5 @@
+VERSION=$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin.nuspec)
+
 all: clean build doc
 	
 build:
@@ -34,6 +36,17 @@ doc:
 	
 	find ./api/reference/html/ -name "*.html" | xargs sed -i -e 's/Documentation for this section has not yet been entered.//g'
 	find ./api/reference/html/ -name "*.html" | xargs sed -i -e 's/To be added.//g'
+	find ./api/reference/html/ -name "*-e" | xargs rm
+	
+pack:
+	rm -Rf release/kinvey-xamarin-$(VERSION)
+	mkdir release/kinvey-xamarin-$(VERSION)
+	cp Kinvey-Utils/bin/Release/Kinvey-Utils.dll release/kinvey-xamarin-$(VERSION)
+	cp Kinvey-Xamarin/bin/Release/Kinvey-Xamarin.dll release/kinvey-xamarin-$(VERSION)
+	cp Kinvey-Xamarin/bin/Release/RestSharp.Portable.dll release/kinvey-xamarin-$(VERSION)
+	cp LICENSE.txt release/kinvey-xamarin-$(VERSION)
+	cp README.txt release/kinvey-xamarin-$(VERSION)
+	cd release; zip -r kinvey-xamarin-$(VERSION).zip kinvey-xamarin-$(VERSION)
 	
 nuget-pack:
 	nuget pack Kinvey-Xamarin.nuspec
@@ -53,7 +66,8 @@ show-version:
 	@xml sel -t -v package/metadata/version Kinvey-Xamarin-Android.nuspec | xargs -I version echo Kinvey-Xamarin-Android version '-> Kinvey-Xamarin Dependency:' $(shell xml sel -t -v "package/metadata/dependencies/dependency[@id='Kinvey']/@version" Kinvey-Xamarin-Android.nuspec)
 	
 set-version:
-	@cat Kinvey-Xamarin/Core/KinveyHeaders.cs | sed -i 's/public static string VERSION = \"[0-9]*.[0-9]*.[0-9]*\"\;/public static string VERSION = \"$(filter-out $@,$(MAKECMDGOALS))\";/g'
+	@sed -i -e 's/public static string VERSION = \"[0-9]*.[0-9]*.[0-9]*\"\;/public static string VERSION = \"$(filter-out $@,$(MAKECMDGOALS))\";/g' Kinvey-Xamarin/Core/KinveyHeaders.cs
+	@rm Kinvey-Xamarin/Core/KinveyHeaders.cs-e
 	
 	@xml ed -u package/metadata/version -v $(filter-out $@,$(MAKECMDGOALS)) Kinvey-Xamarin.nuspec > Kinvey-Xamarin-new.nuspec
 	@rm Kinvey-Xamarin.nuspec
