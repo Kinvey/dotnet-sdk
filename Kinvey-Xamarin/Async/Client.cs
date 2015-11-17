@@ -82,7 +82,10 @@ namespace KinveyXamarin
 					currentUser = new AsyncUser(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
 				}
 
-				return (AsyncUser) currentUser;
+				if (currentUser is AsyncUser) {
+					return currentUser as AsyncUser;
+				}
+				return null;
 			}
 		}
 
