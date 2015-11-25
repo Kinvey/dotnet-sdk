@@ -56,6 +56,9 @@ namespace KinveyXamarin
 		[JsonProperty("username")]
 		public string username { get; set; }
 
+		[JsonExtensionData]
+		public Dictionary<string, JToken> Attributes { get; set; }
+
 		/// <summary>
 		/// Gets the auth token.
 		/// </summary>

@@ -25,7 +25,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// This class manages the state of a Kinvey user.  User methods can be accessed through this class, and this class represents the currently logged in user.
 	/// </summary>
-	[JsonObject(MemberSerialization.OptOut)]
+	[JsonObject(MemberSerialization.OptIn)]
     public class User : JObject
     {
 		/// <summary>
@@ -62,8 +62,15 @@ namespace KinveyXamarin
         private String username;
 
 		/// <summary>
+		/// A name-value dictionary of custom attributes of the user
+		/// </summary>
+		[JsonExtensionData]
+		public Dictionary<string, JToken> Attributes;
+
+		/// <summary>
 		/// The client.
 		/// </summary>
+		[JsonIgnore]
         private AbstractClient client;
 
 		/// <summary>
@@ -100,7 +107,8 @@ namespace KinveyXamarin
 		/// Gets the kinvey client.
 		/// </summary>
 		/// <value>The kinvey client.</value>
-        public AbstractClient KinveyClient
+		[JsonIgnore]
+		public AbstractClient KinveyClient
         {
             get { return this.client; }
         }
@@ -108,11 +116,13 @@ namespace KinveyXamarin
 		/// <summary>
 		/// the auth request builder.
 		/// </summary>
+		[JsonIgnore]
         private KinveyAuthRequest.Builder builder;
 
 		/// <summary>
 		/// The type of user
 		/// </summary>
+		[JsonIgnore]
 		private LoginType type {get; set;}
 
 		/// <summary>
@@ -152,12 +162,14 @@ namespace KinveyXamarin
             this.builder = builder;
             builder.KinveyUser = this;
 			this.MICHostName = "https://auth.kinvey.com/";
+			this.Attributes = new Dictionary<string, JToken>();
         }
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
         public User() {
 			this.MICHostName = "https://auth.kinvey.com/";
+			this.Attributes = new Dictionary<string, JToken>();
 		}
 
 		/// <summary>
@@ -184,6 +196,7 @@ namespace KinveyXamarin
 
             //this.username = response
             this.AuthToken = response.AuthToken;
+			this.Attributes = response.Attributes;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
             KinveyClient.ClientUsers.AddUser(this.id, userType);
@@ -719,11 +732,7 @@ namespace KinveyXamarin
 					kmd.Add("_kmd", u["_kmd"]);
 					auth.UserMetadata = kmd;
 					auth.username =  u["username"].ToString();
-//					for (Object key : u.keySet()){
-//						if (!key.toString().equals("_kmd")){
-//							auth.put(key.toString(), u.get(key));
-//						}
-//					}
+					auth.Attributes = u.Attributes;
 
 					string utype = user.type.ToString();
 				
