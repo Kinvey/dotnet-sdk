@@ -25,7 +25,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// This class adds the concept of a user to the Client, and couples it with Kinvey.
 	/// </summary>
-    public class AbstractClient : AbstractKinveyClient
+    public abstract class AbstractClient : AbstractKinveyClient
     {
 		/// <summary>
 		/// The default base URL.
@@ -39,7 +39,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The current user.
 		/// </summary>
-        private User currentUser;
+        protected User currentUser;
 
 		/// <summary>
 		/// The current credential store.
@@ -73,18 +73,11 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Access the `User` API through this.  The User object is initialized to the currently logged in user.
 		/// </summary>
+		protected abstract User GetUser();
+
 		public User User()
         {
-            lock (Lock)
-            {
-                if (currentUser == null)
-                {
-                    var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
-                    var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-                    this.currentUser = new User(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
-                }
-                return currentUser;
-            }
+			return this.GetUser ();
         }
 
 		/// <summary>
@@ -130,7 +123,7 @@ namespace KinveyXamarin
 		/// Gets or sets the current user.
 		/// </summary>
 		/// <value>The current user.</value>
-        public User CurrentUser
+        public virtual User CurrentUser
         {
             get
             {
