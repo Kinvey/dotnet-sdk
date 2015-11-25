@@ -2,8 +2,8 @@
 <package>
   <metadata>
     <id>Kinvey-ios</id>
-    <version>1.5.7</version>
-    <releaseNotes> * Fixed an issue with login using MIC </releaseNotes>
+    <version>1.5.8</version>
+    <releaseNotes> * Fix handling of custom attributes for User </releaseNotes>
     <title>Kinvey-Xamarin-iOS</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
@@ -21,7 +21,7 @@
       <dependency id="Newtonsoft.Json" version="7.0.1"/>
       <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
-      <dependency id="Kinvey" version="1.5.7"/>
+      <dependency id="Kinvey" version="1.5.8"/>
     </dependencies>
   </metadata>
   <files>
