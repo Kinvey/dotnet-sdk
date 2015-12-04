@@ -137,11 +137,6 @@ namespace KinveyXamarin
 			this.client = client;
 			this.appKeyAuthentication = auth;
 			this.identity = identity;
-			if (user != null)
-			{
-				this.requestPayload = new JObject ();
-				// TODO Add properties of user
-			}
 			this.create = create;
 			this.uriTemplateParameters = new Dictionary<string,string>();
 			this.uriTemplateParameters.Add("appKey", appKey);
@@ -155,12 +150,13 @@ namespace KinveyXamarin
         {
 		
 			RestRequest restRequest = new RestRequest();
-            if (this.requestPayload != null)
+
+			if (this.identity != null) {
+				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.identity, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore}), ParameterType.RequestBody);			
+			} else if (this.requestPayload != null)
             {
 				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.requestPayload), ParameterType.RequestBody);
-            }else if (this.identity != null) {
-				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.identity, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore}), ParameterType.RequestBody);
-			}
+            }
 
             restRequest.Resource = "user/{appKey}/" + (this.create ? "" : "login");
 
