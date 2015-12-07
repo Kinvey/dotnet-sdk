@@ -137,11 +137,6 @@ namespace KinveyXamarin
 			this.client = client;
 			this.appKeyAuthentication = auth;
 			this.identity = identity;
-			if (user != null)
-			{
-				this.requestPayload = new JObject ();
-				// TODO Add properties of user
-			}
 			this.create = create;
 			this.uriTemplateParameters = new Dictionary<string,string>();
 			this.uriTemplateParameters.Add("appKey", appKey);
