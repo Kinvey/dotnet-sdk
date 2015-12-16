@@ -213,7 +213,10 @@ namespace KinveyXamarin
 
 			var response = await client.ExecuteAsync(request);
 
-			if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
+			if ((int) response.StatusCode == 404 && this.create == false) { //if user is not found, create a new user
+				this.create = true;
+				return await ExecuteUnparsedAsync ();
+			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
 			{
 				throw NewExceptionOnError(response);
 			}
@@ -234,10 +237,13 @@ namespace KinveyXamarin
 			var req = client.ExecuteAsync(request);
 			var response = req.Result;
 
-			if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
-            {
-                throw NewExceptionOnError(response);
-            }
+			if ((int) response.StatusCode == 404 && this.create == false) {	//if user is not found, create a new user
+				this.create = true; 
+				return ExecuteUnparsed ();
+			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
+			{
+				throw NewExceptionOnError(response);
+			}
 
             return (RestResponse)response;
         }
