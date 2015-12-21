@@ -216,7 +216,7 @@ namespace KinveyXamarin
 			if ((int) response.StatusCode == 404 && this.create == false) { //if user is not found, create a new user
 				this.create = true;
 				return await ExecuteUnparsedAsync ();
-			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
+			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode >= 300 )
 			{
 				throw NewExceptionOnError(response);
 			}
@@ -240,7 +240,7 @@ namespace KinveyXamarin
 			if ((int) response.StatusCode == 404 && this.create == false) {	//if user is not found, create a new user
 				this.create = true; 
 				return ExecuteUnparsed ();
-			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode > 300 )
+			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode >= 300 )
 			{
 				throw NewExceptionOnError(response);
 			}
