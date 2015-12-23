@@ -25,6 +25,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyMetaData"/> class.
 		/// </summary>
+		[Preserve]
 		public KinveyMetaData ()
 		{
 		}
@@ -38,6 +39,7 @@ namespace KinveyXamarin
 		/// Gets or sets the last modified time.
 		/// </summary>
 		/// <value>The last modified time.</value>
+		[Preserve]
 		[JsonProperty("lmt")]
 		public String lastModifiedTime{get; set;}
 
@@ -45,6 +47,7 @@ namespace KinveyXamarin
 		/// Gets or sets the entity creation time.
 		/// </summary>
 		/// <value>The entity creation time.</value>
+		[Preserve]
 		[JsonProperty("ect")]
 		public String entityCreationTime{get; set;}
 	}

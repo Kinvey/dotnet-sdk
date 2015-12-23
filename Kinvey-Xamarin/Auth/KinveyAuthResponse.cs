@@ -74,9 +74,11 @@ namespace KinveyXamarin
         [JsonObject]
 		public class KinveyUserMetadata : JObject
         {
+			[Preserve]
             [JsonProperty("lmt")]
             public string LastModifiedTime {get; set;}
 
+			[Preserve]
             [JsonProperty("authtoken")]
             public string AuthToken {get; set; }
         }

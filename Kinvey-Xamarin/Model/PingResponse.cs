@@ -26,9 +26,11 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.PingResponse"/> class.
 		/// </summary>
+		[Preserve]
 		public PingResponse ()
 		{}
 
+		[Preserve]
 		[JsonProperty]
 		public string version;
 
