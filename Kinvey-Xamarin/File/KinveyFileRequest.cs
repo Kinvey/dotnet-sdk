@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using RestSharp;
 using System.IO;
@@ -81,54 +82,42 @@ namespace KinveyXamarin
 			output = response.RawBytes;
 		}
 
-		private void uploadFile(FileMetaData metadata, byte[] input){
-			string uploadURL = metadata.uploadUrl;
-
-			var client = new RestClient (uploadURL);
-
-			var request = new RestRequest ();
-
-			if (requestMethod.Equals ("PUT")) {
-				request.Method = Method.PUT;
-			} else {
-				request.Method = Method.POST;
-			}
-				
-			//TODO what are these parameters for `name` and `filename` used for?
-			request.AddFile ("test", input, "filenameTest");
-
-			var req = client.ExecuteAsync (request);
-			var response = req.Result;
+		internal void uploadFile(FileMetaData metadata, byte[] input) {
+			uploadFileAsync (metadata, new ByteArrayContent (input)).Wait ();
 		}
 
-		private void uploadFile(FileMetaData metadata, Stream input){
+		internal async Task uploadFileAsync(FileMetaData metadata, byte[] input) {
+			await uploadFileAsync (metadata, new ByteArrayContent (input));
+		}
+
+		internal void uploadFile(FileMetaData metadata, Stream input) {
+			uploadFileAsync (metadata, new StreamContent (input)).Wait ();
+		}
+
+		internal async Task uploadFileAsync(FileMetaData metadata, Stream input) {
+			if (input.CanSeek) {
+				input.Position = 0;
+			}
+			await uploadFileAsync (metadata, new StreamContent (input));
+		}
+
+		private void uploadFile(FileMetaData metadata, HttpContent input) {
+			uploadFileAsync (metadata, input).Wait ();
+		}
+
+		private async Task<HttpResponseMessage> uploadFileAsync(FileMetaData metadata, HttpContent input) {
 			string uploadURL = metadata.uploadUrl;
 
 			var httpClient = new HttpClient(new NativeMessageHandler());
 			Uri requestURI = new Uri (uploadURL);
 
-			foreach (string key in metadata.headers.Keys) {
-				httpClient.DefaultRequestHeaders.Add(key, metadata.headers[key]);
-
-
+			foreach (var header in metadata.headers) {
+				httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
 			}
 
-			//StreamContent content = new StreamContent ();
-			if (input.CanSeek) {
-				input.Position = 0;
-		//	httpClient.DefaultRequestHeaders.Add ("Content-Length", "1024");
-		//	httpClient.
-			}
-
-			//var content = new MultipartContent ();
-			//content.Add(new StreamContent(input));
-
-			 
-			var req = httpClient.PutAsync(requestURI, new StreamContent(input));
-			var response = req.Result;
-			response.EnsureSuccessStatusCode();
-
-
+			var response = await httpClient.PutAsync(requestURI, input);
+			response.EnsureSuccessStatusCode ();
+			return response;
 		}
 	}
 }
