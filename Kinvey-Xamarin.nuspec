@@ -2,8 +2,8 @@
 <package>
   <metadata>
     <id>Kinvey</id>
-    <version>1.6.0</version>
-    <releaseNotes> * Bug fix: login with MIC missing social identity </releaseNotes>
+    <version>1.6.1</version>
+    <releaseNotes> * Bug fix: forcing HTTPS to upload files to avoid Application Transport Security erros on iOS 9 and above * New async/await method to upload and download files * Bug Fix: Login with MIC creating additional users * Bug Fix: Upload files using the byte array overload method </releaseNotes>
     <title>Kinvey-Xamarin</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
