@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey-ios</id>
-    <version>1.5.10</version>
+    <version>1.6.0</version>
     <releaseNotes> * Bug fix: login with MIC missing social identity </releaseNotes>
     <title>Kinvey-Xamarin-iOS</title>
     <authors>Kinvey</authors>
@@ -21,7 +21,7 @@
       <dependency id="Newtonsoft.Json" version="7.0.1"/>
       <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
-      <dependency id="Kinvey" version="1.5.10"/>
+      <dependency id="Kinvey" version="1.6.0"/>
     </dependencies>
   </metadata>
   <files>

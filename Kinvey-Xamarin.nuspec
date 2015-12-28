@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey</id>
-    <version>1.5.10</version>
+    <version>1.6.0</version>
     <releaseNotes> * Bug fix: login with MIC missing social identity </releaseNotes>
     <title>Kinvey-Xamarin</title>
     <authors>Kinvey</authors>

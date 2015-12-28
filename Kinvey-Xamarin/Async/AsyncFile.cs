@@ -86,7 +86,14 @@ namespace KinveyXamarin
 					delegates.onError (e);
 				}
 			});
+		}
 
+		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, byte[] content)
+		{
+			var request = base.uploadBlocking (metadata);
+			FileMetaData entity = await request.ExecuteAsync();
+			await request.uploadFileAsync (entity, content);
+			return entity;
 		}
 
 		/// <summary>
@@ -95,7 +102,8 @@ namespace KinveyXamarin
 		/// <param name="metadata">Metadata associated with the file, supports arbitrary key/value pairs</param>
 		/// <param name="content">the actual bytes of the file to upload.</param>
 		/// <param name="delegates">Delegates for success or failure.</param>
-		public void upload(FileMetaData metadata, Stream content, KinveyDelegate<FileMetaData> delegates){
+		public void upload(FileMetaData metadata, Stream content, KinveyDelegate<FileMetaData> delegates)
+		{
 			Task.Run (() => {
 				try {
 					FileMetaData entity = base.uploadBlocking (metadata).executeAndUploadFrom (content);
@@ -104,6 +112,14 @@ namespace KinveyXamarin
 					delegates.onError (e);
 				}
 			});
+		}
+
+		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, Stream content)
+		{
+			var request = base.uploadBlocking (metadata);
+			FileMetaData entity = await request.ExecuteAsync();
+			await request.uploadFileAsync (entity, content);
+			return entity;
 		}
 
 		/// <summary>
@@ -139,7 +155,11 @@ namespace KinveyXamarin
 					delegates.onError (e);
 				}
 			});
+		}
 
+		public async Task<FileMetaData> downloadMetadataAsync(string fileId)
+		{
+			return await base.downloadMetadataBlocking (fileId).ExecuteAsync();
 		}
 
 		/// <summary>
