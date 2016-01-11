@@ -46,6 +46,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
+		[Preserve]
 		internal Credential() { }
 
 		/// <summary>
@@ -66,6 +67,7 @@ namespace KinveyXamarin
 		public string UserId
 		{
 			get { return this.userId; }
+			[Preserve]
 			internal set { this.userId = value; }
 		}
 
@@ -76,6 +78,7 @@ namespace KinveyXamarin
 		public string AuthToken
 		{
 			get { return this.authToken; }
+			[Preserve]
 			internal set { this.authToken = value; }
 		}
 

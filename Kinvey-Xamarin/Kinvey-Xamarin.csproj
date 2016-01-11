@@ -89,6 +89,7 @@
     <Compile Include="Async\KinveyMICDelegate.cs" />
     <Compile Include="AbstractPush.cs" />
     <Compile Include="Query\KinveyQueryExecutor.cs" />
+    <Compile Include="Core\PreserveAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
@@ -138,13 +139,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
-      <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
-      <Name>RestSharp.Portable</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
       <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
       <Name>Kinvey-Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
+      <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
+      <Name>RestSharp.Portable</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
