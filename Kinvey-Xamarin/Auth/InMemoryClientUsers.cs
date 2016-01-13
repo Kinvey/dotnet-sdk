@@ -31,11 +31,11 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The active user.
 		/// </summary>
-        private string activeUser;
+		private string activeUser;
 		/// <summary>
 		/// This is a singleton so this is the instance.
 		/// </summary>
-        private static InMemoryClientUsers _instance;
+		private static InMemoryClientUsers _instance;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.InMemoryClientUsers"/> class.

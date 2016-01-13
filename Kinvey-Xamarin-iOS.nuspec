@@ -2,8 +2,8 @@
 <package>
   <metadata>
     <id>Kinvey-ios</id>
-    <version>1.6.1</version>
-    <releaseNotes> * Bug fix: forcing HTTPS to upload files to avoid Application Transport Security erros on iOS 9 and above * New async/await method to upload and download files * Bug Fix: Login with MIC creating additional users * Bug Fix: Upload files using the byte array overload method </releaseNotes>
+    <version>1.6.2</version>
+    <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
     <title>Kinvey-Xamarin-iOS</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
@@ -18,10 +18,10 @@
       <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
       <dependency id="Microsoft.Net.Http" version="2.2.29"/>
       <dependency id="modernhttpclient" version="2.4.2"/>
-      <dependency id="Newtonsoft.Json" version="7.0.1"/>
+      <dependency id="Newtonsoft.Json" version="8.0.2"/>
       <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
-      <dependency id="Kinvey" version="1.6.1"/>
+      <dependency id="Kinvey" version="1.6.2"/>
     </dependencies>
   </metadata>
   <files>

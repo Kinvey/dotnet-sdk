@@ -344,21 +344,18 @@ namespace KinveyXamarin
 				}
 			});
 		}
+
+		private static readonly object classLock = new object();
 			
 		/// <summary>
 		/// Logout the current user.
 		/// </summary>
 		public void Logout()
 		{
-			Task.Run (() => {
-				try{
-					base.logoutBlocking().Execute();
-//					delegates.onSuccess(default(User)); //TODO find a better way, logout has no return value and void is not nullable in c#
-				}catch(Exception e){
-//					delegates.onError(e);
-					Logger.Log(e);
-				}
-			});
+			lock (classLock)
+			{
+				base.logoutBlocking ().Execute ();
+			}
 		}
 
 		/// <summary>
