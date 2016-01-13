@@ -345,14 +345,15 @@ namespace KinveyXamarin
 			});
 		}
 
-		private static object classLock = new object();
+		private static readonly object classLock = new object();
 			
 		/// <summary>
 		/// Logout the current user.
 		/// </summary>
 		public void Logout()
 		{
-			lock (classLock) {
+			lock (classLock)
+			{
 				base.logoutBlocking ().Execute ();
 			}
 		}
