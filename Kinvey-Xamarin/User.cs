@@ -653,9 +653,15 @@ namespace KinveyXamarin
             public void Execute()
             {
                 CredentialManager manager = new CredentialManager(this.store);
-                manager.RemoveCredential(memberUser.id);
+				var userId = memberUser.id;
+				if (userId != null) {
+					manager.RemoveCredential (userId);
+				}
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
                 memberUser.KinveyClient.CurrentUser = null;
+				if (userId != null) {
+					memberUser.KinveyClient.ClientUsers.RemoveUser (userId);
+				}
             }
 
         }
