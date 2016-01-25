@@ -83,7 +83,7 @@ namespace KinveyXamarin
 		/// <param name="userId">User identifier.</param>
         public void AddUser(string userId, string type)
         {
-            userList.Add(userId, type);
+            userList[userId] = type;
         }
 
 		/// <summary>
