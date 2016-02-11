@@ -296,6 +296,7 @@ namespace KinveyXamarin
 					//store the new refresh token
 					Credential currentCred = KinveyClient.Store.Load(u.Id);
 					currentCred.RefreshToken = accessResult["refresh_token"].ToString();
+					currentCred.RedirectUri = this.MICRedirectURI;
 					KinveyClient.Store.Store(u.Id, currentCred);
 
 					if (MICDelegate != null){
@@ -328,6 +329,7 @@ namespace KinveyXamarin
 					//store the new refresh token
 					Credential currentCred = KinveyClient.Store.Load(u.Id);
 					currentCred.RefreshToken = result["refresh_token"].ToString();
+					currentCred.RedirectUri = this.MICRedirectURI;
 					KinveyClient.Store.Store(u.Id, currentCred);
 
 					if (MICDelegate != null){

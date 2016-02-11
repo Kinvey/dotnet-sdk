@@ -56,7 +56,7 @@ namespace KinveyXamarin
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.userID == userId).FirstOrDefault ();
 			Credential cred = null;
 			if (sqlcred != null) {
-				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken);
+				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken, sqlcred.RedirecUri);
 			}
 			return cred;
 		}
@@ -73,6 +73,7 @@ namespace KinveyXamarin
 			cred.userID = credential.UserId;
 			cred.AuthToken = credential.AuthToken;
 			cred.RefreshToken = credential.RefreshToken;
+			cred.RedirecUri = credential.RedirectUri;
 			_dbConnection.Insert(cred);
 		}
 
@@ -89,7 +90,7 @@ namespace KinveyXamarin
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
 			Credential cred = null;
 			if (sqlcred != null) {
-				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken);
+				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken, sqlcred.RedirecUri);
 			}
 			return cred;
 		}
@@ -119,6 +120,12 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <value>The refresh token.</value>
 		public string RefreshToken {get; set;}
+
+		/// <summary>
+		/// Gets or sets the redirect uri.
+		/// </summary>
+		/// <value>The redirect uri.</value>
+		public string RedirecUri {get; set;}
 
 	}
 }
