@@ -418,7 +418,7 @@ namespace KinveyXamarin
 			return getToken;
 		}
 
-		public RetrieveMICAccessToken UseRefreshToken(String refreshToken) {
+		public RetrieveMICAccessToken UseRefreshToken(String refreshToken, string redirectUri) {
 			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
 			//        refresh_token: use the refresh token 
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
@@ -427,7 +427,7 @@ namespace KinveyXamarin
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("grant_type", "refresh_token");
 			data.Add("refresh_token", refreshToken);
-			data.Add("redirect_uri", this.MICRedirectURI);
+			data.Add("redirect_uri", redirectUri);
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
 			var urlParameters = new Dictionary<string, string>();

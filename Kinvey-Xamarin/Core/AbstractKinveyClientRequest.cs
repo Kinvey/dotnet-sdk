@@ -358,8 +358,10 @@ namespace KinveyXamarin
 				//get the refresh token
 				Credential cred = Client.Store.Load(Client.User().Id);
 				String refreshToken = null;
+				string redirectUri = null;
 				if (cred != null){
 					refreshToken = cred.RefreshToken;
+					redirectUri = cred.RedirectUri;
 				}
 
 				if (refreshToken != null ){
@@ -368,7 +370,7 @@ namespace KinveyXamarin
 					Client.User().logoutBlocking().Execute();
 
 					//use the refresh token for a new access token
-					JObject result = Client.User().UseRefreshToken(refreshToken).Execute();
+					JObject result = Client.User().UseRefreshToken(refreshToken, redirectUri).Execute();
 
 					//login with the access token
 					Provider provider = new Provider ();
@@ -379,8 +381,10 @@ namespace KinveyXamarin
 					//store the new refresh token
 					Credential currentCred = Client.Store.Load(Client.User().Id);
 					currentCred.RefreshToken = result["refresh_token"].ToString();
+					currentCred.RedirectUri = redirectUri;
 					Client.Store.Store(Client.User().Id, currentCred);
 					hasRetryed = true;
+					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
 					return ExecuteUnparsed();
 				}
 			}
@@ -425,8 +429,10 @@ namespace KinveyXamarin
 				//get the refresh token
 				Credential cred = Client.Store.Load(Client.User().Id);
 				String refreshToken = null;
+				string redirectUri = null;
 				if (cred != null){
 					refreshToken = cred.RefreshToken;
+					redirectUri = cred.RedirectUri;
 				}
 
 				if (refreshToken != null ){
@@ -435,19 +441,22 @@ namespace KinveyXamarin
 					Client.User().logoutBlocking().Execute();
 
 					//use the refresh token for a new access token
-					JObject result = Client.User().UseRefreshToken(refreshToken).Execute();
+					JObject result = await Client.User().UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
 
 					//login with the access token
 					Provider provider = new Provider ();
 					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
-					User u = Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+					User u = await Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).ExecuteAsync();
 
 					//store the new refresh token
 					Credential currentCred = Client.Store.Load(Client.User().Id);
 					currentCred.RefreshToken = result["refresh_token"].ToString();
+					currentCred.RedirectUri = redirectUri;
 					Client.Store.Store(Client.User().Id, currentCred);
 					hasRetryed = true;
-					return await ExecuteUnparsedAsync();
+					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
+					var retryResponse = await ExecuteUnparsedAsync ();
+					return retryResponse;
 				}
 			}
 
