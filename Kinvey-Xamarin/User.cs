@@ -390,9 +390,15 @@ namespace KinveyXamarin
 		/// <returns>The created User.</returns>
 		/// <param name="userid">the username of the user.</param>
 		/// <param name="password">the password for the user.</param>
-		public LoginRequest CreateBlocking(string username, string password) 
+		public LoginRequest CreateBlocking(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
         {
 			this.type = LoginType.KINVEY;
+			if (customFieldsAndValues != null) {
+				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues) {
+					this.Attributes.Add (entry.Key, entry.Value);
+				}
+			}
+
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
