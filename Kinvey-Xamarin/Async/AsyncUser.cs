@@ -365,6 +365,7 @@ namespace KinveyXamarin
 		/// <param name="userid">the username.</param>
 		/// <param name="password">the password.</param>
 		/// <param name="delegates">Delegates for success or failure.</param>
+		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
 		public void Create(string username, string password, KinveyDelegate<User> delegates, Dictionary<string, JToken> customFieldsAndValues = null)
 		{
 			Task.Run (() => {
@@ -383,6 +384,7 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="userid">the username.</param>
 		/// <param name="password">the password.</param>
+		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
 		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null){
 			return await base.CreateBlocking (username, password, customFieldsAndValues).ExecuteAsync ();
 		}
