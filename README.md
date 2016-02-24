@@ -25,25 +25,10 @@ This is a Public Class Library (PCL) for various supported Xamarin runtimes.
 
 ##new release process
 ###Kinvey
-2.  Update the version number in `Kinvey-Xamarin/core/KinveyHeaders.cs`
-3.  Set target to `Release`, and kick off a build.
-4.  Open up the __Kinvey-Xamarin__ project in finder  
-5.  Copy __Kinvey-Utils/obj/Release/Kinvey-Utils.dll__, __Kinvey-Xamarin/obj/Release/Kinvey-Xamarin.dll__, and __Restsharp.Portable/obj/Release/RestSharp.portable.dll__ into the __libs__ directory
-6.  Open up `Kinvey-Xamarin.nuspec`
-7.  Modify version and release notes
-8.  nuget pack kinvey-xamarin
-
-###Android
-1.  Open up the __Kinvey-Xamarin-Android__ project in finder
-2.  Copy __/obj/release/Kinvey-Xamarin-Android.dll__ into the __libs__ directory
-3.  Open up `Kinvey-Xamarin-Android.nuspec`
-4.  Modify version and release notes
-5.  nuget pack kinvey-xamarin-android
-
-###iOS
-1.  Open up the __Kinvey-Xamarin-iOS project in finder
-2.  Copy __/obj/release/Kinvey-Xamarin-iOS.dll into the __libs__ directory
-3.  Open up `Kinvey-Xamarin-iOS.nuspec`
-4.  Modify version and release notes
-5.  nuget pack kinvey-xamarin-ios
-
+1. Run `make set-version <new version number>`
+2. Run `make clean build doc pack nuget-pack`
+3. Commit to develop branch and merge into master
+4. Run `make nuget-push`
+5. Upload the file release/<version>.zip to Amazon S3
+6. Write release notes into devcenter and copy the API reference folder
+7. Commit devcenter into master and production to make it live!
