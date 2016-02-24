@@ -54,7 +54,7 @@ namespace KinveyXamarin
 		/// <param name="credential">Credential.</param>
         public void Store(string userId, Credential credential)
         {
-			Credential cred = new Credential(userId, credential.AuthToken, credential.RefreshToken);
+			Credential cred = new Credential(userId, credential.AuthToken, credential.RefreshToken, credential.RedirectUri);
             if (userId != null)
             {
                 store.Add(userId, cred);

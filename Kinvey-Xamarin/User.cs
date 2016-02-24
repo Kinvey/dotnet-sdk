@@ -390,9 +390,16 @@ namespace KinveyXamarin
 		/// <returns>The created User.</returns>
 		/// <param name="userid">the username of the user.</param>
 		/// <param name="password">the password for the user.</param>
-		public LoginRequest CreateBlocking(string username, string password) 
+		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
+		public LoginRequest CreateBlocking(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
         {
 			this.type = LoginType.KINVEY;
+			if (customFieldsAndValues != null) {
+				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues) {
+					this.Attributes.Add (entry.Key, entry.Value);
+				}
+			}
+
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
@@ -418,7 +425,7 @@ namespace KinveyXamarin
 			return getToken;
 		}
 
-		public RetrieveMICAccessToken UseRefreshToken(String refreshToken) {
+		public RetrieveMICAccessToken UseRefreshToken(String refreshToken, string redirectUri) {
 			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
 			//        refresh_token: use the refresh token 
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
@@ -427,7 +434,7 @@ namespace KinveyXamarin
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("grant_type", "refresh_token");
 			data.Add("refresh_token", refreshToken);
-			data.Add("redirect_uri", this.MICRedirectURI);
+			data.Add("redirect_uri", redirectUri);
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
 			var urlParameters = new Dictionary<string, string>();

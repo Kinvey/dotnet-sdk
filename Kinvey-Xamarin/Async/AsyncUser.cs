@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using KinveyUtils;
 using Newtonsoft.Json.Linq;
@@ -296,6 +297,7 @@ namespace KinveyXamarin
 					//store the new refresh token
 					Credential currentCred = KinveyClient.Store.Load(u.Id);
 					currentCred.RefreshToken = accessResult["refresh_token"].ToString();
+					currentCred.RedirectUri = this.MICRedirectURI;
 					KinveyClient.Store.Store(u.Id, currentCred);
 
 					if (MICDelegate != null){
@@ -328,6 +330,7 @@ namespace KinveyXamarin
 					//store the new refresh token
 					Credential currentCred = KinveyClient.Store.Load(u.Id);
 					currentCred.RefreshToken = result["refresh_token"].ToString();
+					currentCred.RedirectUri = this.MICRedirectURI;
 					KinveyClient.Store.Store(u.Id, currentCred);
 
 					if (MICDelegate != null){
@@ -364,11 +367,12 @@ namespace KinveyXamarin
 		/// <param name="userid">the username.</param>
 		/// <param name="password">the password.</param>
 		/// <param name="delegates">Delegates for success or failure.</param>
-		public void Create(string username, string password, KinveyDelegate<User> delegates)
+		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
+		public void Create(string username, string password, KinveyDelegate<User> delegates, Dictionary<string, JToken> customFieldsAndValues = null)
 		{
 			Task.Run (() => {
 				try{
-					User user = base.CreateBlocking(username, password).Execute();
+					User user = base.CreateBlocking(username, password, customFieldsAndValues).Execute();
 					delegates.onSuccess(user);
 				}catch(Exception e){
 					delegates.onError(e);
@@ -382,8 +386,9 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="userid">the username.</param>
 		/// <param name="password">the password.</param>
-		public async Task<User> CreateAsync(string username, string password){
-			return await base.CreateBlocking (username, password).ExecuteAsync ();
+		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
+		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null){
+			return await base.CreateBlocking (username, password, customFieldsAndValues).ExecuteAsync ();
 		}
 
 		/// <summary>

@@ -115,6 +115,11 @@ namespace KinveyXamarin
 				foreach (string key in keys) {
 					this.requestPayload.Add (key, user [key]);	
 				}
+
+				foreach (KeyValuePair<string, JToken> entry in user.Attributes) {
+					this.requestPayload.Add(entry.Key, entry.Value);
+				}
+
             }
             this.create = create;
             this.uriTemplateParameters = new Dictionary<string,string>();
