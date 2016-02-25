@@ -108,6 +108,9 @@ namespace KinveyXamarin
 		private async Task<HttpResponseMessage> uploadFileAsync(FileMetaData metadata, HttpContent input) {
 			string uploadURL = metadata.uploadUrl;
 
+			System.Net.Http.Headers.MediaTypeHeaderValue mt = new System.Net.Http.Headers.MediaTypeHeaderValue (metadata.mimetype);
+			input.Headers.ContentType = mt;
+
 			var httpClient = new HttpClient(new NativeMessageHandler());
 			Uri requestURI = new Uri (uploadURL);
 
