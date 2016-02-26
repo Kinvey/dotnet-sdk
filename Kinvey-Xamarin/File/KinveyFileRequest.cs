@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using RestSharp;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using ModernHttpClient;
 
 namespace KinveyXamarin
@@ -108,7 +109,7 @@ namespace KinveyXamarin
 		private async Task<HttpResponseMessage> uploadFileAsync(FileMetaData metadata, HttpContent input) {
 			string uploadURL = metadata.uploadUrl;
 
-			System.Net.Http.Headers.MediaTypeHeaderValue mt = new System.Net.Http.Headers.MediaTypeHeaderValue (metadata.mimetype);
+			MediaTypeHeaderValue mt = new MediaTypeHeaderValue (metadata.mimetype);
 			input.Headers.ContentType = mt;
 
 			var httpClient = new HttpClient(new NativeMessageHandler());
