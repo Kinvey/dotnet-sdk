@@ -120,6 +120,11 @@ namespace KinveyXamarin
 				mode = "PUT";
 			}
 
+			// set mimetype for GCS upload
+			if (string.IsNullOrEmpty(metadata.mimetype)) {
+				metadata.mimetype = "application/octet-stream";
+			}
+
 			UploadMetadataAndFile upload = new UploadMetadataAndFile (metadata, mode, urlParameters, this.client);
 
 			client.InitializeRequest (upload);
