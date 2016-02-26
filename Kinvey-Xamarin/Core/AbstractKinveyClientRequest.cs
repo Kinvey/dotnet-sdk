@@ -274,7 +274,16 @@ namespace KinveyXamarin
 
             foreach (var header in requestHeaders){
 				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
-            }            
+            }
+
+			// check to see if Kinvey content type needs to be added for GCS Upload
+			if (this.requestContent.GetType() == typeof(FileMetaData)) {
+				string mimetype = ((FileMetaData)this.requestContent).mimetype;
+
+				if (!string.IsNullOrEmpty(mimetype)) {
+					restRequest.AddHeader("X-Kinvey-Content-Type", mimetype);
+				}
+			}
 
 			if (client.GetClientAppVersion () != null && client.GetClientAppVersion ().Length > 0) {
 				restRequest.AddHeader ("X-Kinvey-Client-App-Version", this.clientAppVersion);
