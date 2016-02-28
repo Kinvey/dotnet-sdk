@@ -277,7 +277,8 @@ namespace KinveyXamarin
             }
 
 			// check to see if Kinvey content type needs to be added for GCS Upload
-			if (this.requestContent.GetType() == typeof(FileMetaData)) {
+			if ((this.requestContent != null) &&
+				(this.requestContent.GetType() == typeof(FileMetaData))) {
 				string mimetype = ((FileMetaData)this.requestContent).mimetype;
 
 				if (!string.IsNullOrEmpty(mimetype)) {
