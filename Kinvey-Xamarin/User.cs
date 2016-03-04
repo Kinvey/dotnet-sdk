@@ -130,7 +130,22 @@ namespace KinveyXamarin
 		/// </summary>
 		public string MICRedirectURI {get; set;}
 
-		protected string MICHostName { get; set;}
+		protected string MICHostName
+		{
+			get
+			{
+				if (this.client != null)
+				{
+					return this.client.MICHostName;
+				}
+				return null;
+			}
+
+			set
+			{
+				setMICHostName(value);
+			}
+		}
 
 		protected string MICApiVersion { get; set;}
 
@@ -141,9 +156,8 @@ namespace KinveyXamarin
 			if (!value.EndsWith ("/")) {
 				value += "/";
 			}
-			MICHostName = value;
 
-			this.client.MICHostName = MICHostName;
+			this.client.MICHostName = value;
 		}
 
 		public void setMICApiVersion(string version){
@@ -163,7 +177,6 @@ namespace KinveyXamarin
             this.client = client;
             this.builder = builder;
             builder.KinveyUser = this;
-			this.MICHostName = this.client.MICHostName;
 			this.Attributes = new Dictionary<string, JToken>();
         }
 		/// <summary>
