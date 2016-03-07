@@ -409,6 +409,11 @@ namespace KinveyXamarin
 					this.uriResourceParameters.Add("limit", decodedQueryMap["limit"]);		
 				}
 
+				if (decodedQueryMap.ContainsKey("sort")) {
+					this.uriTemplate += "&sort={sort}";
+					this.uriResourceParameters.Add("sort", decodedQueryMap["sort"]);
+				}
+
 				this.QueryString = decodedQueryMap["query"];
 				this.uriResourceParameters["querystring"] = this.QueryString;
 
