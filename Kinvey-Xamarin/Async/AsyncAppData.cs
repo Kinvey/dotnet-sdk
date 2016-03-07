@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -72,6 +73,37 @@ namespace KinveyXamarin
 
 		public async Task<T[]> GetAsync(string queryString){
 			return await base.getQueryBlocking (queryString).ExecuteAsync ();
+		}
+
+		/// <summary>
+		/// Gets a count of all the entities that match a particular query
+		/// </summary>
+		/// <returns>The async task which returns the count.</returns>
+		public async Task<uint> GetCountAsync()
+		{
+			uint count = 0;
+			T countObj = await base.getCountBlocking().ExecuteAsync ();
+			if (countObj is JObject) {
+				JToken value = (countObj as JObject).GetValue("count");
+				count = value.ToObject<uint>();
+			}
+			return count;
+		}
+
+		/// <summary>
+		/// Gets a count of all the entities that match a particular query
+		/// </summary>
+		/// <returns>The async task which returns the count.</returns>
+		/// <param name="queryString">The query to process.</param>
+		public async Task<uint> GetCountAsync(string queryString)
+		{
+			uint count = 0;
+			T countObj = await base.getCountBlocking(queryString).ExecuteAsync ();
+			if (countObj is JObject) {
+				JToken value = (countObj as JObject).GetValue("count");
+				count = value.ToObject<uint>();
+			}
+			return count;
 		}
 
 		/// <summary>
