@@ -761,9 +761,14 @@ namespace KinveyXamarin
 			{
 				JObject requestPayload = new JObject();
 
-				foreach (KeyValuePair<string, string> criterion in criteria.getCriteria())
+
+				if ((criteria != null) &&
+					(criteria.getCriteria() != null))
 				{
-					requestPayload.Add(criterion.Key, criterion.Value);
+					foreach (KeyValuePair<string, string> criterion in criteria.getCriteria())
+					{
+						requestPayload.Add(criterion.Key, criterion.Value);
+					}
 				}
 
 				base.HttpContent = requestPayload;
