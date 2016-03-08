@@ -20,66 +20,35 @@ namespace KinveyXamarin
 	/// </summary>
 	public class UserDiscovery
 	{
-		private string id;
-		private string username;
-		private string firstName;
-		private string lastName;
-		private string email;
-		private string facebookID;
-
 		/// <summary>
 		/// The _id parameter used for a UserDiscovery lookup
 		/// </summary>
-		public string ID
-		{
-			get { return this.id; }
-			set { this.id = value; }
-		}
+		public string ID { get; set; }
 
 		/// <summary>
 		/// The username parameter used for a UserDiscovery lookup
 		/// </summary>
-		public string Username
-		{
-			get { return this.username; }
-			set { this.username = value; }
-		}
+		public string Username { get; set; }
 
 		/// <summary>
 		/// The first_name parameter used for a UserDiscovery lookup
 		/// </summary>
-		public string FirstName
-		{
-			get { return this.firstName; }
-			set { this.firstName = value; }
-		}
+		public string FirstName { get; set; }
 
 		/// <summary>
 		/// The last_name parameter used for a UserDiscovery lookup
 		/// </summary>
-		public string LastName
-		{
-			get { return this.lastName; }
-			set { this.lastName = value; }
-		}
+		public string LastName { get; set; }
 
 		/// <summary>
 		/// The email parameter used for a UserDiscovery lookup
 		/// </summary>
-		public string Email
-		{
-			get { return this.email; }
-			set { this.email = value; }
-		}
+		public string Email { get; set; }
 
 		/// <summary>
 		/// The _socialidentity.facebook.id parameter used for a UserDiscovery lookup
 		/// </summary>
-		public string FacebookID
-		{
-			get { return this.facebookID; }
-			set { this.facebookID = value; }
-		}
+		public string FacebookID { get; set; }
 
 		/// <summary>
 		/// Used to see the criteria set for a UserDiscovery lookup
@@ -89,29 +58,29 @@ namespace KinveyXamarin
 		{
 			Dictionary<string, string> criteria = new Dictionary<string, string>();
 
-			if (!string.IsNullOrEmpty (id))
+			if (!string.IsNullOrEmpty (ID))
 			{
-				criteria.Add ("_id", id);
+				criteria.Add ("_id", ID);
 			}
-			if (!string.IsNullOrEmpty (username))
+			if (!string.IsNullOrEmpty (Username))
 			{
-				criteria.Add ("username", username);
+				criteria.Add ("username", Username);
 			}
-			if (!string.IsNullOrEmpty (firstName))
+			if (!string.IsNullOrEmpty (FirstName))
 			{
-				criteria.Add ("first_name", firstName);
+				criteria.Add ("first_name", FirstName);
 			}
-			if (!string.IsNullOrEmpty (lastName))
+			if (!string.IsNullOrEmpty (LastName))
 			{
-				criteria.Add ("last_name", lastName);
+				criteria.Add ("last_name", LastName);
 			}
-			if (!string.IsNullOrEmpty (email))
+			if (!string.IsNullOrEmpty (Email))
 			{
-				criteria.Add ("email", email);
+				criteria.Add ("email", Email);
 			}
-			if (!string.IsNullOrEmpty (facebookID))
+			if (!string.IsNullOrEmpty (FacebookID))
 			{
-				criteria.Add ("_socialidentity.facebook.id", facebookID);
+				criteria.Add ("_socialidentity.facebook.id", FacebookID);
 			}
 
 			return criteria;

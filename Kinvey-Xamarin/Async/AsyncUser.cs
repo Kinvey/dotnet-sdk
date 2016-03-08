@@ -466,6 +466,7 @@ namespace KinveyXamarin
 				{
 					User[] users = default(User[]);
 					if ((criteria != null) &&
+						(criteria.getCriteria() != null) &&
 						(criteria.getCriteria().Count > 0))
 					{
 						users = base.LookupBlocking(criteria).Execute();
@@ -490,6 +491,7 @@ namespace KinveyXamarin
 			User[] users = default(User[]);
 
 			if ((criteria != null) &&
+				(criteria.getCriteria() != null) &&
 			    (criteria.getCriteria().Count > 0))
 			{
 				users = await base.LookupBlocking(criteria).ExecuteAsync();
