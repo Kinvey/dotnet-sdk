@@ -76,7 +76,56 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Gets a count of all the entities that match a particular query
+		/// Gets a count of all the entities in a collection
+		/// </summary>
+		/// <param name="delegates">Delegates for success or failure.</param>
+		public void GetCount(KinveyDelegate<uint> delegates)
+		{
+			Task.Run( () => {
+				try
+				{
+					uint count = 0;
+					T countObj = base.getCountBlocking().Execute();
+					if (countObj is JObject) {
+						JToken value = (countObj as JObject).GetValue("count");
+						count = value.ToObject<uint>();
+					}
+					delegates.onSuccess(count);
+				}
+				catch(Exception e)
+				{
+					delegates.onError(e);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Gets a count of all the entities in a collection that match a particular query
+		/// </summary>
+		/// <param name="queryString">The query to process.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
+		public void GetCount(string queryString, KinveyDelegate<uint> delegates)
+		{
+			Task.Run( () => {
+				try
+				{
+					uint count = 0;
+					T countObj = base.getCountBlocking(queryString).Execute();
+					if (countObj is JObject) {
+						JToken value = (countObj as JObject).GetValue("count");
+						count = value.ToObject<uint>();
+					}
+					delegates.onSuccess(count);
+				}
+				catch(Exception e)
+				{
+					delegates.onError(e);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Gets a count of all the entities in a collection
 		/// </summary>
 		/// <returns>The async task which returns the count.</returns>
 		public async Task<uint> GetCountAsync()
@@ -91,7 +140,7 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Gets a count of all the entities that match a particular query
+		/// Gets a count of all the entities in a collection that match a particular query
 		/// </summary>
 		/// <returns>The async task which returns the count.</returns>
 		/// <param name="queryString">The query to process.</param>
