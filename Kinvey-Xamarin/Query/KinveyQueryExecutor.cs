@@ -230,6 +230,29 @@ namespace KinveyXamarin
 //				Logger.Log (or.Right.ToString());
 //				Logger.Log (or.Left.ToString());
 
+			}
+			else if (whereClause.Predicate.NodeType == ExpressionType.Call)
+			{
+				MethodCallExpression b = whereClause.Predicate as MethodCallExpression;
+				string argument = b.Arguments[0].ToString().Trim('"');
+
+				if (b.Method.Name.ToString().Equals("StartsWith"))
+				{
+					string name = (b.Object as MemberExpression).Member.Name.ToString();
+
+					writer.Write("\"" + name + "\"");
+					writer.Write(":{\"$regex\":\"^");
+					writer.Write(argument);
+					writer.Write("\"}");
+				}
+				else if (b.Method.Name.ToString().Equals("Equals"))
+				{
+					string name = (b.Object as MemberExpression).Member.Name.ToString();
+
+					writer.Write("\"" + name + "\"");
+					writer.Write(":");
+					writer.Write("\"" + argument + "\"");
+				}
 			} else {
 //				Logger.Log (whereClause.Predicate);
 //				Logger.Log (whereClause.Predicate.NodeType.ToString());
