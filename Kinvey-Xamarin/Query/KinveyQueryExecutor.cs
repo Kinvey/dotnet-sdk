@@ -234,12 +234,15 @@ namespace KinveyXamarin
 			else if (whereClause.Predicate.NodeType == ExpressionType.Call)
 			{
 				MethodCallExpression b = whereClause.Predicate as MethodCallExpression;
+
+				string name = (b.Object as MemberExpression).Member.Name.ToString();
+				name = name.Replace("\"", "\\\"");
+
 				string argument = b.Arguments[0].ToString().Trim('"');
+				argument = argument.Replace("\"", "\\\"");
 
 				if (b.Method.Name.ToString().Equals("StartsWith"))
 				{
-					string name = (b.Object as MemberExpression).Member.Name.ToString();
-
 					writer.Write("\"" + name + "\"");
 					writer.Write(":{\"$regex\":\"^");
 					writer.Write(argument);
@@ -247,8 +250,6 @@ namespace KinveyXamarin
 				}
 				else if (b.Method.Name.ToString().Equals("Equals"))
 				{
-					string name = (b.Object as MemberExpression).Member.Name.ToString();
-
 					writer.Write("\"" + name + "\"");
 					writer.Write(":");
 					writer.Write("\"" + argument + "\"");
