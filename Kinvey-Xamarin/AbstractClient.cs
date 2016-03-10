@@ -31,6 +31,13 @@ namespace KinveyXamarin
 		/// The default base URL.
 		/// </summary>
         public const string DefaultBaseUrl = "https://baas.kinvey.com/";
+
+		/// <summary>
+		/// Gets or sets the host URL for MIC.
+		/// </summary>
+		/// <value>The MIC host.</value>
+		public string MICHostName { get; set;}
+
 		/// <summary>
 		/// The default service path.
 		/// </summary>
@@ -68,6 +75,7 @@ namespace KinveyXamarin
             : base(client, rootUrl, servicePath, initializer)
         {
             this.store = store;
+			this.MICHostName = "https://auth.kinvey.com/";
         }
 
 		/// <summary>

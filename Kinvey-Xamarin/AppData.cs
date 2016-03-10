@@ -235,19 +235,57 @@ namespace KinveyXamarin
 		/// <param name="queryString">Query string.</param>
 		public GetQueryRequest getQueryBlocking (string queryString)
 		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", CollectionName);
+			urlParameters.Add("querystring", queryString);
+		
+
+			GetQueryRequest getQuery = new GetQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
+			client.InitializeRequest(getQuery);
+			getQuery.setCache(this.queryCache, this.cachePolicy);
+			getQuery.SetStore(this.store, this.offlinePolicy);
+			getQuery.clientAppVersion = this.GetClientAppVersion();
+			getQuery.customRequestHeaders = this.GetCustomRequestProperties();
+			return getQuery;
+		}
+
+		/// <summary>
+		/// Gets the count of records specified by the query.
+		/// </summary>
+		/// <returns>The number of records which match the query.</returns>
+		public GetCountRequest getCountBlocking()
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", CollectionName);
+
+			GetCountRequest getCount = new GetCountRequest(myClass, client, urlParameters, CollectionName);
+			client.InitializeRequest(getCount);
+			getCount.setCache(this.cache, this.cachePolicy);
+			getCount.clientAppVersion = this.GetClientAppVersion ();
+			getCount.customRequestHeaders = this.GetCustomRequestProperties ();
+			return getCount;
+		}
+
+		/// <summary>
+		/// Gets the count of records specified by the query.
+		/// </summary>
+		/// <returns>The number of records which match the query.</returns>
+		/// <param name="queryString">The query to apply to the collection.</param>
+		public GetCountQueryRequest getCountBlocking(string queryString)
+		{
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("collectionName", CollectionName);
 			urlParameters.Add ("querystring", queryString);
-		
 
-			GetQueryRequest getQuery = new GetQueryRequest (queryString, myClass, client, urlParameters, CollectionName);
-			client.InitializeRequest (getQuery);
-			getQuery.setCache (this.queryCache, this.cachePolicy);
-			getQuery.SetStore (this.store, this.offlinePolicy);
-			getQuery.clientAppVersion = this.GetClientAppVersion ();
-			getQuery.customRequestHeaders = this.GetCustomRequestProperties ();
-			return getQuery;
+			GetCountQueryRequest getCountQuery = new GetCountQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
+			client.InitializeRequest(getCountQuery);
+			getCountQuery.setCache(this.cache, this.cachePolicy);
+			getCountQuery.clientAppVersion = this.GetClientAppVersion ();
+			getCountQuery.customRequestHeaders = this.GetCustomRequestProperties ();
+			return getCountQuery;
 		}
 
 		/// <summary>
@@ -409,12 +447,78 @@ namespace KinveyXamarin
 					this.uriResourceParameters.Add("limit", decodedQueryMap["limit"]);		
 				}
 
+				if (decodedQueryMap.ContainsKey("sort")) {
+					this.uriTemplate += "&sort={sort}";
+					this.uriResourceParameters.Add("sort", decodedQueryMap["sort"]);
+				}
+
 				this.QueryString = decodedQueryMap["query"];
 				this.uriResourceParameters["querystring"] = this.QueryString;
 
 			}
 
 
+		}
+
+		/// <summary>
+		/// Get the count request, which is implemented synchronously.
+		/// </summary>
+		[JsonObject (MemberSerialization.OptIn)]
+		public class GetCountRequest : AbstractKinveyCachedClientRequest<T>
+		{
+			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count";
+
+			[JsonProperty]
+			public string collectionName;
+
+			public GetCountRequest(Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
+			{
+				this.collectionName = urlParameters ["collectionName"];
+			}
+		}
+
+		/// <summary>
+		/// Get the count request, which is implemented synchronously.
+		/// </summary>
+		[JsonObject (MemberSerialization.OptIn)]
+		public class GetCountQueryRequest : AbstractKinveyCachedClientRequest<T>
+		{
+			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
+
+			[JsonProperty]
+			public string QueryString { get; set; }
+
+			[JsonProperty]
+			public string collectionName;
+
+			public GetCountQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
+			{
+				this.collectionName = urlParameters ["collectionName"];
+				string queryBuilder = "query=" + urlParameters["querystring"];
+
+				var decodedQueryMap = queryBuilder.Split('&')
+					.ToDictionary(c => c.Split('=')[0],
+						c => Uri.UnescapeDataString(c.Split('=')[1]));
+
+				if (decodedQueryMap.ContainsKey("skip")){
+					this.uriTemplate += "&skip={skip}";
+					this.uriResourceParameters.Add("skip", decodedQueryMap["skip"]);
+				}
+				if (decodedQueryMap.ContainsKey("limit")){
+					this.uriTemplate += "&limit={limit}";
+					this.uriResourceParameters.Add("limit", decodedQueryMap["limit"]);
+				}
+
+				if (decodedQueryMap.ContainsKey("sort")) {
+					this.uriTemplate += "&sort={sort}";
+					this.uriResourceParameters.Add("sort", decodedQueryMap["sort"]);
+				}
+
+				this.QueryString = decodedQueryMap["query"];
+				this.uriResourceParameters["querystring"] = this.QueryString;
+			}
 		}
 
 		/// <summary>
