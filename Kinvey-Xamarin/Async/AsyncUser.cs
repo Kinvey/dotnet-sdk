@@ -454,6 +454,53 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// User Discovery Lookup of users, based on supplied criteria.
+		/// </summary>
+		/// <returns>The async task which will return an array of User objects.</returns>
+		/// <param name="criteria">UserDiscovery object which contains the lookup criteria.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
+		public void Lookup(UserDiscovery criteria, KinveyDelegate<User[]> delegates)
+		{
+			Task.Run ( () => {
+				try
+				{
+					User[] users = default(User[]);
+					if ((criteria != null) &&
+						(criteria.getCriteria() != null) &&
+						(criteria.getCriteria().Count > 0))
+					{
+						users = base.LookupBlocking(criteria).Execute();
+					}
+					delegates.onSuccess(users);
+
+				}
+				catch(Exception e)
+				{
+					delegates.onError(e);
+				}
+			});
+		}
+
+		/// <summary>
+		/// User Discovery Lookup of users, based on supplied criteria.
+		/// </summary>
+		/// <returns>The async task which will return an array of User objects.</returns>
+		/// <param name="criteria">UserDiscovery object which contains the lookup criteria.</param>
+		public async Task<User[]> LookupAsync(UserDiscovery criteria)
+		{
+			User[] users = default(User[]);
+
+			if ((criteria != null) &&
+				(criteria.getCriteria() != null) &&
+			    (criteria.getCriteria().Count > 0))
+			{
+				users = await base.LookupBlocking(criteria).ExecuteAsync();
+			}
+
+			return users;
+		}
+
+		/// <summary>
 		/// Update the current user
 		/// </summary>
 		/// <param name="delegates">Delegates for success or failure.</param>

@@ -344,6 +344,16 @@ namespace KinveyXamarin
 
 		}
 
+		public LookupRequest LookupBlocking(UserDiscovery criteria)
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			LookupRequest lookup = new LookupRequest(client, urlParameters, criteria);
+			client.InitializeRequest(lookup);
+
+			return lookup;
+		}
 
 		public UpdateRequest UpdateBlocking(User u){
 			var urlParameters = new Dictionary<string, string>();
@@ -754,6 +764,32 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Look up users.
+		/// </summary>
+		public class LookupRequest : AbstractKinveyClientRequest<User[]>
+		{
+			private const string REST_PATH = "user/{appKey}/_lookup";
+
+			public LookupRequest(AbstractClient client, Dictionary<string, string> urlProperties, UserDiscovery criteria) :
+				base(client, "POST", REST_PATH, null, urlProperties)
+			{
+				JObject requestPayload = new JObject();
+
+
+				if ((criteria != null) &&
+					(criteria.getCriteria() != null))
+				{
+					foreach (KeyValuePair<string, string> criterion in criteria.getCriteria())
+					{
+						requestPayload.Add(criterion.Key, criterion.Value);
+					}
+				}
+
+				base.HttpContent = requestPayload;
+			}
+		}
+
+		/// <summary>
 		/// Update a user
 		/// </summary>
 		public class UpdateRequest : AbstractKinveyClientRequest<User> {
@@ -880,7 +916,7 @@ namespace KinveyXamarin
 				return user.getMICToken (accesstoken).Execute();
 			}
 		}
-			
+
     }
 }
 
