@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
-namespace UnitTestFrameworkAndroid
+namespace UnitTestFramework
 {
 	[TestFixture]
 	public class TestUser
@@ -89,28 +89,26 @@ namespace UnitTestFrameworkAndroid
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestDeleteUserSoftAsync()
 		{
-			//			// Arrange
-			//			string userID = "4567";
-			//
-			//			// Act
-			//			User.DeleteRequest deleteRequest = await kinveyClient.User().DeleteAsync(userID, false);
-			//
-			//			// Assert
-			//			Assert.True(deleteRequest.RequestMethod == "DELETE");
+//			// Arrange
+//			string userID = "4567";
+//
+//			// Act
+//			User.DeleteRequest deleteRequest = await kinveyClient.User().DeleteAsync(userID, false);
+//
+//			// Assert
+//			Assert.True(deleteRequest.RequestMethod == "DELETE");
 		}
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async void TestDeleteUserHardAsync()
 		{
-			//			string userID;
-			//
-			//			User.DeleteRequest deleteRequest = await kinveyClient.User().DeleteAsync(userID, true);
-			//
-			//			// Assert
-			//			Assert.True(deleteRequest.RequestMethod == "DELETE");
+//			string userID;
+//
+//			User.DeleteRequest deleteRequest = await kinveyClient.User().DeleteAsync(userID, true);
+//
+//			// Assert
+//			Assert.True(deleteRequest.RequestMethod == "DELETE");
 		}
 	}
 }
-
-

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using KinveyXamarin;
 using System.Threading.Tasks;
 
-namespace UnitTestFrameworkiOS
+namespace UnitTestFramework
 {
 	[TestFixture]
 	public class TestAppData
