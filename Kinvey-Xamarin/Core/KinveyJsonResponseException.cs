@@ -86,27 +86,7 @@ namespace KinveyXamarin
 					details = KinveyJsonError.parse(response);
 				}
 
-				if (response.Headers != null)
-				{
-					foreach (Parameter h in response.Headers)
-					{
-						if (h.Name.Equals("X-Kinvey-Request-Id"))
-						{
-							object value = h.Value;
-							Type valueType = value.GetType();
-							if ((valueType.IsArray) &&
-								(valueType.GetElementType() == typeof(string)))
-							{
-								string[] arrRequestID = ((string[])value);
-								if (arrRequestID != null &&
-									arrRequestID.Length > 0)
-								{
-									details.RequestID = arrRequestID[0];
-								}
-							}
-						}
-					}
-				}
+				details.RequestID = HelperMethods.getRequestID(response);
             }
             catch (IOException ex)
             {

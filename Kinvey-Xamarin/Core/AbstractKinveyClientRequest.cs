@@ -352,7 +352,7 @@ namespace KinveyXamarin
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
 				KinveyException kinveyException = new KinveyException("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
-				kinveyException.RequestID = getRequestID(response);
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
 
@@ -423,7 +423,7 @@ namespace KinveyXamarin
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
 				KinveyException kinveyException = new KinveyException("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
-				kinveyException.RequestID = getRequestID(response);
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
 
@@ -506,7 +506,7 @@ namespace KinveyXamarin
             }
 			catch(JsonException ex){
 				KinveyException kinveyException = new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
-				kinveyException.RequestID = getRequestID(response);
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
             catch(ArgumentException ex)
@@ -539,7 +539,7 @@ namespace KinveyXamarin
 			}
 			catch(JsonException ex){
 				KinveyException kinveyException = new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
-				kinveyException.RequestID = getRequestID(response);
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
 			catch(ArgumentException ex)
@@ -590,33 +590,6 @@ namespace KinveyXamarin
 				return String.Join("&", dict.Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), "=", Uri.EscapeDataString(kvp.Value.ToString()))));
 
 			}
-		}
-
-		private string getRequestID(IRestResponse response)
-		{
-			if (response.Headers != null)
-			{
-				foreach (Parameter h in response.Headers)
-				{
-					if (h.Name.Equals("X-Kinvey-Request-Id"))
-					{
-						object value = h.Value;
-						Type valueType = value.GetType();
-						if ((valueType.IsArray) &&
-							(valueType.GetElementType() == typeof(string)))
-						{
-							string[] arrRequestID = ((string[])value);
-							if (arrRequestID != null &&
-								arrRequestID.Length > 0)
-							{
-								return arrRequestID[0];
-							}
-						}
-					}
-				}
-			}
-
-			return null;
 		}
     }
 }
