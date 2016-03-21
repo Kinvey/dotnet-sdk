@@ -103,6 +103,12 @@ namespace KinveyXamarin
 		/// </summary>
 		[JsonExtensionData]
 		public Dictionary<string, JToken> customFieldsAndValues;
+
+		[JsonProperty("_kmd")]
+		private readonly Dictionary<string, JToken> kmd;
+
+		[JsonProperty("_expiresAt")]
+		private readonly String expiresAt;
 	}
 }
 
