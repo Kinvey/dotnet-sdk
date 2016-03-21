@@ -28,6 +28,13 @@ namespace KinveyXamarin
     public class KinveyJsonError
     {
 		/// <summary>
+		/// Gets the request ID that generated this JSON error
+		/// <value>The Kinvey Request ID.</value>
+		/// </summary>
+		[JsonProperty]
+		public string RequestID { get; set; }
+
+		/// <summary>
 		/// Gets or sets the error.
 		/// </summary>
 		/// <value>The error.</value>
