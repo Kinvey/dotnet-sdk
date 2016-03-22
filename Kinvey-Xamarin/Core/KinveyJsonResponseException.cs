@@ -85,6 +85,8 @@ namespace KinveyXamarin
 				}else if (response.Content != null){
 					details = KinveyJsonError.parse(response);
 				}
+
+				details.RequestID = HelperMethods.getRequestID(response);
             }
             catch (IOException ex)
             {
