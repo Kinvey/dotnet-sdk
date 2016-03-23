@@ -26,6 +26,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestFramework-iOS", "UnitTestFramework-iOS\UnitTestFramework-iOS.csproj", "{A5C2FD19-6917-413B-98BC-D4FFF1E43D81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestFramework-Android", "UnitTestFramework-Android\UnitTestFramework-Android.csproj", "{62E1D6D2-3888-4F43-A641-11A891957070}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test-ios-app", "test-ios-app\test-ios-app.csproj", "{DF7B3CED-9867-4353-9363-5D1282160715}"
 EndProject
 Global
