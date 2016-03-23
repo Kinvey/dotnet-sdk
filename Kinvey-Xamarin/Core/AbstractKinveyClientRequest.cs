@@ -351,7 +351,9 @@ namespace KinveyXamarin
 			var response = req.Result;
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				throw new KinveyException ("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
+				KinveyException kinveyException = new KinveyException("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
+				throw kinveyException;
 			}
 
             lastResponseCode = (int)response.StatusCode;
@@ -420,8 +422,9 @@ namespace KinveyXamarin
 			var response = await client.ExecuteAsync(request);
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				throw new KinveyException ("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
-
+				KinveyException kinveyException = new KinveyException("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
+				throw kinveyException;
 			}
 
 			lastResponseCode = (int)response.StatusCode;
@@ -502,7 +505,9 @@ namespace KinveyXamarin
 				return JsonConvert.DeserializeObject<T>(response.Content);
             }
 			catch(JsonException ex){
-				throw new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
+				KinveyException kinveyException = new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
+				throw kinveyException;
 			}
             catch(ArgumentException ex)
             {
@@ -533,7 +538,9 @@ namespace KinveyXamarin
 				return JsonConvert.DeserializeObject<T>(response.Content);
 			}
 			catch(JsonException ex){
-				throw new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
+				KinveyException kinveyException = new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
+				kinveyException.RequestID = HelperMethods.getRequestID(response);
+				throw kinveyException;
 			}
 			catch(ArgumentException ex)
 			{
@@ -584,6 +591,5 @@ namespace KinveyXamarin
 
 			}
 		}
-			
     }
 }

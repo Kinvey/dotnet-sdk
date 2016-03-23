@@ -149,17 +149,25 @@ namespace KinveyXamarin
 
 		protected string MICApiVersion { get; set;}
 
-		public void setMICHostName(string value){
-			if (!value.StartsWith("https")){
+		/// <summary>
+		/// The host name for your MIC API. This is relevant if you are using a dedicated instance of Kinvey, with an auth base URL that differs from https://auth.kinvey.com
+		/// </summary>
+		/// <param name="host">Your MIC host. Your hostname must use "https".</param>
+		public void setMICHostName(string host){
+			if (!host.StartsWith("https")){
 				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + MICHostName);
 			}	
-			if (!value.EndsWith ("/")) {
-				value += "/";
+			if (!host.EndsWith ("/")) {
+				host += "/";
 			}
 
-			this.client.MICHostName = value;
+			this.client.MICHostName = host;
 		}
 
+		/// <summary>
+		/// Sets the MIC API version. This is relevant in case you need to use a specific version of MIC such as an Early Adopter release.
+		/// </summary>
+		/// <param name="version">MIC version. eg: "v2". </param>
 		public void setMICApiVersion(string version){
 			if (!version.StartsWith("v")){
 				version = "v" + version;
@@ -277,11 +285,21 @@ namespace KinveyXamarin
 			return new LoginRequest (cred, this).buildAuthRequest ();
         }
 
+		/// <summary>
+		/// Logs a user in synchronously with a third party identity.
+		/// </summary>
+		/// <returns>The request instance used to login the user.</returns>
+		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
 		public LoginRequest LoginBlocking(ThirdPartyIdentity identity){
 			this.type = LoginType.THIRDPARTY;
 			return new LoginRequest (identity, this).buildAuthRequest ();
 		}
 
+		/// <summary>
+		/// Logs a user in synchronously with Mobile Identity Connect.
+		/// </summary>
+		/// <returns>The request instance used to login the user.</returns>
+		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
 		public MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity){
 			this.type = LoginType.THIRDPARTY;
 			return new MICLoginRequest (identity, this).buildAuthRequest ();
@@ -310,7 +328,11 @@ namespace KinveyXamarin
             return new LogoutRequest(this.KinveyClient.Store, this);
         }
 
-
+		/// <summary>
+		/// Retrieves a user synchronously.
+		/// </summary>
+		/// <returns>The request instance used to retrieve the user.</returns>
+		/// <param name="userid">The ID of the user.</param>
 		public RetrieveRequest RetrieveBlocking(string userid){
 
 			var urlParameters = new Dictionary<string, string>();
@@ -321,7 +343,15 @@ namespace KinveyXamarin
 
 			return retrieve;
 		}
-			
+
+		/// <summary>
+		/// Retrieves a set of users synchronously, based on a query.
+		/// </summary>
+		/// <returns>The request instance used to retrieve the users.</returns>
+		/// <param name="query">Query string to filter users.</param>
+		/// <param name="resolves">The "resolve" query parameter that is used to resolve named references.</param>
+		/// <param name="resolve_depth">The "resolve_depth" query parameter that resolves all references included in the enclosing entity up to a depth X.</param>
+		/// <param name="retain">If set to <c>true</c>, retain references.</param>
 		public RetrieveUsersRequest RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain){
 
 			var urlParameters = new Dictionary<string, string>();
@@ -344,7 +374,27 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// Synchronously looks up users in the user collection based on a criteria.
+		/// </summary>
+		/// <returns>The request that looks up the user collection.</returns>
+		/// <param name="criteria">The criteria used for the lookup.</param>
+		public LookupRequest LookupBlocking(UserDiscovery criteria)
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
+			LookupRequest lookup = new LookupRequest(client, urlParameters, criteria);
+			client.InitializeRequest(lookup);
+
+			return lookup;
+		}
+
+		/// <summary>
+		/// Updates a user synchronously.
+		/// </summary>
+		/// <returns>The request that updates the user on the backend.</returns>
+		/// <param name="u">The user to update</param>
 		public UpdateRequest UpdateBlocking(User u){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -359,6 +409,11 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// Resets the user's password synchronously.
+		/// </summary>
+		/// <returns>The request that resets the password.</returns>
+		/// <param name="userid">User ID</param>
 		public ResetPasswordRequest ResetPasswordBlocking(string userid){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -372,6 +427,12 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// Deletes a user synchronously.
+		/// </summary>
+		/// <returns>The request that deletes the user.</returns>
+		/// <param name="userid">User ID</param>
+		/// <param name="hard">If set to <c>true</c>  perform a hard delete.</param>
 		public DeleteRequest DeleteBlocking(string userid, bool hard){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -385,6 +446,11 @@ namespace KinveyXamarin
 			return delete;		
 		}
 
+		/// <summary>
+		/// Sends the user an email for verification.
+		/// </summary>
+		/// <returns>The client request that sends out the verification email.</returns>
+		/// <param name="userid">User ID</param>
 		public EmailVerificationRequest EmailVerificationBlocking(string userid){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -417,6 +483,11 @@ namespace KinveyXamarin
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
+		/// <summary>
+		/// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token.
+		/// </summary>
+		/// <returns>The client request that gets the MIC token.</returns>
+		/// <param name="code">The authorization code.</param>
 		public RetrieveMICAccessToken getMICToken(String code){
 
 			//        grant_type: "authorization_code" - this is always set to this value
@@ -439,6 +510,12 @@ namespace KinveyXamarin
 			return getToken;
 		}
 
+		/// <summary>
+		/// Generates a request that uses the refresh token to retrieve a new MIC user token.
+		/// </summary>
+		/// <returns>The client request that gets the MIC token.</returns>
+		/// <param name="refreshToken">The refresh token.</param>
+		/// <param name="redirectUri">The redirect uri (this is the same uri used when obtaining the auth grant)</param>
 		public RetrieveMICAccessToken UseRefreshToken(String refreshToken, string redirectUri) {
 			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
 			//        refresh_token: use the refresh token 
@@ -462,10 +539,14 @@ namespace KinveyXamarin
 
 		}
 
+		/// <summary>
+		/// Generates a request to get a temporary MIC URL (automated authorization grant flow).
+		/// </summary>
+		/// <returns>The client request to get the temporary MIC URL.</returns>
 		public GetMICTempURL getMICTempURL() {
 
 			//    	client_id:  this is the app’s appKey (the KID)
-			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
+			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
 			//    	response_type:  this is always set to “code”
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
@@ -486,7 +567,13 @@ namespace KinveyXamarin
 
 		}
 
-
+		/// <summary>
+		/// Generates a request to login a user to the temporary MIC URL (automated authorization grant flow).
+		/// </summary>
+		/// <param name="username">Username</param>
+		/// <param name="password">Password</param>
+		/// <param name="tempURL">Temporary MIC url to use for login</param>
+		/// <returns>The client request to get the temporary MIC URL.</returns>
 		public LoginToTempURL MICLoginToTempURL(String username, String password, String tempURL){
 
 			//    	client_id:  this is the app’s appKey (the KID)
@@ -754,6 +841,32 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Look up users.
+		/// </summary>
+		public class LookupRequest : AbstractKinveyClientRequest<User[]>
+		{
+			private const string REST_PATH = "user/{appKey}/_lookup";
+
+			public LookupRequest(AbstractClient client, Dictionary<string, string> urlProperties, UserDiscovery criteria) :
+				base(client, "POST", REST_PATH, null, urlProperties)
+			{
+				JObject requestPayload = new JObject();
+
+
+				if ((criteria != null) &&
+					(criteria.getCriteria() != null))
+				{
+					foreach (KeyValuePair<string, string> criterion in criteria.getCriteria())
+					{
+						requestPayload.Add(criterion.Key, criterion.Value);
+					}
+				}
+
+				base.HttpContent = requestPayload;
+			}
+		}
+
+		/// <summary>
 		/// Update a user
 		/// </summary>
 		public class UpdateRequest : AbstractKinveyClientRequest<User> {
@@ -831,7 +944,9 @@ namespace KinveyXamarin
 			}
 		}
 
-
+		/// <summary>
+		/// Request to retrieve MIC access token.
+		/// </summary>
 		public class RetrieveMICAccessToken : AbstractKinveyClientRequest<JObject>{
 			private const string REST_PATH = "oauth/token";
 
@@ -841,6 +956,9 @@ namespace KinveyXamarin
 			}
 		}
 
+		/// <summary>
+		/// Request to get MIC temp URL (automated authorization grant flow).
+		/// </summary>
 		public class GetMICTempURL : AbstractKinveyClientRequest<JObject>{
 			private const string REST_PATH = "oauth/auth";
 
@@ -856,6 +974,9 @@ namespace KinveyXamarin
 
 		} 
 
+		/// <summary>
+		/// Request to login to temp URL (automated autorization grant flow).
+		/// </summary>
 		public class LoginToTempURL : AbstractKinveyClientRequest<JObject>{
 
 			private User user;
@@ -880,7 +1001,7 @@ namespace KinveyXamarin
 				return user.getMICToken (accesstoken).Execute();
 			}
 		}
-			
+
     }
 }
 

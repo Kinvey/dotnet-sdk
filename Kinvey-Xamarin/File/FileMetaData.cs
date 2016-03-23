@@ -13,6 +13,7 @@
 
 using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
 namespace KinveyXamarin
@@ -28,6 +29,7 @@ namespace KinveyXamarin
 		/// </summary>
 		public FileMetaData ()
 		{
+			Attributes = new Dictionary<string, JToken>();
 		}
 
 		/// <summary>
@@ -95,6 +97,18 @@ namespace KinveyXamarin
 
 		[JsonProperty("_requiredHeaders")]
 		public Dictionary<string, string> headers;
+
+		/// <summary>
+		/// Get/Set custom attributes in a FileMetaData object
+		/// </summary>
+		[JsonExtensionData]
+		public Dictionary<string, JToken> Attributes;
+
+		[JsonProperty("_kmd")]
+		private readonly Dictionary<string, JToken> kmd;
+
+		[JsonProperty("_expiresAt")]
+		private readonly String expiresAt;
 	}
 }
 

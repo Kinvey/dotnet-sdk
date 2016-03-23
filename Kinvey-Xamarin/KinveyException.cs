@@ -38,6 +38,13 @@ namespace KinveyXamarin
         private string explanation;
 
 		/// <summary>
+		/// [optional] The request ID associated with this exception.
+		/// This field may be empty if there is no associated request ID with
+		/// this exception (e.g. a client-side validation exception)
+		/// </summary>
+		private string requestID;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
 		/// </summary>
 		/// <param name="reason">Reason.</param>
@@ -93,6 +100,16 @@ namespace KinveyXamarin
             get { return explanation; }
             set { this.explanation = value; }
         }
+
+		/// <summary>
+		/// Gets or sets the request ID.  Can be empty if there is no associated request ID.
+		/// </summary>
+		/// <value>The request ID associated with this exception.</value>
+		public string RequestID
+		{
+			get { return this.requestID == null ? "" : this.requestID; }
+			set { this.requestID = value; }
+		}
 
 		/// <summary>
 		/// Formats the message.
