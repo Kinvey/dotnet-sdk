@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -54,7 +54,6 @@
     <Compile Include="Core\KinveyJsonResponseException.cs" />
     <Compile Include="Cache\InMemoryCache.cs" />
     <Compile Include="Cache\AbstractKinveyCachedClientRequest.cs" />
-    <Compile Include="Cache\CachePolicy.cs" />
     <Compile Include="Async\Client.cs" />
     <Compile Include="Async\AsyncUser.cs" />
     <Compile Include="Async\KinveyDelegate.cs" />
@@ -90,6 +89,9 @@
     <Compile Include="AbstractPush.cs" />
     <Compile Include="Query\KinveyQueryExecutor.cs" />
     <Compile Include="Core\PreserveAttribute.cs" />
+    <Compile Include="Cache\ReadPolicy.cs" />
+    <Compile Include="Cache\WritePolicy.cs" />
+    <Compile Include="DataStoreType.cs" />
     <Compile Include="UserDiscovery.cs" />
     <Compile Include="HelperMethods.cs" />
   </ItemGroup>

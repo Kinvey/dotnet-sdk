@@ -88,19 +88,7 @@ namespace KinveyXamarin
 				return null;
 			}
 		}
-
-		/// <summary>
-		/// Use this accessor to get a configured instance of the <see cref="KinveyXamarin.AsyncAppData"/> class.
-		/// </summary>
-		/// <returns>A configured instance of AppData.</returns>
-		/// <param name="collectionName">The collection name associated with this instance of AppData.</param>
-		/// <param name="myClass">The Class associated with entites in the collection.</param>
-		/// <typeparam name="T">The Type of the entity in the collection.</typeparam>
-		public new AsyncAppData<T> AppData<T>(string collectionName, Type myClass)
-		{
-			return new AsyncAppData<T>(collectionName, myClass, this);
-		}
-
+			
 		/// <summary>
 		/// Access file operations through this.
 		/// </summary>

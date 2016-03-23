@@ -32,7 +32,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The policy.
 		/// </summary>
-		private OfflinePolicy policy = OfflinePolicy.ALWAYS_ONLINE;
+		private ReadPolicy policy = ReadPolicy.FORCE_NETWORK;
 
 		/// <summary>
 		/// The name of the collection.
@@ -51,7 +51,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="newStore">the offline store to use.</param>
 		/// <param name="newPolicy">the offline policy to use.</param>
-		public void SetStore(IOfflineStore newStore, OfflinePolicy newPolicy){
+		public void SetStore(IOfflineStore newStore, ReadPolicy newPolicy){
 			this.store = newStore;
 			this.policy = newPolicy;
 		}
@@ -147,16 +147,16 @@ namespace KinveyXamarin
 		public override T Execute(){
 			T ret =  default(T);
 
-			if (policy == OfflinePolicy.ALWAYS_ONLINE) {
+			if (policy == ReadPolicy.FORCE_NETWORK) {
 				ret = offlineFromService ();
 
-			} else if (policy == OfflinePolicy.LOCAL_FIRST) {
+			} else if (policy == ReadPolicy.BOTH) {
 				ret = offlineFromStore ();
 				if (ret == null) {
 					ret = offlineFromService ();
 				}
 
-			} else if (policy == OfflinePolicy.ONLINE_FIRST) {
+			} else if (policy == ReadPolicy.NETWORK_FIRST) {
 				try {
 					ret = offlineFromService ();
 				} catch (Exception e) {
@@ -172,16 +172,16 @@ namespace KinveyXamarin
 		public async override Task<T> ExecuteAsync(){
 			T ret =  default(T);
 
-			if (policy == OfflinePolicy.ALWAYS_ONLINE) {
+			if (policy == ReadPolicy.FORCE_NETWORK) {
 				ret = await offlineFromServiceAsync ();
 
-			} else if (policy == OfflinePolicy.LOCAL_FIRST) {
+			} else if (policy == ReadPolicy.BOTH) {
 				ret = await offlineFromStoreAsync ();
 				if (ret == null) {
 					ret = await offlineFromServiceAsync ();
 				}
 
-			} else if (policy == OfflinePolicy.ONLINE_FIRST) {
+			} else if (policy == ReadPolicy.NETWORK_FIRST) {
 				bool failed = false;
 				try {
 					ret = await offlineFromServiceAsync ();

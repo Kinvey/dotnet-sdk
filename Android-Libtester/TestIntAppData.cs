@@ -16,14 +16,14 @@ namespace AndroidLibtester
 		private string someID = "test";
 
 		private Client client;
-		private AsyncAppData<MyEntity> appData;
+		//private AsyncAppData<MyEntity> appData;
+		private AppData<MyEntity> appData;
 
 		[SetUp]
 		public void Setup ()
 		{
 			client = new Client.Builder (kid, secret).build ();
 			appData = client.AppData<MyEntity> (collection, typeof(MyEntity));
-
 		}
 
 

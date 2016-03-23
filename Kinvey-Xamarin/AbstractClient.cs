@@ -97,7 +97,8 @@ namespace KinveyXamarin
 		/// <typeparam name="T">The Type associated with the Class</typeparam>
         public AppData<T> AppData<T>(String collectionName, Type myClass)
         {
-			return new AppData<T>(collectionName, myClass, this);
+			//return new AppData<T>(collectionName, myClass, this);
+			return KinveyXamarin.AppData<T>.GetInstance(DataStoreType.SYNC, this);
 //            lock(Lock) 
 //            {
 //                if (appData == null) 

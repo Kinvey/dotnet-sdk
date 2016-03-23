@@ -16,7 +16,7 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">The class json data will be serialized into.</param>
 		/// <param name="client">A configured instance of a Kinvey client.</param>
-		public AsyncAppData (string collectionName, Type myClass, AbstractClient client): base(collectionName, myClass, client)
+		public AsyncAppData (string collectionName, Type myClass, AbstractClient client): base(DataStoreType.SYNC, client)
 		{
 		}
 			
@@ -37,15 +37,6 @@ namespace KinveyXamarin
 			});
 
 		}
-
-		/// <summary>
-		/// Get a single entity stored in a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entityId">Entity identifier.</param>
-		public async Task<T> GetEntityAsync(string entityId){
-			return await GetEntityBlocking (entityId).ExecuteAsync ();
-		}
 			
 		/// <summary>
 		/// Get all entities from a Kinvey collection.
@@ -61,18 +52,6 @@ namespace KinveyXamarin
 					delegates.onError (e);
 				}
 			});
-		}
-
-		/// <summary>
-		/// Get all entities from a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		public async Task<T[]> GetAsync(){
-			return await GetBlocking ().ExecuteAsync ();
-		}
-
-		public async Task<T[]> GetAsync(string queryString){
-			return await base.getQueryBlocking (queryString).ExecuteAsync ();
 		}
 
 		/// <summary>
@@ -125,21 +104,6 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Gets a count of all the entities in a collection
-		/// </summary>
-		/// <returns>The async task which returns the count.</returns>
-		public async Task<uint> GetCountAsync()
-		{
-			uint count = 0;
-			T countObj = await base.getCountBlocking().ExecuteAsync ();
-			if (countObj is JObject) {
-				JToken value = (countObj as JObject).GetValue("count");
-				count = value.ToObject<uint>();
-			}
-			return count;
-		}
-
-		/// <summary>
 		/// Gets a count of all the entities in a collection that match a particular query
 		/// </summary>
 		/// <returns>The async task which returns the count.</returns>
@@ -172,14 +136,6 @@ namespace KinveyXamarin
 			});
 		}
 
-		/// <summary>
-		/// Save the specified entity to a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entity">the entity to save.</param>
-		public async Task<T> SaveAsync(T entity){
-			return await SaveBlocking (entity).ExecuteAsync ();
-		}
 
 		/// <summary>
 		/// Returns the results of a kinvey-style mongodb raw query.  Note this class also supports LINQ for querying.
@@ -198,23 +154,6 @@ namespace KinveyXamarin
 
 		}
 
-		/// <summary>
-		/// Returns the results of a kinvey-style mongodb raw query.  Note this class also supports LINQ for querying.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="query">The raw query string to execute.</param>
-		public async Task<T[]> getAsync(string query){
-			return await getQueryBlocking (query).ExecuteAsync ();
-		}
-
-		/// <summary>
-		/// Deletes the entity associated with the provided id
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entityId">the _id of the entity to delete.</param>
-		public async Task<KinveyDeleteResponse> DeleteAsync(string entityId){
-			return await DeleteBlocking (entityId).ExecuteAsync ();
-		}
 	}
 }
 

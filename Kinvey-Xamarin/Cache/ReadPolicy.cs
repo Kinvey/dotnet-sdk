@@ -18,20 +18,20 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Cache policies, used for Caching.
 	/// </summary>
-	public enum CachePolicy
+	public enum ReadPolicy
 	{
 		/// <summary>
 		/// Executes the request online every single time.
 		/// </summary>
-		NO_CACHE,
+		FORCE_NETWORK,
 		/// <summary>
 		/// Executes the request from the cache every single time.
 		/// </summary>
-		CACHE_ONLY,
+		FORCE_LOCAL,
 		/// <summary>
 		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
 		/// </summary>
-		CACHE_FIRST,
+		BOTH,
 		/// <summary>
 		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will not be cached.
 		/// </summary>

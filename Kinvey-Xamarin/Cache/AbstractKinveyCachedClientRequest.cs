@@ -25,7 +25,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The cache policy.
 		/// </summary>
-		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
+		private ReadPolicy cachePolicy = ReadPolicy.FORCE_NETWORK;
 		// TODO no anonymous interface support in c# -> investigate making ICache an abstract class
 		/// <summary>
 		/// The cache itself.
@@ -55,7 +55,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Policy.</param>
-		public void setCache(Cache<String, T> cache, CachePolicy policy)
+		public void setCache(Cache<String, T> cache, ReadPolicy policy)
 		{
 			this.cache = cache;
 			this.cachePolicy = policy;
@@ -132,23 +132,23 @@ namespace KinveyXamarin
 		{
 			T ret = default(T);
 
-			if (cachePolicy == CachePolicy.NO_CACHE) {
+			if (cachePolicy == ReadPolicy.FORCE_NETWORK) {
 				ret = fromService (false);
 
-			} else if (cachePolicy == CachePolicy.CACHE_ONLY) {
+			} else if (cachePolicy == ReadPolicy.FORCE_LOCAL) {
 				ret = fromCache ();
 
-			} else if (cachePolicy == CachePolicy.CACHE_FIRST) {
+			} else if (cachePolicy == ReadPolicy.BOTH) {
 				ret = fromCache ();
 				if (ret == null) {
 					ret = fromService (true);
 				}
-			} else if (cachePolicy == CachePolicy.CACHE_FIRST_NOREFRESH) {
+			} else if (cachePolicy == ReadPolicy.CACHE_FIRST_NOREFRESH) {
 				ret = fromCache ();
 				if (ret == null) {
 					ret = fromService(false);
 				}
-			} else if (cachePolicy == CachePolicy.NETWORK_FIRST) {
+			} else if (cachePolicy == ReadPolicy.NETWORK_FIRST) {
 				ret = fromService (true);
 				if (ret == null) {
 					ret = fromCache ();
@@ -164,23 +164,23 @@ namespace KinveyXamarin
 
 			T ret = default(T);
 
-			if (cachePolicy == CachePolicy.NO_CACHE) {
+			if (cachePolicy == ReadPolicy.FORCE_NETWORK) {
 				ret = await fromServiceAsync (false);
 
-			} else if (cachePolicy == CachePolicy.CACHE_ONLY) {
+			} else if (cachePolicy == ReadPolicy.FORCE_LOCAL) {
 				ret = fromCache ();
 
-			} else if (cachePolicy == CachePolicy.CACHE_FIRST) {
+			} else if (cachePolicy == ReadPolicy.BOTH) {
 				ret = fromCache ();
 				if (ret == null) {
 					ret = await fromServiceAsync (true);
 				}
-			} else if (cachePolicy == CachePolicy.CACHE_FIRST_NOREFRESH) {
+			} else if (cachePolicy == ReadPolicy.CACHE_FIRST_NOREFRESH) {
 				ret = fromCache ();
 				if (ret == null) {
 					ret = await fromServiceAsync(false);
 				}
-			} else if (cachePolicy == CachePolicy.NETWORK_FIRST) {
+			} else if (cachePolicy == ReadPolicy.NETWORK_FIRST) {
 				ret = await fromServiceAsync (true);
 				if (ret == null) {
 					ret = fromCache ();

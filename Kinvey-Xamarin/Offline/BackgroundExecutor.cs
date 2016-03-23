@@ -88,7 +88,7 @@ namespace KinveyXamarin
 			string verb = item.action;
 			SQLTemplates.OfflineMetaData meta = JsonConvert.DeserializeObject<SQLTemplates.OfflineMetaData>(item.OfflineMetaDataAsJson);
 
-			AsyncAppData<T> appdata = client.AppData<T> (collection, typeof(T));
+			AppData<T> appdata = client.AppData<T> (collection, typeof(T));
 
 			switch (verb) {
 			case "QUERY":
@@ -122,42 +122,68 @@ namespace KinveyXamarin
 				break;
 			case "PUT":
 
-
 				T entity = handler.getEntityAsync (collection, meta.id).Result;
 				appdata.SetCustomRequestProperties (meta.customHeaders);
 				appdata.SetClientAppVersion (meta.clientVersion);
-				appdata.Save (entity, new KinveyDelegate<T> { 
-					onSuccess = (T) => { 
-						string json = JsonConvert.SerializeObject(T);
-						handler.upsertEntityAsync(meta.id, collection, json);
-						doneSuccessfully();
-					},
-					onError = (error) => {
-						if (!((KinveyJsonResponseException) error).Details.Error.Contains("InsufficientCredentials")){
-							handler.enqueueRequestAsync("PUT", collection, meta);
-						}
-						Logger.Log(error);
+				try{
+					T newEntity = await appdata.SaveAsync(entity);
+					string json = JsonConvert.SerializeObject(newEntity);
+					await handler.upsertEntityAsync(meta.id, collection, json);
+					doneSuccessfully();
+
+				} catch (KinveyJsonResponseException error){
+					if (!((KinveyJsonResponseException) error).Details.Error.Contains("InsufficientCredentials")){
+						await handler.enqueueRequestAsync("PUT", collection, meta);
 					}
-				});
+					Logger.Log(error);
+				}
+
+//				appdata.Save (entity, new KinveyDelegate<T> { 
+//					onSuccess = (T) => { 
+//						string json = JsonConvert.SerializeObject(T);
+//						handler.upsertEntityAsync(meta.id, collection, json);
+//						doneSuccessfully();
+//					},
+//					onError = (error) => {
+//						if (!((KinveyJsonResponseException) error).Details.Error.Contains("InsufficientCredentials")){
+//							handler.enqueueRequestAsync("PUT", collection, meta);
+//						}
+//						Logger.Log(error);
+//					}
+//				});
 
 
 				break;
 			case "GET":
 				appdata.SetCustomRequestProperties (meta.customHeaders);
 				appdata.SetClientAppVersion (meta.clientVersion);
-				appdata.GetEntity (meta.id, new KinveyDelegate<T> { 
-					onSuccess = (T) => { 
-						string json = JsonConvert.SerializeObject(T);
-						handler.upsertEntityAsync(meta.id, collection, json);
-						doneSuccessfully();
-					},
-					onError = (error) => {
-						if (!((KinveyJsonResponseException) error).Details.Debug.Contains("InsufficientCredentials")){
-							handler.enqueueRequestAsync("GET", collection, meta);
-						}
-						Logger.Log(error);					
+
+				try{
+					T newEntity = await appdata.GetEntityAsync(meta.id);
+					string json = JsonConvert.SerializeObject(newEntity);
+					await handler.upsertEntityAsync(meta.id, collection, json);
+					doneSuccessfully();
+				} catch (Exception error) {
+					if (!((KinveyJsonResponseException) error).Details.Debug.Contains("InsufficientCredentials")){
+						await handler.enqueueRequestAsync("GET", collection, meta);
 					}
-				});
+					Logger.Log(error);					
+
+				}
+
+//				appdata.GetEntity (meta.id, new KinveyDelegate<T> { 
+//					onSuccess = (T) => { 
+//						string json = JsonConvert.SerializeObject(T);
+//						handler.upsertEntityAsync(meta.id, collection, json);
+//						doneSuccessfully();
+//					},
+//					onError = (error) => {
+//						if (!((KinveyJsonResponseException) error).Details.Debug.Contains("InsufficientCredentials")){
+//							handler.enqueueRequestAsync("GET", collection, meta);
+//						}
+//						Logger.Log(error);					
+//					}
+//				});
 
 
 				break;

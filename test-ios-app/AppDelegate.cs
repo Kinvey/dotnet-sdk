@@ -86,7 +86,7 @@ namespace testiosapp
 
 			// test Get(query)
 			Console.WriteLine("VRG: Start Get(Query) test.");
-			AsyncAppData<WorkOrder> myWorkOrders = myClient.AppData<WorkOrder> ("workOrderCollectio", typeof(WorkOrder));
+			AppData<WorkOrder> myWorkOrders = myClient.AppData<WorkOrder> ("workOrderCollectio", typeof(WorkOrder));
 			WorkOrder[] arrWO = await myWorkOrders.GetAsync();
 			foreach (var wo in arrWO)
 			{
@@ -285,14 +285,14 @@ namespace testiosapp
 			}
 			catch (KinveyJsonResponseException e)
 			{
-				Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.Details.RequestID);
+				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.Details.RequestID);
 				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Details.Description);
 				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Details.Error);
 				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Details.Debug);
 			}
 			catch (KinveyException e)
 			{
-				Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
+				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
 				Console.WriteLine("VRG (exception caught) Exception Reason -> " + e.Reason);
 				Console.WriteLine("VRG (exception caught) Exception Explanation -> " + e.Explanation);
 				Console.WriteLine("VRG (exception caught) Exception Fix -> " + e.Fix);

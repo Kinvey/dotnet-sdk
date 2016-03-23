@@ -39,7 +39,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The Type of the class.
 		/// </summary>
-		private Type myClass;
+		//private Type typeof(T);
 
 		/// <summary>
 		/// The client.
@@ -49,30 +49,33 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The cache.
 		/// </summary>
-		private Cache<String, T> cache = null;
-		/// <summary>
-		/// The query cache.
-		/// </summary>
-		private Cache<String, T[]> queryCache = null;
-		/// <summary>
-		/// The cache policy.
-		/// </summary>
-		private CachePolicy cachePolicy = CachePolicy.NO_CACHE;
+		//private Cache<String, T> cache = null;
 
-		/// <summary>
-		/// The Offline Store
-		/// </summary>
+//		/// <summary>
+//		/// The query cache.
+//		/// </summary>
+//		private Cache<String, T[]> queryCache = null;
+
+		private ReadPolicy readPolicy = ReadPolicy.FORCE_NETWORK;
+
+//		/// <summary>
+//		/// The Offline Store
+//		/// </summary>
 		private IOfflineStore store = null;
-		/// <summary>
-		/// The offline policy.
-		/// </summary>
-		private OfflinePolicy offlinePolicy = OfflinePolicy.ALWAYS_ONLINE;
+
+		private WritePolicy writePolicy = WritePolicy.NETWORK_THEN_LOCAL;
+
+//		/// <summary>
+//		/// The offline policy.
+//		/// </summary>
+//		private OfflinePolicy readPolicy = OfflinePolicy.ALWAYS_ONLINE;
 
 		/// <summary>
 		/// The name of the identifier field.
 		/// </summary>
-		public const string IdFieldName = "_id";
+		//public const string IdFieldName = "_id";
 
+		private DataStoreType storeType = DataStoreType.SYNC;
 
 		private string clientAppVersion = null;
 
@@ -113,18 +116,30 @@ namespace KinveyXamarin
 		/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.Core.AppData`1"/> class.
 		/// </summary>
 		/// <param name="collectionName">Collection name.</param>
-		/// <param name="myClass">My class.</param>
+		/// <param name="typeof(T)">My class.</param>
 		/// <param name="client">Client.</param>
-		public AppData (string collectionName, Type myClass, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), myClass)
+//		private AppData (string collectionName, Type typeof(T), AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
+//		{
+//			this.collectionName = collectionName;
+//			//this.typeof(T) = typeof(T);
+//			this.client = client;
+//			this.customRequestProperties = client.GetCustomRequestProperties ();
+//			this.clientAppVersion = client.GetClientAppVersion ();
+//		}
+//
+		protected AppData (DataStoreType type, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
 		{
-			this.collectionName = collectionName;
-			this.myClass = myClass;
+			this.collectionName = typeof(T).FullName;
 			this.client = client;
+			this.storeType = type;
 			this.customRequestProperties = client.GetCustomRequestProperties ();
 			this.clientAppVersion = client.GetClientAppVersion ();
 		}
 
-
+		public static AppData<T> GetInstance(DataStoreType type, AbstractClient client)
+		{
+			return new AppData<T> (type, client);
+		}
 		/// <summary>
 		/// Gets or sets the name of the collection.
 		/// </summary>
@@ -138,10 +153,10 @@ namespace KinveyXamarin
 		/// Gets or sets the type of the current.
 		/// </summary>
 		/// <value>The type of the current.</value>
-		public Type CurrentType {
-			get { return this.myClass; }
-			set { this.myClass = value; }
-		}
+//		public Type CurrentType {
+//			get { return this.typeof(T); }
+//			set { this.typeof(T) = value; }
+//		}
 
 		/// <summary>
 		/// Gets or sets the kinvey client.
@@ -157,39 +172,49 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Policy.</param>
-		public void setCache (Cache<String, T> cache, CachePolicy policy)
-		{
-			this.cache = cache;
-			this.cachePolicy = policy;
-		}
+//		public void setCache (Cache<String, T> cache, ReadPolicy policy)
+//		{
+//			this.cache = cache;
+//			this.readPolicy = policy;
+//		}
 
 		/// <summary>
 		/// Sets the cache for query requests
 		/// </summary>
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Policy.</param>
-		public void setCache (Cache<String, T[]> cache, CachePolicy policy)
-		{
-			this.queryCache = cache;
-			this.cachePolicy = policy;
-		}
+//		public void setCache (Cache<String, T[]> cache, ReadPolicy policy)
+//		{
+//			this.queryCache = cache;
+//			this.readPolicy = policy;
+//		}
 
 		/// <summary>
 		/// Sets the offline store and policy
 		/// </summary>
 		/// <param name="store">Store.</param>
 		/// <param name="policy">Policy.</param>
-		public void setOffline (IOfflineStore store, OfflinePolicy policy)
+		public void setOffline (IOfflineStore store, ReadPolicy policy)
 		{
 
 			this.store = store;
-			this.offlinePolicy = policy;
+			//this.readPolicy = policy;
+			this.readPolicy = policy;
 
 			this.store.dbpath = Path.Combine (((Client)KinveyClient).filePath, "kinveyOffline.sqlite");
 			this.store.platform = ((Client)KinveyClient).offline_platform;
 
 		}
 			
+		/// <summary>
+		/// Get a single entity stored in a Kinvey collection.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="entityId">Entity identifier.</param>
+		public async Task<T> GetEntityAsync(string entityId){
+			return await GetEntityBlocking (entityId).ExecuteAsync ();
+		}
+
 		/// <summary>
 		/// gets the specified entity.
 		/// </summary>
@@ -201,14 +226,27 @@ namespace KinveyXamarin
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("collectionName", CollectionName);
 			urlParameters.Add ("entityId", entityId);
-			GetEntityRequest getEntity = new GetEntityRequest (entityId, myClass, client, urlParameters, CollectionName);
+			GetEntityRequest getEntity = new GetEntityRequest (entityId, typeof(T), client, urlParameters, CollectionName);
 			client.InitializeRequest (getEntity);
-			getEntity.setCache (this.cache, this.cachePolicy);
-			getEntity.SetStore (this.store, this.offlinePolicy);
+			//getEntity.setCache (this.cache, this.readPolicy);
+			getEntity.SetStore (this.store, this.readPolicy);
 			getEntity.clientAppVersion = this.GetClientAppVersion ();
 			getEntity.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getEntity;
 		}
+
+		/// <summary>
+		/// Get all entities from a Kinvey collection.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		public async Task<T[]> GetAsync(){
+			return await GetBlocking ().ExecuteAsync ();
+		}
+
+		public async Task<T[]> GetAsync(string queryString){
+			return await getQueryBlocking (queryString).ExecuteAsync ();
+		}
+
 
 		/// <summary>
 		/// gets all entities
@@ -219,10 +257,10 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("collectionName", CollectionName);
-			GetRequest get = new GetRequest (myClass, client, urlParameters, collectionName);
+			GetRequest get = new GetRequest (client, urlParameters, collectionName);
 			client.InitializeRequest (get);
-			get.setCache (this.queryCache, this.cachePolicy);
-			get.SetStore (this.store, this.offlinePolicy);
+			//get.setCache (this.queryCache, this.readPolicy);
+			get.SetStore (this.store, this.readPolicy);
 			get.clientAppVersion = this.GetClientAppVersion ();
 			get.customRequestHeaders = this.GetCustomRequestProperties ();
 			return get;
@@ -241,13 +279,29 @@ namespace KinveyXamarin
 			urlParameters.Add("querystring", queryString);
 		
 
-			GetQueryRequest getQuery = new GetQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
+			GetQueryRequest getQuery = new GetQueryRequest(queryString, typeof(T), client, urlParameters, CollectionName);
 			client.InitializeRequest(getQuery);
-			getQuery.setCache(this.queryCache, this.cachePolicy);
-			getQuery.SetStore(this.store, this.offlinePolicy);
+			//getQuery.setCache(this.queryCache, this.readPolicy);
+			getQuery.SetStore(this.store, this.readPolicy);
 			getQuery.clientAppVersion = this.GetClientAppVersion();
 			getQuery.customRequestHeaders = this.GetCustomRequestProperties();
 			return getQuery;
+		}
+
+
+		/// <summary>
+		/// Gets a count of all the entities in a collection
+		/// </summary>
+		/// <returns>The async task which returns the count.</returns>
+		public async Task<uint> GetCountAsync()
+		{
+			uint count = 0;
+			T countObj = await getCountBlocking().ExecuteAsync ();
+			if (countObj is JObject) {
+				JToken value = (countObj as JObject).GetValue("count");
+				count = value.ToObject<uint>();
+			}
+			return count;
 		}
 
 		/// <summary>
@@ -260,12 +314,21 @@ namespace KinveyXamarin
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("collectionName", CollectionName);
 
-			GetCountRequest getCount = new GetCountRequest(myClass, client, urlParameters, CollectionName);
+			GetCountRequest getCount = new GetCountRequest(typeof(T), client, urlParameters, CollectionName);
 			client.InitializeRequest(getCount);
-			getCount.setCache(this.cache, this.cachePolicy);
+			//getCount.setCache(this.cache, this.readPolicy);
 			getCount.clientAppVersion = this.GetClientAppVersion ();
 			getCount.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCount;
+		}
+
+		/// <summary>
+		/// Returns the results of a kinvey-style mongodb raw query.  Note this class also supports LINQ for querying.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="query">The raw query string to execute.</param>
+		public async Task<T[]> getAsync(string query){
+			return await getQueryBlocking (query).ExecuteAsync ();
 		}
 
 		/// <summary>
@@ -280,12 +343,21 @@ namespace KinveyXamarin
 			urlParameters.Add ("collectionName", CollectionName);
 			urlParameters.Add ("querystring", queryString);
 
-			GetCountQueryRequest getCountQuery = new GetCountQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
+			GetCountQueryRequest getCountQuery = new GetCountQueryRequest(queryString, typeof(T), client, urlParameters, CollectionName);
 			client.InitializeRequest(getCountQuery);
-			getCountQuery.setCache(this.cache, this.cachePolicy);
+			//getCountQuery.setCache(this.cache, this.readPolicy);
 			getCountQuery.clientAppVersion = this.GetClientAppVersion ();
 			getCountQuery.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCountQuery;
+		}
+
+		/// <summary>
+		/// Save the specified entity to a Kinvey collection.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="entity">the entity to save.</param>
+		public async Task<T> SaveAsync(T entity){
+			return await SaveBlocking (entity).ExecuteAsync ();
 		}
 
 		/// <summary>
@@ -314,13 +386,23 @@ namespace KinveyXamarin
 			}
 				
 
-			save = new SaveRequest (entity, id, myClass, mode, client, urlParameters, this.CollectionName);
-			save.SetStore (this.store, this.offlinePolicy);
+			save = new SaveRequest (entity, id, typeof(T), mode, client, urlParameters, this.CollectionName);
+			save.SetStore (this.store, this.readPolicy);
 			client.InitializeRequest (save);
 			save.clientAppVersion = this.GetClientAppVersion ();
 			save.customRequestHeaders = this.GetCustomRequestProperties ();
 			return save;
 		}
+			
+		/// <summary>
+		/// Deletes the entity associated with the provided id
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="entityId">the _id of the entity to delete.</param>
+		public async Task<KinveyDeleteResponse> DeleteAsync(string entityId){
+			return await DeleteBlocking (entityId).ExecuteAsync ();
+		}
+
 
 		/// <summary>
 		/// Deletes the specified entity
@@ -335,8 +417,8 @@ namespace KinveyXamarin
 			urlParameters.Add ("collectionName", CollectionName);
 			urlParameters.Add ("entityID", entityId);
 
-			DeleteRequest delete = new DeleteRequest (entityId, myClass, client, urlParameters, this.CollectionName);
-			delete.SetStore (this.store, this.offlinePolicy);
+			DeleteRequest delete = new DeleteRequest (entityId, typeof(T), client, urlParameters, this.CollectionName);
+			delete.SetStore (this.store, this.readPolicy);
 
 			client.InitializeRequest (delete);
 			delete.clientAppVersion = this.GetClientAppVersion ();
@@ -377,7 +459,7 @@ namespace KinveyXamarin
 			[JsonProperty]
 			public string collectionName { get; set; }
 
-			public GetRequest (Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
+			public GetRequest (AbstractClient client, Dictionary<string, string> urlParameters, string collection)
 				: base (client, "GET", REST_PATH, default(T[]), urlParameters, collection)
 			{
 				this.collectionName = urlParameters ["collectionName"];
