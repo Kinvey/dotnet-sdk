@@ -29,7 +29,7 @@ namespace KinveyXamarin
 		/// </summary>
 		public FileMetaData ()
 		{
-			customFieldsAndValues = new Dictionary<string, JToken>();
+			Attributes = new Dictionary<string, JToken>();
 		}
 
 		/// <summary>
@@ -99,10 +99,10 @@ namespace KinveyXamarin
 		public Dictionary<string, string> headers;
 
 		/// <summary>
-		/// Get/Set custom fields in a FileMetaData object
+		/// Get/Set custom attributes in a FileMetaData object
 		/// </summary>
 		[JsonExtensionData]
-		public Dictionary<string, JToken> customFieldsAndValues;
+		public Dictionary<string, JToken> Attributes;
 
 		[JsonProperty("_kmd")]
 		private readonly Dictionary<string, JToken> kmd;
