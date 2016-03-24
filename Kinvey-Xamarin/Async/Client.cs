@@ -62,32 +62,6 @@ namespace KinveyXamarin
 		protected Client(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
 			: base(client, rootUrl, servicePath, initializer, store) {}
 
-
-		protected override User GetUser ()
-		{
-			return this.User ();
-		}
-
-		/// <summary>
-		/// Use this accessor to get a configurared instance of the <see cref="KinveyXamarin.AsyncUser"/> class. 
-		/// </summary>
-		/// <returns>the current authenticated User object.</returns>
-		public new AsyncUser User()
-		{
-			lock (Lock)
-			{
-				if (currentUser == null) {
-					var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
-					var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-					currentUser = new AsyncUser(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
-				}
-
-				if (currentUser is AsyncUser) {
-					return currentUser as AsyncUser;
-				}
-				return null;
-			}
-		}
 			
 		/// <summary>
 		/// Access file operations through this.

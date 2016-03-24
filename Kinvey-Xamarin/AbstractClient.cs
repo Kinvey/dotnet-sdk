@@ -78,14 +78,9 @@ namespace KinveyXamarin
 			this.MICHostName = "https://auth.kinvey.com/";
         }
 
-		/// <summary>
-		/// Access the `User` API through this.  The User object is initialized to the currently logged in user.
-		/// </summary>
-		protected abstract User GetUser();
-
 		public User User()
         {
-			return this.GetUser ();
+			return this.CurrentUser;
         }
 
 		/// <summary>

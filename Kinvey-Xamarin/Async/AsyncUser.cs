@@ -11,28 +11,28 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using KinveyUtils;
-using Newtonsoft.Json.Linq;
+//using System;
+//using System.Collections.Generic;
+//using System.Threading.Tasks;
+//using KinveyUtils;
+//using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
-{
-	/// <summary>
-	/// Async user.  This class allows access to Kinvey's User API asynchronously.  
-	/// </summary>
-	public class AsyncUser: User
-	{
+//namespace KinveyXamarin
+//{
+//	/// <summary>
+//	/// Async user.  This class allows access to Kinvey's User API asynchronously.  
+//	/// </summary>
+//	public class AsyncUser: User
+//	{
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AsyncUser"/> class.
-		/// </summary>
-		/// <param name="client">A configured instance of a Kinvey client.</param>
-		/// <param name="client">A configured AuthRequest Builder, containing information about the upcoming login request.</param>
-		public AsyncUser (AbstractClient client, KinveyAuthRequest.Builder builder) : base(client, builder)
-		{
-		}
+//		/// <summary>
+//		/// Initializes a new instance of the <see cref="KinveyXamarin.AsyncUser"/> class.
+//		/// </summary>
+//		/// <param name="client">A configured instance of a Kinvey client.</param>
+//		/// <param name="client">A configured AuthRequest Builder, containing information about the upcoming login request.</param>
+//		public AsyncUser (AbstractClient client, KinveyAuthRequest.Builder builder) : base(client, builder)
+//		{
+//		}
 
 //		/// <summary>
 //		/// Login (and create) an new kinvey user without any specified details.
@@ -284,6 +284,6 @@ namespace KinveyXamarin
 //			});
 //		}
 
-	}
-}
+//	}
+//}
 
