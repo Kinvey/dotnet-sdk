@@ -439,7 +439,7 @@ namespace KinveyXamarin
 		/// </summary>
 		public void Logout()
 		{
-			// TODO make async and rethink locking
+			// TODO rethink locking
 			lock (classLock)
 			{
 				logoutBlocking ().Execute ();
@@ -777,7 +777,7 @@ namespace KinveyXamarin
 		/// Logouts the user synchronously.
 		/// </summary>
 		/// <returns>The blocking.</returns>
-		public LogoutRequest logoutBlocking()  // TODO make private
+		private LogoutRequest logoutBlocking()
         {
             return new LogoutRequest(this.KinveyClient.Store, this);
         }

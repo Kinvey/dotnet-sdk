@@ -376,10 +376,10 @@ namespace KinveyXamarin
 					redirectUri = cred.RedirectUri;
 				}
 
-				if (refreshToken != null ){
+				if (refreshToken != null )
+				{
 					//logout the current user
-
-					Client.User().logoutBlocking().Execute();
+					Client.User().Logout(); // TODO is this a potential deadlock?
 
 					//use the refresh token for a new access token
 					JObject result = Client.User().UseRefreshToken(refreshToken, redirectUri).Execute();
@@ -448,10 +448,10 @@ namespace KinveyXamarin
 					redirectUri = cred.RedirectUri;
 				}
 
-				if (refreshToken != null ){
+				if (refreshToken != null )
+				{
 					//logout the current user
-
-					Client.User().logoutBlocking().Execute();
+					Client.User().Logout(); // TODO is this a potential deadlock?
 
 					//use the refresh token for a new access token
 					JObject result = await Client.User().UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
@@ -459,7 +459,7 @@ namespace KinveyXamarin
 					//login with the access token
 					Provider provider = new Provider ();
 					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
-					User u = await Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).ExecuteAsync();
+					User u = await Client.User().LoginAsync(new ThirdPartyIdentity(provider));
 
 					//store the new refresh token
 					Credential currentCred = Client.Store.Load(Client.User().Id);
