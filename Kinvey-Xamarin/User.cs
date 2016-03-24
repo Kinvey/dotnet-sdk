@@ -134,6 +134,11 @@ namespace KinveyXamarin
 		/// </summary>
 		public string MICRedirectURI {get; set;}
 
+		/// <summary>
+		/// The callback for the MIC login, this is used after the redirect
+		/// </summary>
+		protected KinveyDelegate<User> MICDelegate;
+
 		protected string MICHostName
 		{
 			get
@@ -268,6 +273,26 @@ namespace KinveyXamarin
             credentialManager.RemoveCredential(userID);
         }
 
+		/// <summary>
+		/// Login with a credential object.
+		/// </summary>
+		/// <param name="cred">The crendential to login with.</param>
+		/// <param name="delegates">Delegates for success or failure.</param>
+		public void Login(Credential cred, KinveyDelegate<User> delegates)
+		{
+			// TODO does this method need to be public?
+			// TODO make this method async
+			this.Id = cred.UserId;
+			this.AuthToken = cred.AuthToken;
+			Task.Run (() => {
+				try{
+					User user = LoginBlocking(cred).Execute();
+					delegates.onSuccess(user);
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+			});
+		}
 
 
 
@@ -406,6 +431,154 @@ namespace KinveyXamarin
 		{
 			return await EmailVerificationBlocking(userid).ExecuteAsync ();
 		}
+
+		private static readonly object classLock = new object();
+
+		/// <summary>
+		/// Logout the current user.
+		/// </summary>
+		public void Logout()
+		{
+			// TODO make async and rethink locking
+			lock (classLock)
+			{
+				logoutBlocking ().Execute ();
+			}
+		}
+
+
+
+
+		// MIC-related APIs
+		//
+
+		/// <summary>
+		/// Login with Auth Link Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accesstoken">Auth Link Accesstoken.</param>
+		/// <param name="refreshtoken">Auth Link Refreshtoken.</param>
+		public async Task<User> LoginAuthlinkAsync(string accesstoken, string refreshtoken)
+		{
+			Provider provider = new Provider ();
+			provider.authlink = new AuthLinkCredential (accesstoken, refreshtoken);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with MIC Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">MIC Access token.</param>
+		public async Task<User> LoginMICAsync(string accessToken)
+		{
+			Provider provider = new Provider ();
+			provider.kinveyAuth = new MICCredential (accessToken);
+			return await MICLoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with a third party identity
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="identity">The Third party identity.</param>
+		public async Task<User> MICLoginAsync(ThirdPartyIdentity identity)
+		{
+			return await MICLoginBlocking (identity).ExecuteAsync();
+		}
+
+		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> delegates)
+		{
+			//return URL for login page
+			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
+
+			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
+			string hostname = MICHostName;
+			if (MICApiVersion != null && MICApiVersion.Length > 0) {
+				hostname += MICApiVersion + "/";
+			}
+			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
+			//keep a reference to the callback and redirect uri for later
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+			if (delegates != null) {
+				delegates.OnReadyToRender (myURLToRender);
+			}
+		}
+
+		public void LoginWithAuthorizationCodeAPI(string username, string password, string redirectURI, KinveyDelegate<User> delegates)
+		{
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+
+			Task.Run (() => {
+				try{
+					JObject tempResult = getMICTempURL().Execute();
+					string tempURL = tempResult["temp_login_uri"].ToString();
+					JObject accessResult = MICLoginToTempURL(username, password, tempURL).Execute();
+					string accessToken = accessResult["access_token"].ToString();
+
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (accessToken);
+					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+
+					//store the new refresh token
+					Credential currentCred = KinveyClient.Store.Load(u.Id);
+					currentCred.RefreshToken = accessResult["refresh_token"].ToString();
+					currentCred.RedirectUri = this.MICRedirectURI;
+					KinveyClient.Store.Store(u.Id, currentCred);
+
+					if (MICDelegate != null){
+						MICDelegate.onSuccess(u);
+					}else{
+						Logger.Log("MIC Delegate is null in Async User");
+					}
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+
+			});
+		}
+
+		public void GetMICAccessToken(String token)
+		{
+			Task.Run (() => {
+				try{
+					JObject result = this.getMICToken(token).Execute();
+					string accessToken = result["access_token"].ToString();
+
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (accessToken);
+					Task<User> userTask = LoginMICAsync(accessToken);
+					userTask.Wait();
+					if (userTask.Exception != null) {
+						throw userTask.Exception;
+					}
+					User u = userTask.Result;
+
+					//store the new refresh token
+					Credential currentCred = KinveyClient.Store.Load(u.Id);
+					currentCred.RefreshToken = result["refresh_token"].ToString();
+					currentCred.RedirectUri = this.MICRedirectURI;
+					KinveyClient.Store.Store(u.Id, currentCred);
+
+					if (MICDelegate != null){
+						MICDelegate.onSuccess(u);
+					}else{
+						Logger.Log("MIC Delegate is null in Async User");
+					}
+				}catch(Exception e){
+					if (MICDelegate != null){
+						MICDelegate.onError(e);
+					}else{
+						Logger.Log("MIC Delegate is null in Async User");
+					}
+				}
+			});
+		}
+
+
+
 
 
 		// User CRUD APIs
