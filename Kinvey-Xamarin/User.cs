@@ -709,7 +709,7 @@ namespace KinveyXamarin
 		/// Logins an anonymous user synchronously.
 		/// </summary>
 		/// <returns>The blocking.</returns>
-		public LoginRequest LoginBlocking()
+		private LoginRequest LoginBlocking()
         {
 			this.type = LoginType.IMPLICIT;
 			return new LoginRequest(this).buildAuthRequest();
@@ -721,7 +721,7 @@ namespace KinveyXamarin
 		/// <returns>The blocking.</returns>
 		/// <param name="username">Username.</param>
 		/// <param name="password">Password.</param>
-		public LoginRequest LoginBlocking(string username, string password)
+		private LoginRequest LoginBlocking(string username, string password)
         {
 			this.type = LoginType.KINVEY;
 			return new LoginRequest(username, password, false, this).buildAuthRequest();
@@ -732,7 +732,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The blocking.</returns>
 		/// <param name="cred">Cred.</param>
-		public LoginRequest LoginBlocking(Credential cred) 
+		private LoginRequest LoginBlocking(Credential cred) 
         {
 			this.type = LoginType.CREDENTIALSTORE;
 			return new LoginRequest (cred, this).buildAuthRequest ();
@@ -743,7 +743,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The request instance used to login the user.</returns>
 		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
-		public LoginRequest LoginBlocking(ThirdPartyIdentity identity){
+		public LoginRequest LoginBlocking(ThirdPartyIdentity identity){ // TODO make private 
 			this.type = LoginType.THIRDPARTY;
 			return new LoginRequest (identity, this).buildAuthRequest ();
 		}
@@ -753,7 +753,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The request instance used to login the user.</returns>
 		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
-		public MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity){
+		private MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity)
+		{
 			this.type = LoginType.THIRDPARTY;
 			return new MICLoginRequest (identity, this).buildAuthRequest ();
 		}
@@ -764,7 +765,7 @@ namespace KinveyXamarin
 		/// <returns>The kinvey auth token blocking.</returns>
 		/// <param name="userId">User identifier.</param>
 		/// <param name="authToken">Auth token.</param>
-		public LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 
+		private LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 
         {
             this.AuthToken = authToken;
             this.id = userId;
@@ -776,7 +777,7 @@ namespace KinveyXamarin
 		/// Logouts the user synchronously.
 		/// </summary>
 		/// <returns>The blocking.</returns>
-		public LogoutRequest logoutBlocking() 
+		public LogoutRequest logoutBlocking()  // TODO make private
         {
             return new LogoutRequest(this.KinveyClient.Store, this);
         }
@@ -786,8 +787,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The request instance used to retrieve the user.</returns>
 		/// <param name="userid">The ID of the user.</param>
-		public RetrieveRequest RetrieveBlocking(string userid){
-
+		private RetrieveRequest RetrieveBlocking(string userid)
+		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userid);
@@ -805,8 +806,8 @@ namespace KinveyXamarin
 		/// <param name="resolves">The "resolve" query parameter that is used to resolve named references.</param>
 		/// <param name="resolve_depth">The "resolve_depth" query parameter that resolves all references included in the enclosing entity up to a depth X.</param>
 		/// <param name="retain">If set to <c>true</c>, retain references.</param>
-		public RetrieveUsersRequest RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain){
-
+		private RetrieveUsersRequest RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain)
+		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
@@ -823,8 +824,6 @@ namespace KinveyXamarin
 			client.InitializeRequest(retrieve);
 
 			return retrieve;
-
-
 		}
 
 		/// <summary>
@@ -832,7 +831,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The request that looks up the user collection.</returns>
 		/// <param name="criteria">The criteria used for the lookup.</param>
-		public LookupRequest LookupBlocking(UserDiscovery criteria)
+		private LookupRequest LookupBlocking(UserDiscovery criteria)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -848,7 +847,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The request that updates the user on the backend.</returns>
 		/// <param name="u">The user to update</param>
-		public UpdateRequest UpdateBlocking(User u){
+		private UpdateRequest UpdateBlocking(User u)
+		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", u.id);
@@ -858,8 +858,6 @@ namespace KinveyXamarin
 			client.InitializeRequest(update);
 
 			return update;
-
-
 		}
 
 		/// <summary>
@@ -867,7 +865,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The request that resets the password.</returns>
 		/// <param name="userid">User ID</param>
-		public ResetPasswordRequest ResetPasswordBlocking(string userid){
+		private ResetPasswordRequest ResetPasswordBlocking(string userid)
+		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userid);
@@ -877,7 +876,6 @@ namespace KinveyXamarin
 			client.InitializeRequest(reset);
 
 			return reset;
-
 		}
 
 		/// <summary>
@@ -886,7 +884,8 @@ namespace KinveyXamarin
 		/// <returns>The request that deletes the user.</returns>
 		/// <param name="userid">User ID</param>
 		/// <param name="hard">If set to <c>true</c>  perform a hard delete.</param>
-		public DeleteRequest DeleteBlocking(string userid, bool hard){
+		private DeleteRequest DeleteBlocking(string userid, bool hard)
+		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userid);
@@ -904,7 +903,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The client request that sends out the verification email.</returns>
 		/// <param name="userid">User ID</param>
-		public EmailVerificationRequest EmailVerificationBlocking(string userid){
+		private EmailVerificationRequest EmailVerificationBlocking(string userid)
+		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userid);
@@ -924,7 +924,7 @@ namespace KinveyXamarin
 		/// <param name="userid">the username of the user.</param>
 		/// <param name="password">the password for the user.</param>
 		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
-		public LoginRequest CreateBlocking(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
+		private LoginRequest CreateBlocking(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
         {
 			this.type = LoginType.KINVEY;
 			if (customFieldsAndValues != null) {
@@ -941,8 +941,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The client request that gets the MIC token.</returns>
 		/// <param name="code">The authorization code.</param>
-		public RetrieveMICAccessToken getMICToken(String code){
-
+		private RetrieveMICAccessToken getMICToken(String code)
+		{
 			//        grant_type: "authorization_code" - this is always set to this value
 			//        code: use the ‘code’ returned in the callback 
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
@@ -969,7 +969,7 @@ namespace KinveyXamarin
 		/// <returns>The client request that gets the MIC token.</returns>
 		/// <param name="refreshToken">The refresh token.</param>
 		/// <param name="redirectUri">The redirect uri (this is the same uri used when obtaining the auth grant)</param>
-		public RetrieveMICAccessToken UseRefreshToken(String refreshToken, string redirectUri) {
+		public RetrieveMICAccessToken UseRefreshToken(String refreshToken, string redirectUri) { // TODO make private
 			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
 			//        refresh_token: use the refresh token 
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
@@ -996,7 +996,8 @@ namespace KinveyXamarin
 		/// Generates a request to get a temporary MIC URL (automated authorization grant flow).
 		/// </summary>
 		/// <returns>The client request to get the temporary MIC URL.</returns>
-		public GetMICTempURL getMICTempURL() {
+		private GetMICTempURL getMICTempURL()
+		{
 
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
@@ -1027,7 +1028,8 @@ namespace KinveyXamarin
 		/// <param name="password">Password</param>
 		/// <param name="tempURL">Temporary MIC url to use for login</param>
 		/// <returns>The client request to get the temporary MIC URL.</returns>
-		public LoginToTempURL MICLoginToTempURL(String username, String password, String tempURL){
+		private LoginToTempURL MICLoginToTempURL(String username, String password, String tempURL)
+		{
 
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
@@ -1052,6 +1054,19 @@ namespace KinveyXamarin
 			return loginTemp;  	
 
 		}
+
+
+
+
+
+
+
+
+
+
+		////////////////////////////////////////
+		// INNER REQUEST CLASSES
+		////////////////////////////////////////
 
 		/// <summary>
 		/// A synchronous MIC login request.
