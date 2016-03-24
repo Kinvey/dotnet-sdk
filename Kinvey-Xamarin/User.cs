@@ -28,6 +28,10 @@ namespace KinveyXamarin
 	[JsonObject(MemberSerialization.OptIn)]
     public class User : JObject
     {
+		////////////////////////////////////////
+		// INSTANCE VARIABLES AND GET/SET
+		////////////////////////////////////////
+
 		/// <summary>
 		/// The name of the user collection.
 		/// </summary>
@@ -174,7 +178,19 @@ namespace KinveyXamarin
 			}	
 			MICApiVersion = version;
 		}
-			
+
+
+
+
+
+
+
+
+
+		////////////////////////////////////////
+		// CONSTRUCTORS AND INITIALIZERS
+		////////////////////////////////////////
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
@@ -251,6 +267,270 @@ namespace KinveyXamarin
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             credentialManager.RemoveCredential(userID);
         }
+
+
+
+
+
+
+
+
+
+
+		////////////////////////////////////////
+		// PUBLIC API - ALL ASYNC CALLS
+		////////////////////////////////////////
+
+		// Login/Logout APIs
+		//
+
+		/// <summary>
+		/// Login (and create) an new kinvey user without any specified details.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		public async Task<User> LoginAsync()
+		{
+			return await LoginBlocking ().ExecuteAsync ();
+		}
+
+		/// <summary>
+		/// Login with a specified username and password.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="username">Username.</param>
+		/// <param name="password">Password.</param>
+		public async Task<User> LoginAsync(string username, string password)
+		{
+			return await LoginBlocking (username, password).ExecuteAsync ();
+		}
+
+		/// <summary>
+		/// Login with a Kinvey Auth Token directly.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userId">The _id of the current user.</param>
+		/// <param name="authToken">The user's Kinvey Auth Token..</param>
+		public async Task<User> LoginKinveyAuthTokenAsync(string userid, string authtoken)
+		{
+			return await LoginKinveyAuthTokenBlocking (userid, authtoken).ExecuteAsync();
+		}
+
+		/// <summary>
+		/// Login with a third party identity
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="identity">The Third party identity.</param>
+		public async Task<User> LoginAsync(ThirdPartyIdentity identity)
+		{
+			return await LoginBlocking (identity).ExecuteAsync();
+		}
+
+		// Social Login Convenence APIs
+		//
+
+		/// <summary>
+		/// Login with Facebook Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">Facebook Access token.</param>
+		public async Task<User> LoginFacebookAsync(string accessToken)
+		{
+			Provider provider = new Provider ();
+			provider.facebook = new FacebookCredential (accessToken);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with Twitter Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accesstoken">Twitter Accesstoken.</param>
+		/// <param name="accesstokensecret">Twitter Accesstokensecret.</param>
+		/// <param name="consumerkey">Twitter Consumerkey.</param>
+		/// <param name="consumersecret">Twitter Consumersecret.</param>
+		public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret)
+		{
+			Provider provider = new Provider ();
+			provider.twitter = new TwitterCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with Google Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">Google Access token.</param>
+		public async Task<User> LoginGoogleAsync(string accessToken)
+		{
+			Provider provider = new Provider ();
+			provider.google = new GoogleCredential (accessToken);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with LinkedIn Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accesstoken">Linkedin Accesstoken.</param>
+		/// <param name="accesstokensecret">Linkedin Accesstokensecret.</param>
+		/// <param name="consumerkey">Linkedin Consumerkey.</param>
+		/// <param name="consumersecret">Linkedin Consumersecret.</param>
+		public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret)
+		{
+			Provider provider = new Provider ();
+			provider.linkedin = new LinkedInCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with Salesforce Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="access">Salesforce Access.</param>
+		/// <param name="reauth">Salesforce Reauth.</param>
+		/// <param name="clientid">Salesforce Clientid.</param>
+		/// <param name="id">Salesforce Identifier.</param>
+		public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id)
+		{
+			Provider provider = new Provider ();
+			provider.salesforce = new SalesforceCredential (access, reauth, clientid, id);
+			return await LoginAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Sends a verification email
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userid">Userid.</param>
+		public async Task<User> EmailVerificationAsync(string userid)
+		{
+			return await EmailVerificationBlocking(userid).ExecuteAsync ();
+		}
+
+
+		// User CRUD APIs
+		//
+
+		// User Create APIs
+		//
+
+		/// <summary>
+		/// Create a new Kinvey user, with the specified username and password.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userid">the username.</param>
+		/// <param name="password">the password.</param>
+		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
+		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null)
+		{
+			return await CreateBlocking (username, password, customFieldsAndValues).ExecuteAsync ();
+		}
+
+
+		// User Read APIs
+		//
+
+		/// <summary>
+		/// Retrieve the specified User
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userid">Userid.</param>
+		public async Task<User> RetrieveAsync(string userid)
+		{
+			return await RetrieveBlocking (userid).ExecuteAsync ();
+		}
+
+		public async Task<User> RetrieveAsync()
+		{
+			return await RetrieveAsync (this.Id);
+		}
+
+		/// <summary>
+		/// Resolve the specified query, resolves, resolve_depth, retain to get a set of users
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="query">Query.</param>
+		/// <param name="resolves">Resolves.</param>
+		/// <param name="resolve_depth">Resolve depth.</param>
+		/// <param name="retain">If set to <c>true</c> retain references.</param>
+		public async Task<User[]> RetrieveAsync(string query, string[] resolves, int resolve_depth, bool retain)
+		{
+			return await RetrieveBlocking(query, resolves, resolve_depth, retain).ExecuteAsync ();
+		}
+
+		/// <summary>
+		/// User Discovery Lookup of users, based on supplied criteria.
+		/// </summary>
+		/// <returns>The async task which will return an array of User objects.</returns>
+		/// <param name="criteria">UserDiscovery object which contains the lookup criteria.</param>
+		public async Task<User[]> LookupAsync(UserDiscovery criteria)
+		{
+			User[] users = default(User[]);
+
+			if ((criteria != null) &&
+				(criteria.getCriteria() != null) &&
+				(criteria.getCriteria().Count > 0))
+			{
+				users = await LookupBlocking(criteria).ExecuteAsync();
+			}
+
+			return users;
+		}
+
+		// User Update APIs
+		//
+
+		/// <summary>
+		/// Updates the current user.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		public async Task<User> UpdateAsync()
+		{
+			return await UpdateBlocking(this).ExecuteAsync ();
+		}
+
+		/// <summary>
+		/// Updates the specified user.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="user">User.</param>
+		public async Task<User> UpdateAsync(User user)
+		{
+			return await UpdateBlocking(user).ExecuteAsync ();
+		}
+
+		/// <summary>
+		/// Resets the password for the specified user id
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userid">Userid.</param>
+		public async Task<User> ResetPasswordAsync(string userid)
+		{
+			return await ResetPasswordBlocking(userid).ExecuteAsync ();
+		}
+
+		// User Delete APIs
+		//
+
+		/// <summary>
+		/// Delete the specified userid, with a flag for hard delete
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userid">Userid.</param>
+		/// <param name="hard">If set to <c>true</c> the user will be permanently deleted.</param>
+		public async Task<KinveyDeleteResponse> DeleteAsync(string userid, bool hard)
+		{
+			return await DeleteBlocking(userid, hard).ExecuteAsync ();
+		}
+
+
+
+
+
+
+		////////////////////////////////////////
+		// BLOCKING CALLS - TURN TO PRIVATE ACCESS
+		////////////////////////////////////////
 
 		/// <summary>
 		/// Logins an anonymous user synchronously.
