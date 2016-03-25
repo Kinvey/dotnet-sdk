@@ -78,7 +78,9 @@ namespace KinveyXamarin
 		/// </summary>
         private IAuthenticator auth;
 
-		public String clientAppVersion { get; set;}
+		//TODO: this needs to be removed and instead the client should be passed around
+		//public String clientAppVersion { get; set;}
+
 		public JObject customRequestHeaders {get; set;}
 
 		/// <summary>
@@ -132,7 +134,7 @@ namespace KinveyXamarin
             this.uriResourceParameters = uriParameters;
             this.RequireAppCredentials = false;
 			this.customRequestHeaders = client.GetCustomRequestProperties();
-			this.clientAppVersion = client.GetClientAppVersion ();
+			//this.clientAppVersion = client.GetClientAppVersion ();
 			this.baseURL = baseURL;
 			this.PayloadType = new JSONPayload();
 			this.OverrideRedirect = false;
@@ -287,7 +289,7 @@ namespace KinveyXamarin
 			}
 
 			if (client.GetClientAppVersion () != null && client.GetClientAppVersion ().Length > 0) {
-				restRequest.AddHeader ("X-Kinvey-Client-App-Version", this.clientAppVersion);
+				restRequest.AddHeader ("X-Kinvey-Client-App-Version", client.GetClientAppVersion ());
 			}
 			if (client.GetCustomRequestProperties () != null && client.GetCustomRequestProperties ().Count > 0) {
 				string jsonHeaders = JsonConvert.SerializeObject (this.customRequestHeaders);

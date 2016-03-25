@@ -220,7 +220,7 @@ namespace KinveyXamarin
 
 			SQLTemplates.OfflineMetaData metadata = new SQLTemplates.OfflineMetaData ();
 			metadata.id = id;
-			metadata.clientVersion = req.clientAppVersion;
+			//metadata.clientVersion = req.Client.GetClientAppVersion();
 			metadata.customHeaders = req.customRequestHeaders;
 
 			queue.OfflineMetaDataAsJson = JsonConvert.SerializeObject (metadata);

@@ -77,21 +77,21 @@ namespace KinveyXamarin
 
 		private DataStoreType storeType = DataStoreType.SYNC;
 
-		private string clientAppVersion = null;
+		//private string clientAppVersion = null;
 
 		private JObject customRequestProperties = new JObject();
 
-		public void SetClientAppVersion(string appVersion){
-			this.clientAppVersion = appVersion;	
-		}
-
-		public void SetClientAppVersion(int major, int minor, int revision){
-			SetClientAppVersion(major + "." + minor + "." + revision);
-		}
-
-		public string GetClientAppVersion(){
-			return this.clientAppVersion;
-		}
+//		public void SetClientAppVersion(string appVersion){
+//			this.clientAppVersion = appVersion;	
+//		}
+//
+//		public void SetClientAppVersion(int major, int minor, int revision){
+//			SetClientAppVersion(major + "." + minor + "." + revision);
+//		}
+//
+//		public string GetClientAppVersion(){
+//			return this.clientAppVersion;
+//		}
 
 		public void SetCustomRequestProperties(JObject customheaders){
 			this.customRequestProperties = customheaders;
@@ -133,7 +133,7 @@ namespace KinveyXamarin
 			this.client = client;
 			this.storeType = type;
 			this.customRequestProperties = client.GetCustomRequestProperties ();
-			this.clientAppVersion = client.GetClientAppVersion ();
+			//this.clientAppVersion = client.GetClientAppVersion ();
 		}
 
 		public static AppData<T> GetInstance(DataStoreType type, AbstractClient client)
@@ -230,7 +230,7 @@ namespace KinveyXamarin
 			client.InitializeRequest (getEntity);
 			//getEntity.setCache (this.cache, this.readPolicy);
 			getEntity.SetStore (this.store, this.readPolicy);
-			getEntity.clientAppVersion = this.GetClientAppVersion ();
+			//getEntity.clientAppVersion = this.GetClientAppVersion ();
 			getEntity.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getEntity;
 		}
@@ -261,7 +261,7 @@ namespace KinveyXamarin
 			client.InitializeRequest (get);
 			//get.setCache (this.queryCache, this.readPolicy);
 			get.SetStore (this.store, this.readPolicy);
-			get.clientAppVersion = this.GetClientAppVersion ();
+			//get.clientAppVersion = this.GetClientAppVersion ();
 			get.customRequestHeaders = this.GetCustomRequestProperties ();
 			return get;
 		}
@@ -283,7 +283,7 @@ namespace KinveyXamarin
 			client.InitializeRequest(getQuery);
 			//getQuery.setCache(this.queryCache, this.readPolicy);
 			getQuery.SetStore(this.store, this.readPolicy);
-			getQuery.clientAppVersion = this.GetClientAppVersion();
+			//getQuery.clientAppVersion = this.GetClientAppVersion();
 			getQuery.customRequestHeaders = this.GetCustomRequestProperties();
 			return getQuery;
 		}
@@ -317,7 +317,7 @@ namespace KinveyXamarin
 			GetCountRequest getCount = new GetCountRequest(typeof(T), client, urlParameters, CollectionName);
 			client.InitializeRequest(getCount);
 			//getCount.setCache(this.cache, this.readPolicy);
-			getCount.clientAppVersion = this.GetClientAppVersion ();
+			//getCount.clientAppVersion = this.GetClientAppVersion ();
 			getCount.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCount;
 		}
@@ -346,7 +346,7 @@ namespace KinveyXamarin
 			GetCountQueryRequest getCountQuery = new GetCountQueryRequest(queryString, typeof(T), client, urlParameters, CollectionName);
 			client.InitializeRequest(getCountQuery);
 			//getCountQuery.setCache(this.cache, this.readPolicy);
-			getCountQuery.clientAppVersion = this.GetClientAppVersion ();
+			//getCountQuery.clientAppVersion = this.GetClientAppVersion ();
 			getCountQuery.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCountQuery;
 		}
@@ -389,7 +389,7 @@ namespace KinveyXamarin
 			save = new SaveRequest (entity, id, typeof(T), mode, client, urlParameters, this.CollectionName);
 			save.SetStore (this.store, this.readPolicy);
 			client.InitializeRequest (save);
-			save.clientAppVersion = this.GetClientAppVersion ();
+			//save.clientAppVersion = this.GetClientAppVersion ();
 			save.customRequestHeaders = this.GetCustomRequestProperties ();
 			return save;
 		}
@@ -421,7 +421,7 @@ namespace KinveyXamarin
 			delete.SetStore (this.store, this.readPolicy);
 
 			client.InitializeRequest (delete);
-			delete.clientAppVersion = this.GetClientAppVersion ();
+			//delete.clientAppVersion = this.GetClientAppVersion ();
 			delete.customRequestHeaders = this.GetCustomRequestProperties ();
 			return delete;
 		}
@@ -653,7 +653,6 @@ namespace KinveyXamarin
 
 			}
 
-		}
-			
+		}			
 	}
 }

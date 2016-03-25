@@ -94,7 +94,7 @@ namespace KinveyXamarin
 			case "QUERY":
 				
 				appdata.SetCustomRequestProperties (meta.customHeaders);
-				appdata.SetClientAppVersion (meta.clientVersion);
+				//appdata.SetClientAppVersion (meta.clientVersion);
 				T[] results = default(T[]);
 				try{
 					results = await appdata.GetAsync (meta.id);
@@ -124,7 +124,7 @@ namespace KinveyXamarin
 
 				T entity = handler.getEntityAsync (collection, meta.id).Result;
 				appdata.SetCustomRequestProperties (meta.customHeaders);
-				appdata.SetClientAppVersion (meta.clientVersion);
+				//appdata.SetClientAppVersion (meta.clientVersion);
 				try{
 					T newEntity = await appdata.SaveAsync(entity);
 					string json = JsonConvert.SerializeObject(newEntity);
@@ -156,7 +156,7 @@ namespace KinveyXamarin
 				break;
 			case "GET":
 				appdata.SetCustomRequestProperties (meta.customHeaders);
-				appdata.SetClientAppVersion (meta.clientVersion);
+				//appdata.SetClientAppVersion (meta.clientVersion);
 
 				try{
 					T newEntity = await appdata.GetEntityAsync(meta.id);

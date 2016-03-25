@@ -56,7 +56,6 @@
     <Compile Include="Cache\AbstractKinveyCachedClientRequest.cs" />
     <Compile Include="Async\Client.cs" />
     <Compile Include="Async\KinveyDelegate.cs" />
-    <Compile Include="Async\AsyncAppData.cs" />
     <Compile Include="Offline\AbstractKinveyOfflineClientRequest.cs" />
     <Compile Include="Offline\OfflinePolicy.cs" />
     <Compile Include="Offline\SQLiteHelper.cs" />

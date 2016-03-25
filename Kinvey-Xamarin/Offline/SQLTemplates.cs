@@ -70,12 +70,14 @@ namespace KinveyXamarin
 		public class OfflineMetaData{
 			public string id;
 			public JObject customHeaders;
-			public string clientVersion;
+			//public string clientVersion;
 
-			public OfflineMetaData(string id, JObject customHeaders, string clientVersion){
+			//public OfflineMetaData(string id, JObject customHeaders, string clientVersion){
+			public OfflineMetaData(string id, JObject customHeaders)
+			{
 				this.id = id;
 				this.customHeaders = customHeaders;
-				this.clientVersion = clientVersion;
+				//this.clientVersion = clientVersion;
 			}
 
 			public OfflineMetaData(){}

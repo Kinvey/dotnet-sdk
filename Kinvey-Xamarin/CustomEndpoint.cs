@@ -23,21 +23,21 @@ namespace KinveyXamarin
 
 		private AbstractClient client;
 
-		private string clientAppVersion = null;
+		//private string clientAppVersion = null;
 
 		private JObject customRequestProperties = new JObject();
 
-		public void SetClientAppVersion(string appVersion){
-			this.clientAppVersion = appVersion;	
-		}
-
-		public void SetClientAppVersion(int major, int minor, int revision){
-			SetClientAppVersion(major + "." + minor + "." + revision);
-		}
-
-		public string GetClientAppVersion(){
-			return this.clientAppVersion;
-		}
+//		public void SetClientAppVersion(string appVersion){
+//			this.clientAppVersion = appVersion;	
+//		}
+//
+//		public void SetClientAppVersion(int major, int minor, int revision){
+//			SetClientAppVersion(major + "." + minor + "." + revision);
+//		}
+//
+//		public string GetClientAppVersion(){
+//			return this.clientAppVersion;
+//		}
 
 		public void SetCustomRequestProperties(JObject customheaders){
 			this.customRequestProperties = customheaders;
@@ -62,7 +62,7 @@ namespace KinveyXamarin
 		{
 			this.client = client;
 			this.customRequestProperties = client.GetCustomRequestProperties ();
-			this.clientAppVersion = client.GetClientAppVersion ();
+			//this.clientAppVersion = client.GetClientAppVersion ();
 		}
 
 		public CustomCommand executeCustomEndpointBlocking(string endpoint, I input){
@@ -73,7 +73,7 @@ namespace KinveyXamarin
 			CustomCommand custom = new CustomCommand (client, endpoint, input, urlParameters);
 
 			client.InitializeRequest(custom);
-			custom.clientAppVersion = this.GetClientAppVersion ();
+			//custom.clientAppVersion = this.GetClientAppVersion ();
 			custom.customRequestHeaders = this.GetCustomRequestProperties ();
 			return custom;
 		}
@@ -86,7 +86,7 @@ namespace KinveyXamarin
 			CustomCommandArray custom = new CustomCommandArray (client, endpoint, input, urlParameters);
 
 			client.InitializeRequest(custom);
-			custom.clientAppVersion = this.GetClientAppVersion ();
+			//custom.clientAppVersion = this.GetClientAppVersion ();
 			custom.customRequestHeaders = this.GetCustomRequestProperties ();
 			return custom;
 		}

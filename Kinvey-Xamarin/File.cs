@@ -30,21 +30,21 @@ namespace KinveyXamarin
 		/// <value>The client.</value>
 		private AbstractClient client {get; set;}
 
-		private string clientAppVersion = null;
+		//private string clientAppVersion = null;
 
 		private JObject customRequestProperties = new JObject();
 
-		public void SetClientAppVersion(string appVersion){
-			this.clientAppVersion = appVersion;	
-		}
-
-		public void SetClientAppVersion(int major, int minor, int revision){
-			SetClientAppVersion(major + "." + minor + "." + revision);
-		}
-
-		public string GetClientAppVersion(){
-			return this.clientAppVersion;
-		}
+//		public void SetClientAppVersion(string appVersion){
+//			this.clientAppVersion = appVersion;	
+//		}
+//
+//		public void SetClientAppVersion(int major, int minor, int revision){
+//			SetClientAppVersion(major + "." + minor + "." + revision);
+//		}
+//
+//		public string GetClientAppVersion(){
+//			return this.clientAppVersion;
+//		}
 
 		public void SetCustomRequestProperties(JObject customheaders){
 			this.customRequestProperties = customheaders;
@@ -73,7 +73,7 @@ namespace KinveyXamarin
 		{
 			this.client = client;
 			this.customRequestProperties = client.GetCustomRequestProperties ();
-			this.clientAppVersion = client.GetClientAppVersion ();
+			//this.clientAppVersion = client.GetClientAppVersion ();
 		}
 
 		/// <summary>
@@ -91,7 +91,7 @@ namespace KinveyXamarin
 			DownloadMetadataAndFile download = new DownloadMetadataAndFile (urlParameters, this.client);
 
 			client.InitializeRequest (download);
-			download.clientAppVersion = this.GetClientAppVersion ();
+			//download.clientAppVersion = this.GetClientAppVersion ();
 			download.customRequestHeaders = this.GetCustomRequestProperties ();
 
 
@@ -128,7 +128,7 @@ namespace KinveyXamarin
 			UploadMetadataAndFile upload = new UploadMetadataAndFile (metadata, mode, urlParameters, this.client);
 
 			client.InitializeRequest (upload);
-			upload.clientAppVersion = this.GetClientAppVersion ();
+			//upload.clientAppVersion = this.GetClientAppVersion ();
 			upload.customRequestHeaders = this.GetCustomRequestProperties ();
 			return upload;
 		}
@@ -148,7 +148,7 @@ namespace KinveyXamarin
 			DownloadMetadata download = new DownloadMetadata (urlParameters, this.client);
 
 			client.InitializeRequest (download);
-			download.clientAppVersion = this.GetClientAppVersion ();
+			//download.clientAppVersion = this.GetClientAppVersion ();
 			download.customRequestHeaders = this.GetCustomRequestProperties ();
 			return download;
 
@@ -169,7 +169,7 @@ namespace KinveyXamarin
 			UploadMetadata upload = new UploadMetadata (metadata, urlParameters, this.client);
 
 			client.InitializeRequest (upload);
-			upload.clientAppVersion = this.GetClientAppVersion ();
+			//upload.clientAppVersion = this.GetClientAppVersion ();
 			upload.customRequestHeaders = this.GetCustomRequestProperties ();
 			return upload;
 
@@ -189,7 +189,7 @@ namespace KinveyXamarin
 			DeleteMetadataAndFile delete = new DeleteMetadataAndFile (urlParameters, this.client);
 
 			client.InitializeRequest (delete);
-			delete.clientAppVersion = this.GetClientAppVersion ();
+			//delete.clientAppVersion = this.GetClientAppVersion ();
 			delete.customRequestHeaders = this.GetCustomRequestProperties ();
 			return delete;
 
