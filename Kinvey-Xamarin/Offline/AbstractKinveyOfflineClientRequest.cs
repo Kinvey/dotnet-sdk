@@ -150,20 +150,16 @@ namespace KinveyXamarin
 			if (policy == ReadPolicy.FORCE_NETWORK) {
 				ret = offlineFromService ();
 
-			} else if (policy == ReadPolicy.BOTH) {
+			} else if (policy == ReadPolicy.FORCE_LOCAL) {
+				ret = offlineFromStore ();
+			}
+			else if (policy == ReadPolicy.BOTH) {
 				ret = offlineFromStore ();
 				if (ret == null) {
 					ret = offlineFromService ();
 				}
 
-			} else if (policy == ReadPolicy.NETWORK_FIRST) {
-				try {
-					ret = offlineFromService ();
-				} catch (Exception e) {
-					ret = offlineFromStore ();
-				}
-			}
-
+			} 
 			kickOffSync ();
 
 			return ret;
@@ -175,22 +171,15 @@ namespace KinveyXamarin
 			if (policy == ReadPolicy.FORCE_NETWORK) {
 				ret = await offlineFromServiceAsync ();
 
+			} else if (policy == ReadPolicy.FORCE_LOCAL) {
+				ret = await offlineFromStoreAsync ();
+
 			} else if (policy == ReadPolicy.BOTH) {
 				ret = await offlineFromStoreAsync ();
 				if (ret == null) {
 					ret = await offlineFromServiceAsync ();
 				}
 
-			} else if (policy == ReadPolicy.NETWORK_FIRST) {
-				bool failed = false;
-				try {
-					ret = await offlineFromServiceAsync ();
-				} catch (Exception e) {
-					failed = true;
-				}
-				if (failed) {
-					ret = await offlineFromStoreAsync ();
-				}
 			}
 
 			kickOffSync ();

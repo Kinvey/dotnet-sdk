@@ -143,17 +143,6 @@ namespace KinveyXamarin
 				if (ret == null) {
 					ret = fromService (true);
 				}
-			} else if (cachePolicy == ReadPolicy.CACHE_FIRST_NOREFRESH) {
-				ret = fromCache ();
-				if (ret == null) {
-					ret = fromService(false);
-				}
-			} else if (cachePolicy == ReadPolicy.NETWORK_FIRST) {
-				ret = fromService (true);
-				if (ret == null) {
-					ret = fromCache ();
-				}
-				
 			}
 
 			return ret;
@@ -175,17 +164,6 @@ namespace KinveyXamarin
 				if (ret == null) {
 					ret = await fromServiceAsync (true);
 				}
-			} else if (cachePolicy == ReadPolicy.CACHE_FIRST_NOREFRESH) {
-				ret = fromCache ();
-				if (ret == null) {
-					ret = await fromServiceAsync(false);
-				}
-			} else if (cachePolicy == ReadPolicy.NETWORK_FIRST) {
-				ret = await fromServiceAsync (true);
-				if (ret == null) {
-					ret = fromCache ();
-				}
-
 			}
 
 			return ret;

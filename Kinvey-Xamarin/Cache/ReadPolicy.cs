@@ -31,15 +31,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
 		/// </summary>
-		BOTH,
-		/// <summary>
-		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will not be cached.
-		/// </summary>
-		CACHE_FIRST_NOREFRESH,
-		/// <summary>
-		/// Attempts to get the response from the network, if that fails attempts to get the response from the cache.
-		/// </summary>
-		NETWORK_FIRST
+		BOTH	
 	}
 }
 

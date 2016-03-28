@@ -452,7 +452,7 @@ namespace KinveyXamarin
 		/// A Get request, which is implemented synchronously
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetRequest : AbstractKinveyCachedClientRequest<T[]>
+		public class GetRequest : AbstractKinveyOfflineClientRequest<T[]>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/";
 
@@ -472,7 +472,7 @@ namespace KinveyXamarin
 		/// Get entity request, which is implemented synchronously
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetEntityRequest : AbstractKinveyCachedClientRequest<T>
+		public class GetEntityRequest : AbstractKinveyOfflineClientRequest<T>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityId}";
 
@@ -498,7 +498,7 @@ namespace KinveyXamarin
 		/// Get query request, which is implemented synchronously
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetQueryRequest : AbstractKinveyCachedClientRequest<T[]>
+		public class GetQueryRequest : AbstractKinveyOfflineClientRequest<T[]>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/?query={querystring}";
 
@@ -546,7 +546,7 @@ namespace KinveyXamarin
 		/// Get the count request, which is implemented synchronously.
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetCountRequest : AbstractKinveyCachedClientRequest<T>
+		public class GetCountRequest : AbstractKinveyOfflineClientRequest<T>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count";
 
@@ -564,7 +564,7 @@ namespace KinveyXamarin
 		/// Get the count request, which is implemented synchronously.
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetCountQueryRequest : AbstractKinveyCachedClientRequest<T>
+		public class GetCountQueryRequest : AbstractKinveyOfflineClientRequest<T>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
 
