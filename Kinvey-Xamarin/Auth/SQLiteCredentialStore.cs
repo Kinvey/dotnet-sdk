@@ -53,10 +53,10 @@ namespace KinveyXamarin
 		/// <param name="userId">User identifier.</param>
 		public Credential Load (string userId)
 		{
-			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.userID == userId).FirstOrDefault ();
+			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.UserID == userId).FirstOrDefault ();
 			Credential cred = null;
 			if (sqlcred != null) {
-				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
 		}
@@ -70,8 +70,9 @@ namespace KinveyXamarin
 		{
 			Delete (userId);
 			SQLCredential cred = new SQLCredential();
-			cred.userID = credential.UserId;
+			cred.UserID = credential.UserId;
 			cred.AuthToken = credential.AuthToken;
+			cred.UserName = credential.UserName;
 			cred.RefreshToken = credential.RefreshToken;
 			cred.RedirectUri = credential.RedirectUri;
 			_dbConnection.Insert(cred);
@@ -90,7 +91,7 @@ namespace KinveyXamarin
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
 			Credential cred = null;
 			if (sqlcred != null) {
-				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
 		}
@@ -109,11 +110,17 @@ namespace KinveyXamarin
 		public string AuthToken { get; set;}
 
 		/// <summary>
-		/// Gets or sets the user I.
+		/// Gets or sets the user ID.
 		/// </summary>
 		/// <value>The user Id.</value>
 		[PrimaryKey]
-		public string userID {get; set;}
+		public string UserID { get; set; }
+
+		/// <summary>
+		/// Gets or sets the user name.
+		/// </summary>
+		/// <value>The redirect uri.</value>
+		public string UserName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the refresh token.
@@ -126,7 +133,6 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <value>The redirect uri.</value>
 		public string RedirectUri {get; set;}
-
 	}
 }
 
