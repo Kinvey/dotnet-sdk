@@ -17,6 +17,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -57,6 +58,11 @@ namespace KinveyXamarin
 		public string RedirectUri { get; set; }
 
 		/// <summary>
+		/// The custom attributes for a user.
+		/// <summary>
+		[DataMember]
+		private Dictionary<string, JToken> attributes;
+
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
 		[Preserve]
@@ -67,11 +73,12 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="userId">User _id.</param>
 		/// <param name="authToken">Auth token.</param>
-		public Credential(string userId, string authToken, string userName, string refresh, string redirectUri)
+		public Credential(string userId, string authToken, string userName, Dictionary<string, JToken> attributes, string refresh, string redirectUri)
 		{
 			this.userId = userId;
 			this.authToken = authToken;
 			this.userName = userName;
+			this.attributes = attributes;
 			this.RefreshToken = refresh;
 			this.RedirectUri = redirectUri;
 		}
@@ -108,6 +115,13 @@ namespace KinveyXamarin
 			internal set { this.userName = value; }
 		}
 
+		public Dictionary<string, JToken> Attributes
+		{
+			get { return this.attributes; }
+			[Preserve]
+			internal set { this.attributes = value; }
+		}
+
 		/// <summary>
 		/// Initialize the specified clientRequest with this credential.
 		/// </summary>
@@ -127,7 +141,7 @@ namespace KinveyXamarin
 		/// <param name="response">The response of a Kinvey login/create request.</param>
 		public static Credential From(KinveyAuthResponse response)
 		{
-			return new Credential(response.UserId, response.AuthToken, response.username, null, null);
+			return new Credential(response.UserId, response.AuthToken, response.username, response.Attributes, null, null);
 		}
 
 		/// <summary>
@@ -136,7 +150,7 @@ namespace KinveyXamarin
 		/// <param name="user">User.</param>
 		public static Credential From(User user)
 		{
-			return new Credential(user.Id, user.AuthToken, user.UserName, null, null);
+			return new Credential(user.Id, user.AuthToken, user.UserName, user.Attributes, null, null);
 		}
 	}
 }

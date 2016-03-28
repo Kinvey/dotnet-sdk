@@ -56,7 +56,7 @@ namespace KinveyXamarin
         {
             if (userId != null)
             {
-				Credential cred = new Credential(userId, credential.AuthToken, credential.UserName, credential.RefreshToken, credential.RedirectUri);
+				Credential cred = new Credential(userId, credential.AuthToken, credential.UserName, credential.Attributes, credential.RefreshToken, credential.RedirectUri);
                 store.Add(userId, cred);
             }
         }
