@@ -150,19 +150,11 @@ namespace KinveyXamarin
 
 				Logger.initialize (c.logger);
 				Credential currentCredential = this.Store.getActiveUser ();
-				if (currentCredential != null){
-					c.User ().Login (currentCredential, new KinveyDelegate<User> { 
-						onSuccess = (T) => {
-							//Logger.Log("logged in");
-						},
-						onError = (error) => {
-							Logger.Log(error);
-						}
-					});
+				if (currentCredential != null)
+				{
+					c.User().LoginAsync(currentCredential);
 				}
 
-
-	
 				return c;
 			}
 

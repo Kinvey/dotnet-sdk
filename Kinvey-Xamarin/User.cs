@@ -273,27 +273,6 @@ namespace KinveyXamarin
             credentialManager.RemoveCredential(userID);
         }
 
-		/// <summary>
-		/// Login with a credential object.
-		/// </summary>
-		/// <param name="cred">The crendential to login with.</param>
-		/// <param name="delegates">Delegates for success or failure.</param>
-		public void Login(Credential cred, KinveyDelegate<User> delegates)
-		{
-			// TODO does this method need to be public?
-			// TODO make this method async
-			this.Id = cred.UserId;
-			this.AuthToken = cred.AuthToken;
-			Task.Run (() => {
-				try{
-					User user = LoginBlocking(cred).Execute();
-					delegates.onSuccess(user);
-				}catch(Exception e){
-					delegates.onError(e);
-				}
-			});
-		}
-
 
 
 
@@ -704,6 +683,14 @@ namespace KinveyXamarin
 		////////////////////////////////////////
 		// BLOCKING CALLS - TURN TO PRIVATE ACCESS
 		////////////////////////////////////////
+
+		internal async Task LoginAsync(Credential cred)
+		{
+			this.Id = cred.UserId;
+			this.AuthToken = cred.AuthToken;
+
+			await LoginBlocking(cred).ExecuteAsync();
+		}
 
 		/// <summary>
 		/// Logins an anonymous user synchronously.
