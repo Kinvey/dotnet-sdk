@@ -725,12 +725,11 @@ namespace KinveyXamarin
 			return new LoginRequest (cred, this).buildAuthRequest ();
         }
 
-		/// <summary>
-		/// Logs a user in synchronously with a third party identity.
-		/// </summary>
-		/// <returns>The request instance used to login the user.</returns>
-		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
-		public LoginRequest LoginBlocking(ThirdPartyIdentity identity){ // TODO make private 
+		// Logs a user in synchronously with a third party identity.
+		internal LoginRequest LoginBlocking(ThirdPartyIdentity identity)
+		{
+			// TODO change from internal to private once synchronous Execute() method
+			// is removed from AbstractKinveyClientRequest.cs
 			this.type = LoginType.THIRDPARTY;
 			return new LoginRequest (identity, this).buildAuthRequest ();
 		}
