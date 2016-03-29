@@ -1228,84 +1228,74 @@ namespace KinveyXamarin
 
         }
 			
-		/// <summary>
-		/// Deletes the user with the specified _id.
-		/// </summary>
+		// Build request to delete the user with the specified ID.
 		[JsonObject(MemberSerialization.OptIn)]
-		public  class DeleteRequest : AbstractKinveyClientRequest<KinveyDeleteResponse> {
+		private class DeleteRequest : AbstractKinveyClientRequest<KinveyDeleteResponse>
+		{
 			private const string REST_PATH = "user/{appKey}/{userID}?hard={hard}";
 
 			[JsonProperty]
-			public bool hard = false;
+			private bool hard = false;
 
 			[JsonProperty]
-			public string userID;
+			private string userID;
 
-			public DeleteRequest(AbstractClient client, string userID, bool hard, Dictionary<string, string> urlProperties) :
-			base(client, "DELETE", REST_PATH, default(KinveyDeleteResponse), urlProperties){
+			internal DeleteRequest(AbstractClient client, string userID, bool hard, Dictionary<string, string> urlProperties) :
+				base(client, "DELETE", REST_PATH, default(KinveyDeleteResponse), urlProperties)
+			{
 				this.userID = userID;
 				this.hard = hard;
 			}
-
-			public override KinveyDeleteResponse Execute() {
-				KinveyDeleteResponse resp = base.Execute();
-//				this.logout();
-
-				return resp;
-			}
 		}
 
-		/// <summary>
-		/// Retrieve a user
-		/// </summary>
-		public class RetrieveRequest : AbstractKinveyClientRequest<User> {
+		// Build request to retrieve a user
+		private class RetrieveRequest : AbstractKinveyClientRequest<User>
+		{
 			private const string REST_PATH = "user/{appKey}/{userID}";
 
 			[JsonProperty]
-			public string userID;
+			private string userID;
 
-			public User user;
-
-			public RetrieveRequest(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
-			base(client, "GET", REST_PATH, default(User), urlProperties) {
+			internal RetrieveRequest(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
+				base(client, "GET", REST_PATH, default(User), urlProperties)
+			{
 				this.userID = userID;
 			}				
 		}
 
-		/// <summary>
-		/// Retrieve users.
-		/// </summary>
-		public class RetrieveUsersRequest : AbstractKinveyClientRequest<User[]> {
+		// Build request to retrieve users based on parameters
+		private class RetrieveUsersRequest : AbstractKinveyClientRequest<User[]>
+		{
 			private const string REST_PATH = "user/{appKey}/{?query,resolve,resolve_depth,retainReference}";
-		
+
 			[JsonProperty("query")]
-			public string queryFilter;
+			private string queryFilter;
 
 			[JsonProperty("resolve")]
-			public string resolve;
-			[JsonProperty("resolve_depth")]
-			public string resolve_depth;
-			[JsonProperty("retainReferences")]
-			public string retainReferences;
+			private string resolve;
 
-			public RetrieveUsersRequest(AbstractClient client, string query, Dictionary<string, string> urlProperties):
-			base(client, "GET", REST_PATH, default(User[]), urlProperties){
+			[JsonProperty("resolve_depth")]
+			private string resolve_depth;
+
+			[JsonProperty("retainReferences")]
+			private string retainReferences;
+
+			internal RetrieveUsersRequest(AbstractClient client, string query, Dictionary<string, string> urlProperties):
+				base(client, "GET", REST_PATH, default(User[]), urlProperties)
+			{
 				this.queryFilter = query;
 			}
 		}
 
-		/// <summary>
-		/// Look up users.
-		/// </summary>
-		public class LookupRequest : AbstractKinveyClientRequest<User[]>
+		// Build request to look up users
+		private class LookupRequest : AbstractKinveyClientRequest<User[]>
 		{
 			private const string REST_PATH = "user/{appKey}/_lookup";
 
-			public LookupRequest(AbstractClient client, Dictionary<string, string> urlProperties, UserDiscovery criteria) :
+			internal LookupRequest(AbstractClient client, Dictionary<string, string> urlProperties, UserDiscovery criteria) :
 				base(client, "POST", REST_PATH, null, urlProperties)
 			{
 				JObject requestPayload = new JObject();
-
 
 				if ((criteria != null) &&
 					(criteria.getCriteria() != null))
@@ -1320,26 +1310,25 @@ namespace KinveyXamarin
 			}
 		}
 
-		/// <summary>
-		/// Update a user
-		/// </summary>
-		public class UpdateRequest : AbstractKinveyClientRequest<User> {
+		// Build request to update a user
+		private class UpdateRequest : AbstractKinveyClientRequest<User>
+		{
 			private const string REST_PATH = "user/{appKey}/{userID}";
 
 			[JsonProperty]
-			public string userID;
+			private string userID;
 
 			private User user;
 
-			public UpdateRequest(AbstractClient client, User user, Dictionary<string, string> urlProperties) :
-			base(client, "PUT", REST_PATH, user, urlProperties){
+			internal UpdateRequest(AbstractClient client, User user, Dictionary<string, string> urlProperties) :
+				base(client, "PUT", REST_PATH, user, urlProperties)
+			{
 				this.userID = user.id;
 				this.user = user;
-
 			}
 
 			public override User Execute(){
-
+				// TODO can this method be removed?
 				User u = base.Execute();
 
 				if (u.id == (user.id)){
@@ -1365,34 +1354,33 @@ namespace KinveyXamarin
 
 		}
 
-		/// <summary>
-		/// Reset password.
-		/// </summary>
-		public class ResetPasswordRequest : AbstractKinveyClientRequest<User> {
+		// Build request to reset password
+		private class ResetPasswordRequest : AbstractKinveyClientRequest<User>
+		{
 			private const string REST_PATH = "/rpc/{appKey}/{userID}/user-password-reset-initiate";
 
 			[JsonProperty]
-			public string userID;
+			private string userID;
 
-			public ResetPasswordRequest(AbstractClient client, string userid, Dictionary<string, string> urlProperties) :
-			base(client, "POST", REST_PATH, default(User), urlProperties){
+			internal ResetPasswordRequest(AbstractClient client, string userid, Dictionary<string, string> urlProperties) :
+				base(client, "POST", REST_PATH, default(User), urlProperties)
+			{
 				this.userID = userid;
 				this.RequireAppCredentials = true;
-
 			}
 		}
 
-		/// <summary>
-		/// Email verification.
-		/// </summary>
-		public class EmailVerificationRequest : AbstractKinveyClientRequest<User> {
+		// Build request to initiate email verification
+		private class EmailVerificationRequest : AbstractKinveyClientRequest<User>
+		{
 			private const string REST_PATH = "rpc/{appKey}/{userID}/user-email-verification-initiate";
 
 			[JsonProperty]
-			public string userID;
+			private string userID;
 
-			public EmailVerificationRequest(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
-			base(client, "POST", REST_PATH, default(User), urlProperties){
+			internal EmailVerificationRequest(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
+				base(client, "POST", REST_PATH, default(User), urlProperties)
+			{
 				this.userID = userID;
 				this.RequireAppCredentials = true;
 			}
