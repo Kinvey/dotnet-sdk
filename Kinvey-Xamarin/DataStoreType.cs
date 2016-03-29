@@ -11,16 +11,46 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-
 using System;
 
 namespace KinveyXamarin
 {
-	public enum DataStoreType
+	/// <summary>
+	/// Store type.
+	/// </summary>
+	public class DataStoreType
 	{
-		SYNC,
-		CACHE,
-		NETWORK
+		/// <summary>
+		/// Gets the read policy.
+		/// </summary>
+		/// <value>The read policy.</value>
+		public ReadPolicy ReadPolicy { get; }
+
+		/// <summary>
+		/// Gets the write policy.
+		/// </summary>
+		/// <value>The write policy.</value>
+		public WritePolicy WritePolicy { get; }
+
+		/// <summary>
+		/// The SYNC store.
+		/// </summary>
+		public static readonly DataStoreType SYNC = new DataStoreType(ReadPolicy.FORCE_LOCAL, WritePolicy.FORCE_LOCAL);
+
+		/// <summary>
+		/// The CACHE store.
+		/// </summary>
+		public static readonly DataStoreType CACHE = new DataStoreType (ReadPolicy.BOTH, WritePolicy.NETWORK_THEN_LOCAL);
+
+		/// <summary>
+		/// The NETWORK store.
+		/// </summary>
+		public static readonly DataStoreType NETWORK = new DataStoreType (ReadPolicy.FORCE_NETWORK, WritePolicy.FORCE_NETWORK);
+
+		DataStoreType (ReadPolicy readPolicy, WritePolicy writePolicy){
+			this.ReadPolicy = readPolicy;
+			this.WritePolicy = writePolicy;
+		}
 	}
 }
 
