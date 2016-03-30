@@ -10,7 +10,7 @@ namespace KinveyXamariniOS
 			Console.WriteLine (url.Query);
 			Console.WriteLine (url.Query.Substring(url.Query.IndexOf ("code=") + 5) );
 			string accesstoken = url.Query.Substring(url.Query.IndexOf ("code=") + 5) ;
-			user.GetMICAccessToken(accesstoken);
+			user.GetMICAccessTokenAsync(accesstoken);
 			return true;
 		}
 	}

@@ -129,61 +129,6 @@ namespace KinveyXamarin
 		[JsonIgnore]
 		private LoginType type {get; set;}
 
-		/// <summary>
-		/// The redirect URI for MIC login requests
-		/// </summary>
-		public string MICRedirectURI {get; set;}
-
-		/// <summary>
-		/// The callback for the MIC login, this is used after the redirect
-		/// </summary>
-		protected KinveyDelegate<User> MICDelegate;
-
-		protected string MICHostName
-		{
-			get
-			{
-				if (this.client != null)
-				{
-					return this.client.MICHostName;
-				}
-				return null;
-			}
-
-			set
-			{
-				setMICHostName(value);
-			}
-		}
-
-		protected string MICApiVersion { get; set;}
-
-		/// <summary>
-		/// The host name for your MIC API. This is relevant if you are using a dedicated instance of Kinvey, with an auth base URL that differs from https://auth.kinvey.com
-		/// </summary>
-		/// <param name="host">Your MIC host. Your hostname must use "https".</param>
-		public void setMICHostName(string host){
-			if (!host.StartsWith("https")){
-				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + MICHostName);
-			}	
-			if (!host.EndsWith ("/")) {
-				host += "/";
-			}
-
-			this.client.MICHostName = host;
-		}
-
-		/// <summary>
-		/// Sets the MIC API version. This is relevant in case you need to use a specific version of MIC such as an Early Adopter release.
-		/// </summary>
-		/// <param name="version">MIC version. eg: "v2". </param>
-		public void setMICApiVersion(string version){
-			if (!version.StartsWith("v")){
-				version = "v" + version;
-			}	
-			MICApiVersion = version;
-		}
-
 
 
 
@@ -425,12 +370,6 @@ namespace KinveyXamarin
 			}
 		}
 
-
-
-
-		// MIC-related APIs
-		//
-
 		/// <summary>
 		/// Login with Auth Link Credentials
 		/// </summary>
@@ -442,118 +381,6 @@ namespace KinveyXamarin
 			Provider provider = new Provider ();
 			provider.authlink = new AuthLinkCredential (accesstoken, refreshtoken);
 			return await LoginAsync(new ThirdPartyIdentity(provider));
-		}
-
-		/// <summary>
-		/// Login with MIC Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accessToken">MIC Access token.</param>
-		public async Task<User> LoginMICAsync(string accessToken)
-		{
-			Provider provider = new Provider ();
-			provider.kinveyAuth = new MICCredential (accessToken);
-			return await MICLoginAsync(new ThirdPartyIdentity(provider));
-		}
-
-		/// <summary>
-		/// Login with a third party identity
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="identity">The Third party identity.</param>
-		public async Task<User> MICLoginAsync(ThirdPartyIdentity identity)
-		{
-			return await MICLoginBlocking (identity).ExecuteAsync();
-		}
-
-		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> delegates)
-		{
-			//return URL for login page
-			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
-
-			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
-			string hostname = MICHostName;
-			if (MICApiVersion != null && MICApiVersion.Length > 0) {
-				hostname += MICApiVersion + "/";
-			}
-			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
-			//keep a reference to the callback and redirect uri for later
-			this.MICDelegate = delegates;
-			this.MICRedirectURI = redirectURI;
-			if (delegates != null) {
-				delegates.OnReadyToRender (myURLToRender);
-			}
-		}
-
-		public void LoginWithAuthorizationCodeAPI(string username, string password, string redirectURI, KinveyDelegate<User> delegates)
-		{
-			this.MICDelegate = delegates;
-			this.MICRedirectURI = redirectURI;
-
-			Task.Run (() => {
-				try{
-					JObject tempResult = getMICTempURL().Execute();
-					string tempURL = tempResult["temp_login_uri"].ToString();
-					JObject accessResult = MICLoginToTempURL(username, password, tempURL).Execute();
-					string accessToken = accessResult["access_token"].ToString();
-
-					Provider provider = new Provider ();
-					provider.kinveyAuth = new MICCredential (accessToken);
-					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
-
-					//store the new refresh token
-					Credential currentCred = KinveyClient.Store.Load(u.Id);
-					currentCred.RefreshToken = accessResult["refresh_token"].ToString();
-					currentCred.RedirectUri = this.MICRedirectURI;
-					KinveyClient.Store.Store(u.Id, currentCred);
-
-					if (MICDelegate != null){
-						MICDelegate.onSuccess(u);
-					}else{
-						Logger.Log("MIC Delegate is null in Async User");
-					}
-				}catch(Exception e){
-					delegates.onError(e);
-				}
-
-			});
-		}
-
-		public void GetMICAccessToken(String token)
-		{
-			Task.Run (() => {
-				try{
-					JObject result = this.getMICToken(token).Execute();
-					string accessToken = result["access_token"].ToString();
-
-					Provider provider = new Provider ();
-					provider.kinveyAuth = new MICCredential (accessToken);
-					Task<User> userTask = LoginMICAsync(accessToken);
-					userTask.Wait();
-					if (userTask.Exception != null) {
-						throw userTask.Exception;
-					}
-					User u = userTask.Result;
-
-					//store the new refresh token
-					Credential currentCred = KinveyClient.Store.Load(u.Id);
-					currentCred.RefreshToken = result["refresh_token"].ToString();
-					currentCred.RedirectUri = this.MICRedirectURI;
-					KinveyClient.Store.Store(u.Id, currentCred);
-
-					if (MICDelegate != null){
-						MICDelegate.onSuccess(u);
-					}else{
-						Logger.Log("MIC Delegate is null in Async User");
-					}
-				}catch(Exception e){
-					if (MICDelegate != null){
-						MICDelegate.onError(e);
-					}else{
-						Logger.Log("MIC Delegate is null in Async User");
-					}
-				}
-			});
 		}
 
 
@@ -680,6 +507,10 @@ namespace KinveyXamarin
 
 
 
+
+
+
+
 		////////////////////////////////////////
 		// BLOCKING CALLS - TURN TO PRIVATE ACCESS
 		////////////////////////////////////////
@@ -732,17 +563,6 @@ namespace KinveyXamarin
 			// is removed from AbstractKinveyClientRequest.cs
 			this.type = LoginType.THIRDPARTY;
 			return new LoginRequest (identity, this).buildAuthRequest ();
-		}
-
-		/// <summary>
-		/// Logs a user in synchronously with Mobile Identity Connect.
-		/// </summary>
-		/// <returns>The request instance used to login the user.</returns>
-		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
-		private MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity)
-		{
-			this.type = LoginType.THIRDPARTY;
-			return new MICLoginRequest (identity, this).buildAuthRequest ();
 		}
 
 		/// <summary>
@@ -922,125 +742,6 @@ namespace KinveyXamarin
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
 
-		/// <summary>
-		/// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token.
-		/// </summary>
-		/// <returns>The client request that gets the MIC token.</returns>
-		/// <param name="code">The authorization code.</param>
-		private RetrieveMICAccessToken getMICToken(String code)
-		{
-			//        grant_type: "authorization_code" - this is always set to this value
-			//        code: use the ‘code’ returned in the callback 
-			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
-			//        client_id:  The appKey (kid) of the app
-
-			Dictionary<string, string> data = new Dictionary<string, string>();
-			data.Add("grant_type", "authorization_code");
-			data.Add("code", code);
-			data.Add("redirect_uri",this.MICRedirectURI);
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
-
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-
-			RetrieveMICAccessToken getToken = new RetrieveMICAccessToken(client, MICHostName, data, urlParameters);
-			getToken.RequireAppCredentials =  true;
-			client.InitializeRequest(getToken);
-			return getToken;
-		}
-
-		/// <summary>
-		/// Generates a request that uses the refresh token to retrieve a new MIC user token.
-		/// </summary>
-		/// <returns>The client request that gets the MIC token.</returns>
-		/// <param name="refreshToken">The refresh token.</param>
-		/// <param name="redirectUri">The redirect uri (this is the same uri used when obtaining the auth grant)</param>
-		public RetrieveMICAccessToken UseRefreshToken(String refreshToken, string redirectUri) { // TODO make private
-			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
-			//        refresh_token: use the refresh token 
-			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
-			//        client_id:  The appKey (kid) of the app
-
-			Dictionary<string, string> data = new Dictionary<string, string>();
-			data.Add("grant_type", "refresh_token");
-			data.Add("refresh_token", refreshToken);
-			data.Add("redirect_uri", redirectUri);
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
-
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-
-			RetrieveMICAccessToken getToken = new RetrieveMICAccessToken(client, MICHostName, data, urlParameters);
-			getToken.RequireAppCredentials = true;
-			client.InitializeRequest(getToken);
-			return getToken;
-
-
-		}
-
-		/// <summary>
-		/// Generates a request to get a temporary MIC URL (automated authorization grant flow).
-		/// </summary>
-		/// <returns>The client request to get the temporary MIC URL.</returns>
-		private GetMICTempURL getMICTempURL()
-		{
-
-			//    	client_id:  this is the app’s appKey (the KID)
-			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
-			//    	response_type:  this is always set to “code”
-
-			Dictionary<string, string> data = new Dictionary<string, string>();
-			data.Add("response_type", "code");
-			data.Add("redirect_uri", this.MICRedirectURI);
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
-
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			if (this.MICApiVersion != null && this.MICApiVersion.Length > 0) {
-				urlParameters.Add ("MICApiVersion", this.MICApiVersion);
-			}
-
-			GetMICTempURL getTemp = new GetMICTempURL(client, MICHostName, data, urlParameters);
-			getTemp.RequireAppCredentials = true;
-			client.InitializeRequest(getTemp);
-			return getTemp;  	
-
-		}
-
-		/// <summary>
-		/// Generates a request to login a user to the temporary MIC URL (automated authorization grant flow).
-		/// </summary>
-		/// <param name="username">Username</param>
-		/// <param name="password">Password</param>
-		/// <param name="tempURL">Temporary MIC url to use for login</param>
-		/// <returns>The client request to get the temporary MIC URL.</returns>
-		private LoginToTempURL MICLoginToTempURL(String username, String password, String tempURL)
-		{
-
-			//    	client_id:  this is the app’s appKey (the KID)
-			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
-			//    	response_type:  this is always set to “code”
-			//    	username
-			//    	password
-
-
-			Dictionary<string, string> data = new Dictionary<string, string>();
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
-			data.Add("redirect_uri", this.MICRedirectURI);
-			data.Add("response_type", "code");
-			data.Add("username", username);
-			data.Add("password", password);
-
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-
-			LoginToTempURL loginTemp = new LoginToTempURL(client, this, tempURL, data, urlParameters);
-			loginTemp.RequireAppCredentials = true;
-			client.InitializeRequest(loginTemp);
-			return loginTemp;  	
-
-		}
-
 
 
 
@@ -1053,29 +754,6 @@ namespace KinveyXamarin
 		////////////////////////////////////////
 		// INNER REQUEST CLASSES
 		////////////////////////////////////////
-
-		/// <summary>
-		/// A synchronous MIC login request.
-		/// </summary>
-		public class MICLoginRequest : LoginRequest
-		{
-
-			public MICLoginRequest(ThirdPartyIdentity identity, User user) : base(identity, user)
-			{
-				memberUser.builder.Create = false;
-			}
-
-			/// <summary>
-			/// Builds the auth request.
-			/// </summary>
-			/// <returns>The auth request.</returns>
-			public MICLoginRequest buildAuthRequest() {
-				base.buildAuthRequest ();
-				request.buildRequestPayload ();
-				return this;
-			}
-
-		}
 
 		/// <summary>
 		/// A synchronous login request.
@@ -1386,6 +1064,401 @@ namespace KinveyXamarin
 			}
 		}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// MIC-related APIs
+		//
+
+		/// <summary>
+		/// The redirect URI for MIC login requests
+		/// </summary>
+		public string MICRedirectURI {get; set;}
+
+		/// <summary>
+		/// The callback for the MIC login, this is used after the redirect
+		/// </summary>
+		protected KinveyDelegate<User> MICDelegate;
+
+		protected string MICHostName
+		{
+			get
+			{
+				if (this.client != null)
+				{
+					return this.client.MICHostName;
+				}
+				return null;
+			}
+
+			set
+			{
+				setMICHostName(value);
+			}
+		}
+
+		protected string MICApiVersion { get; set;}
+
+		/// <summary>
+		/// The host name for your MIC API. This is relevant if you are using a dedicated instance of Kinvey, with an auth base URL that differs from https://auth.kinvey.com
+		/// </summary>
+		/// <param name="host">Your MIC host. Your hostname must use "https".</param>
+		public void setMICHostName(string host){
+			if (!host.StartsWith("https")){
+				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + MICHostName);
+			}	
+			if (!host.EndsWith ("/")) {
+				host += "/";
+			}
+
+			this.client.MICHostName = host;
+		}
+
+		/// <summary>
+		/// Sets the MIC API version. This is relevant in case you need to use a specific version of MIC such as an Early Adopter release.
+		/// </summary>
+		/// <param name="version">MIC version. eg: "v2". </param>
+		public void setMICApiVersion(string version){
+			if (!version.StartsWith("v")){
+				version = "v" + version;
+			}	
+			MICApiVersion = version;
+		}
+
+		/// <summary>
+		/// Login with MIC Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">MIC Access token.</param>
+		public async Task<User> LoginMICWithAccessTokenAsync(string accessToken)
+		{
+			Provider provider = new Provider ();
+			provider.kinveyAuth = new MICCredential (accessToken);
+			return await LoginMICAsync(new ThirdPartyIdentity(provider));
+		}
+
+		/// <summary>
+		/// Login with a third party identity
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="identity">The Third party identity.</param>
+		public async Task<User> LoginMICAsync(ThirdPartyIdentity identity)
+		{
+			return await MICLoginBlocking (identity).ExecuteAsync();
+		}
+
+		//VRG Step #1 - Initiate Grant Request - 
+		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> delegates)
+		{
+			//return URL for login page
+			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
+
+			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
+			string hostname = MICHostName;
+			if (MICApiVersion != null && MICApiVersion.Length > 0) {
+				hostname += MICApiVersion + "/";
+			}
+			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
+			//keep a reference to the callback and redirect uri for later
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+			if (delegates != null) {
+				delegates.OnReadyToRender (myURLToRender);
+			}
+		}
+
+		public void LoginWithAuthorizationCodeAPI(string username, string password, string redirectURI, KinveyDelegate<User> delegates)
+		{
+			this.MICDelegate = delegates;
+			this.MICRedirectURI = redirectURI;
+
+			Task.Run (() => {
+				try{
+					JObject tempResult = getMICTempURL().Execute();
+					string tempURL = tempResult["temp_login_uri"].ToString();
+					JObject accessResult = MICLoginToTempURL(username, password, tempURL).Execute();
+					string accessToken = accessResult["access_token"].ToString();
+
+					Provider provider = new Provider ();
+					provider.kinveyAuth = new MICCredential (accessToken);
+					User u = LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+
+					//store the new refresh token
+					Credential currentCred = KinveyClient.Store.Load(u.Id);
+					currentCred.RefreshToken = accessResult["refresh_token"].ToString();
+					currentCred.RedirectUri = this.MICRedirectURI;
+					KinveyClient.Store.Store(u.Id, currentCred);
+
+					if (MICDelegate != null){
+						MICDelegate.onSuccess(u);
+					}else{
+						Logger.Log("MIC Delegate is null in Async User");
+					}
+				}catch(Exception e){
+					delegates.onError(e);
+				}
+
+			});
+		}
+
+//		/// <summary>
+//		/// Gets the MIC access token, given the grant code passed in.
+//		/// </summary>
+//		/// <param name="token">Grant token passed back from MIC grant request</param>
+//		public void GetMICAccessToken(String token)
+//		{
+//			//VRG Step #2 - Initiate MIC Token Request
+//			Task.Run (() => {
+//				try{
+//					JObject result = this.getMICToken(token).Execute();
+//					string accessToken = result["access_token"].ToString();
+//
+//					Provider provider = new Provider ();
+//					provider.kinveyAuth = new MICCredential (accessToken);
+//					Task<User> userTask = LoginMICAsync(accessToken);
+//					userTask.Wait();
+//					if (userTask.Exception != null) {
+//						throw userTask.Exception;
+//					}
+//					User u = userTask.Result;
+//
+//					//store the new refresh token
+//					Credential currentCred = KinveyClient.Store.Load(u.Id);
+//					currentCred.RefreshToken = result["refresh_token"].ToString();
+//					currentCred.RedirectUri = this.MICRedirectURI;
+//					KinveyClient.Store.Store(u.Id, currentCred);
+//
+//					if (MICDelegate != null){
+//						MICDelegate.onSuccess(u);
+//					}else{
+//						Logger.Log("MIC Delegate is null in Async User");
+//					}
+//				}catch(Exception e){
+//					if (MICDelegate != null){
+//						MICDelegate.onError(e);
+//					}else{
+//						Logger.Log("MIC Delegate is null in Async User");
+//					}
+//				}
+//			});
+//		}
+
+		/// <summary>
+		/// Gets the MIC access token, given the grant code passed in.
+		/// </summary>
+		/// <param name="token">Grant token passed back from MIC grant request</param>
+		public async Task GetMICAccessTokenAsync(String token)
+		{
+			//VRG Step #2 - Initiate MIC Token Request
+			try
+			{
+				JObject result = this.getMICToken(token).Execute();
+				string accessToken = result["access_token"].ToString();
+
+				User u = await LoginMICWithAccessTokenAsync(accessToken);
+
+				//store the new refresh token
+				Credential currentCred = KinveyClient.Store.Load(u.Id);
+				currentCred.RefreshToken = result["refresh_token"].ToString();
+				currentCred.RedirectUri = this.MICRedirectURI;
+				KinveyClient.Store.Store(u.Id, currentCred);
+
+				if (MICDelegate != null)
+				{
+					MICDelegate.onSuccess(u);
+				}
+				else
+				{
+					Logger.Log("MIC Delegate is null in Async User");
+				}
+			}
+			catch(Exception e)
+			{
+				if (MICDelegate != null)
+				{
+					MICDelegate.onError(e);
+				}
+				else
+				{
+					Logger.Log("MIC Delegate is null in Async User");
+				}
+			}
+		}
+
+		/// <summary>
+		/// Logs a user in synchronously with Mobile Identity Connect.
+		/// </summary>
+		/// <returns>The request instance used to login the user.</returns>
+		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
+		private MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity)
+		{
+			this.type = LoginType.THIRDPARTY;
+			return new MICLoginRequest (identity, this).buildAuthRequest ();
+		}
+
+		/// <summary>
+		/// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token.
+		/// </summary>
+		/// <returns>The client request that gets the MIC token.</returns>
+		/// <param name="code">The authorization code.</param>
+		private RetrieveMICAccessToken getMICToken(String code)
+		{
+			//        grant_type: "authorization_code" - this is always set to this value
+			//        code: use the ‘code’ returned in the callback 
+			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
+			//        client_id:  The appKey (kid) of the app
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("grant_type", "authorization_code");
+			data.Add("code", code);
+			data.Add("redirect_uri",this.MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			RetrieveMICAccessToken getToken = new RetrieveMICAccessToken(client, MICHostName, data, urlParameters);
+			getToken.RequireAppCredentials =  true;
+			client.InitializeRequest(getToken);
+			return getToken;
+		}
+
+		/// <summary>
+		/// Generates a request that uses the refresh token to retrieve a new MIC user token.
+		/// </summary>
+		/// <returns>The client request that gets the MIC token.</returns>
+		/// <param name="refreshToken">The refresh token.</param>
+		/// <param name="redirectUri">The redirect uri (this is the same uri used when obtaining the auth grant)</param>
+		public RetrieveMICAccessToken UseRefreshToken(String refreshToken, string redirectUri) { // TODO make private
+			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
+			//        refresh_token: use the refresh token 
+			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
+			//        client_id:  The appKey (kid) of the app
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("grant_type", "refresh_token");
+			data.Add("refresh_token", refreshToken);
+			data.Add("redirect_uri", redirectUri);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			RetrieveMICAccessToken getToken = new RetrieveMICAccessToken(client, MICHostName, data, urlParameters);
+			getToken.RequireAppCredentials = true;
+			client.InitializeRequest(getToken);
+			return getToken;
+
+
+		}
+
+		/// <summary>
+		/// Generates a request to get a temporary MIC URL (automated authorization grant flow).
+		/// </summary>
+		/// <returns>The client request to get the temporary MIC URL.</returns>
+		private GetMICTempURL getMICTempURL()
+		{
+
+			//    	client_id:  this is the app’s appKey (the KID)
+			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
+			//    	response_type:  this is always set to “code”
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("response_type", "code");
+			data.Add("redirect_uri", this.MICRedirectURI);
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			if (this.MICApiVersion != null && this.MICApiVersion.Length > 0) {
+				urlParameters.Add ("MICApiVersion", this.MICApiVersion);
+			}
+
+			GetMICTempURL getTemp = new GetMICTempURL(client, MICHostName, data, urlParameters);
+			getTemp.RequireAppCredentials = true;
+			client.InitializeRequest(getTemp);
+			return getTemp;  	
+
+		}
+
+		/// <summary>
+		/// Generates a request to login a user to the temporary MIC URL (automated authorization grant flow).
+		/// </summary>
+		/// <param name="username">Username</param>
+		/// <param name="password">Password</param>
+		/// <param name="tempURL">Temporary MIC url to use for login</param>
+		/// <returns>The client request to get the temporary MIC URL.</returns>
+		private LoginToTempURL MICLoginToTempURL(String username, String password, String tempURL)
+		{
+
+			//    	client_id:  this is the app’s appKey (the KID)
+			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
+			//    	response_type:  this is always set to “code”
+			//    	username
+			//    	password
+
+
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+			data.Add("redirect_uri", this.MICRedirectURI);
+			data.Add("response_type", "code");
+			data.Add("username", username);
+			data.Add("password", password);
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+
+			LoginToTempURL loginTemp = new LoginToTempURL(client, this, tempURL, data, urlParameters);
+			loginTemp.RequireAppCredentials = true;
+			client.InitializeRequest(loginTemp);
+			return loginTemp;  	
+
+		}
+
+
+
+
+
+
+		/// <summary>
+		/// A synchronous MIC login request.
+		/// </summary>
+		public class MICLoginRequest : LoginRequest
+		{
+
+			public MICLoginRequest(ThirdPartyIdentity identity, User user) : base(identity, user)
+			{
+				memberUser.builder.Create = false;
+			}
+
+			/// <summary>
+			/// Builds the auth request.
+			/// </summary>
+			/// <returns>The auth request.</returns>
+			public MICLoginRequest buildAuthRequest() {
+				base.buildAuthRequest ();
+				request.buildRequestPayload ();
+				return this;
+			}
+
+		}
+
 		/// <summary>
 		/// Request to retrieve MIC access token.
 		/// </summary>
@@ -1434,18 +1507,25 @@ namespace KinveyXamarin
 
 			public override JObject onRedirect (string newLocation)
 			{
+				// TODO clean up this code - a lot of assumptions made here
 				int codeIndex = newLocation.IndexOf("code=");
 				if (codeIndex == -1){
 					throw new KinveyException("Redirect does not contain `code=`, was: " + newLocation);
 				}
-					
+
 				String accesstoken = newLocation.Substring (codeIndex + 5);
 				return user.getMICToken (accesstoken).Execute();
 			}
 		}
 
+
+
+
+
+
+
+
+
+
     }
 }
-
-
-            

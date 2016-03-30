@@ -10,7 +10,7 @@ namespace KinveyXamarinAndroid
 
 			global::Android.Net.Uri uri = intent.Data;
 			string accessToken = uri.GetQueryParameter("code");
-			user.GetMICAccessToken(accessToken);
+			user.GetMICAccessTokenAsync(accessToken);
 		}
 
 	}
