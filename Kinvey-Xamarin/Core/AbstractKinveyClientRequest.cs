@@ -384,6 +384,7 @@ namespace KinveyXamarin
 					Client.User().Logout(); // TODO is this a potential deadlock?
 
 					//use the refresh token for a new access token
+					// TODO this method must be deleted once everything is async
 					JObject result = Client.User().UseRefreshToken(refreshToken, redirectUri).Execute();
 
 					//login with the access token
@@ -492,10 +493,11 @@ namespace KinveyXamarin
         {
             var response = ExecuteUnparsed();
 
-			if (OverrideRedirect){
-				var locList = response.Headers.FirstOrDefault(HeaderToCheck => HeaderToCheck.Name.Equals("Location")).Value;
-				return onRedirect((locList as List<string>)[0]);
-			}
+			// TODO this method must be deleted once everything is async
+//			if (OverrideRedirect){
+//				var locList = response.Headers.FirstOrDefault(HeaderToCheck => HeaderToCheck.Name.Equals("Location")).Value;
+//				return onRedirect((locList as List<string>)[0]);
+//			}
 
             // special case to handle void or empty responses
 			if (response.Content == null) 
@@ -528,7 +530,7 @@ namespace KinveyXamarin
 			var response = await ExecuteUnparsedAsync();
 
 			if (OverrideRedirect){
-				return onRedirect(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.Equals("Location")).ToString());
+				return await onRedirectAsync(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.Equals("Location")).ToString());
 			}
 			// special case to handle void or empty responses
 			if (response.Content == null) 
@@ -556,7 +558,8 @@ namespace KinveyXamarin
 			}
 		}
 
-		public virtual T onRedirect(String newLocation){
+		public virtual async Task<T> onRedirectAsync(String newLocation)
+		{
 			Logger.Log ("Override Redirect in response is expected, but not implemented!");  
 			return default(T);
 		}

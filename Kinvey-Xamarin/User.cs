@@ -1240,7 +1240,7 @@ namespace KinveyXamarin
 				this.user = user;
 			}
 
-			public override JObject onRedirect (string newLocation)
+			public override async Task<JObject> onRedirectAsync (string newLocation)
 			{
 				// TODO clean up this code - a lot of assumptions made here
 				int codeIndex = newLocation.IndexOf("code=");
@@ -1249,7 +1249,7 @@ namespace KinveyXamarin
 				}
 
 				String accesstoken = newLocation.Substring (codeIndex + 5); // TODO change "String" to "string" - use alias everywhere
-				return user.getMICToken (accesstoken).Execute(); // TODO change method to be async, and await this call
+				return await user.getMICToken (accesstoken).ExecuteAsync();
 			}
 		}
 
@@ -1383,15 +1383,18 @@ namespace KinveyXamarin
 				this.user = user;
 			}
 
-			public override User Execute(){
-				// TODO can this method be removed?
-				User u = base.Execute();
+			public override async Task<User> ExecuteAsync()
+			{
+				User u = await base.ExecuteAsync();
 
-				if (u.id == (user.id)){
+				if (u.id == (user.id))
+				{
 					KinveyAuthResponse auth = new KinveyAuthResponse();
 
 					auth.UserId =  u["_id"].ToString();
+
 					KinveyAuthResponse.KinveyUserMetadata kmd = new KinveyAuthResponse.KinveyUserMetadata();
+
 					kmd.Add("lmt", u["_kmd.lmt"]) ;
 					kmd.Add("authtoken", u["_kmd.authtoken"]);
 					kmd.Add("_kmd", u["_kmd"]);
@@ -1402,12 +1405,12 @@ namespace KinveyXamarin
 					string utype = user.type.ToString();
 				
 					return this.user.InitUser(auth, utype);
-				}else{
+				}
+				else
+				{
 					return u;
 				}
 			}
-
-
 		}
 
 		// Build request to reset password
