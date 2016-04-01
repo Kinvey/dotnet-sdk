@@ -701,6 +701,7 @@ namespace KinveyXamarin
 		// BLOCKING CALLS - TURN TO PRIVATE ACCESS
 		////////////////////////////////////////
 
+		#region User blocking private classes - used to build up requests
 		internal async Task LoginAsync(Credential cred)
 		{
 			this.Id = cred.UserId;
@@ -743,7 +744,7 @@ namespace KinveyXamarin
         }
 
 		// Logs a user in synchronously with a third party identity.
-		internal LoginRequest LoginBlocking(ThirdPartyIdentity identity)
+		private LoginRequest LoginBlocking(ThirdPartyIdentity identity)
 		{
 			// TODO change from internal to private once synchronous Execute() method
 			// is removed from AbstractKinveyClientRequest.cs
@@ -1038,15 +1039,7 @@ namespace KinveyXamarin
 
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
-
-
-
-
-
-
-
-
-
+		#endregion
 
 		////////////////////////////////////////
 		// INNER REQUEST CLASSES
@@ -1056,107 +1049,61 @@ namespace KinveyXamarin
 		/// <summary>
 		/// A synchronous login request.
 		/// </summary>
-		public class LoginRequest 
-        {
-            Credential credential;
-            LoginType type;
-            protected KinveyAuthRequest request;
+		private class LoginRequest
+		{
+			Credential credential;
+			LoginType type;
+			protected KinveyAuthRequest request;
 			protected User memberUser;
 
-
-			/// <summary>
-			/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.User+LoginRequest"/> class.
-			/// </summary>
-			/// <param name="user">User.</param>
-			public LoginRequest(User user) 
-            {
-                memberUser = user;
+			internal LoginRequest(User user)
+			{
+				memberUser = user;
 				memberUser.builder.Create = true;
 				this.type = user.type;
-            }
+			}
 
-			/// <summary>
-			/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.User+LoginRequest"/> class.
-			/// </summary>
-			/// <param name="username">Username.</param>
-			/// <param name="password">Password.</param>
-			/// <param name="setCreate">If set to <c>true</c> set create.</param>
-			/// <param name="user">User.</param>
-			public LoginRequest(string username, string password, bool setCreate, User user) 
-            {
-                this.memberUser = user;
+			internal LoginRequest(string username, string password, bool setCreate, User user)
+			{
+				this.memberUser = user;
 				memberUser.builder.Username = username;
 				memberUser.builder.Password = password;
 				memberUser.builder.Create = setCreate;
 				memberUser.builder.KinveyUser = user;
 				this.type = user.type;
-            }
+			}
 
-			/// <summary>
-			/// Initializes a new instance of the <see cref="Kinvey.DotNet.Framework.User+LoginRequest"/> class.
-			/// </summary>
-			/// <param name="credential">Credential.</param>
-			/// <param name="user">User.</param>
-			public LoginRequest(Credential credential, User user) 
-            {
-                this.memberUser = user;
-                this.credential = credential;
+			internal LoginRequest(Credential credential, User user)
+			{
+				this.memberUser = user;
+				this.credential = credential;
 				this.type = user.type;
-            }
+			}
 
-			public LoginRequest(ThirdPartyIdentity identity, User user){
+			internal LoginRequest(ThirdPartyIdentity identity, User user)
+			{
 				this.memberUser = user;
 				this.memberUser.builder.Identity = identity;
 				this.type = user.type;
 				this.memberUser.builder.Create = false;
-
 			}
 
-			/// <summary>
-			/// Builds the auth request.
-			/// </summary>
-			/// <returns>The auth request.</returns>
-            public LoginRequest buildAuthRequest() {
-                this.request = memberUser.builder.build();
-                return this;
-            }
-				
-			/// <summary>
-			/// Execute this instance.
-			/// </summary>
-			public User Execute() 
+			internal LoginRequest buildAuthRequest()
 			{
-				if (memberUser.isUserLoggedIn() && memberUser.type != LoginType.CREDENTIALSTORE)
-				{
-					throw new KinveyException("Attempting to login when a user is already logged in",
-						"call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
-						"Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended");
-				}
-				string userType = "";
-				if (this.type == LoginType.CREDENTIALSTORE) 
-				{
-					return memberUser.InitUser(credential);
-				}
-				else 
-				{
-					userType = this.type.ToString ();
-				}
-				KinveyAuthResponse response = this.request.Execute();
-				return memberUser.InitUser(response, userType);
+				this.request = memberUser.builder.build();
+				return this;
 			}
 
-
-			/// <summary>
-			/// Executes this auth request async
-			/// </summary>
-			/// <returns>The async task.</returns>
-			public async Task<User> ExecuteAsync(){
-				if (memberUser.isUserLoggedIn() && memberUser.type != LoginType.CREDENTIALSTORE)
+			internal async Task<User> ExecuteAsync()
+			{
+				if (memberUser.isUserLoggedIn() && 
+					memberUser.type != LoginType.CREDENTIALSTORE)
 				{
 					throw new KinveyException("Attempting to login when a user is already logged in",
 						"call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
 						"Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended");
 				}
+
 				string userType = "";
 				if (this.type == LoginType.CREDENTIALSTORE) 
 				{
@@ -1166,34 +1113,27 @@ namespace KinveyXamarin
 				{
 					userType = this.type.ToString ();
 				}
+
 				KinveyAuthResponse response = await this.request.ExecuteAsync();
+
 				return memberUser.InitUser(response, userType);
-
-
 			}
         }
 
-		/// <summary>
-		/// A synchronous MIC login request.
-		/// </summary>
-		public class MICLoginRequest : LoginRequest
+		private class MICLoginRequest : LoginRequest
 		{
-
-			public MICLoginRequest(ThirdPartyIdentity identity, User user) : base(identity, user)
+			internal MICLoginRequest(ThirdPartyIdentity identity, User user) :
+				base(identity, user)
 			{
 				memberUser.builder.Create = false;
 			}
 
-			/// <summary>
-			/// Builds the auth request.
-			/// </summary>
-			/// <returns>The auth request.</returns>
-			public MICLoginRequest buildAuthRequest() {
+			internal MICLoginRequest buildAuthRequest()
+			{
 				base.buildAuthRequest ();
 				request.buildRequestPayload ();
 				return this;
 			}
-
 		}
 
 		// Request to retrieve MIC access token
