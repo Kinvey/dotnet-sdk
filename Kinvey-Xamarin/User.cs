@@ -42,9 +42,21 @@ namespace KinveyXamarin
 		/// </summary>
         public enum LoginType 
         {
+			/// <summary>
+			/// Implicit login type
+			/// </summary>
             IMPLICIT,
+			/// <summary>
+			/// Kinvey login type (username and password)
+			/// </summary>
             KINVEY,
+			/// <summary>
+			/// Credential store login type
+			/// </summary>
             CREDENTIALSTORE,
+			/// <summary>
+			/// Third party provider login type
+			/// </summary>
 			THIRDPARTY
         }
 
@@ -188,19 +200,7 @@ namespace KinveyXamarin
 			MICApiVersion = version;
 		}
 
-
-
-
-
-
-
-
-
-
-		////////////////////////////////////////
-		// CONSTRUCTORS AND INITIALIZERS
-		////////////////////////////////////////
-
+		#region User class Constructors and Initializers
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
@@ -277,23 +277,11 @@ namespace KinveyXamarin
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             credentialManager.RemoveCredential(userID);
         }
+		#endregion
 
+		#region User class Public APIs
 
-
-
-
-
-
-
-
-
-		////////////////////////////////////////
-		// PUBLIC API - ALL ASYNC CALLS
-		////////////////////////////////////////
-
-		// Login/Logout APIs
-		//
-
+		#region User class Login APIs
 		/// <summary>
 		/// Login (and create) an new kinvey user without any specified details.
 		/// </summary>
@@ -564,15 +552,9 @@ namespace KinveyXamarin
 				}
 			}
 		}
+		#endregion
 
-
-
-
-
-
-		// User CRUD APIs
-		//
-
+		#region User CRUD APIs
 
 		// User Create APIs
 		//
@@ -687,21 +669,12 @@ namespace KinveyXamarin
 		{
 			return await DeleteBlocking(userid, hard).ExecuteAsync ();
 		}
+		#endregion
 
+		#endregion
 
-
-
-
-
-
-
-
-
-		////////////////////////////////////////
-		// BLOCKING CALLS - TURN TO PRIVATE ACCESS
-		////////////////////////////////////////
-
-		#region User blocking private classes - used to build up requests
+		#region User class blocking private classes - used to build up requests
+		// Logs a user in asynchronously with a credential object.  Internal use only.
 		internal async Task LoginAsync(Credential cred)
 		{
 			this.Id = cred.UserId;
@@ -710,40 +683,28 @@ namespace KinveyXamarin
 			await LoginBlocking(cred).ExecuteAsync();
 		}
 
-		/// <summary>
-		/// Logins an anonymous user synchronously.
-		/// </summary>
-		/// <returns>The blocking.</returns>
+		// Logs a user in synchronously with an implicit login
 		private LoginRequest LoginBlocking()
-        {
+		{
 			this.type = LoginType.IMPLICIT;
 			return new LoginRequest(this).buildAuthRequest();
-        }
+		}
 
-		/// <summary>
-		/// Logins a user with a username and password synchronously.
-		/// </summary>
-		/// <returns>The blocking.</returns>
-		/// <param name="username">Username.</param>
-		/// <param name="password">Password.</param>
+		// Logs a user in synchronously with a username and password
 		private LoginRequest LoginBlocking(string username, string password)
-        {
+		{
 			this.type = LoginType.KINVEY;
 			return new LoginRequest(username, password, false, this).buildAuthRequest();
-        }
+		}
 
-		/// <summary>
-		/// Logins a user with a credential synchronously
-		/// </summary>
-		/// <returns>The blocking.</returns>
-		/// <param name="cred">Cred.</param>
+		// Logs a user in synchronously with a credential object
 		private LoginRequest LoginBlocking(Credential cred) 
-        {
+		{
 			this.type = LoginType.CREDENTIALSTORE;
 			return new LoginRequest (cred, this).buildAuthRequest ();
-        }
+		}
 
-		// Logs a user in synchronously with a third party identity.
+		// Logs a user in synchronously with a third party identity
 		private LoginRequest LoginBlocking(ThirdPartyIdentity identity)
 		{
 			// TODO change from internal to private once synchronous Execute() method
@@ -752,25 +713,16 @@ namespace KinveyXamarin
 			return new LoginRequest (identity, this).buildAuthRequest ();
 		}
 
-		/// <summary>
-		/// Logins a user with a Kinvey Auth token synchronously.
-		/// </summary>
-		/// <returns>The kinvey auth token blocking.</returns>
-		/// <param name="userId">User identifier.</param>
-		/// <param name="authToken">Auth token.</param>
+		// Logins a user synchronously with a Kinvey Auth token
 		private LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 
-        {
-            this.AuthToken = authToken;
-            this.id = userId;
+		{
+			this.AuthToken = authToken;
+			this.id = userId;
 			Credential c = Credential.From (this);
 			return LoginBlocking(c);
-        }
+		}
 
-		/// <summary>
-		/// Logs a user in synchronously with Mobile Identity Connect.
-		/// </summary>
-		/// <returns>The request instance used to login the user.</returns>
-		/// <param name="identity">The user's third party identity, represented on the backend as "_socialIdentity"</param>
+		// Logs a user in synchronously with Mobile Identity Connect
 		private MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity)
 		{
 			this.type = LoginType.THIRDPARTY;
@@ -877,20 +829,13 @@ namespace KinveyXamarin
 
 		}
 
-		/// <summary>
-		/// Logouts the user synchronously.
-		/// </summary>
-		/// <returns>The blocking.</returns>
+		// Logouts the user synchronously
 		private LogoutRequest logoutBlocking()
-        {
-            return new LogoutRequest(this.KinveyClient.Store, this);
-        }
+		{
+			return new LogoutRequest(this.KinveyClient.Store, this);
+		}
 
-		/// <summary>
-		/// Retrieves a user synchronously.
-		/// </summary>
-		/// <returns>The request instance used to retrieve the user.</returns>
-		/// <param name="userid">The ID of the user.</param>
+		// Retrieves a user synchronously
 		private RetrieveRequest RetrieveBlocking(string userid)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -902,26 +847,17 @@ namespace KinveyXamarin
 			return retrieve;
 		}
 
-		/// <summary>
-		/// Retrieves a set of users synchronously, based on a query.
-		/// </summary>
-		/// <returns>The request instance used to retrieve the users.</returns>
-		/// <param name="query">Query string to filter users.</param>
-		/// <param name="resolves">The "resolve" query parameter that is used to resolve named references.</param>
-		/// <param name="resolve_depth">The "resolve_depth" query parameter that resolves all references included in the enclosing entity up to a depth X.</param>
-		/// <param name="retain">If set to <c>true</c>, retain references.</param>
+		// Retrieves a set of users synchronously, based on a query
 		private RetrieveUsersRequest RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
 			urlParameters.Add("query", query);
-		
+
 			urlParameters.Add("resolve", string.Join(",", resolves));
 			urlParameters.Add("resolve_depth", resolve_depth > 0 ? resolve_depth.ToString() : "1");
 			urlParameters.Add("retainReferences",  retain.ToString());
-
-
 
 			RetrieveUsersRequest retrieve = new RetrieveUsersRequest (client, query, urlParameters);
 
@@ -930,11 +866,7 @@ namespace KinveyXamarin
 			return retrieve;
 		}
 
-		/// <summary>
-		/// Synchronously looks up users in the user collection based on a criteria.
-		/// </summary>
-		/// <returns>The request that looks up the user collection.</returns>
-		/// <param name="criteria">The criteria used for the lookup.</param>
+		// Looks up users in the user collection synchronously based on a criteria
 		private LookupRequest LookupBlocking(UserDiscovery criteria)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -946,11 +878,7 @@ namespace KinveyXamarin
 			return lookup;
 		}
 
-		/// <summary>
-		/// Updates a user synchronously.
-		/// </summary>
-		/// <returns>The request that updates the user on the backend.</returns>
-		/// <param name="u">The user to update</param>
+		// Updates a user synchronously
 		private UpdateRequest UpdateBlocking(User u)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -964,11 +892,7 @@ namespace KinveyXamarin
 			return update;
 		}
 
-		/// <summary>
-		/// Resets the user's password synchronously.
-		/// </summary>
-		/// <returns>The request that resets the password.</returns>
-		/// <param name="userid">User ID</param>
+		// Resets the user password synchronously
 		private ResetPasswordRequest ResetPasswordBlocking(string userid)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -982,12 +906,7 @@ namespace KinveyXamarin
 			return reset;
 		}
 
-		/// <summary>
-		/// Deletes a user synchronously.
-		/// </summary>
-		/// <returns>The request that deletes the user.</returns>
-		/// <param name="userid">User ID</param>
-		/// <param name="hard">If set to <c>true</c>  perform a hard delete.</param>
+		// Deletes a user synchronously
 		private DeleteRequest DeleteBlocking(string userid, bool hard)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -1002,11 +921,7 @@ namespace KinveyXamarin
 			return delete;		
 		}
 
-		/// <summary>
-		/// Sends the user an email for verification.
-		/// </summary>
-		/// <returns>The client request that sends out the verification email.</returns>
-		/// <param name="userid">User ID</param>
+		// Sends the user an email for verification
 		private EmailVerificationRequest EmailVerificationBlocking(string userid)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -1019,20 +934,15 @@ namespace KinveyXamarin
 
 			return email;
 		}
-			
 
-		/// <summary>
-		/// Creates the User with a blocking implementation.
-		/// </summary>
-		/// <returns>The created User.</returns>
-		/// <param name="userid">the username of the user.</param>
-		/// <param name="password">the password for the user.</param>
-		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
+		// Creates the user synchronously
 		private LoginRequest CreateBlocking(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
         {
 			this.type = LoginType.KINVEY;
-			if (customFieldsAndValues != null) {
-				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues) {
+			if (customFieldsAndValues != null)
+			{
+				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
+				{
 					this.Attributes.Add (entry.Key, entry.Value);
 				}
 			}
@@ -1041,14 +951,9 @@ namespace KinveyXamarin
         }
 		#endregion
 
-		////////////////////////////////////////
-		// INNER REQUEST CLASSES
-		////////////////////////////////////////
+		#region User class Request inner classes
 
-		#region User Request inner classes
-		/// <summary>
-		/// A synchronous login request.
-		/// </summary>
+		// A login request
 		private class LoginRequest
 		{
 			Credential credential;
@@ -1120,6 +1025,7 @@ namespace KinveyXamarin
 			}
         }
 
+		// A login request to MIC
 		private class MICLoginRequest : LoginRequest
 		{
 			internal MICLoginRequest(ThirdPartyIdentity identity, User user) :
@@ -1148,13 +1054,13 @@ namespace KinveyXamarin
 			}
 		}
 
-		// Request to get MIC temp URL (automated authorization grant flow).
+		// Request to get MIC temp URL (automated authorization grant flow)
 		private class GetMICTempURLRequest : AbstractKinveyClientRequest<JObject>
 		{
 			private const string REST_PATH = "oauth/auth";
 
 			internal GetMICTempURLRequest(AbstractClient client, string baseURL, Object content, Dictionary<string, string> urlProperties) :
-			base(client, baseURL, "POST", REST_PATH, content, urlProperties )
+				base(client, baseURL, "POST", REST_PATH, content, urlProperties )
 			{
 				if (urlProperties.ContainsKey("MICApiVersion"))
 				{
@@ -1167,13 +1073,13 @@ namespace KinveyXamarin
 			}
 		}
 
-		// Request to login to temp URL (automated autorization grant flow).
+		// Request to login to temp URL (automated autorization grant flow)
 		private class LoginToTempURLRequest : AbstractKinveyClientRequest<JObject>
 		{
 			private User user;
 
 			internal LoginToTempURLRequest(AbstractClient client, User user, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
-			base(client, tempURL, "POST", "", httpContent, urlProperties)
+				base(client, tempURL, "POST", "", httpContent, urlProperties)
 			{
 				this.PayloadType = new URLEncodedPayload();
 				this.OverrideRedirect = true;
@@ -1193,38 +1099,37 @@ namespace KinveyXamarin
 			}
 		}
 
-		/// <summary>
-		/// A synchronous logout request.
-		/// </summary>
-        public class LogoutRequest
+		// A logout request
+        private class LogoutRequest
         {
+			private ICredentialStore store;
+			private User memberUser;
 
-            private ICredentialStore store;
-            private User memberUser;
+			internal LogoutRequest(ICredentialStore store, User user)
+			{
+				this.memberUser = user;
+				this.store = store;
+			}
 
-            public LogoutRequest(ICredentialStore store, User user)
-            {
-                this.memberUser = user;
-                this.store = store;
-            }
-
-            public void Execute()
-            {
-                CredentialManager manager = new CredentialManager(this.store);
+			internal void Execute()
+			{
+				CredentialManager manager = new CredentialManager(this.store);
 				var userId = memberUser.id;
-				if (userId != null) {
+				if (userId != null)
+				{
 					manager.RemoveCredential (userId);
 				}
+
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
-                memberUser.KinveyClient.CurrentUser = null;
-				if (userId != null) {
+				memberUser.KinveyClient.CurrentUser = null;
+				if (userId != null)
+				{
 					memberUser.KinveyClient.ClientUsers.RemoveUser (userId);
 				}
-            }
+			}
+		}
 
-        }
-
-		// Build request to delete the user with the specified ID.
+		// Build request to delete the user with the specified ID
 		[JsonObject(MemberSerialization.OptIn)]
 		private class DeleteRequest : AbstractKinveyClientRequest<KinveyDeleteResponse>
 		{
