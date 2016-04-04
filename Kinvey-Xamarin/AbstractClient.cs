@@ -95,11 +95,6 @@ namespace KinveyXamarin
         protected object Lock = new object();
 
 		/// <summary>
-		/// The client users.
-		/// </summary>
-        private IClientUsers clientUsers;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient"/> class.
 		/// </summary>
 		/// <param name="client">Client.</param>
@@ -180,23 +175,6 @@ namespace KinveyXamarin
                     currentUser = value;
                 }
             }
-        }
-
-		/// <summary>
-		/// Gets or sets the client users.
-		/// </summary>
-		/// <value>The client users.</value>
-        public IClientUsers ClientUsers
-        {
-            get 
-            { 
-                if (this.clientUsers == null) 
-                { 
-                    this.clientUsers = InMemoryClientUsers.GetClientUsers();
-                } 
-                return this.clientUsers; 
-            }
-            set { this.clientUsers = value; }
         }
 
 		/// <summary>

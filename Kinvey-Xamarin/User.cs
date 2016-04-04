@@ -202,8 +202,6 @@ namespace KinveyXamarin
 			this.Attributes = response.Attributes;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
-            KinveyClient.ClientUsers.AddUser(this.id, userType);
-            KinveyClient.ClientUsers.CurrentUser = this.id;
             return this;
         }
 
@@ -218,8 +216,6 @@ namespace KinveyXamarin
             this.AuthToken = credential.AuthToken;
 			CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
 			((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).KinveyCredential = credential;
-			KinveyClient.ClientUsers.AddUser(this.id, "Credential");
-			KinveyClient.ClientUsers.CurrentUser = this.id;
             return this;
         }
 
@@ -1077,10 +1073,6 @@ namespace KinveyXamarin
 
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
 				memberUser.KinveyClient.CurrentUser = null;
-				if (userId != null)
-				{
-					memberUser.KinveyClient.ClientUsers.RemoveUser (userId);
-				}
 			}
 		}
 

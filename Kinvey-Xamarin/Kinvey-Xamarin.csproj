@@ -36,10 +36,8 @@
     <Compile Include="Auth\CredentialManager.cs" />
     <Compile Include="Auth\KinveyAuthRequest.cs" />
     <Compile Include="Auth\ICredentialStore.cs" />
-    <Compile Include="Auth\InMemoryClientUsers.cs" />
     <Compile Include="Auth\InMemoryCredentialStore.cs" />
     <Compile Include="Auth\KinveyAuthResponse.cs" />
-    <Compile Include="Auth\IClientUsers.cs" />
     <Compile Include="AbstractClient.cs" />
     <Compile Include="AppData.cs" />
     <Compile Include="User.cs" />
