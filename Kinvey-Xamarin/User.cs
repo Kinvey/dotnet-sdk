@@ -228,7 +228,8 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		public async Task<User> LoginAsync()
 		{
-			return await LoginBlocking ().ExecuteAsync ();
+			LoginRequest loginRequest = buildLoginRequest();
+			return await loginRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -239,7 +240,8 @@ namespace KinveyXamarin
 		/// <param name="password">Password.</param>
 		public async Task<User> LoginAsync(string username, string password)
 		{
-			return await LoginBlocking (username, password).ExecuteAsync ();
+			LoginRequest loginRequest = buildLoginRequest(username, password);
+			return await loginRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -248,9 +250,10 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="userId">The _id of the current user.</param>
 		/// <param name="authToken">The user's Kinvey Auth Token..</param>
-		public async Task<User> LoginKinveyAuthTokenAsync(string userid, string authtoken)
+		public async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken)
 		{
-			return await LoginKinveyAuthTokenBlocking (userid, authtoken).ExecuteAsync();
+			LoginRequest loginRequest = buildLoginRequestWithKinveyAuthToken(userID, authToken);
+			return await loginRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -260,7 +263,8 @@ namespace KinveyXamarin
 		/// <param name="identity">The Third party identity.</param>
 		public async Task<User> LoginAsync(ThirdPartyIdentity identity)
 		{
-			return await LoginBlocking (identity).ExecuteAsync();
+			LoginRequest loginRequest = buildLoginRequestWithThirdParty(identity);
+			return await loginRequest.ExecuteAsync();
 		}
 
 		// Social Login Convenence APIs
@@ -340,9 +344,10 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="userid">Userid.</param>
-		public async Task<User> EmailVerificationAsync(string userid)
+		public async Task<User> EmailVerificationAsync(string userID)
 		{
-			return await EmailVerificationBlocking(userid).ExecuteAsync ();
+			EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
+			return await emailVerificationRequest.ExecuteAsync();
 		}
 
 		private static readonly object classLock = new object();
@@ -355,7 +360,8 @@ namespace KinveyXamarin
 			// TODO rethink locking
 			lock (classLock)
 			{
-				logoutBlocking ().Execute ();
+				LogoutRequest logoutRequest = buildLogoutRequest();
+				logoutRequest.Execute();
 			}
 		}
 
@@ -391,7 +397,8 @@ namespace KinveyXamarin
 		/// <param name="identity">The Third party identity.</param>
 		public async Task<User> LoginMICAsync(ThirdPartyIdentity identity)
 		{
-			return await MICLoginBlocking (identity).ExecuteAsync();
+			MICLoginRequest loginRequestMIC = buildLoginRequestWithMIC(identity);
+			return await loginRequestMIC.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -431,10 +438,14 @@ namespace KinveyXamarin
 
 			try
 			{
-				JObject tempResult = await getMICTempURL().ExecuteAsync();
+				GetMICTempURLRequest  MICTempURLRequest = buildMICTempURLRequest();
+				JObject tempResult = await MICTempURLRequest.ExecuteAsync();
+
 				string tempURL = tempResult["temp_login_uri"].ToString();
 
-				JObject accessResult = await MICLoginToTempURL(username, password, tempURL).ExecuteAsync();
+				LoginToTempURLRequest MICLoginToTempURL = buildMICLoginToTempURL(username, password, tempURL);
+				JObject accessResult = await MICLoginToTempURL.ExecuteAsync();
+
 				string accessToken = accessResult["access_token"].ToString();
 
 				User u = await LoginMICWithAccessTokenAsync(accessToken);
@@ -444,7 +455,6 @@ namespace KinveyXamarin
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
 				currentCred.RedirectUri = this.KinveyClient.MICRedirectURI;
 				KinveyClient.Store.Store(u.Id, currentCred);
-
 			}
 			catch(Exception e)
 			{
@@ -508,7 +518,8 @@ namespace KinveyXamarin
 		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
 		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null)
 		{
-			return await CreateBlocking (username, password, customFieldsAndValues).ExecuteAsync ();
+			LoginRequest loginRequest = buildCreateRequest(username, password, customFieldsAndValues);
+			return await loginRequest.ExecuteAsync();
 		}
 
 
@@ -520,14 +531,16 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="userid">Userid.</param>
-		public async Task<User> RetrieveAsync(string userid)
+		public async Task<User> RetrieveAsync(string userID)
 		{
-			return await RetrieveBlocking (userid).ExecuteAsync ();
+			RetrieveRequest retrieveRequest = buildRetrieveRequest(userID);
+			return await retrieveRequest.ExecuteAsync();
 		}
 
 		public async Task<User> RetrieveAsync()
 		{
-			return await RetrieveAsync (this.Id);
+			RetrieveRequest retrieveRequest = buildRetrieveRequest(this.Id);
+			return await retrieveRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -538,9 +551,10 @@ namespace KinveyXamarin
 		/// <param name="resolves">Resolves.</param>
 		/// <param name="resolve_depth">Resolve depth.</param>
 		/// <param name="retain">If set to <c>true</c> retain references.</param>
-		public async Task<User[]> RetrieveAsync(string query, string[] resolves, int resolve_depth, bool retain)
+		public async Task<User[]> RetrieveAsync(string query, string[] resolves, int resolveDepth, bool retain)
 		{
-			return await RetrieveBlocking(query, resolves, resolve_depth, retain).ExecuteAsync ();
+			RetrieveUsersRequest retrieveUsersRequest = buildRetrieveUsersRequest(query, resolves, resolveDepth, retain);
+			return await retrieveUsersRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -556,7 +570,8 @@ namespace KinveyXamarin
 				(criteria.getCriteria() != null) &&
 				(criteria.getCriteria().Count > 0))
 			{
-				users = await LookupBlocking(criteria).ExecuteAsync();
+				LookupRequest lookupRequest = buildLookupRequest(criteria);
+				users = await lookupRequest.ExecuteAsync();
 			}
 
 			return users;
@@ -572,7 +587,8 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		public async Task<User> UpdateAsync()
 		{
-			return await UpdateBlocking(this).ExecuteAsync ();
+			UpdateRequest updateRequest = buildUpdateRequest(this);
+			return await updateRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -582,7 +598,8 @@ namespace KinveyXamarin
 		/// <param name="user">User.</param>
 		public async Task<User> UpdateAsync(User user)
 		{
-			return await UpdateBlocking(user).ExecuteAsync ();
+			UpdateRequest updateRequest = buildUpdateRequest(user);
+			return await updateRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -590,9 +607,10 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="userid">Userid.</param>
-		public async Task<User> ResetPasswordAsync(string userid)
+		public async Task<User> ResetPasswordAsync(string userID)
 		{
-			return await ResetPasswordBlocking(userid).ExecuteAsync ();
+			ResetPasswordRequest resetPasswordRequest = buildResetPasswordRequest(userID);
+			return await resetPasswordRequest.ExecuteAsync();
 		}
 
 
@@ -605,9 +623,10 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="userid">Userid.</param>
 		/// <param name="hard">If set to <c>true</c> the user will be permanently deleted.</param>
-		public async Task<KinveyDeleteResponse> DeleteAsync(string userid, bool hard)
+		public async Task<KinveyDeleteResponse> DeleteAsync(string userID, bool hard)
 		{
-			return await DeleteBlocking(userid, hard).ExecuteAsync ();
+			DeleteRequest deleteRequest = buildDeleteRequest(userID, hard);
+			return await deleteRequest.ExecuteAsync();
 		}
 		#endregion
 
@@ -620,53 +639,46 @@ namespace KinveyXamarin
 			this.Id = cred.UserId;
 			this.AuthToken = cred.AuthToken;
 
-			await LoginBlocking(cred).ExecuteAsync();
+			LoginRequest loginRequest = buildLoginRequest(cred);
+			await loginRequest.ExecuteAsync();
 		}
 
-		// Logs a user in synchronously with an implicit login
-		private LoginRequest LoginBlocking()
+		private LoginRequest buildLoginRequest()
 		{
 			this.type = LoginType.IMPLICIT;
 			return new LoginRequest(this).buildAuthRequest();
 		}
 
-		// Logs a user in synchronously with a username and password
-		private LoginRequest LoginBlocking(string username, string password)
+		private LoginRequest buildLoginRequest(string username, string password)
 		{
 			this.type = LoginType.KINVEY;
 			return new LoginRequest(username, password, false, this).buildAuthRequest();
 		}
 
-		// Logs a user in synchronously with a credential object
-		private LoginRequest LoginBlocking(Credential cred) 
+		private LoginRequest buildLoginRequest(Credential cred) 
 		{
 			this.type = LoginType.CREDENTIALSTORE;
-			return new LoginRequest (cred, this).buildAuthRequest ();
+			return new LoginRequest(cred, this).buildAuthRequest();
 		}
 
-		// Logs a user in synchronously with a third party identity
-		private LoginRequest LoginBlocking(ThirdPartyIdentity identity)
+		private LoginRequest buildLoginRequestWithThirdParty(ThirdPartyIdentity identity)
 		{
-			// TODO change from internal to private once synchronous Execute() method
-			// is removed from AbstractKinveyClientRequest.cs
 			this.type = LoginType.THIRDPARTY;
-			return new LoginRequest (identity, this).buildAuthRequest ();
+			return new LoginRequest(identity, this).buildAuthRequest();
 		}
 
-		// Logins a user synchronously with a Kinvey Auth token
-		private LoginRequest LoginKinveyAuthTokenBlocking(string userId, string authToken) 
+		private LoginRequest buildLoginRequestWithKinveyAuthToken(string userID, string authToken) 
 		{
 			this.AuthToken = authToken;
-			this.id = userId;
-			Credential c = Credential.From (this);
-			return LoginBlocking(c);
+			this.id = userID;
+
+			return buildLoginRequest(Credential.From(this));
 		}
 
-		// Logs a user in synchronously with Mobile Identity Connect
-		private MICLoginRequest MICLoginBlocking(ThirdPartyIdentity identity)
+		private MICLoginRequest buildLoginRequestWithMIC(ThirdPartyIdentity identity)
 		{
 			this.type = LoginType.THIRDPARTY;
-			return new MICLoginRequest (identity, this).buildAuthRequest ();
+			return new MICLoginRequest(identity, this).buildAuthRequest();
 		}
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
@@ -716,9 +728,8 @@ namespace KinveyXamarin
 		}
 
 		// Generates a request to get a temporary MIC URL (automated authorization grant flow)
-		private GetMICTempURLRequest getMICTempURL()
+		private GetMICTempURLRequest buildMICTempURLRequest()
 		{
-
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
 			//    	response_type:  this is always set to “code”
@@ -730,27 +741,26 @@ namespace KinveyXamarin
 
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			if (client.MICApiVersion != null && client.MICApiVersion.Length > 0) {
+			if (client.MICApiVersion != null && client.MICApiVersion.Length > 0)
+			{
 				urlParameters.Add ("MICApiVersion", client.MICApiVersion);
 			}
 
 			GetMICTempURLRequest getTemp = new GetMICTempURLRequest(client, client.MICHostName, data, urlParameters);
 			getTemp.RequireAppCredentials = true;
 			client.InitializeRequest(getTemp);
-			return getTemp;  	
 
+			return getTemp;
 		}
 
 		// Generates a request to login a user to the temporary MIC URL (automated authorization grant flow)
-		private LoginToTempURLRequest MICLoginToTempURL(String username, String password, String tempURL)
+		private LoginToTempURLRequest buildMICLoginToTempURL(String username, String password, String tempURL)
 		{
-
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
 			//    	response_type:  this is always set to “code”
 			//    	username
 			//    	password
-
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
@@ -765,18 +775,15 @@ namespace KinveyXamarin
 			LoginToTempURLRequest loginTemp = new LoginToTempURLRequest(client, this, tempURL, data, urlParameters);
 			loginTemp.RequireAppCredentials = true;
 			client.InitializeRequest(loginTemp);
-			return loginTemp;  	
-
+			return loginTemp;
 		}
 
-		// Logouts the user synchronously
-		private LogoutRequest logoutBlocking()
+		private LogoutRequest buildLogoutRequest()
 		{
 			return new LogoutRequest(this.KinveyClient.Store, this);
 		}
 
-		// Retrieves a user synchronously
-		private RetrieveRequest RetrieveBlocking(string userid)
+		private RetrieveRequest buildRetrieveRequest(string userid)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -787,8 +794,7 @@ namespace KinveyXamarin
 			return retrieve;
 		}
 
-		// Retrieves a set of users synchronously, based on a query
-		private RetrieveUsersRequest RetrieveBlocking(string query, string[] resolves, int resolve_depth, bool retain)
+		private RetrieveUsersRequest buildRetrieveUsersRequest(string query, string[] resolves, int resolveDepth, bool retain)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -796,7 +802,7 @@ namespace KinveyXamarin
 			urlParameters.Add("query", query);
 
 			urlParameters.Add("resolve", string.Join(",", resolves));
-			urlParameters.Add("resolve_depth", resolve_depth > 0 ? resolve_depth.ToString() : "1");
+			urlParameters.Add("resolve_depth", resolveDepth > 0 ? resolveDepth.ToString() : "1");
 			urlParameters.Add("retainReferences",  retain.ToString());
 
 			RetrieveUsersRequest retrieve = new RetrieveUsersRequest (client, query, urlParameters);
@@ -806,8 +812,7 @@ namespace KinveyXamarin
 			return retrieve;
 		}
 
-		// Looks up users in the user collection synchronously based on a criteria
-		private LookupRequest LookupBlocking(UserDiscovery criteria)
+		private LookupRequest buildLookupRequest(UserDiscovery criteria)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -818,8 +823,7 @@ namespace KinveyXamarin
 			return lookup;
 		}
 
-		// Updates a user synchronously
-		private UpdateRequest UpdateBlocking(User u)
+		private UpdateRequest buildUpdateRequest(User u)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -832,22 +836,20 @@ namespace KinveyXamarin
 			return update;
 		}
 
-		// Resets the user password synchronously
-		private ResetPasswordRequest ResetPasswordBlocking(string userid)
+		private ResetPasswordRequest buildResetPasswordRequest(string userID)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add("userID", userid);
+			urlParameters.Add("userID", userID);
 
-			ResetPasswordRequest reset = new ResetPasswordRequest (client, userid, urlParameters);
+			ResetPasswordRequest reset = new ResetPasswordRequest (client, userID, urlParameters);
 
 			client.InitializeRequest(reset);
 
 			return reset;
 		}
 
-		// Deletes a user synchronously
-		private DeleteRequest DeleteBlocking(string userid, bool hard)
+		private DeleteRequest buildDeleteRequest(string userid, bool hard)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -861,22 +863,20 @@ namespace KinveyXamarin
 			return delete;		
 		}
 
-		// Sends the user an email for verification
-		private EmailVerificationRequest EmailVerificationBlocking(string userid)
+		private EmailVerificationRequest buildEmailVerificationRequest(string userID)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add("userID", userid);
+			urlParameters.Add("userID", userID);
 
-			EmailVerificationRequest email = new EmailVerificationRequest (client, userid, urlParameters);
+			EmailVerificationRequest email = new EmailVerificationRequest (client, userID, urlParameters);
 
 			client.InitializeRequest(email);
 
 			return email;
 		}
 
-		// Creates the user synchronously
-		private LoginRequest CreateBlocking(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
+		private LoginRequest buildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
         {
 			this.type = LoginType.KINVEY;
 			if (customFieldsAndValues != null)

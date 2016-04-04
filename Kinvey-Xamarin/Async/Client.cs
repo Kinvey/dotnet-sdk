@@ -85,19 +85,14 @@ namespace KinveyXamarin
 
 		public async Task<PingResponse> PingAsync()
 		{
-			return await pingBlocking().ExecuteAsync();
-		}
-
-		private PingRequest pingBlocking()
-		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer) RequestInitializer).AppKey);
 
 			PingRequest ping = new PingRequest(this, urlParameters);
 			ping.RequireAppCredentials = true;
-			InitializeRequest (ping);
+			InitializeRequest(ping);
 
-			return ping;
+			return await ping.ExecuteAsync();
 		}
 
 		[JsonObject(MemberSerialization.OptIn)]
