@@ -155,51 +155,6 @@ namespace KinveyXamarin
 		/// </summary>
 		protected KinveyDelegate<User> MICDelegate;
 
-		protected string MICHostName
-		{
-			get
-			{
-				if (this.client != null)
-				{
-					return this.client.MICHostName;
-				}
-				return null;
-			}
-
-			set
-			{
-				setMICHostName(value);
-			}
-		}
-
-		protected string MICApiVersion { get; set;}
-
-		/// <summary>
-		/// The host name for your MIC API. This is relevant if you are using a dedicated instance of Kinvey, with an auth base URL that differs from https://auth.kinvey.com
-		/// </summary>
-		/// <param name="host">Your MIC host. Your hostname must use "https".</param>
-		public void setMICHostName(string host){
-			if (!host.StartsWith("https")){
-				throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + MICHostName);
-			}	
-			if (!host.EndsWith ("/")) {
-				host += "/";
-			}
-
-			this.client.MICHostName = host;
-		}
-
-		/// <summary>
-		/// Sets the MIC API version. This is relevant in case you need to use a specific version of MIC such as an Early Adopter release.
-		/// </summary>
-		/// <param name="version">MIC version. eg: "v2". </param>
-		public void setMICApiVersion(string version){
-			if (!version.StartsWith("v")){
-				version = "v" + version;
-			}	
-			MICApiVersion = version;
-		}
-
 		#region User class Constructors and Initializers
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
@@ -465,10 +420,10 @@ namespace KinveyXamarin
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
 			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
-			string hostname = MICHostName;
-			if (MICApiVersion != null && MICApiVersion.Length > 0)
+			string hostname = client.MICHostName;
+			if (client.MICApiVersion != null && client.MICApiVersion.Length > 0)
 			{
-				hostname += MICApiVersion + "/";
+				hostname += client.MICApiVersion + "/";
 			}
 
 			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
@@ -746,7 +701,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(client, MICHostName, data, urlParameters);
+			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(client, client.MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials =  true;
 			client.InitializeRequest(getToken);
 			return getToken;
@@ -769,7 +724,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(client, MICHostName, data, urlParameters);
+			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(client, client.MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials = true;
 			client.InitializeRequest(getToken);
 			return getToken;
@@ -790,11 +745,11 @@ namespace KinveyXamarin
 
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			if (this.MICApiVersion != null && this.MICApiVersion.Length > 0) {
-				urlParameters.Add ("MICApiVersion", this.MICApiVersion);
+			if (client.MICApiVersion != null && client.MICApiVersion.Length > 0) {
+				urlParameters.Add ("MICApiVersion", client.MICApiVersion);
 			}
 
-			GetMICTempURLRequest getTemp = new GetMICTempURLRequest(client, MICHostName, data, urlParameters);
+			GetMICTempURLRequest getTemp = new GetMICTempURLRequest(client, client.MICHostName, data, urlParameters);
 			getTemp.RequireAppCredentials = true;
 			client.InitializeRequest(getTemp);
 			return getTemp;  	

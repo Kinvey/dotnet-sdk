@@ -12,10 +12,12 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Collections.Generic;
 using RestSharp;
 using SQLite.Net.Interop;
 using System.Threading.Tasks;
 using KinveyUtils;
+using Newtonsoft.Json;
 
 namespace KinveyXamarin
 {
@@ -81,22 +83,34 @@ namespace KinveyXamarin
 			return new AsyncCustomEndpoint<I, O> (this);
 		}
 
-		public void Ping(KinveyDelegate<PingResponse> delegates){
-			Task.Run (() => {
-				try {
-					PingResponse entity = base.pingBlocking ().Execute ();
-					delegates.onSuccess (entity);
-				} catch (Exception e) {
-					delegates.onError (e);
-				}
-			});
+		public async Task<PingResponse> PingAsync()
+		{
+			return await pingBlocking().ExecuteAsync();
 		}
 
-		public async Task<PingResponse> PingAsync(){
-			return await base.pingBlocking().ExecuteAsync();
+		private PingRequest pingBlocking()
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer) RequestInitializer).AppKey);
+
+			PingRequest ping = new PingRequest(this, urlParameters);
+			ping.RequireAppCredentials = true;
+			InitializeRequest (ping);
+
+			return ping;
 		}
 
-	
+		[JsonObject(MemberSerialization.OptIn)]
+		private class PingRequest : AbstractKinveyClientRequest<PingResponse>
+		{
+			private const string REST_PATH = "appdata/{appKey}";
+
+			internal PingRequest(AbstractClient client, Dictionary<string, string> urlProperties)
+				: base(client, "GET", REST_PATH, default(PingResponse), urlProperties)
+			{
+			}
+		}
+
 		/// <summary>
 		/// Builder for creating a new instance of a client.  Use this class to easily create a new client, as it uses the builder pattern so methods can be chained together.
 		/// Once the builder is configured, call `.build()` to return an instance of a client.

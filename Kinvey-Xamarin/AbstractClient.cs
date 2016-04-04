@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
 using Newtonsoft.Json;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -34,9 +35,44 @@ namespace KinveyXamarin
 
 		/// <summary>
 		/// Gets or sets the host URL for MIC.
+		/// The host name for your MIC API. This is relevant if you are using a dedicated instance of Kinvey, with an auth base URL that differs from https://auth.kinvey.com
 		/// </summary>
-		/// <value>The MIC host.</value>
-		public string MICHostName { get; set;}
+		/// <value>The MIC host.  Your hostname must use "https".</value>
+		public string MICHostName
+		{
+			get { return this.MICHostName; }
+			set
+			{
+				if (!value.StartsWith("https"))
+				{
+					throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + value);
+				}
+
+				if (!value.EndsWith ("/"))
+				{
+					value += "/";
+				}
+
+				this.MICHostName = value;
+			}
+		}
+
+		/// <summary>
+		/// Sets the MIC API version. This is relevant in case you need to use a specific version of MIC such as an Early Adopter release.
+		/// </summary>
+		public string MICApiVersion
+		{
+			get { return this.MICApiVersion; }
+			set
+			{
+				if (!value.StartsWith("v"))
+				{
+					value = "v" + value;
+				}
+
+				MICApiVersion = value;
+			}
+		}
 
 		/// <summary>
 		/// The default service path.
@@ -177,18 +213,6 @@ namespace KinveyXamarin
         {
             get { return store; }
         }
-			
-
-		public PingRequest pingBlocking(){
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer) RequestInitializer).AppKey);
-		
-			PingRequest ping =  new PingRequest (this, urlParameters);
-			ping.RequireAppCredentials = true;
-			InitializeRequest (ping);
-
-			return ping;
-		}
 
 		/// <summary>
 		/// Builder for this AbstractClient implementation.
@@ -234,26 +258,6 @@ namespace KinveyXamarin
 					return false;
 				}
 			}
-
-				
-        }
-
-		/// <summary>
-		/// Ping Request
-		/// </summary>
-		[JsonObject(MemberSerialization.OptIn)]
-		public class PingRequest : AbstractKinveyClientRequest<PingResponse>
-		{
-
-			private const string REST_PATH = "appdata/{appKey}";
-
-			public PingRequest(AbstractClient client, Dictionary<string, string> urlProperties)
-				: base(client, "GET", REST_PATH, default(PingResponse), urlProperties)
-			{
-	
-			}
-
 		}
-
-    }
+	}
 }
