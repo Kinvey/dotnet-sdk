@@ -12,8 +12,8 @@
 // contents is a violation of applicable laws.
 
 using System;
-using SQLite.Net.Interop;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
@@ -21,64 +21,57 @@ namespace KinveyXamarin
 	/// <summary>
 	/// This class defines the behaivor of an offline store, which mimics CRUD operations
 	/// </summary>
-	public interface IOfflineStore {
+	public interface IOfflineStore <T> {
+		
+		Task<List<T>> GetAsync (string query);
 
-		/// <summary>
-		/// Gets or sets the platform.
-		/// </summary>
-		/// <value>The platform.</value>
-		ISQLitePlatform platform {get; set;}
-		/// <summary>
-		/// Gets or sets the dbpath.
-		/// </summary>
-		/// <value>The dbpath.</value>
-		string dbpath{ get; set;}
+		Task<T> GetByIdAsync (string id);
 
-		/// <summary>
-		/// Executes a get request.
-		/// </summary>
-		/// <returns>The response object.</returns>
-		/// <param name="client">Client.</param>
-		/// <param name="appdata">Appdata.</param>
-		/// <param name="request">Request.</param>
-		/// <typeparam name="T">The type of the response.</typeparam>
-		Task<object> executeGetAsync<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
+		Task<List<T>> GetAsync (List<string> ids);
 
-		/// <summary>
-		/// Executes a save request.
-		/// </summary>
-		/// <returns>The save.</returns>
-		/// <param name="client">Client.</param>
-		/// <param name="appdata">Appdata.</param>
-		/// <param name="request">Request.</param>
-		/// <typeparam name="T">The type of the response.</typeparam>
-		Task<object> executeSaveAsync<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
+		Task<List<T>> GetAsync ();
+	
+		Task<List<T>> SaveAsync (List<T> items);
 
-		/// <summary>
-		/// Executes a delete request.
-		/// </summary>
-		/// <returns>The delete.</returns>
-		/// <param name="client">Client.</param>
-		/// <param name="appdata">Appdata.</param>
-		/// <param name="request">Request.</param>
-		/// <typeparam name="T">The type of the response.</typeparam>
-		Task<KinveyDeleteResponse> executeDeleteAsync<T>(AbstractKinveyClient client, AppData<T> appdata, AbstractKinveyOfflineClientRequest<T> request);
+		Task<T> SaveAsync (T item);
 
-		/// <summary>
-		/// Inserts an entity directly into the database.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="appdata">Appdata.</param>
-		/// <param name="entity">Entity.</param>
-		/// <typeparam name="T">The type of the response.</typeparam>
-		Task<int> insertEntityAsync<T>(AbstractKinveyClient client, AppData<T> appdata, T entity);
+		Task<KinveyDeleteResponse> DeleteAsync (string query);
+
+		Task<KinveyDeleteResponse> DeleteByIdAsync (string id);
+
+		Task<KinveyDeleteResponse> DeleteAsync (List<string> ids);
+
+
+		//Task<int> InsertEntityAsync (T entity);
+
+		//Task<T> UpsertEntityAsync(string id, string json);
+
+		//Task<int> CreateTableAsync(string collectionName);
+
+		//Task<int> DeleteContentsOfTableAsync (string str);
+
+
+		//TODO typed methods
+
+		//Task<List<T>> getAllAsync (string collection);
+		//Task<T> getEntityAsync (string collection, string id);
+		//Task<KinveyDeleteResponse> deleteAsync(string collection, string id);
 
 
 
-		/// <summary>
-		/// Clears the storage.
-		/// </summary>
-		void clearStorage();
+		//Task<int> onCreateAsync(string collectionName);
+
+
+		//TODO Sync Methods
+
+//		Task<T[]> getQueryAsync (string queryString);
+//		Task<int> saveQueryResultsAsync (string queryString, string collection, List<string> ids);
+//		Task<int> enqueueRequestAsync (string action, string collection, string id, AbstractKinveyOfflineClientRequest<T> req);
+//		Task<int> enqueueRequestAsync (string action, string collection,SQLTemplates.OfflineMetaData metadata);
+//		Task<SQLTemplates.QueueItem> popQueueAsync ();
+//		Task<int> removeFromQueueAsync (int primaryKey);
+//
+//
 	}
 }
 

@@ -26,9 +26,9 @@ namespace KinveyXamarin
 	public class AbstractKinveyOfflineClientRequest<T> : AbstractKinveyClientRequest<T>
 	{
 		/// <summary>
-		/// The store.
+		/// The cache.
 		/// </summary>
-		private IOfflineStore store;
+		private ICache<T> cache;
 		/// <summary>
 		/// The policy.
 		/// </summary>
@@ -47,79 +47,48 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Sets the store.
+		/// Sets the cache.
 		/// </summary>
-		/// <param name="newStore">the offline store to use.</param>
+		/// <param name="newStore">the offline cache to use.</param>
 		/// <param name="newPolicy">the offline policy to use.</param>
-		public void SetStore(IOfflineStore newStore, ReadPolicy newPolicy){
-			this.store = newStore;
+		public void SetCache(ICache<T> newStore, ReadPolicy newPolicy){
+			this.cache = newStore;
 			this.policy = newPolicy;
 		}
 
 		/// <summary>
-		/// Executes the request from the offline store
+		/// Executes the request from the offline cache
 		/// </summary>
-		/// <returns>The response, if there is one, from the offline store.</returns>
-		public T offlineFromStore(){
-			if (store == null) {
-				return default(T);
-			}
-
-			string verb = base.RequestMethod;
-			T ret = default(T);
-
-			if (verb.Equals ("GET")) {
-				ret = (T) store.executeGetAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
-			} else if (verb.Equals ("PUT")) {
-				ret = (T) store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
-			} else if (verb.Equals ("POST")) {
-				JObject jobj = JObject.FromObject (this.HttpContent);
-				jobj["_id"] = getGUID ();
-				this.HttpContent = jobj.ToObject<T>();
-
-				ret = (T) store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
-
-			} else if (verb.Equals ("DELETE")) {
-				KinveyDeleteResponse resp = store.executeDeleteAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this).Result;
-//					return resp;
-					//TODO
-				return default(T);
-			}
-
-			return ret;
-		}
-
-		/// <summary>
-		/// Executes the request from the offline store
-		/// </summary>
-		/// <returns>The response, if there is one, from the offline store.</returns>
+		/// <returns>The response, if there is one, from the offline cache.</returns>
 		public async Task<T> offlineFromStoreAsync(){
-			if (store == null) {
-				return default(T);
-			}
-
-			string verb = base.RequestMethod;
-			T ret = default(T);
-
-			if (verb.Equals ("GET")) {
-				ret = (T) await store.executeGetAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-			} else if (verb.Equals ("PUT")) {
-				ret = (T) await store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-			} else if (verb.Equals ("POST")) {
-				JObject jobj = JObject.FromObject (this.HttpContent);
-				jobj["_id"] = getGUID ();
-				this.HttpContent = jobj.ToObject<T>();
-
-				ret = (T) await store.executeSaveAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-
-			} else if (verb.Equals ("DELETE")) {
-				KinveyDeleteResponse resp = await store.executeDeleteAsync ((AbstractClient)(client), ((AbstractClient)client).AppData<T>(collectionName, typeof(T)), this);
-				//					return resp;
-				//TODO
-				return default(T);
-			}
-
-			return ret;
+			return default(T);
+//			if (cache == null) {
+//				return default(T);
+//			}
+//
+//			string verb = base.RequestMethod;
+//			T ret = default(T);
+//
+//			if (verb.Equals ("GET")) {
+//				ret = (T)cache.GetAsync (this).Result;
+//			} else if (verb.Equals ("PUT")) {
+//				ret = (T) cache.SaveAsync (this).Result;
+//
+//			} else if (verb.Equals ("POST")) {
+//				JObject jobj = JObject.FromObject (this.HttpContent);
+//				jobj["_id"] = getGUID ();
+//				this.HttpContent = jobj.ToObject<T>();
+//
+//				ret = (T)cache.SaveAsync (this).Result;
+//
+//			} else if (verb.Equals ("DELETE")) {
+//				KinveyDeleteResponse resp = cache.DeleteAsync (this).Result;
+//				//					return resp;
+//				//TODO
+//				return default(T);
+//			}
+//
+//			return ret;
 		}
 
 		/// <summary>
@@ -146,22 +115,22 @@ namespace KinveyXamarin
 		/// </summary>
 		public override T Execute(){
 			T ret =  default(T);
-
-			if (policy == ReadPolicy.FORCE_NETWORK) {
-				ret = offlineFromService ();
-
-			} else if (policy == ReadPolicy.FORCE_LOCAL) {
-				ret = offlineFromStore ();
-			}
-			else if (policy == ReadPolicy.BOTH) {
-				ret = offlineFromStore ();
-				if (ret == null) {
-					ret = offlineFromService ();
-				}
-
-			} 
-			kickOffSync ();
-
+//
+//			if (policy == ReadPolicy.FORCE_NETWORK) {
+//				ret = offlineFromService ();
+//
+//			} else if (policy == ReadPolicy.FORCE_LOCAL) {
+//				ret = offlineFromStore ();
+//			}
+//			else if (policy == ReadPolicy.BOTH) {
+//				ret = offlineFromStore ();
+//				if (ret == null) {
+//					ret = offlineFromService ();
+//				}
+//
+//			} 
+//			kickOffSync ();
+//
 			return ret;
 		}
 
@@ -182,7 +151,7 @@ namespace KinveyXamarin
 
 			}
 
-			kickOffSync ();
+			//kickOffSync ();
 
 			return ret;
 
@@ -192,11 +161,12 @@ namespace KinveyXamarin
 		/// Kicks off the background sync thread
 		/// </summary>
 		public void kickOffSync(){
-			Type parameterType = typeof(T);
-			if (parameterType.IsArray) {
-				parameterType = parameterType.GetElementType ();
-			}
+//			Type parameterType = typeof(T);
+//			if (parameterType.IsArray) {
+//				parameterType = parameterType.GetElementType ();
+//			}
 
+			Type parameterType = typeof(T);
 			Type executor = typeof(BackgroundExecutor<>);
 			Type gen = executor.MakeGenericType (parameterType);
 

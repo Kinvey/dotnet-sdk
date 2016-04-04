@@ -19,7 +19,7 @@ namespace KinveyXamarin
 {
 
 	/// <summary>
-	/// This interface defines the behaivor necessary to interface with a database implementation
+	/// This interface defines the behavior necessary to interface with a database implementation
 	/// 
 	/// </summary>
 	public interface DatabaseHelper<T>

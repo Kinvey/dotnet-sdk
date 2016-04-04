@@ -28,18 +28,18 @@ namespace KinveyXamarin
 	/// </summary>
 	public class Client : AbstractClient
 	{
-
+		public ICacheManager CacheManager { get; set; }
 		/// <summary>
 		/// The file path for writing to disk is platform specific, so this is maintained in the client.
 		/// </summary>
 		/// <value>The file path.</value>
-		public string filePath { get; set; }
+		//public string filePath { get; set; }
 
 		/// <summary>
 		/// the SQLite platform is platform specific, so this is maintained in the client.
 		/// </summary>
 		/// <value>The offline platform.</value>
-		public ISQLitePlatform offline_platform { get; set; }
+		//public ISQLitePlatform offline_platform { get; set; }
 
 		/// <summary>
 		/// Gets or sets the logger, this action is performed when writing to the logs.
@@ -130,6 +130,8 @@ namespace KinveyXamarin
 			/// <value>The offline platform.</value>
 			private ISQLitePlatform offlinePlatform {get; set;}
 
+			private ICacheManager CacheManager {get; set; }
+
 			/// <summary>
 			/// Gets or sets the log Action -- going to be platform dependent
 			/// </summary>
@@ -147,8 +149,13 @@ namespace KinveyXamarin
 			/// This method creates and initializes a client for use with Kinvey.
 			/// </summary>
 			public virtual Client build() {
-				if (this.filePath != null && offlinePlatform != null && this.Store == null) {
-					this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
+				if (this.filePath != null && offlinePlatform != null){
+					if (this.Store == null) {
+						this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
+					}
+					if (this.CacheManager == null) {
+						this.CacheManager = new SQLiteCacheManager (offlinePlatform, filePath);
+					}
 				}
 
 				if (this.Store == null){
@@ -157,8 +164,9 @@ namespace KinveyXamarin
 
 
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
-				c.offline_platform = this.offlinePlatform;
-				c.filePath = this.filePath;
+//				c.offline_platform = this.offlinePlatform;
+//				c.filePath = this.filePath;
+				c.CacheManager = this.CacheManager;
 				c.logger = this.log;
 				c.senderID = this.senderID;
 
