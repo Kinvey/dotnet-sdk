@@ -45,21 +45,21 @@ namespace testiosapp
 //			Dictionary<string, JToken> attr = new Dictionary<string, JToken> ();
 //			email.Add ("email", "gob@bluth.com");
 //			attr.Add ("my_field", "blah blah");
-//			var newuser = await myClient.User ().CreateAsync ("George Michael Bluth", "cousin", attr);
-//			var newuser2 = await myClient.User ().CreateAsync ("Tobias Funke", "actor");
+//			var newuser = await myClient. ().CreateAsync ("George Michael Bluth", "cousin", attr);
+//			var newuser2 = await myClient.CurrentUser.CreateAsync ("Tobias Funke", "actor");
 //			Dictionary<string, JToken> last_name = new Dictionary<string, JToken>();
 //			last_name.Add("last_name", "Bluth");
-//			await myClient.User ().CreateAsync ("Lindsay Bluth", "me", last_name);
-//			await myClient.User ().CreateAsync ("Maeby Bluth", "Surely", last_name);
+//			await myClient.CurrentUser.CreateAsync ("Lindsay Bluth", "me", last_name);
+//			await myClient.CurrentUser.CreateAsync ("Maeby Bluth", "Surely", last_name);
 
 			User user = new User();
 			try
 			{
-				user = await myClient.User ().LoginAsync ("test", "test");
+				user = await myClient.CurrentUser.LoginAsync ("test", "test");
 
 			string str = "Finished Launching.";
 			Console.WriteLine("VRG : " + str);
-			Console.WriteLine("VRG: Logged in as: " + myClient.User().Id);
+			Console.WriteLine("VRG: Logged in as: " + myClient.CurrentUser.Id);
 
 //			// test GetCount(query)
 //			Console.WriteLine("VRG: Start GetCount(query) test.");
@@ -84,25 +84,25 @@ namespace testiosapp
 //
 //			Console.WriteLine("VRG: End GetCount(query) test.");
 
-			// test Get(query)
-			Console.WriteLine("VRG: Start Get(Query) test.");
-			AppData<WorkOrder> myWorkOrders = myClient.AppData<WorkOrder> ("workOrderCollectio", typeof(WorkOrder));
-			WorkOrder[] arrWO = await myWorkOrders.GetAsync();
-			foreach (var wo in arrWO)
-			{
-				Console.WriteLine("VRG: WorkOrder Address -> " + wo.Address);
-			}
-//			WorkOrder[] arrWO = await myWorkOrders.GetAsync("{\"City\":\"Boston\"}&sort={\"Address\":-1}");
-//			WorkOrder[] arrWO = await myWorkOrders.GetAsync("{\"City\":\"Boston\"}");
-//			var query = from work in arrWO
-//				orderby work.Address
-//			            select work;
-//			Task.Run ( () => {
-//				foreach (WorkOrder wo in query) {
-//					Console.WriteLine("VRG: (Linq sort) work order address -> " + wo.Address);
-//				}
-//			});
-			Console.WriteLine ("VRG: End Get(Query) test.");
+//			// test Get(query)
+//			Console.WriteLine("VRG: Start Get(Query) test.");
+//			AppData<WorkOrder> myWorkOrders = myClient.AppData<WorkOrder> ("workOrderCollectio", typeof(WorkOrder));
+//			WorkOrder[] arrWO = await myWorkOrders.GetAsync();
+//			foreach (var wo in arrWO)
+//			{
+//				Console.WriteLine("VRG: WorkOrder Address -> " + wo.Address);
+//			}
+////			WorkOrder[] arrWO = await myWorkOrders.GetAsync("{\"City\":\"Boston\"}&sort={\"Address\":-1}");
+////			WorkOrder[] arrWO = await myWorkOrders.GetAsync("{\"City\":\"Boston\"}");
+////			var query = from work in arrWO
+////				orderby work.Address
+////			            select work;
+////			Task.Run ( () => {
+////				foreach (WorkOrder wo in query) {
+////					Console.WriteLine("VRG: (Linq sort) work order address -> " + wo.Address);
+////				}
+////			});
+//			Console.WriteLine ("VRG: End Get(Query) test.");
 
 //			// test LINQ querying
 //			Console.WriteLine("VRG: Start LINQ Querying test.");
@@ -158,7 +158,7 @@ namespace testiosapp
 //			criteria.Email = "gob@bluth.com";
 //
 ////			// async lookup
-////			User[] lookupUsers = await myClient.User().LookupAsync(criteria);
+////			User[] lookupUsers = await myClient.CurrentUser.LookupAsync(criteria);
 ////			Console.WriteLine("VRG: Finished Lookup() call.");
 ////			if (lookupUsers == null)
 ////				Console.WriteLine ("VRG: LookupUsers is NULL");
@@ -170,7 +170,7 @@ namespace testiosapp
 ////			}
 //
 //			// lookup
-//			myClient.User().Lookup(criteria, new KinveyDelegate<User[]>()
+//			myClient.CurrentUser.Lookup(criteria, new KinveyDelegate<User[]>()
 //			{
 //					onSuccess = (result) =>
 //					{
@@ -196,7 +196,7 @@ namespace testiosapp
 //			// test Upload file
 //			Console.WriteLine("VRG: Starting Upload test...");
 //
-////			User u = await myClient.User().RetrieveAsync("56c231ab1db6dc745200fb3a");
+////			User u = await myClient.CurrentUser.RetrieveAsync("56c231ab1db6dc745200fb3a");
 //			User me = myClient.CurrentUser;
 //			Dictionary<string, JToken> myAttr = me.Attributes;
 //
