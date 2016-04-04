@@ -75,6 +75,16 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// The redirect URI for MIC login requests
+		/// </summary>
+		public string MICRedirectURI { get; set;}
+
+		/// <summary>
+		/// The callback for the MIC login, this is used after the redirect
+		/// </summary>
+		public KinveyDelegate<User> MICDelegate;
+
+		/// <summary>
 		/// The default service path.
 		/// </summary>
         public const string DefaultServicePath = "";

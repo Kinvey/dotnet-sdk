@@ -32,6 +32,7 @@ namespace KinveyXamarin
 		// INSTANCE VARIABLES AND GET/SET
 		////////////////////////////////////////
 
+		#region User class member variables
 		/// <summary>
 		/// The name of the user collection.
 		/// </summary>
@@ -141,19 +142,7 @@ namespace KinveyXamarin
 		[JsonIgnore]
 		private LoginType type {get; set;}
 
-
-		// MIC-related APIs
-		//
-
-		/// <summary>
-		/// The redirect URI for MIC login requests
-		/// </summary>
-		public string MICRedirectURI {get; set;}
-
-		/// <summary>
-		/// The callback for the MIC login, this is used after the redirect
-		/// </summary>
-		protected KinveyDelegate<User> MICDelegate;
+		#endregion
 
 		#region User class Constructors and Initializers
 		/// <summary>
@@ -416,16 +405,16 @@ namespace KinveyXamarin
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
 			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
-			string hostname = client.MICHostName;
-			if (client.MICApiVersion != null && client.MICApiVersion.Length > 0)
+			string hostname = KinveyClient.MICHostName;
+			if (KinveyClient.MICApiVersion != null && KinveyClient.MICApiVersion.Length > 0)
 			{
-				hostname += client.MICApiVersion + "/";
+				hostname += KinveyClient.MICApiVersion + "/";
 			}
 
 			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
 
 			//keep a reference to the redirect uri for later
-			this.MICRedirectURI = redirectURI;
+			this.KinveyClient.MICRedirectURI = redirectURI;
 
 			return myURLToRender;
 		}
@@ -438,7 +427,7 @@ namespace KinveyXamarin
 		/// <param name="redirectURI">Redirect URI.</param>
 		public async Task LoginWithAuthorizationCodeAPI(string username, string password, string redirectURI)
 		{
-			this.MICRedirectURI = redirectURI;
+			this.KinveyClient.MICRedirectURI = redirectURI;
 
 			try
 			{
@@ -453,7 +442,7 @@ namespace KinveyXamarin
 				//store the new refresh token
 				Credential currentCred = KinveyClient.Store.Load(u.Id);
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
-				currentCred.RedirectUri = this.MICRedirectURI;
+				currentCred.RedirectUri = this.KinveyClient.MICRedirectURI;
 				KinveyClient.Store.Store(u.Id, currentCred);
 
 			}
@@ -479,12 +468,12 @@ namespace KinveyXamarin
 				//store the new refresh token
 				Credential currentCred = KinveyClient.Store.Load(u.Id);
 				currentCred.RefreshToken = result["refresh_token"].ToString();
-				currentCred.RedirectUri = this.MICRedirectURI;
+				currentCred.RedirectUri = this.KinveyClient.MICRedirectURI;
 				KinveyClient.Store.Store(u.Id, currentCred);
 
-				if (MICDelegate != null)
+				if (KinveyClient.MICDelegate != null)
 				{
-					MICDelegate.onSuccess(u);
+					KinveyClient.MICDelegate.onSuccess(u);
 				}
 				else
 				{
@@ -493,9 +482,9 @@ namespace KinveyXamarin
 			}
 			catch(Exception e)
 			{
-				if (MICDelegate != null)
+				if (KinveyClient.MICDelegate != null)
 				{
-					MICDelegate.onError(e);
+					KinveyClient.MICDelegate.onError(e);
 				}
 				else
 				{
@@ -691,7 +680,7 @@ namespace KinveyXamarin
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("grant_type", "authorization_code");
 			data.Add("code", code);
-			data.Add("redirect_uri",this.MICRedirectURI);
+			data.Add("redirect_uri",this.KinveyClient.MICRedirectURI);
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
 			var urlParameters = new Dictionary<string, string>();
@@ -736,7 +725,7 @@ namespace KinveyXamarin
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("response_type", "code");
-			data.Add("redirect_uri", this.MICRedirectURI);
+			data.Add("redirect_uri", this.KinveyClient.MICRedirectURI);
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
 
 			var urlParameters = new Dictionary<string, string>();
@@ -765,7 +754,7 @@ namespace KinveyXamarin
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
-			data.Add("redirect_uri", this.MICRedirectURI);
+			data.Add("redirect_uri", this.KinveyClient.MICRedirectURI);
 			data.Add("response_type", "code");
 			data.Add("username", username);
 			data.Add("password", password);
