@@ -22,7 +22,7 @@ using Newtonsoft.Json;
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// This class is the entry point for access to all of the Kinvey's library features.  Use a Client.Builder to create one, and then login through:  myClient.User().Login*.
+	/// This class is the entry point for access to all of the Kinvey's library features.  Use a Client.Builder to create one.
 	/// Once the Client is created and a user is logged in, all of Kinvey's features can be accessed through their respective accessors.
 	/// This implementation is thread safe.
 	/// </summary>
@@ -174,7 +174,7 @@ namespace KinveyXamarin
 				Credential currentCredential = this.Store.getActiveUser ();
 				if (currentCredential != null)
 				{
-					c.User().LoginAsync(currentCredential);
+					c.CurrentUser.LoginAsync(currentCredential);
 				}
 
 				return c;

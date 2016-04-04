@@ -114,18 +114,6 @@ namespace KinveyXamarin
 			this.MICHostName = "https://auth.kinvey.com/";
         }
 
-		public User User()
-        {
-			if (this.CurrentUser == null)
-			{
-				var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
-				var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-				this.CurrentUser = new User(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
-			}
-
-			return this.CurrentUser;
-        }
-
 		/// <summary>
 		/// Access AppData operations through this.
 		/// </summary>
@@ -176,6 +164,12 @@ namespace KinveyXamarin
             {
                 lock (Lock)
                 {
+					if (currentUser == null)
+					{
+						var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
+						var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
+						this.CurrentUser = new User(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
+					}
                     return currentUser;
                 }
             }
