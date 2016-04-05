@@ -22,24 +22,27 @@ using KinveyUtils;
 
 namespace KinveyXamarin
 {
-    public abstract class AbstractKinveyClient
-    {
+	public abstract class AbstractKinveyClient
+	{
 		/// <summary>
 		/// The kinvey request initializer.
 		/// </summary>
         private readonly IKinveyRequestInitializer kinveyRequestInitializer;
+
 		/// <summary>
 		/// The root URL.
 		/// </summary>
-        private readonly string rootUrl;
+		private readonly string rootUrl;
+
 		/// <summary>
 		/// The service path.
 		/// </summary>
-        private readonly string servicePath;
+		private readonly string servicePath;
+
 		/// <summary>
 		/// The rest client.
 		/// </summary>
-        private RestClient restClient;
+		private RestClient restClient;
 
 		private string clientAppVersion = null;
 
@@ -238,17 +241,8 @@ namespace KinveyXamarin
 			/// <param name="transport">Transport.</param>
 			/// <param name="defaultRootUrl">Default root URL.</param>
 			/// <param name="defaultServicePath">Default service path.</param>
-            public Builder(RestClient transport, string defaultRootUrl, string defaultServicePath)
-                : this(transport, defaultRootUrl, defaultServicePath, null) { }
-
-			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient+Builder"/> class.
-			/// </summary>
-			/// <param name="transport">Transport.</param>
-			/// <param name="defaultRootUrl">Default root URL.</param>
-			/// <param name="defaultServicePath">Default service path.</param>
-			/// <param name="kinveyRequestInitializer">Kinvey request initializer.</param>
-            public Builder(RestClient transport, string defaultRootUrl, string defaultServicePath, KinveyClientRequestInitializer kinveyRequestInitializer)
+			/// <param name="kinveyRequestInitializer">[optional] Kinvey request initializer.</param>
+			public Builder(RestClient transport, string defaultRootUrl, string defaultServicePath, KinveyClientRequestInitializer kinveyRequestInitializer = null)
             {
                 this.restClient = transport;
                 BaseUrl = defaultRootUrl;
