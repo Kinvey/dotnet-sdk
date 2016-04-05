@@ -229,38 +229,6 @@ namespace KinveyXamarin
 			return (RestResponse)response;
 		}
 
-
-		/// <summary>
-		/// Executes the request without parsing it.
-		/// </summary>
-		/// <returns>The unparsed.</returns>
-        public RestResponse ExecuteUnparsed()
-        {
-            RestClient client = InitializeRestClient();
-            RestRequest request = BuildRestRequest();
-
-			var req = client.ExecuteAsync(request);
-			var response = req.Result;
-
-			if ((int) response.StatusCode == 404 && this.create == false) {	//if user is not found, create a new user
-				this.create = true; 
-				return ExecuteUnparsed ();
-			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode >= 300 )
-			{
-				throw NewExceptionOnError(response);
-			}
-
-            return (RestResponse)response;
-        }
-
-		/// <summary>
-		/// Executes this request and parses the result.
-		/// </summary>
-		public KinveyAuthResponse Execute()
-        {
-			return JsonConvert.DeserializeObject<KinveyAuthResponse>( ExecuteUnparsed().Content);
-        }
-
 		/// <summary>
 		/// Executes this request async and parses the result.
 		/// </summary>
