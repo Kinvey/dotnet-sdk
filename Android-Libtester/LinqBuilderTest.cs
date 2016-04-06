@@ -14,7 +14,7 @@ namespace AndroidLibtester
 		string appkey = "123";
 		string appsecret = "123";
 		Client testClient;
-		AppData<MyEntity> testData;
+		DataStore<MyEntity> testData;
 		string myCollection = "myCollection";
 
 		public LinqBuilderTest ()

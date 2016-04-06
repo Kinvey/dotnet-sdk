@@ -30,7 +30,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Class for managing appData access to the Kinvey backend.
 	/// </summary>
-	public class AppData<T> : KinveyQueryable<T>
+	public class DataStore<T> : KinveyQueryable<T>
 	{
 		/// <summary>
 		/// The name of the collection.
@@ -78,7 +78,7 @@ namespace KinveyXamarin
 		}
 			
 
-		private AppData (DataStoreType type, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
+		private DataStore (DataStoreType type, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
 		{
 			this.collectionName = typeof(T).FullName;
 			this.client = client;
@@ -86,9 +86,9 @@ namespace KinveyXamarin
 			this.customRequestProperties = client.GetCustomRequestProperties ();
 		}
 
-		public static AppData<T> GetInstance(DataStoreType type, AbstractClient client)
+		public static DataStore<T> GetInstance(DataStoreType type, AbstractClient client)
 		{
-			return new AppData<T> (type, client);
+			return new DataStore<T> (type, client);
 		}
 		/// <summary>
 		/// Gets or sets the name of the collection.

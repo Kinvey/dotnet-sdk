@@ -17,7 +17,7 @@ namespace AndroidLibtester
 
 		private Client client;
 		//private AsyncAppData<MyEntity> appData;
-		private AppData<MyEntity> appData;
+		private DataStore<MyEntity> appData;
 
 		[SetUp]
 		public void Setup ()

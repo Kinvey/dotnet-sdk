@@ -126,10 +126,10 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">The class definition for entities in this collection.</param>
 		/// <typeparam name="T">The Type associated with the Class</typeparam>
-        public AppData<T> AppData<T>(String collectionName, Type myClass)
+        public DataStore<T> AppData<T>(String collectionName, Type myClass)
         {
 			//return new AppData<T>(collectionName, myClass, this);
-			return KinveyXamarin.AppData<T>.GetInstance(DataStoreType.SYNC, this);
+			return KinveyXamarin.DataStore<T>.GetInstance(DataStoreType.SYNC, this);
 //            lock(Lock) 
 //            {
 //                if (appData == null) 

@@ -39,7 +39,6 @@
     <Compile Include="Auth\InMemoryCredentialStore.cs" />
     <Compile Include="Auth\KinveyAuthResponse.cs" />
     <Compile Include="AbstractClient.cs" />
-    <Compile Include="AppData.cs" />
     <Compile Include="User.cs" />
     <Compile Include="KinveyException.cs" />
     <Compile Include="Core\AbstractKinveyClient.cs" />
@@ -91,6 +90,7 @@
     <Compile Include="Offline\SQLiteCacheManager.cs" />
     <Compile Include="Offline\ICache.cs" />
     <Compile Include="Offline\SQLiteCache.cs" />
+    <Compile Include="DataStore.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
