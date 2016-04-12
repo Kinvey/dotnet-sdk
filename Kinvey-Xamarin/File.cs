@@ -175,7 +175,7 @@ namespace KinveyXamarin
 		/// <param name="fileId">The _id of the file to delete.</param>
 		public async Task<KinveyDeleteResponse> delete(string fileId)
 		{
-			var request = deleteBlocking(fileId);
+			DeleteFileAndMetaDataRequest request = buildDeleteFileRequest(fileId);
 			KinveyDeleteResponse deleteResponse = await request.ExecuteAsync();
 			return deleteResponse;
 		}
@@ -267,26 +267,20 @@ namespace KinveyXamarin
 			return downloadMetaDataRequest;
 		}
 
-		/// <summary>
-		/// Deletes a file's FileMetaData
-		/// </summary>
-		/// <returns>The blocking delete request.</returns>
-		/// <param name="fileId">File _id.</param>
-		private DeleteMetadataAndFile deleteBlocking(String fileId)
+		// Build delete request for file with its corresponding metadata
+		private DeleteFileAndMetaDataRequest buildDeleteFileRequest(String fileId)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("fileID", KAssert.notNull(fileId, "fileId is required to download metadata for a specific file."));
 
-			DeleteMetadataAndFile delete = new DeleteMetadataAndFile (urlParameters, this.client);
+			DeleteFileAndMetaDataRequest deleteRequest = new DeleteFileAndMetaDataRequest (urlParameters, this.client);
 
-			client.InitializeRequest (delete);
+			client.InitializeRequest(deleteRequest);
 			//delete.clientAppVersion = this.GetClientAppVersion ();
-			delete.customRequestHeaders = this.GetCustomRequestProperties ();
-			return delete;
+			deleteRequest.customRequestHeaders = this.GetCustomRequestProperties();
 
-
-
+			return deleteRequest;
 		}
 
 		#endregion
@@ -366,15 +360,14 @@ namespace KinveyXamarin
 		/// A synchronously request to delete metadata and file.
 		/// </summary>
 		[JsonObject(MemberSerialization.OptIn)]
-		public class DeleteMetadataAndFile : AbstractKinveyClientRequest<KinveyDeleteResponse>
+		internal class DeleteFileAndMetaDataRequest : AbstractKinveyClientRequest<KinveyDeleteResponse>
 		{
-
 			private const string REST_PATH = "blob/{appKey}/{fileID}/?tls=true";
 
 			[JsonProperty]
-			public string fileID { get; set;}
+			private string fileID { get; set; }
 
-			public DeleteMetadataAndFile(Dictionary<string, string> urlProperties, AbstractClient client)
+			internal DeleteFileAndMetaDataRequest(Dictionary<string, string> urlProperties, AbstractClient client)
 				: base(client, "DELETE", REST_PATH, default(KinveyDeleteResponse), urlProperties)
 			{
 				this.fileID = urlProperties["fileID"];
