@@ -66,7 +66,6 @@
     <Compile Include="Query\IQueryBuilder.cs" />
     <Compile Include="Query\StringQueryBuilder.cs" />
     <Compile Include="File.cs" />
-    <Compile Include="Async\AsyncFile.cs" />
     <Compile Include="Cache\Cache.cs" />
     <Compile Include="Model\KinveyMetaData.cs" />
     <Compile Include="Util\KAssert.cs" />
@@ -79,7 +78,6 @@
     <Compile Include="Async\AsyncCustomEndpoint.cs" />
     <Compile Include="Model\KinveyFile.cs" />
     <Compile Include="Model\AccessControlList.cs" />
-    <Compile Include="Async\KinveyFileDelegate.cs" />
     <Compile Include="Async\KinveyMICDelegate.cs" />
     <Compile Include="AbstractPush.cs" />
     <Compile Include="Query\KinveyQueryExecutor.cs" />
