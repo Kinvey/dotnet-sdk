@@ -64,14 +64,6 @@ namespace KinveyXamarin
 		protected Client(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
 			: base(client, rootUrl, servicePath, initializer, store) {}
 
-			
-		/// <summary>
-		/// Access file operations through this.
-		/// </summary>
-		/// <returns>A configured instance of File.</returns>
-		public new AsyncFile File(){
-			return new AsyncFile (this);
-		}
 
 		/// <summary>
 		/// Execute custom endpoints

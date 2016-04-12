@@ -11,25 +11,25 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Threading.Tasks;
-using System.IO;
-
-namespace KinveyXamarin
-{
-	/// <summary>
-	/// Async file.  This class allows access to Kinvey's File API asynchronously.  
-	/// </summary>
-	public class AsyncFile : File
-	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AsyncFile"/> class.
-		/// </summary>
-		/// <param name="client">A configured instance of a Kinvey client.</param>
-		public AsyncFile (AbstractClient client) : base(client)
-		{
-		}
-
+//using System;
+//using System.Threading.Tasks;
+//using System.IO;
+//
+//namespace KinveyXamarin
+//{
+//	/// <summary>
+//	/// Async file.  This class allows access to Kinvey's File API asynchronously.  
+//	/// </summary>
+//	public class AsyncFile : File
+//	{
+//		/// <summary>
+//		/// Initializes a new instance of the <see cref="KinveyXamarin.AsyncFile"/> class.
+//		/// </summary>
+//		/// <param name="client">A configured instance of a Kinvey client.</param>
+//		public AsyncFile (AbstractClient client) : base(client)
+//		{
+//		}
+//
 //		/// <summary>
 //		/// Download the File associated with the id of the provided metadata.  The file is streamed into the stream, with delegates returning either errors or the FileMetaData from Kinvey.
 //		/// </summary>
@@ -158,7 +158,7 @@ namespace KinveyXamarin
 //			});
 //
 //		}
-
-
-	}
-}
+//
+//
+//	}
+//}
