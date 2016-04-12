@@ -12,6 +12,8 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -24,11 +26,13 @@ namespace KinveyXamarin
 	/// </summary>
 	public class File
 	{
+		#region File class member variables, properties and constructors
+
 		/// <summary>
 		/// Gets or sets the client.
 		/// </summary>
 		/// <value>The client.</value>
-		private AbstractClient client {get; set;}
+		private AbstractClient client { get; set; }
 
 		//private string clientAppVersion = null;
 
@@ -75,6 +79,106 @@ namespace KinveyXamarin
 			this.customRequestProperties = client.GetCustomRequestProperties ();
 			//this.clientAppVersion = client.GetClientAppVersion ();
 		}
+
+		#endregion
+
+		#region File class APIs
+
+		#region File class Upload APIs
+
+		/// <summary>
+		/// Upload the specified byte[] to Kinvey file storage.  The FileMetaData contains extra data about the file.
+		/// </summary>
+		/// <param name="metadata">Metadata associated with the file; supports arbitrary key/value pairs.</param>
+		/// <param name="content">The actual bytes of the file to upload.</param>
+		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, byte[] content)
+		{
+			var request = uploadBlocking (metadata);
+			FileMetaData entity = await request.ExecuteAsync();
+			await request.uploadFileAsync (entity, content);
+			return entity;
+		}
+
+		/// <summary>
+		/// Upload the specified stream to Kinvey file storage.  The FileMetaData contains extra data about the file.
+		/// </summary>
+		/// <param name="metadata">Metadata associated with the file; supports arbitrary key/value pairs.</param>
+		/// <param name="content">The stream of file content to upload.</param>
+		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, Stream content)
+		{
+			var request = uploadBlocking (metadata);
+			FileMetaData entity = await request.ExecuteAsync();
+			await request.uploadFileAsync (entity, content);
+			return entity;
+		}
+
+		/// <summary>
+		/// Uploads metadata associated with a file, without changing the file itself.  Do not modify the id or filename using this method-- it's for any other key/value pairs.
+		/// </summary>
+		/// <param name="metadata">The updated FileMetaData to upload to Kinvey.</param>
+		public async Task<FileMetaData> uploadMetadataAsync(FileMetaData metadata)
+		{
+			return await uploadMetadataBlocking(metadata).ExecuteAsync();
+		}
+
+		#endregion
+
+		#region File class download APIs
+
+		/// <summary>
+		/// Download the File associated with the id of the provided metadata.  The file is copied into the byte[], with delegates returning either errors or the FileMetaData from Kinvey.
+		/// </summary>
+		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
+		/// <param name="content">Content.</param>
+		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content)
+		{
+			var request = downloadBlocking(metadata);
+			FileMetaData fmd = await request.ExecuteAsync();
+			return fmd;
+		}
+
+		/// <summary>
+		/// Download the File associated with the id of the provided metadata.  The file is streamed into the stream, with delegates returning either errors or the FileMetaData from Kinvey.
+		/// </summary>
+		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
+		/// <param name="content">Where the contents of the file will be streamed.</param>
+		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content)
+		{
+			Stream stream = new MemoryStream();
+			var request = downloadBlocking(metadata);
+			FileMetaData fmd = request.executeAndDownloadTo(ref stream);
+			return fmd;
+		}
+
+		/// <summary>
+		/// Downloads the metadata of a File, without actually downloading the file.
+		/// </summary>
+		/// <param name="fileId">The _id of the file's metadata to download. </param>
+		public async Task<FileMetaData> downloadMetadataAsync(string fileId)
+		{
+			return await downloadMetadataBlocking (fileId).ExecuteAsync();
+		}
+
+		#endregion
+
+		#region File class delete APIs
+
+		/// <summary>
+		/// Delete the specified file.
+		/// </summary>
+		/// <param name="fileId">The _id of the file to delete.</param>
+		public async Task<KinveyDeleteResponse> delete(string fileId)
+		{
+			var request = deleteBlocking(fileId);
+			KinveyDeleteResponse deleteResponse = await request.ExecuteAsync();
+			return deleteResponse;
+		}
+
+		#endregion
+
+		#endregion
+
+		#region File class private blocking methods
 
 		/// <summary>
 		/// Downloads the file associated with the _id contained in the FileMetaData.
@@ -197,9 +301,9 @@ namespace KinveyXamarin
 
 		}
 
+		#endregion
 
-
-
+		#region File class Request inner classes
 
 		/// <summary>
 		/// A synchronously request to download metadata and file.
@@ -305,10 +409,7 @@ namespace KinveyXamarin
 			}
 		}
 
-
-
-
-
+		#endregion
 	}
 }
 
