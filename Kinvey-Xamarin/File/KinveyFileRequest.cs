@@ -22,107 +22,81 @@ using ModernHttpClient;
 
 namespace KinveyXamarin
 {
-	public class KinveyFileRequest : AbstractKinveyClientRequest<FileMetaData>
+	internal class KinveyFileRequest : AbstractKinveyClientRequest<FileMetaData>
 	{
-
-		public KinveyFileRequest (AbstractClient client, string requestMethod, string uriTemplate, FileMetaData httpContent, Dictionary<string, string> uriParameters)
+		internal KinveyFileRequest (AbstractClient client, string requestMethod, string uriTemplate, FileMetaData httpContent, Dictionary<string, string> uriParameters)
 			: base(client, requestMethod, uriTemplate, httpContent, uriParameters)
 		{
 		}
 
+		#region KinveyFileRequest upload methods
 
-		public FileMetaData executeAndDownloadTo (byte[] output){
-			FileMetaData metadata = base.Execute ();
-			downloadFile (metadata, output);
-			return metadata;
-		}
-			
-		public FileMetaData executeAndDownloadTo(ref Stream stream){
-			FileMetaData metadata = base.Execute ();
-			downloadFile (metadata, ref stream);
-			return metadata;
-		}
-
-		public FileMetaData executeAndUploadFrom(byte[] input){
-			FileMetaData metadata = base.Execute ();
-			uploadFile (metadata, input);
-			return metadata;
-		}
-
-		public FileMetaData executeAndUploadFrom(Stream stream){
-			FileMetaData metadata = base.Execute ();
-			uploadFile (metadata, stream);
-			return metadata;
-		}
-			
-		private void downloadFile(FileMetaData metadata, ref Stream stream){
-			string downloadURL = metadata.downloadURL;
-
-			RestClient client = new RestClient (downloadURL);
-			RestRequest request = new RestRequest ();
-
-			request.Method = Method.GET;
-
-			var req = client.DownloadDataAsync (request);
-			var response = req.Result;
-
-			stream = new MemoryStream (response);
-
-		}
-
-		private void downloadFile(FileMetaData metadata, byte[] output){
-			string downloadURL = metadata.downloadURL;
-
-			RestClient client = new RestClient (downloadURL);
-			RestRequest request = new RestRequest ();
-			request.Method = Method.GET;
-
-			var req = client.ExecuteAsync(request);
-			var response = req.Result;
-
-			output = response.RawBytes;
-		}
-
-		internal void uploadFile(FileMetaData metadata, byte[] input) {
-			uploadFileAsync (metadata, new ByteArrayContent (input)).Wait ();
-		}
-
-		internal async Task uploadFileAsync(FileMetaData metadata, byte[] input) {
+		internal async Task uploadFileAsync(FileMetaData metadata, byte[] input)
+		{
 			await uploadFileAsync (metadata, new ByteArrayContent (input));
 		}
 
-		internal void uploadFile(FileMetaData metadata, Stream input) {
-			uploadFileAsync (metadata, new StreamContent (input)).Wait ();
-		}
-
-		internal async Task uploadFileAsync(FileMetaData metadata, Stream input) {
-			if (input.CanSeek) {
+		internal async Task uploadFileAsync(FileMetaData metadata, Stream input)
+		{
+			if (input.CanSeek)
+			{
 				input.Position = 0;
 			}
-			await uploadFileAsync (metadata, new StreamContent (input));
+
+			await uploadFileAsync(metadata, new StreamContent(input));
 		}
 
-		private void uploadFile(FileMetaData metadata, HttpContent input) {
-			uploadFileAsync (metadata, input).Wait ();
-		}
-
-		private async Task<HttpResponseMessage> uploadFileAsync(FileMetaData metadata, HttpContent input) {
+		private async Task<HttpResponseMessage> uploadFileAsync(FileMetaData metadata, HttpContent input)
+		{
 			string uploadURL = metadata.uploadUrl;
 
-			MediaTypeHeaderValue mt = new MediaTypeHeaderValue (metadata.mimetype);
+			MediaTypeHeaderValue mt = new MediaTypeHeaderValue(metadata.mimetype);
 			input.Headers.ContentType = mt;
 
 			var httpClient = new HttpClient(new NativeMessageHandler());
-			Uri requestURI = new Uri (uploadURL);
+			Uri requestURI = new Uri(uploadURL);
 
-			foreach (var header in metadata.headers) {
+			foreach (var header in metadata.headers)
+			{
 				httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
 			}
 
 			var response = await httpClient.PutAsync(requestURI, input);
-			response.EnsureSuccessStatusCode ();
+			response.EnsureSuccessStatusCode();
 			return response;
 		}
+
+		#endregion
+
+		#region KinveyFileRequest download methods
+
+		// TODO These download methods need to be tested...I don't think they ever worked
+		internal async Task downloadFileAsync(FileMetaData metadata, Stream stream)
+		{
+			IRestResponse response = await downloadFileAsync(metadata);
+			stream = new MemoryStream(response.RawBytes);
+		}
+
+		// TODO This needs to be tested...I don't think this ever worked
+		internal async Task downloadFileAsync(FileMetaData metadata, byte[] output)
+		{
+			IRestResponse response = await downloadFileAsync(metadata);
+			output = response.RawBytes;
+		}
+
+		private async Task<IRestResponse> downloadFileAsync(FileMetaData metadata)
+		{
+			string downloadURL = metadata.downloadURL;
+			RestClient client = new RestClient(downloadURL);
+
+			RestRequest request = new RestRequest();
+			request.Method = Method.GET;
+
+			IRestResponse response = await client.ExecuteAsync(request);
+			return response;
+		}
+
+		#endregion
 	}
 }
 

@@ -93,10 +93,10 @@ namespace KinveyXamarin
 		/// <param name="content">The actual bytes of the file to upload.</param>
 		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, byte[] content)
 		{
-			var request = uploadBlocking (metadata);
-			FileMetaData entity = await request.ExecuteAsync();
-			await request.uploadFileAsync (entity, content);
-			return entity;
+			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
+			FileMetaData fmd = await uploadRequest.ExecuteAsync();
+			await uploadRequest.uploadFileAsync(fmd, content);
+			return fmd;
 		}
 
 		/// <summary>
@@ -106,10 +106,10 @@ namespace KinveyXamarin
 		/// <param name="content">The stream of file content to upload.</param>
 		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, Stream content)
 		{
-			var request = uploadBlocking (metadata);
-			FileMetaData entity = await request.ExecuteAsync();
-			await request.uploadFileAsync (entity, content);
-			return entity;
+			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
+			FileMetaData fmd = await uploadRequest.ExecuteAsync();
+			await uploadRequest.uploadFileAsync(fmd, content);
+			return fmd;
 		}
 
 		/// <summary>
@@ -118,7 +118,9 @@ namespace KinveyXamarin
 		/// <param name="metadata">The updated FileMetaData to upload to Kinvey.</param>
 		public async Task<FileMetaData> uploadMetadataAsync(FileMetaData metadata)
 		{
-			return await uploadMetadataBlocking(metadata).ExecuteAsync();
+			UploadMetaDataRequest uploadMetaDataRequest = buildUploadMetaDataRequest(metadata);
+			FileMetaData fmd = await uploadMetaDataRequest.ExecuteAsync();
+			return fmd;
 		}
 
 		#endregion
@@ -132,8 +134,9 @@ namespace KinveyXamarin
 		/// <param name="content">Content.</param>
 		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content)
 		{
-			var request = downloadBlocking(metadata);
-			FileMetaData fmd = await request.ExecuteAsync();
+			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
+			FileMetaData fmd = await downloadRequest.ExecuteAsync();
+			await downloadRequest.downloadFileAsync(fmd, content);
 			return fmd;
 		}
 
@@ -144,9 +147,10 @@ namespace KinveyXamarin
 		/// <param name="content">Where the contents of the file will be streamed.</param>
 		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content)
 		{
-			Stream stream = new MemoryStream();
-			var request = downloadBlocking(metadata);
-			FileMetaData fmd = request.executeAndDownloadTo(ref stream);
+//			Stream stream = new MemoryStream(); // TODO remove this?  Is it the caller's responsibility to create the stream?
+			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
+			FileMetaData fmd = await downloadRequest.ExecuteAsync();
+			await downloadRequest.downloadFileAsync(fmd, content);
 			return fmd;
 		}
 
@@ -156,7 +160,9 @@ namespace KinveyXamarin
 		/// <param name="fileId">The _id of the file's metadata to download. </param>
 		public async Task<FileMetaData> downloadMetadataAsync(string fileId)
 		{
-			return await downloadMetadataBlocking (fileId).ExecuteAsync();
+			DownloadMetaDataRequest downloadMetadataRequest = buildDownloadMetaDataRequest(fileId);
+			FileMetaData fmd = await downloadMetadataRequest.ExecuteAsync();
+			return fmd;
 		}
 
 		#endregion
@@ -178,26 +184,63 @@ namespace KinveyXamarin
 
 		#endregion
 
-		#region File class private blocking methods
+		#region File class request builder methods
 
-		/// <summary>
-		/// Downloads the file associated with the _id contained in the FileMetaData.
-		/// </summary>
-		/// <returns>a blocking Download request</returns>
-		/// <param name="metadata">Metadata.</param>
-		public DownloadMetadataAndFile downloadBlocking(FileMetaData metadata)
+		// Build upload request for file with its corresponding metadata
+		private UploadFileWithMetaDataRequest buildUploadFileRequest(FileMetaData metadata)
 		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
+			string mode = "POST";
+			if (metadata.id != null && metadata.id.Length > 0)
+			{
+				mode = "PUT";
+			}
+
+			// set mimetype for GCS upload
+			if (string.IsNullOrEmpty(metadata.mimetype))
+			{
+				metadata.mimetype = "application/octet-stream";
+			}
+
+			UploadFileWithMetaDataRequest uploadRequest = new UploadFileWithMetaDataRequest (metadata, mode, urlParameters, this.client);
+
+			client.InitializeRequest(uploadRequest);
+			//upload.clientAppVersion = this.GetClientAppVersion ();
+			uploadRequest.customRequestHeaders = this.GetCustomRequestProperties ();
+
+			return uploadRequest;
+		}
+
+		// Build upload request for updating metadata for existing file
+		private UploadMetaDataRequest buildUploadMetaDataRequest(FileMetaData metadata)
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add ("fileID", KAssert.notNull(metadata.id, "metadata.id is required to download metadata for a specific file."));
+
+			UploadMetaDataRequest uploadMetaDataRequest = new UploadMetaDataRequest(metadata, urlParameters, this.client);
+
+			client.InitializeRequest(uploadMetaDataRequest);
+			//upload.clientAppVersion = this.GetClientAppVersion ();
+			uploadMetaDataRequest.customRequestHeaders = this.GetCustomRequestProperties();
+
+			return uploadMetaDataRequest;
+		}
+
+		// Build download request for file with its corresponding metadata
+		private DownloadFileWithMetaDataRequest buildDownloadFileRequest(FileMetaData metadata)
+		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("fileID", KAssert.notNull(metadata.id, "metadata.id is required to download a specific file-- can also download by query if _id is unknown."));
 
-			DownloadMetadataAndFile download = new DownloadMetadataAndFile (urlParameters, this.client);
+			DownloadFileWithMetaDataRequest downloadRequest = new DownloadFileWithMetaDataRequest(urlParameters, this.client);
 
-			client.InitializeRequest (download);
+			client.InitializeRequest(downloadRequest);
 			//download.clientAppVersion = this.GetClientAppVersion ();
-			download.customRequestHeaders = this.GetCustomRequestProperties ();
-
+			downloadRequest.customRequestHeaders = this.GetCustomRequestProperties();
 
 			//TODO need more elegant approach for mime type
 //			RestSharp.HttpHeader mime = new RestSharp.HttpHeader ();
@@ -205,78 +248,23 @@ namespace KinveyXamarin
 //			mime.Value = "application/octet-stream";
 //			download.RequestHeaders.Add (mime);
 
-			return download;
+			return downloadRequest;
 		}
 
-
-		/// <summary>
-		/// Uploads the FileMetaData and it's associated file.
-		/// </summary>
-		/// <returns>a blocking upload request.</returns>
-		/// <param name="metadata">Metadata.</param>
-		public UploadMetadataAndFile uploadBlocking(FileMetaData metadata)
-		{
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-
-			string mode = "POST";
-			if (metadata.id != null && metadata.id.Length > 0) {
-				mode = "PUT";
-			}
-
-			// set mimetype for GCS upload
-			if (string.IsNullOrEmpty(metadata.mimetype)) {
-				metadata.mimetype = "application/octet-stream";
-			}
-
-			UploadMetadataAndFile upload = new UploadMetadataAndFile (metadata, mode, urlParameters, this.client);
-
-			client.InitializeRequest (upload);
-			//upload.clientAppVersion = this.GetClientAppVersion ();
-			upload.customRequestHeaders = this.GetCustomRequestProperties ();
-			return upload;
-		}
-
-
-		/// <summary>
-		/// Downloads the FileMetaData blocking.
-		/// </summary>
-		/// <returns>The blocking download Request.</returns>
-		/// <param name="fileId">File _id.</param>
-		public DownloadMetadata downloadMetadataBlocking(String fileId)
+		// Build download request for the metadata of a specific file
+		private DownloadMetaDataRequest buildDownloadMetaDataRequest(String fileId)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("fileID", KAssert.notNull(fileId, "fileId is required to download metadata for a specific file."));
 
-			DownloadMetadata download = new DownloadMetadata (urlParameters, this.client);
+			DownloadMetaDataRequest downloadMetaDataRequest = new DownloadMetaDataRequest(urlParameters, this.client);
 
-			client.InitializeRequest (download);
+			client.InitializeRequest(downloadMetaDataRequest);
 			//download.clientAppVersion = this.GetClientAppVersion ();
-			download.customRequestHeaders = this.GetCustomRequestProperties ();
-			return download;
+			downloadMetaDataRequest.customRequestHeaders = this.GetCustomRequestProperties ();
 
-		}
-
-
-		/// <summary>
-		/// Uploads the metadata.
-		/// </summary>
-		/// <returns>The blocking upload request.</returns>
-		/// <param name="metadata">Metadata.</param>
-		public UploadMetadata uploadMetadataBlocking(FileMetaData metadata)
-		{
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("fileID", KAssert.notNull(metadata.id, "metadata.id is required to download metadata for a specific file."));
-
-			UploadMetadata upload = new UploadMetadata (metadata, urlParameters, this.client);
-
-			client.InitializeRequest (upload);
-			//upload.clientAppVersion = this.GetClientAppVersion ();
-			upload.customRequestHeaders = this.GetCustomRequestProperties ();
-			return upload;
-
+			return downloadMetaDataRequest;
 		}
 
 		/// <summary>
@@ -284,7 +272,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The blocking delete request.</returns>
 		/// <param name="fileId">File _id.</param>
-		public DeleteMetadataAndFile deleteBlocking(String fileId)
+		private DeleteMetadataAndFile deleteBlocking(String fileId)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -305,43 +293,19 @@ namespace KinveyXamarin
 
 		#region File class Request inner classes
 
-		/// <summary>
-		/// A synchronously request to download metadata and file.
-		/// </summary>
+		// Request to upload file with its corresponding metadata.
+		// Used both when uploading file for first time and when updating file.
 		[JsonObject(MemberSerialization.OptIn)]
-		public class DownloadMetadataAndFile : KinveyFileRequest
+		internal class UploadFileWithMetaDataRequest : KinveyFileRequest
 		{
-
-			private const string REST_PATH = "blob/{appKey}/{fileID}/?tls=true";
-
-			[JsonProperty]
-			public string fileID { get; set;}
-
-			public DownloadMetadataAndFile(Dictionary<string, string> urlProperties, AbstractClient client)
-				: base(client, "GET", REST_PATH, default(FileMetaData), urlProperties)
-			{
-				this.fileID = urlProperties["fileID"];
-			}
-				
-
-		}
-
-		/// <summary>
-		/// A synchronously request to upload metadata and file.
-		/// </summary>
-		[JsonObject(MemberSerialization.OptIn)]
-		public class UploadMetadataAndFile : KinveyFileRequest
-		{
-
 			private const string REST_PATH = "blob/{appKey}/?tls=true";
 
 			[JsonProperty]
-			public string fileID { get; set;}
+			private string fileID { get; set; }
 
-			public UploadMetadataAndFile(FileMetaData meta, string mode, Dictionary<string, string> urlProperties, AbstractClient client)
+			internal UploadFileWithMetaDataRequest(FileMetaData meta, string mode, Dictionary<string, string> urlProperties, AbstractClient client)
 				: base(client, mode, REST_PATH, meta, urlProperties)
 			{
-
 				if (mode.Equals("PUT"))
 				{
 					this.fileID = urlProperties["fileID"];
@@ -350,41 +314,49 @@ namespace KinveyXamarin
 			}
 		}
 
-		/// <summary>
-		/// A synchronously request to download metadata.
-		/// </summary>
+		// Request to update metadata.
 		[JsonObject(MemberSerialization.OptIn)]
-		public class DownloadMetadata : KinveyFileRequest
+		internal class UploadMetaDataRequest : KinveyFileRequest
 		{
-
 			private const string REST_PATH = "blob/{appKey}/{fileID}/?tls=true";
 
 			[JsonProperty]
-			public string fileID { get; set;}
+			private string fileID { get; set; }
 
-			public DownloadMetadata(Dictionary<string, string> urlProperties, AbstractClient client)
+			internal UploadMetaDataRequest(FileMetaData meta, Dictionary<string, string> urlProperties, AbstractClient client)
+				: base(client, "PUT", REST_PATH, meta, urlProperties)
+			{
+				this.fileID = urlProperties["fileID"];
+			}
+		}
+
+		// Request to download file with its corresponding metadata.
+		[JsonObject(MemberSerialization.OptIn)]
+		internal class DownloadFileWithMetaDataRequest : KinveyFileRequest
+		{
+			private const string REST_PATH = "blob/{appKey}/{fileID}/?tls=true";
+
+			[JsonProperty]
+			private string fileID { get; set; }
+
+			internal DownloadFileWithMetaDataRequest(Dictionary<string, string> urlProperties, AbstractClient client)
 				: base(client, "GET", REST_PATH, default(FileMetaData), urlProperties)
 			{
 				this.fileID = urlProperties["fileID"];
 			}
-
-
 		}
 
-		/// <summary>
-		/// A synchronously request to upload metadata.
-		/// </summary>
+		// Request to download metadata.
 		[JsonObject(MemberSerialization.OptIn)]
-		public class UploadMetadata : KinveyFileRequest
+		internal class DownloadMetaDataRequest : KinveyFileRequest
 		{
-
 			private const string REST_PATH = "blob/{appKey}/{fileID}/?tls=true";
 
 			[JsonProperty]
-			public string fileID { get; set;}
+			private string fileID { get; set; }
 
-			public UploadMetadata(FileMetaData meta, Dictionary<string, string> urlProperties, AbstractClient client)
-				: base(client, "PUT", REST_PATH, meta, urlProperties)
+			internal DownloadMetaDataRequest(Dictionary<string, string> urlProperties, AbstractClient client)
+				: base(client, "GET", REST_PATH, default(FileMetaData), urlProperties)
 			{
 				this.fileID = urlProperties["fileID"];
 			}
