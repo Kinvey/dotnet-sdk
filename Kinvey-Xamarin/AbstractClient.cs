@@ -33,14 +33,15 @@ namespace KinveyXamarin
 		/// </summary>
         public const string DefaultBaseUrl = "https://baas.kinvey.com/";
 
+		private string micHostName;
+		private string micApiVersion;
 		/// <summary>
 		/// Gets or sets the host URL for MIC.
 		/// The host name for your MIC API. This is relevant if you are using a dedicated instance of Kinvey, with an auth base URL that differs from https://auth.kinvey.com
 		/// </summary>
 		/// <value>The MIC host.  Your hostname must use "https".</value>
-		public string MICHostName
-		{
-			get { return this.MICHostName; }
+		public string MICHostName {
+			get { return micHostName;}
 			set
 			{
 				if (!value.StartsWith("https"))
@@ -53,7 +54,7 @@ namespace KinveyXamarin
 					value += "/";
 				}
 
-				this.MICHostName = value;
+				micHostName = value;
 			}
 		}
 
@@ -62,7 +63,7 @@ namespace KinveyXamarin
 		/// </summary>
 		public string MICApiVersion
 		{
-			get { return this.MICApiVersion; }
+			get { return this.micApiVersion; }
 			set
 			{
 				if (!value.StartsWith("v"))
@@ -70,7 +71,7 @@ namespace KinveyXamarin
 					value = "v" + value;
 				}
 
-				MICApiVersion = value;
+				micApiVersion = value;
 			}
 		}
 
