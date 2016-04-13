@@ -52,14 +52,17 @@ namespace testiosapp
 //			await myClient.CurrentUser.CreateAsync ("Lindsay Bluth", "me", last_name);
 //			await myClient.CurrentUser.CreateAsync ("Maeby Bluth", "Surely", last_name);
 
-			User user = new User();
+			User user = myClient.CurrentUser;
 			try
 			{
-				user = await myClient.CurrentUser.LoginAsync ("test", "test");
+				if (!myClient.CurrentUser.isUserLoggedIn ()) {
+					user = await myClient.CurrentUser.LoginAsync ("test", "test");
+				}
 
-			string str = "Finished Launching.";
-			Console.WriteLine("VRG : " + str);
-			Console.WriteLine("VRG: Logged in as: " + myClient.CurrentUser.Id);
+
+				string str = "Finished Launching.";
+				Console.WriteLine("VRG : " + str);
+				Console.WriteLine("VRG: Logged in as: " + myClient.CurrentUser.Id);
 
 //			// test GetCount(query)
 //			Console.WriteLine("VRG: Start GetCount(query) test.");
