@@ -32,6 +32,7 @@ namespace KinveyXamarin
 	/// </summary>
 	public class DataStore<T> : KinveyQueryable<T>
 	{
+		#region Member variables
 		/// <summary>
 		/// The name of the collection.
 		/// </summary>
@@ -68,28 +69,7 @@ namespace KinveyXamarin
 			}
 			this.customRequestProperties.Add (key, value);
 		}
-			
-		/// <summary>
-		/// Gets the custom request properties.
-		/// </summary>
-		/// <returns>The custom request properties.</returns>
-		public JObject GetCustomRequestProperties(){
-			return this.customRequestProperties;
-		}
-			
 
-		private DataStore (DataStoreType type, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
-		{
-			this.collectionName = typeof(T).FullName;
-			this.client = client;
-			this.storeType = type;
-			this.customRequestProperties = client.GetCustomRequestProperties ();
-		}
-
-		public static DataStore<T> GetInstance(DataStoreType type, AbstractClient client)
-		{
-			return new DataStore<T> (type, client);
-		}
 		/// <summary>
 		/// Gets or sets the name of the collection.
 		/// </summary>
@@ -103,10 +83,10 @@ namespace KinveyXamarin
 		/// Gets or sets the type of the current.
 		/// </summary>
 		/// <value>The type of the current.</value>
-//		public Type CurrentType {
-//			get { return this.typeof(T); }
-//			set { this.typeof(T) = value; }
-//		}
+		//		public Type CurrentType {
+		//			get { return this.typeof(T); }
+		//			set { this.typeof(T) = value; }
+		//		}
 
 		/// <summary>
 		/// Gets or sets the kinvey client.
@@ -122,25 +102,94 @@ namespace KinveyXamarin
 		{
 
 			this.cache = cache;
-//			this.store.dbpath = Path.Combine (((Client)KinveyClient).filePath, "kinveyOffline.sqlite");
-//			this.store.platform = ((Client)KinveyClient).offline_platform;
+			//			this.store.dbpath = Path.Combine (((Client)KinveyClient).filePath, "kinveyOffline.sqlite");
+			//			this.store.platform = ((Client)KinveyClient).offline_platform;
 		}
-			
+
+		/// <summary>
+		/// Gets the custom request properties.
+		/// </summary>
+		/// <returns>The custom request properties.</returns>
+		public JObject GetCustomRequestProperties(){
+			return this.customRequestProperties;
+		}
+
+		#endregion
+
+		private DataStore (DataStoreType type, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
+		{
+			this.collectionName = typeof(T).FullName;
+			this.client = client;
+			this.storeType = type;
+			this.customRequestProperties = client.GetCustomRequestProperties ();
+		}
+
+		#region Public interface
+		public static DataStore<T> GetInstance(DataStoreType type, AbstractClient client)
+		{
+			return new DataStore<T> (type, client);
+		}
+
 		/// <summary>
 		/// Get a single entity stored in a Kinvey collection.
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">Entity identifier.</param>
 		public async Task<T> GetEntityAsync(string entityId){
-			return await GetEntityBlocking (entityId).ExecuteAsync ();
+			return await buildGetByIDRequest (entityId).ExecuteAsync ();
 		}
 
 		/// <summary>
-		/// gets the specified entity.
+		/// Get all entities from a Kinvey collection.
 		/// </summary>
-		/// <returns>The request, ready to execute..</returns>
-		/// <param name="entityId">Entity's _id.</param>
-		private GetEntityRequest<T> GetEntityBlocking (string entityId)
+		/// <returns>The async task.</returns>
+		public async Task<List<T>> GetAsync(){
+			return await buildGetRequest ().ExecuteAsync ();
+		}
+
+		public async Task<List<T>> GetAsync(string queryString){
+			return await buildGetRequest (queryString).ExecuteAsync ();
+		}
+
+
+		/// <summary>
+		/// Gets a count of all the entities in a collection
+		/// </summary>
+		/// <returns>The async task which returns the count.</returns>
+		public async Task<uint> GetCountAsync()
+		{
+			uint count = 0;
+			T countObj = await buildGetCountRequest().ExecuteAsync ();
+			if (countObj is JObject) {
+				JToken value = (countObj as JObject).GetValue("count");
+				count = value.ToObject<uint>();
+			}
+			return count;
+		}
+
+		/// <summary>
+		/// Save the specified entity to a Kinvey collection.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="entity">the entity to save.</param>
+		public async Task<T> SaveAsync(T entity){
+			return await buildSaveRequest (entity).ExecuteAsync ();
+		}
+
+
+		/// <summary>
+		/// Deletes the entity associated with the provided id
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="entityId">the _id of the entity to delete.</param>
+		public async Task<KinveyDeleteResponse> DeleteAsync(string entityId){
+			return await buildDeleteRequest (entityId).ExecuteAsync ();
+		}
+		#endregion
+
+		#region Request Builders
+
+		private GetEntityRequest<T> buildGetByIDRequest (string entityId)
 		{
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -154,24 +203,8 @@ namespace KinveyXamarin
 			return getEntity;
 		}
 
-		/// <summary>
-		/// Get all entities from a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		public async Task<List<T>> GetAsync(){
-			return await GetBlocking ().ExecuteAsync ();
-		}
 
-		public async Task<List<T>> GetAsync(string queryString){
-			return await getQueryBlocking (queryString).ExecuteAsync ();
-		}
-
-
-		/// <summary>
-		/// gets all entities
-		/// </summary>
-		/// <returns>The blocking.</returns>
-		private GetRequest<T> GetBlocking ()
+		private GetRequest<T> buildGetRequest ()
 		{
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -184,12 +217,7 @@ namespace KinveyXamarin
 			return get;
 		}
 
-		/// <summary>
-		///gets the specified query string
-		/// </summary>
-		/// <returns>The query blocking.</returns>
-		/// <param name="queryString">Query string.</param>
-		private GetQueryRequest<T> getQueryBlocking (string queryString)
+		private GetQueryRequest<T> buildGetRequest (string queryString)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -205,27 +233,7 @@ namespace KinveyXamarin
 			return getQuery;
 		}
 
-
-		/// <summary>
-		/// Gets a count of all the entities in a collection
-		/// </summary>
-		/// <returns>The async task which returns the count.</returns>
-		public async Task<uint> GetCountAsync()
-		{
-			uint count = 0;
-			T countObj = await getCountBlocking().ExecuteAsync ();
-			if (countObj is JObject) {
-				JToken value = (countObj as JObject).GetValue("count");
-				count = value.ToObject<uint>();
-			}
-			return count;
-		}
-
-		/// <summary>
-		/// Gets the count of records specified by the query.
-		/// </summary>
-		/// <returns>The number of records which match the query.</returns>
-		private GetCountRequest getCountBlocking()
+		private GetCountRequest buildGetCountRequest()
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -237,12 +245,7 @@ namespace KinveyXamarin
 			return getCount;
 		}
 
-		/// <summary>
-		/// Gets the count of records specified by the query.
-		/// </summary>
-		/// <returns>The number of records which match the query.</returns>
-		/// <param name="queryString">The query to apply to the collection.</param>
-		private GetCountQueryRequest getCountBlocking(string queryString)
+		private GetCountQueryRequest buildGetCountRequest(string queryString)
 		{
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -255,21 +258,7 @@ namespace KinveyXamarin
 			return getCountQuery;
 		}
 
-		/// <summary>
-		/// Save the specified entity to a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entity">the entity to save.</param>
-		public async Task<T> SaveAsync(T entity){
-			return await SaveBlocking (entity).ExecuteAsync ();
-		}
-
-		/// <summary>
-		/// saves the specified entity
-		/// </summary>
-		/// <returns>The blocking.</returns>
-		/// <param name="entity">Entity.</param>
-		private SaveRequest<T> SaveBlocking (T entity)
+		private SaveRequest<T> buildSaveRequest (T entity)
 		{
 			SaveRequest<T> save;
 			var urlParameters = new Dictionary<string, string> ();
@@ -299,22 +288,8 @@ namespace KinveyXamarin
 			return save;
 		}
 			
-		/// <summary>
-		/// Deletes the entity associated with the provided id
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entityId">the _id of the entity to delete.</param>
-		public async Task<KinveyDeleteResponse> DeleteAsync(string entityId){
-			return await DeleteBlocking (entityId).ExecuteAsync ();
-		}
 
-
-		/// <summary>
-		/// Deletes the specified entity
-		/// </summary>
-		/// <returns>The blocking.</returns>
-		/// <param name="entityId">Entity _id.</param>
-		private DeleteRequest DeleteBlocking (string entityId)
+		private DeleteRequest buildDeleteRequest (string entityId)
 		{
 
 			var urlParameters = new Dictionary<string, string> ();
@@ -331,7 +306,7 @@ namespace KinveyXamarin
 			return delete;
 		}
 
-
+		#endregion
 
 		/// <summary>
 		/// Save mode.
@@ -342,22 +317,14 @@ namespace KinveyXamarin
 			PUT
 		}
 
-		/// <summary>
-		/// Executes the query.
-		/// </summary>
-		/// <returns>The query.</returns>
-		/// <param name="query">the results of the query, executed synchronously.</param>
-		public override object executeQuery (string query)
-		{
-			return getQueryBlocking (query).Execute ();
-		}
 
+		#region Requests
 
 		[JsonObject (MemberSerialization.OptIn)]
-		public abstract class ReadListRequest<T>:AbstractKinveyClientRequest<List<T>>{
+		public abstract class GetListRequest<T>:AbstractKinveyClientRequest<List<T>>{
 			public ICache<T> Cache { get; set; }
 
-			public ReadListRequest (AbstractClient client, string REST_PATH, Dictionary<string, string> urlParameters)
+			public GetListRequest (AbstractClient client, string REST_PATH, Dictionary<string, string> urlParameters)
 				: base (client, "GET", REST_PATH, default(T[]), urlParameters){
 
 			}
@@ -367,7 +334,7 @@ namespace KinveyXamarin
 		/// A Get request, which is implemented synchronously
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetRequest <T> : ReadListRequest<T>
+		public class GetRequest <T> : GetListRequest<T>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/";
 
@@ -413,7 +380,7 @@ namespace KinveyXamarin
 		/// Get query request, which is implemented synchronously
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetQueryRequest <T> : ReadListRequest<T>
+		public class GetQueryRequest <T> : GetListRequest<T>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/?query={querystring}";
 
@@ -569,5 +536,7 @@ namespace KinveyXamarin
 			}
 
 		}			
+
+		#endregion
 	}
 }

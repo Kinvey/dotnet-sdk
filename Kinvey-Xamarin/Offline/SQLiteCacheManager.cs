@@ -78,7 +78,7 @@ namespace KinveyXamarin
 		/// Gets the DB schema version.
 		/// </summary>
 		/// <returns>The DB schema version.</returns>
-		public async Task<SQLTemplates.OfflineVersion> getDBSchemaVersion (){
+		private async Task<SQLTemplates.OfflineVersion> getDBSchemaVersion (){
 			SQLTemplates.OfflineVersion ver =  await getConnection ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
 			return ver;
 		}
@@ -125,7 +125,7 @@ namespace KinveyXamarin
 //			return SQLiteHelper<T>.getInstance (platform, dbpath);
 //		}
 
-		public ICache<T> GetCache<T> (string collectionName) {
+		public ICache<T> GetCache<T> (string collectionName) where T: class {
 			return new SQLiteCache<T> (collectionName, dbConnection);
 		}
 
@@ -145,6 +145,11 @@ namespace KinveyXamarin
 			}
 
 			return collections;
+		}
+
+
+		public ISyncQueue GetSyncQueue() {
+			return null;
 		}
 	}
 }

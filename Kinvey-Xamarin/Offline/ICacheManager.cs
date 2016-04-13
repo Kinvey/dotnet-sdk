@@ -10,6 +10,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <value>The platform.</value>
 		ISQLitePlatform platform {get; set;}
+
 		/// <summary>
 		/// Gets or sets the dbpath.
 		/// </summary>
@@ -21,13 +22,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The cache.</returns>
 		/// <param name="collectionName">Collection name.</param>
-		ICache<T> GetCache <T>(string collectionName);
+		ICache<T> GetCache <T>(string collectionName) where T:class;
 
 		/// <summary>
 		/// Clears the storage.
 		/// </summary>
 		void clearStorage();
 
+		ISyncQueue GetSyncQueue (); 
 	}
 }
-

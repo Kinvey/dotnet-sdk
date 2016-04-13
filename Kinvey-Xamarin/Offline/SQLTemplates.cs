@@ -29,7 +29,7 @@ namespace KinveyXamarin
 		public class TableItem{
 			public string name { get; set;}
 		}
-			
+
 		/// <summary>
 		/// This maintains the entities themselves.
 		/// </summary>
@@ -56,7 +56,7 @@ namespace KinveyXamarin
 		/// This maintains a query and it's responses.
 		/// </summary>
 		public class QueryItem{
-			[PrimaryKey, AutoIncrement] 
+			[PrimaryKey, AutoIncrement] 	
 			public int key { get; set; } 
 			public string query { get; set; }
 			public string commaDelimitedIds { get; set; }

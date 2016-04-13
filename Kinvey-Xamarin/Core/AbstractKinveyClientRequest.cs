@@ -33,6 +33,7 @@ namespace KinveyXamarin
     [JsonObject(MemberSerialization.OptIn)]
     public class AbstractKinveyClientRequest<T>
     {
+		#region Properties and constructors
 		/// <summary>
 		/// the Kinvey Client which created this request.
 		/// </summary>
@@ -237,8 +238,10 @@ namespace KinveyXamarin
             get;
             set;
         }
-			
 
+		#endregion
+
+		#region Request building
 		/// <summary>
 		/// Builds the rest request.
 		/// </summary>
@@ -338,6 +341,9 @@ namespace KinveyXamarin
             return KinveyJsonResponseException.From(response);
         }
 
+		#endregion
+
+		#region Request execution
 		/// <summary>
 		/// Executes the request without any parsing.
 		/// </summary>
@@ -563,6 +569,9 @@ namespace KinveyXamarin
 			Logger.Log ("Override Redirect in response is expected, but not implemented!");  
 			return default(T);
 		}
+
+		#endregion
+
 
 		public abstract class RequestPayloadType{
 

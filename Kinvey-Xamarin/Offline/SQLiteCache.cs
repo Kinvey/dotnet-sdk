@@ -26,7 +26,7 @@ namespace KinveyXamarin
 	/// This class is responsible for breaking apart a request, and determing what actions to take
 	/// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
 	/// </summary>
-	public class SQLiteCache <T> : ICache <T>
+	public class SQLiteCache <T> : ICache <T> where T:class
 	{
 
 		private string collectionName;
@@ -51,23 +51,24 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Creates an Offline Table, which manages all offline collection features.
 		/// </summary>
-		public async Task<int> createTableAsync ()
+		private async Task<int> createTableAsync ()
 		{
 			await onCreateAsync ();
 			return 0;
 		}
 
 		private async Task<int> onCreateAsync(){
-			await dbConnection.CreateTableAsync<SQLTemplates.TableItem> ();
-			await dbConnection.CreateTableAsync<SQLTemplates.QueueItem> ();
-			await dbConnection.CreateTableAsync<SQLTemplates.QueryItem> ();
-			await dbConnection.CreateTableAsync<SQLTemplates.OfflineEntity> ();
+//			await dbConnection.CreateTableAsync<SQLTemplates.TableItem> ();
+//			await dbConnection.CreateTableAsync<SQLTemplates.QueueItem> ();
+//			await dbConnection.CreateTableAsync<SQLTemplates.QueryItem> ();
+//			await dbConnection.CreateTableAsync<SQLTemplates.OfflineEntity> ();
+			await dbConnection.CreateTableAsync<T> ();
 
 
 			//create the collection item and store it in the collection list
-			SQLTemplates.TableItem table = new SQLTemplates.TableItem ();
-			table.name = this.collectionName;
-			await dbConnection.InsertAsync(table);
+//			SQLTemplates.TableItem table = new SQLTemplates.TableItem ();
+//			table.name = this.collectionName;
+//			await dbConnection.InsertAsync(table);
 
 			return 0;
 		}
@@ -75,18 +76,19 @@ namespace KinveyXamarin
 
 		private async Task<int> deleteContentsOfTableAsync ()
 		{
-			int result = await dbConnection.DropTableAsync<SQLTemplates.TableItem> ();
+			int result = await dbConnection.DropTableAsync<T> ();
 			return result;
 
 		}
 
 
 		public async Task<List<T>> GetAsync (string query){
-			return null;
+			return default(List<T>);
 		}
 
 		public async Task<T> GetByIdAsync (string id){
-			return default(T);
+			return await dbConnection.GetAsync<T> (id);
+			//return default(T);
 		}
 
 		public async Task<List<T>> GetAsync (List<string> ids){
@@ -98,10 +100,12 @@ namespace KinveyXamarin
 		}
 
 		public async Task<List<T>> SaveAsync (List<T> items){
+			dbConnection.InsertAllAsync (items);
 			return default(List<T>);
 		}
 
 		public async Task<T> SaveAsync (T item){
+			dbConnection.InsertAsync (item);
 			return default(T);
 		}
 
