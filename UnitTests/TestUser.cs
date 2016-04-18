@@ -13,14 +13,15 @@ namespace UnitTestFramework
 		private Client kinveyClient;
 		private const string user = "testuser";
 		private const string pass = "testpass";
-		private const string app_id = "abcdefg";
-		private const string app_secret = "0123456789abcdef";
+		private const string app_id_fake = "abcdefg";
+		private const string app_secret_fake = "0123456789abcdef";
+		private const string app_id = "kid_Zy0JOYPKkZ";
+		private const string app_secret = "d83de70e64d540e49acd6cfce31415df";
 
 		[SetUp]
 		public void Setup ()
 		{
 			kinveyClient = new Client.Builder(app_id, app_secret).build();
-			kinveyClient.CurrentUser.LoginAsync(user, pass);
 			//System.Threading.Thread.Sleep(3000);  // TODO find better way of waiting for setup to complete
 		}
 
@@ -31,9 +32,6 @@ namespace UnitTestFramework
 			kinveyClient.CurrentUser.Logout();
 		}
 
-
-		// CREATE TESTS
-		//
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
@@ -46,43 +44,157 @@ namespace UnitTestFramework
 			// Assert
 		}
 
+		// LOGIN/LOGOUT TESTS
+		//
 
-		// DELETE TESTS
+		[Test]
+		public async Task TestLoginAsyncBad()
+		{
+			// Arrange
+			Client fakeClient = new Client.Builder(app_id_fake, app_secret_fake).build();
+
+			// Act
+			// Assert
+			Assert.Catch(async delegate() {
+				await fakeClient.CurrentUser.LoginAsync();
+			});
+
+			Assert.Catch(async delegate() {
+				await fakeClient.CurrentUser.LoginAsync(user, pass);
+			});
+		}
+
+		[Test]
+		public async Task TestLoginAsync()
+		{
+			// Arrange
+
+			// Act
+			await kinveyClient.CurrentUser.LoginAsync();
+
+			// Assert
+			Assert.True(kinveyClient.CurrentUser.isUserLoggedIn());
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestLoginUserPassAsync()
+		{
+			// Arrange
+
+			// Act
+			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+
+			// Assert
+			Assert.True(kinveyClient.CurrentUser.isUserLoggedIn());
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginFacebookAsync()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginFacebookAsyncBad()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginGoogleAsync()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginGoogleAsyncBad()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginTwitterAsync()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginTwitterAsyncBad()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginSalesforceAsync()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLoginSalesforceAsyncBad()
+		{
+		}
+
+		// CREATE TESTS
 		//
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
-		public void TestDeleteUserSoft()
+		public async Task TestCreateUserAsync()
 		{
-//			// Arrange
-//			string userID = "12345";
-//
-//			// Act
-//			User.DeleteRequest deleteRequest = kinveyClient.User().DeleteBlocking(userID, false);
-//
-//			// Assert
-//			Assert.True(deleteRequest.RequestMethod == "DELETE");
-//			Assert.True(deleteRequest.hard == false);
-//			Assert.AreEqual(deleteRequest.userID, userID);
-//			Assert.AreSame(deleteRequest.uriTemplate, "user/{appKey}/{userID}?hard={hard}");
 		}
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
-		public void TestDeleteUserHard()
+		public async Task TestCreateUserAsyncBad()
 		{
-//			// Arrange
-//			string userID = "4567";
-//
-//			// Act
-//			User.DeleteRequest deleteRequest = kinveyClient.User().DeleteBlocking(userID, true);
-//
-//			// Assert
-//			Assert.True(deleteRequest.RequestMethod == "DELETE");
-//			Assert.True(deleteRequest.hard == true);
-//			Assert.AreEqual(deleteRequest.userID, userID);
-//			Assert.AreSame(deleteRequest.uriTemplate, "user/{appKey}/{userID}?hard={hard}");
 		}
+
+		// READ TESTS
+		//
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestFindUserAsync()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestFindUserAsyncBad()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLookupUsersAsync()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestLookupUsersAsyncBad()
+		{
+		}
+
+		// UPDATE TESTS
+		//
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestUpdateUserAsync()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestUpdateUserAsyncBad()
+		{
+		}
+
+		// DELETE TESTS
+		//
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
@@ -100,6 +212,12 @@ namespace UnitTestFramework
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestDeleteUserSoftAsyncBad()
+		{
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
 		public async void TestDeleteUserHardAsync()
 		{
 //			string userID;
@@ -108,6 +226,12 @@ namespace UnitTestFramework
 //
 //			// Assert
 //			Assert.True(deleteRequest.RequestMethod == "DELETE");
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async void TestDeleteUserHardAsyncBad()
+		{
 		}
 	}
 }

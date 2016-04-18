@@ -9,13 +9,16 @@ namespace UnitTestFramework
 	public class TestAppData
 	{
 		private Client kinveyClient;
-		private User activeUser;
+		private const string user = "testuser";
+		private const string pass = "testpass";
+		private const string app_key = "abcdefg";
+		private const string app_secret = "0123456789abcdef";
 
 		[SetUp]
 		public void Setup ()
 		{
 			KinveyDelegate<User> delegates = new KinveyDelegate<User>();
-			kinveyClient = new Client.Builder("app_key", "app_secret").build();
+			kinveyClient = new Client.Builder(app_key, app_secret).build();
 		}
 
 		[TearDown]
@@ -23,5 +26,26 @@ namespace UnitTestFramework
 		{
 		}
 
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestGetEntityAsync()
+		{
+			// Arrange
+
+			// Act
+
+			// Assert
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestGetEntityAsyncBad()
+		{
+			// Arrange
+
+			// Act
+
+			// Assert
+		}
 	}
 }

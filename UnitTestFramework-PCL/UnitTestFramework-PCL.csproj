@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{14B0DC1D-252B-41C6-BAA5-6E2FB0DEE233}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>UnitTestFrameworkPCL</RootNamespace>
+    <AssemblyName>UnitTestFramework-PCL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\UnitTests\TestAppData.cs">
+      <Link>UnitTests\TestAppData.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\TestUser.cs">
+      <Link>UnitTests\TestUser.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\TestClient.cs">
+      <Link>UnitTests\TestClient.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\TestFile.cs">
+      <Link>UnitTests\TestFile.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
+      <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
+      <Name>RestSharp.Portable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">
+      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
+      <Name>Kinvey-Xamarin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
+      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
+      <Name>Kinvey-Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

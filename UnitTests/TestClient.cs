@@ -1,15 +1,15 @@
 ﻿using System;
-using SQLite.Net.Platform.XamarinIOS;
+//using SQLite.Net.Platform.XamarinIOS;
 using NUnit.Framework;
 using KinveyXamarin;
-using KinveyXamariniOS;
+//using KinveyXamariniOS;
 
 namespace UnitTestFramework
 {
 	[TestFixture]
 	public class TestClient
 	{
-//		private Client kinveyClient;
+		//		private Client kinveyClient;
 		private const string user = "testuser";
 		private const string pass = "testpass";
 		private const string app_key = "abcdefg";
@@ -31,6 +31,7 @@ namespace UnitTestFramework
 		public void TestClientBuilderBasic()
 		{
 			// Arrange
+			const string url = "https://baas.kinvey.com/";
 			Client.Builder builder = new Client.Builder(app_key, app_secret);
 
 			// Act
@@ -39,23 +40,25 @@ namespace UnitTestFramework
 			// Assert
 			Assert.False(client == null);
 			Assert.False(string.IsNullOrEmpty(client.BaseUrl));
-			Assert.True(string.Equals(client.BaseUrl, "https://baas.kinvey.com/"));
+			Assert.True(string.Equals(client.BaseUrl, url));
 		}
 
 		[Test]
-//		[Ignore("another time")]
+		//		[Ignore("another time")]
 		public void TestClientBuilderSetValues()
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(app_key, app_secret);
-
+//			Mock<ISQLitePlatform> platform = new Mock<ISQLitePlatform>();
 			// Act
 			builder
-//				.setCredentialStore(new SQLiteIOSCredentialStore("",""))
+			//				.setCredentialStore(new SQLiteIOSCredentialStore("",""))
 				.setFilePath("")
-				.setLogger(delegate(string msg) { Console.WriteLine(msg); })
-				.setOfflinePlatform(new SQLitePlatformIOS());
-//				.build();
+				.setLogger(delegate(string msg) {
+				Console.WriteLine(msg);
+			});
+//				.setOfflinePlatform(new SQLitePlatformIOS());
+			//				.build();
 
 			// Assert
 
@@ -63,7 +66,7 @@ namespace UnitTestFramework
 
 			Assert.False(client == null);
 			Assert.False(string.IsNullOrEmpty(client.BaseUrl));
-//			Assert.True(string.Equals(client.BaseUrl, "www.test.com"));
+			//			Assert.True(string.Equals(client.BaseUrl, "www.test.com"));
 			Assert.False(client.Store == null);
 		}
 
