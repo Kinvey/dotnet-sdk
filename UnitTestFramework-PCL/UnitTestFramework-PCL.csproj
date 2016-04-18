@@ -56,6 +56,9 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\UnitTests\TestFiles\TestFileUploadImage.png">
+      <Link>UnitTests\TestFiles\TestFileUploadImage.png</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">

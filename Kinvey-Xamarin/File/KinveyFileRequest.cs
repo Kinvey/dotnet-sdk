@@ -70,14 +70,13 @@ namespace KinveyXamarin
 
 		#region KinveyFileRequest download methods
 
-		// TODO These download methods need to be tested...I don't think they ever worked
 		internal async Task downloadFileAsync(FileMetaData metadata, Stream stream)
 		{
 			IRestResponse response = await downloadFileAsync(metadata);
-			stream = new MemoryStream(response.RawBytes);
+			MemoryStream ms = new MemoryStream(response.RawBytes);
+			ms.CopyTo(stream);
 		}
 
-		// TODO This needs to be tested...I don't think this ever worked
 		internal async Task downloadFileAsync(FileMetaData metadata, byte[] output)
 		{
 			IRestResponse response = await downloadFileAsync(metadata);

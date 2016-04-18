@@ -147,7 +147,6 @@ namespace KinveyXamarin
 		/// <param name="content">Where the contents of the file will be streamed.</param>
 		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content)
 		{
-//			Stream stream = new MemoryStream(); // TODO remove this?  Is it the caller's responsibility to create the stream?
 			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
 			FileMetaData fmd = await downloadRequest.ExecuteAsync();
 			await downloadRequest.downloadFileAsync(fmd, content);
