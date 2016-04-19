@@ -220,14 +220,14 @@ namespace UnitTestFramework
 
 			// Arrange
 			UserDiscovery criteria = new UserDiscovery();
-			criteria.Username = "testuser";
+			criteria.FirstName = "George";
 
 			// Act
 			User[] users = await kinveyClient.CurrentUser.LookupAsync(criteria);
 
 			// Assert
 			Assert.NotNull(users);
-			Assert.AreEqual(1, users.Length);
+			Assert.AreEqual(3, users.Length);
 
 			// Teardown
 			kinveyClient.CurrentUser.Logout();
