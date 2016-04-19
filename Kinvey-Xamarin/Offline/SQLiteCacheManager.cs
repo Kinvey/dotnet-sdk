@@ -7,7 +7,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Collections.Generic;
-
+using System.Reflection;
+using System.Linq;
 
 namespace KinveyXamarin
 {
@@ -69,8 +70,8 @@ namespace KinveyXamarin
 		private SQLiteAsyncConnection getConnection(){
 			//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
 			if (dbConnection == null) {
-				var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
-				dbConnection = new SQLiteAsyncConnection (connectionFactory);			
+				//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
+				//dbConnection = new SQLiteAsyncConnection (connectionFactory);			
 				dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
 
 			}
@@ -132,7 +133,7 @@ namespace KinveyXamarin
 		public ICache<T> GetCache<T> (string collectionName) where T: class {
 			//int ret = dbConnectionSync.DropTable<T> ();
 			//int ret = dbConnectionSync.Dispose();
-			return new SQLiteCache<T> (collectionName, dbConnection, platform);
+			return new SQLiteCache<T> (collectionName, dbConnection, dbConnectionSync, platform);
 		}
 
 
@@ -165,33 +166,25 @@ namespace KinveyXamarin
 			return cmd.ExecuteScalar<string> () != null;
 		}
 
+
+		/// <summary>
+		/// Kinvey contract resolver - this resolver is used to replace the default SQLite resolver,
+		/// so that any class that can be serialized / deserialized as a JSON string can be stored in SQL
+		/// </summary>
 		class KinveyContractResolver:ContractResolver{
 
 			public KinveyContractResolver () : base(t =>  true, Deserialize){
-				;	
+				
 			}
 
 			public static object Deserialize(Type t, object [] obj){
-				if (t == typeof(ISerializable<string>)) {
+				//if (t == typeof(ISerializable<string>)) {
+				if (t.GetTypeInfo().ImplementedInterfaces.Contains(typeof (ISerializable<string>))){
 					return JsonConvert.DeserializeObject (obj[0].ToString(), t);
 				}
 				return Activator.CreateInstance(t, obj);
 			} 
 		}
-//			
-//			public Func<Type, bool> CanCreate {
-//				get {return true;}	
-//			}
-//
-//			public Func<Type, object[], object> Create{
-//				get { return ; }
-//			}
-//
-//			object CreateObject(Type type, object[] constructorArgs = null){
-//				return Create (type, constructorArgs);	
-//			}
-//
-//		}
 	}
 }
 

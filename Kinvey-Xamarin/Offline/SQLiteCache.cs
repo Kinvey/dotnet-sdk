@@ -42,15 +42,18 @@ namespace KinveyXamarin
 		/// The db connection.
 		/// </summary>
 		private SQLiteAsyncConnection dbConnection;
-		
+
+		private SQLiteConnection dbSyncConnection;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteOfflineStore"/> class.
 		/// </summary>
 		/// <param name="collection">Collection.</param>
 		/// <param name="connection">Connection.</param>
-		public SQLiteCache(string collection, SQLiteAsyncConnection connection, ISQLitePlatform platform){
+		public SQLiteCache(string collection, SQLiteAsyncConnection connection, SQLiteConnection syncConnection, ISQLitePlatform platform){
 			this.collectionName = collection;
-			this.dbConnection = connection;
+			//this.dbConnection = connection;
+			this.dbSyncConnection = syncConnection;
 			this.platform = platform;
 			//deleteContentsOfTableAsync ();
 			createTableAsync ();
@@ -62,28 +65,28 @@ namespace KinveyXamarin
 		/// </summary>
 		private async Task<int> createTableAsync ()
 		{
-			dbConnection.CreateTableAsync<T> ();
-
+			//dbConnection.CreateTableAsync<T> ();
+			dbSyncConnection.CreateTable<T> (CreateFlags.ImplicitPK);
 
 			//set primary key
-			IEnumerable<PropertyInfo> props = platform.ReflectionService.GetPublicInstanceProperties (typeof (T));
-			//var primaryKey = null;
-			foreach (var p in props) {
-				if (p.IsDefined (typeof(JsonPropertyAttribute), true)){
-					//if _id is specified, set primary key on the SQL
-					foreach (CustomAttributeData attr in p.CustomAttributes) {
-						//JsonPropertyAttribute jsonAttr = attr as JsonPropertyAttribute;
-						string propName = attr.ConstructorArguments.First ().Value;
-						//string propValue = attr.ConstructorArguments.First ().();
-							
-						//string propName = jsonAttr.PropertyName;
-						//if (propName.Equals ("_id")) {
-							//string sqlStmt = string.Format ("ALTER TABLE \"{ 0}\" ADD PRIMARY KEY \"{ 1}\" = ?", typeof(T), p);
-
-						//}
-					}
-				}
-			}
+//			IEnumerable<PropertyInfo> props = platform.ReflectionService.GetPublicInstanceProperties (typeof (T));
+//			//var primaryKey = null;
+//			foreach (var p in props) {
+//				if (p.IsDefined (typeof(JsonPropertyAttribute), true)){
+//					//if _id is specified, set primary key on the SQL
+//					foreach (CustomAttributeData attr in p.CustomAttributes) {
+//						//JsonPropertyAttribute jsonAttr = attr as JsonPropertyAttribute;
+//						string propName = attr.ConstructorArguments.First ().Value;
+//						//string propValue = attr.ConstructorArguments.First ().();
+//							
+//						//string propName = jsonAttr.PropertyName;
+//						//if (propName.Equals ("_id")) {
+//							//string sqlStmt = string.Format ("ALTER TABLE \"{ 0}\" ADD PRIMARY KEY \"{ 1}\" = ?", typeof(T), p);
+//
+//						//}
+//					}
+//				}
+//			}
 
 			return 0;
 		}
@@ -91,7 +94,8 @@ namespace KinveyXamarin
 
 		private async Task<int> deleteContentsOfTableAsync ()
 		{
-			dbConnection.DropTableAsync<T> ();
+			//dbConnection.DropTableAsync<T> ();
+			dbSyncConnection.DropTable<T>();
 			return 0;
 
 		}
@@ -102,7 +106,11 @@ namespace KinveyXamarin
 		}
 
 		public async Task<T> GetByIdAsync (string id){
-			return await dbConnection.GetAsync<T> (id);
+			//return await dbConnection.GetAsync<T> (id);
+			return await Task.Run (() => {
+				return dbSyncConnection.Get<T> (id);
+			});
+			//return await dbSyncConnection.Get<T> (id);
 			//return default(T);
 		}
 
@@ -111,19 +119,30 @@ namespace KinveyXamarin
 		}
 
 		public async Task<List<T>> GetAsync (){ 
-			//return await dbConnection.Table<T> ().ToListAsync();
-			return await dbConnection.Table<T>().ToListAsync();
+			//return await dbConnection.Table<T>().ToListAsync();
+
+			return await Task.Run (() => {
+				return dbSyncConnection.Table<T> ().ToList ();
+			});
+
 
 		}
 
 		public async Task<List<T>> SaveAsync (List<T> items){
-			await dbConnection.InsertAllAsync (items);
-			return default(List<T>);
+			//await dbConnection.InsertAllAsync (items);
+			return await Task.Run (() => {
+				dbSyncConnection.InsertAll (items);	
+				return items;
+			});
+			//return default(List<T>);
 		}
 
 		public async Task<T> SaveAsync (T item){
-			dbConnection.InsertAsync (item);
-			return default(T);
+			//dbConnection.InsertAsync (item);
+			return await Task.Run (() => {
+				dbSyncConnection.Insert (item);
+				return item;
+			});
 		}
 
 		public async Task<KinveyDeleteResponse> DeleteAsync (string query){
