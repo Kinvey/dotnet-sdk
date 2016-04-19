@@ -25,6 +25,7 @@ namespace KinveyXamarin
 		/// </summary>
 		private SQLiteAsyncConnection dbConnection;
 
+		private SQLiteConnection dbConnectionSync;
 
 		/// <summary>
 		/// Gets or sets the platform.
@@ -66,9 +67,12 @@ namespace KinveyXamarin
 
 
 		private SQLiteAsyncConnection getConnection(){
+			//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
 			if (dbConnection == null) {
-				var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, storeDateTimeAsTicks: false)));
-				dbConnection = new SQLiteAsyncConnection (connectionFactory);
+				var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
+				dbConnection = new SQLiteAsyncConnection (connectionFactory);			
+				dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
+
 			}
 			return dbConnection;
 		}
@@ -126,7 +130,9 @@ namespace KinveyXamarin
 //		}
 
 		public ICache<T> GetCache<T> (string collectionName) where T: class {
-			return new SQLiteCache<T> (collectionName, dbConnection);
+			//int ret = dbConnectionSync.DropTable<T> ();
+			//int ret = dbConnectionSync.Dispose();
+			return new SQLiteCache<T> (collectionName, dbConnection, platform);
 		}
 
 
@@ -151,6 +157,41 @@ namespace KinveyXamarin
 		public ISyncQueue GetSyncQueue() {
 			return null;
 		}
+
+		public static bool TableExists<T> (SQLiteConnection connection)
+		{    
+			const string cmdText = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
+			var cmd = connection.CreateCommand (cmdText, typeof(T).Name);
+			return cmd.ExecuteScalar<string> () != null;
+		}
+
+		class KinveyContractResolver:ContractResolver{
+
+			public KinveyContractResolver () : base(t =>  true, Deserialize){
+				;	
+			}
+
+			public static object Deserialize(Type t, object [] obj){
+				if (t == typeof(ISerializable<string>)) {
+					return JsonConvert.DeserializeObject (obj[0].ToString(), t);
+				}
+				return Activator.CreateInstance(t, obj);
+			} 
+		}
+//			
+//			public Func<Type, bool> CanCreate {
+//				get {return true;}	
+//			}
+//
+//			public Func<Type, object[], object> Create{
+//				get { return ; }
+//			}
+//
+//			object CreateObject(Type type, object[] constructorArgs = null){
+//				return Create (type, constructorArgs);	
+//			}
+//
+//		}
 	}
 }
 

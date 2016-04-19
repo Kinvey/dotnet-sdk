@@ -13,6 +13,7 @@
 
 using System;
 using Newtonsoft.Json;
+using SQLite.Net;
 
 namespace KinveyXamarin
 {
@@ -20,7 +21,7 @@ namespace KinveyXamarin
 	/// JSON representation of the _kmd field present on every entity stored in Kinvey
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
-	public class KinveyMetaData
+	public class KinveyMetaData : ISerializable<string>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyMetaData"/> class.
@@ -50,6 +51,12 @@ namespace KinveyXamarin
 		[Preserve]
 		[JsonProperty("ect")]
 		public String entityCreationTime{get; set;}
+
+
+		public string Serialize(){
+			return JsonConvert.SerializeObject (this);
+		}
+
 	}
 }
 

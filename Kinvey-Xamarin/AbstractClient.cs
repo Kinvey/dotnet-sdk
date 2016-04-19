@@ -28,6 +28,7 @@ namespace KinveyXamarin
 	/// </summary>
     public abstract class AbstractClient : AbstractKinveyClient
     {
+		public ICacheManager CacheManager { get; set; }
 		/// <summary>
 		/// The default base URL.
 		/// </summary>
@@ -127,10 +128,10 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		/// <param name="myClass">The class definition for entities in this collection.</param>
 		/// <typeparam name="T">The Type associated with the Class</typeparam>
-        public DataStore<T> AppData<T>(String collectionName, Type myClass)
+		public DataStore<T> AppData<T>(String collection, DataStoreType storeType) where T:class
         {
 			//return new AppData<T>(collectionName, myClass, this);
-			return KinveyXamarin.DataStore<T>.GetInstance(DataStoreType.SYNC, this);
+			return KinveyXamarin.DataStore<T>.GetInstance(storeType, collection, this);
 //            lock(Lock) 
 //            {
 //                if (appData == null) 

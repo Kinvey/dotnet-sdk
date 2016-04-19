@@ -14,8 +14,14 @@
 using System;
 using System.Net;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using SQLite.Net.Async;
+using SQLite.Net;
+using System.Linq;
+using System.Runtime.Serialization;
+using SQLite.Net.Interop;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -31,19 +37,22 @@ namespace KinveyXamarin
 
 		private string collectionName;
 
+		private ISQLitePlatform platform;
 		/// <summary>
 		/// The db connection.
 		/// </summary>
 		private SQLiteAsyncConnection dbConnection;
-
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteOfflineStore"/> class.
 		/// </summary>
 		/// <param name="collection">Collection.</param>
 		/// <param name="connection">Connection.</param>
-		public SQLiteCache(string collection, SQLiteAsyncConnection connection){
+		public SQLiteCache(string collection, SQLiteAsyncConnection connection, ISQLitePlatform platform){
 			this.collectionName = collection;
 			this.dbConnection = connection;
+			this.platform = platform;
+			//deleteContentsOfTableAsync ();
 			createTableAsync ();
 		}
 
@@ -53,22 +62,28 @@ namespace KinveyXamarin
 		/// </summary>
 		private async Task<int> createTableAsync ()
 		{
-			await onCreateAsync ();
-			return 0;
-		}
-
-		private async Task<int> onCreateAsync(){
-//			await dbConnection.CreateTableAsync<SQLTemplates.TableItem> ();
-//			await dbConnection.CreateTableAsync<SQLTemplates.QueueItem> ();
-//			await dbConnection.CreateTableAsync<SQLTemplates.QueryItem> ();
-//			await dbConnection.CreateTableAsync<SQLTemplates.OfflineEntity> ();
-			await dbConnection.CreateTableAsync<T> ();
+			dbConnection.CreateTableAsync<T> ();
 
 
-			//create the collection item and store it in the collection list
-//			SQLTemplates.TableItem table = new SQLTemplates.TableItem ();
-//			table.name = this.collectionName;
-//			await dbConnection.InsertAsync(table);
+			//set primary key
+			IEnumerable<PropertyInfo> props = platform.ReflectionService.GetPublicInstanceProperties (typeof (T));
+			//var primaryKey = null;
+			foreach (var p in props) {
+				if (p.IsDefined (typeof(JsonPropertyAttribute), true)){
+					//if _id is specified, set primary key on the SQL
+					foreach (CustomAttributeData attr in p.CustomAttributes) {
+						//JsonPropertyAttribute jsonAttr = attr as JsonPropertyAttribute;
+						string propName = attr.ConstructorArguments.First ().Value;
+						//string propValue = attr.ConstructorArguments.First ().();
+							
+						//string propName = jsonAttr.PropertyName;
+						//if (propName.Equals ("_id")) {
+							//string sqlStmt = string.Format ("ALTER TABLE \"{ 0}\" ADD PRIMARY KEY \"{ 1}\" = ?", typeof(T), p);
+
+						//}
+					}
+				}
+			}
 
 			return 0;
 		}
@@ -76,8 +91,8 @@ namespace KinveyXamarin
 
 		private async Task<int> deleteContentsOfTableAsync ()
 		{
-			int result = await dbConnection.DropTableAsync<T> ();
-			return result;
+			dbConnection.DropTableAsync<T> ();
+			return 0;
 
 		}
 
@@ -95,12 +110,14 @@ namespace KinveyXamarin
 			return default(List<T>);
 		}
 
-		public async Task<List<T>> GetAsync (){
-			return default(List<T>);
+		public async Task<List<T>> GetAsync (){ 
+			//return await dbConnection.Table<T> ().ToListAsync();
+			return await dbConnection.Table<T>().ToListAsync();
+
 		}
 
 		public async Task<List<T>> SaveAsync (List<T> items){
-			dbConnection.InsertAllAsync (items);
+			await dbConnection.InsertAllAsync (items);
 			return default(List<T>);
 		}
 

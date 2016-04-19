@@ -30,7 +30,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Class for managing appData access to the Kinvey backend.
 	/// </summary>
-	public class DataStore<T> : KinveyQueryable<T>
+	public class DataStore<T> : KinveyQueryable<T>  where T:class
 	{
 		#region Member variables
 		/// <summary>
@@ -116,18 +116,20 @@ namespace KinveyXamarin
 
 		#endregion
 
-		private DataStore (DataStoreType type, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
+		private DataStore (DataStoreType type, string collectionName, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
 		{
-			this.collectionName = typeof(T).FullName;
+		//	this.collectionName = typeof(T).FullName;
+			this.collectionName = collectionName;
+			this.cache = client.CacheManager.GetCache<T> (collectionName);
 			this.client = client;
 			this.storeType = type;
 			this.customRequestProperties = client.GetCustomRequestProperties ();
 		}
 
 		#region Public interface
-		public static DataStore<T> GetInstance(DataStoreType type, AbstractClient client)
+		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client)
 		{
-			return new DataStore<T> (type, client);
+			return new DataStore<T> (type, collectionName, client);
 		}
 
 		/// <summary>
@@ -328,7 +330,20 @@ namespace KinveyXamarin
 				: base (client, "GET", REST_PATH, default(T[]), urlParameters){
 
 			}
-			
+			public async override Task<List<T>> ExecuteAsync(){
+				List<T> ret = await this.Cache.GetAsync ();
+				if (ret != null && ret.Count > 0) {
+					//cached data found
+					//return ret;
+					//Cool! 
+				} else {
+				}
+				ret = await base.ExecuteAsync ();
+				this.Cache.SaveAsync (ret);
+
+				return ret;
+			}
+
 		}
 		/// <summary>
 		/// A Get request, which is implemented synchronously
@@ -346,7 +361,6 @@ namespace KinveyXamarin
 			{
 				this.collectionName = urlParameters ["collectionName"];
 			}
-
 
 		}
 

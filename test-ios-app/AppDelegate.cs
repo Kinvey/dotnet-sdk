@@ -30,17 +30,17 @@ namespace testiosapp
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
 
-			myClient = new Client.Builder ("kid_byWWRXzJCe", "4a58018febe945fea5ba76c08ce1e870")
+			myClient = new Client.Builder ("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
 				.setFilePath(NSFileManager.DefaultManager.GetUrls (NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User) [0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setLogger(delegate(string msg) { Console.WriteLine(msg);})
 				.build ();
-			Login ();
+			DoStuff ();
 
 			return true;
 		}
 
-		private async Task<User> Login()
+		private async Task<User> DoStuff()
 		{
 //			Dictionary<string, JToken> attr = new Dictionary<string, JToken> ();
 //			email.Add ("email", "gob@bluth.com");
@@ -63,6 +63,8 @@ namespace testiosapp
 				string str = "Finished Launching.";
 				Console.WriteLine("VRG : " + str);
 				Console.WriteLine("VRG: Logged in as: " + myClient.CurrentUser.Id);
+
+				ManipulateData();
 
 //			// test GetCount(query)
 //			Console.WriteLine("VRG: Start GetCount(query) test.");
@@ -301,6 +303,18 @@ namespace testiosapp
 				Console.WriteLine("VRG (exception caught) Exception Fix -> " + e.Fix);
 			}
 			return user;
+		}
+
+		private async Task<DataStore<Book>> ManipulateData(){
+			DataStore<Book> store = myClient.AppData<Book>("Book", DataStoreType.NETWORK);
+			try{
+				
+				List<Book> books = await store.GetAsync ();
+
+			} catch (Exception e){
+				Console.Write (e);
+			}
+			return store;	
 		}
 
 		public override void OnResignActivation (UIApplication application)

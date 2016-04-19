@@ -28,7 +28,6 @@ namespace KinveyXamarin
 	/// </summary>
 	public class Client : AbstractClient
 	{
-		public ICacheManager CacheManager { get; set; }
 		/// <summary>
 		/// The file path for writing to disk is platform specific, so this is maintained in the client.
 		/// </summary>
