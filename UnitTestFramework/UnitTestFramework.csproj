@@ -52,9 +52,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\UnitTests\TestAppData.cs">
-      <Link>UnitTests\TestAppData.cs</Link>
-    </Compile>
     <Compile Include="..\UnitTests\TestClient.cs">
       <Link>UnitTests\TestClient.cs</Link>
     </Compile>
@@ -64,7 +61,12 @@
     <Compile Include="..\UnitTests\TestUser.cs">
       <Link>UnitTests\TestUser.cs</Link>
     </Compile>
-    <Compile Include="UnitTests\TestFiles\ToDo.cs" />
+    <Compile Include="..\UnitTests\TestFiles\ToDo.cs">
+      <Link>UnitTests\TestFiles\ToDo.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\TestDataStore.cs">
+      <Link>UnitTests\TestDataStore.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

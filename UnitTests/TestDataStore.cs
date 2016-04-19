@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace UnitTestFramework
 {
 	[TestFixture]
-	public class TestAppData
+	public class TestDataStore
 	{
 		private Client kinveyClient;
 
