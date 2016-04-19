@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using KinveyXamarin;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
 
 namespace UnitTestFramework
 {
@@ -11,10 +11,13 @@ namespace UnitTestFramework
 	public class TestUser
 	{
 		private Client kinveyClient;
+
 		private const string user = "testuser";
 		private const string pass = "testpass";
+
 		private const string app_id_fake = "abcdefg";
 		private const string app_secret_fake = "0123456789abcdef";
+
 		private const string app_id = "kid_Zy0JOYPKkZ";
 		private const string app_secret = "d83de70e64d540e49acd6cfce31415df";
 
@@ -22,16 +25,13 @@ namespace UnitTestFramework
 		public void Setup ()
 		{
 			kinveyClient = new Client.Builder(app_id, app_secret).build();
-			//System.Threading.Thread.Sleep(3000);  // TODO find better way of waiting for setup to complete
 		}
-
 
 		[TearDown]
 		public void Tear ()
 		{
 			kinveyClient.CurrentUser.Logout();
 		}
-
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
@@ -73,7 +73,10 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync();
 
 			// Assert
+			Assert.NotNull(kinveyClient.CurrentUser);
 			Assert.True(kinveyClient.CurrentUser.isUserLoggedIn());
+
+			// Teardown
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -86,7 +89,10 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync(user, pass);
 
 			// Assert
+			Assert.NotNull(kinveyClient.CurrentUser);
 			Assert.True(kinveyClient.CurrentUser.isUserLoggedIn());
+
+			// Teardown
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -142,15 +148,34 @@ namespace UnitTestFramework
 		//
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestCreateUserAsync()
 		{
+			// Arrange
+			string email = "newuser@test.com";
+			Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
+			customFields.Add("email", email);
+
+			// Act
+			User newUser = await kinveyClient.CurrentUser.CreateAsync("newuser1", "newpass1", customFields);
+
+			// Assert
+			Assert.NotNull(newUser);
+//			Assert.NotNull(newUser.Attributes);
+//			Assert.AreSame(newUser.Attributes["email"], email);
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestCreateUserAsyncBad()
 		{
+			// Arrange
+
+			// Act
+
+			// Assert
 		}
 
 		// READ TESTS

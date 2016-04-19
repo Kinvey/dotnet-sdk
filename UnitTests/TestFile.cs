@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using KinveyXamarin;
-using System.Threading.Tasks;
 
 namespace UnitTestFramework
 {
