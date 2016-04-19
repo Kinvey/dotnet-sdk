@@ -15,6 +15,9 @@ namespace UnitTestFramework
 		private const string user = "testuser";
 		private const string pass = "testpass";
 
+		private const string newuser = "newuser1";
+		private const string newpass = "newpass1";
+
 		private const string app_id_fake = "abcdefg";
 		private const string app_secret_fake = "0123456789abcdef";
 
@@ -150,6 +153,9 @@ namespace UnitTestFramework
 		[Test]
 		public async Task TestCreateUserAsync()
 		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+
 			// Arrange
 			string email = "newuser@test.com";
 			Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
@@ -160,10 +166,11 @@ namespace UnitTestFramework
 
 			// Assert
 			Assert.NotNull(newUser);
-//			Assert.NotNull(newUser.Attributes);
+			Assert.NotNull(newUser.Attributes);
 //			Assert.AreSame(newUser.Attributes["email"], email);
 
 			// Teardown
+//			await kinveyClient.CurrentUser.DeleteAsync(newUser.Id, true);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -181,9 +188,22 @@ namespace UnitTestFramework
 		// READ TESTS
 		//
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestFindUserAsync()
 		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+
+			// Arrange
+
+			// Act
+			User me = await kinveyClient.CurrentUser.RetrieveAsync();
+
+			// Assert
+			Assert.NotNull(user);
+			Assert.True(string.Equals(kinveyClient.CurrentUser.Id, me.Id)); 
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
@@ -193,9 +213,24 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestLookupUsersAsync()
 		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+
+			// Arrange
+			UserDiscovery criteria = new UserDiscovery();
+			criteria.Username = "testuser";
+
+			// Act
+			User[] users = await kinveyClient.CurrentUser.LookupAsync(criteria);
+
+			// Assert
+			Assert.NotNull(users);
+			Assert.AreEqual(1, users.Length);
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
@@ -242,15 +277,22 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async void TestDeleteUserHardAsync()
 		{
-//			string userID;
-//
-//			User.DeleteRequest deleteRequest = await kinveyClient.User().DeleteAsync(userID, true);
-//
-//			// Assert
-//			Assert.True(deleteRequest.RequestMethod == "DELETE");
+			// Setup
+//			kinveyClient.CurrentUser.Logout();
+			await kinveyClient.CurrentUser.LoginAsync(newuser, newpass);
+
+			// Arrange
+			string userID = "57164d59ef5f18c36bb3faba";
+
+			// Act
+			KinveyDeleteResponse kdr = await kinveyClient.CurrentUser.DeleteAsync(userID, true);
+
+			// Assert
+			Assert.AreEqual(1, kdr.count);
+
+			// Teardown
 		}
 
 		[Test]
