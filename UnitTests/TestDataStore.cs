@@ -80,11 +80,11 @@ namespace UnitTestFramework
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			// Act
-			List<ToDo> todoList = await todoStore.GetAsync();
+			ToDo entity = await todoStore.GetEntityAsync(t.ID);
 
 			// Assert
-			Assert.NotNull(todoList);
-			Assert.AreEqual(1, todoList.Count);
+			Assert.NotNull(entity);
+			Assert.True(string.Equals(entity.ID, t.ID));
 
 			// Teardown
 			await todoStore.DeleteAsync(t.ID);
@@ -103,14 +103,36 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetAsync()
 		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+
 			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			ToDo anotherNewItem = new ToDo();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			ToDo t2 = await todoStore.SaveAsync(newItem);
 
 			// Act
+			List<ToDo> todoList = await todoStore.GetAsync();
 
 			// Assert
+			Assert.NotNull(todoList);
+			Assert.AreEqual(2, todoList.Count);
+
+			// Teardown
+			await todoStore.DeleteAsync(t.ID);
+			await todoStore.DeleteAsync(t2.ID);
+			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
