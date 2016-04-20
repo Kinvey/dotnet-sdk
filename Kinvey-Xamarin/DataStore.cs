@@ -161,11 +161,14 @@ namespace KinveyXamarin
 		public async Task<uint> GetCountAsync()
 		{
 			uint count = 0;
-			T countObj = await buildGetCountRequest().ExecuteAsync ();
-			if (countObj is JObject) {
-				JToken value = (countObj as JObject).GetValue("count");
+			JObject countObj = await buildGetCountRequest().ExecuteAsync ();
+
+			if (countObj != null)
+			{
+				JToken value = countObj.GetValue("count");
 				count = value.ToObject<uint>();
 			}
+
 			return count;
 		}
 
@@ -241,7 +244,7 @@ namespace KinveyXamarin
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("collectionName", CollectionName);
 
-			GetCountRequest getCount = new GetCountRequest(typeof(T), client, urlParameters, CollectionName);
+			GetCountRequest getCount = new GetCountRequest(typeof(JObject), client, urlParameters, CollectionName);
 			client.InitializeRequest(getCount);
 			getCount.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCount;
@@ -254,7 +257,7 @@ namespace KinveyXamarin
 			urlParameters.Add ("collectionName", CollectionName);
 			urlParameters.Add ("querystring", queryString);
 
-			GetCountQueryRequest getCountQuery = new GetCountQueryRequest(queryString, typeof(T), client, urlParameters, CollectionName);
+			GetCountQueryRequest getCountQuery = new GetCountQueryRequest(queryString, typeof(JObject), client, urlParameters, CollectionName);
 			client.InitializeRequest(getCountQuery);
 			getCountQuery.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCountQuery;
@@ -442,7 +445,7 @@ namespace KinveyXamarin
 		/// Get the count request, which is implemented synchronously.
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetCountRequest : AbstractKinveyClientRequest<T>
+		public class GetCountRequest : AbstractKinveyClientRequest<JObject>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count";
 
@@ -450,7 +453,7 @@ namespace KinveyXamarin
 			public string collectionName;
 
 			public GetCountRequest(Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T), urlParameters)
+				: base(client, "GET", REST_PATH, default(JObject), urlParameters)
 			{
 				this.collectionName = urlParameters ["collectionName"];
 			}
@@ -460,7 +463,7 @@ namespace KinveyXamarin
 		/// Get the count request, which is implemented synchronously.
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetCountQueryRequest : AbstractKinveyClientRequest<T>
+		public class GetCountQueryRequest : AbstractKinveyClientRequest<JObject>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
 
@@ -471,7 +474,7 @@ namespace KinveyXamarin
 			public string collectionName;
 
 			public GetCountQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T), urlParameters)
+				: base(client, "GET", REST_PATH, default(JObject), urlParameters)
 			{
 				this.collectionName = urlParameters ["collectionName"];
 				string queryBuilder = "query=" + urlParameters["querystring"];
