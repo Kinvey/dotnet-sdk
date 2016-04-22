@@ -56,7 +56,6 @@
     <Compile Include="Offline\AbstractKinveyOfflineClientRequest.cs" />
     <Compile Include="Offline\OfflinePolicy.cs" />
     <Compile Include="Offline\SQLiteHelper.cs" />
-    <Compile Include="Offline\IOfflineStore.cs" />
     <Compile Include="Offline\SQLTemplates.cs" />
     <Compile Include="Offline\DatabaseHelper.cs" />
     <Compile Include="Model\KinveyDeleteResponse.cs" />
