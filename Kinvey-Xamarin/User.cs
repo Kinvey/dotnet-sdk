@@ -39,29 +39,6 @@ namespace KinveyXamarin
         public const string UserCollectionName = "user";
 
 		/// <summary>
-		/// the available login types
-		/// </summary>
-        public enum LoginType 
-        {
-			/// <summary>
-			/// Implicit login type
-			/// </summary>
-            IMPLICIT,
-			/// <summary>
-			/// Kinvey login type (username and password)
-			/// </summary>
-            KINVEY,
-			/// <summary>
-			/// Credential store login type
-			/// </summary>
-            CREDENTIALSTORE,
-			/// <summary>
-			/// Third party provider login type
-			/// </summary>
-			THIRDPARTY
-        }
-
-		/// <summary>
 		/// The _id.
 		/// </summary>
         [JsonProperty("_id")]
@@ -140,7 +117,7 @@ namespace KinveyXamarin
 		/// The type of user
 		/// </summary>
 		[JsonIgnore]
-		private LoginType type {get; set;}
+		private LoginType type { get; set;}
 
 		#endregion
 

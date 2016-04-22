@@ -31,16 +31,6 @@ namespace KinveyXamarin
 	public class KinveyAuthRequest
     {
 		/// <summary>
-		/// Login type.
-		/// </summary>
-        public enum LoginType
-        {
-            IMPLICIT,
-            KINVEY,
-            THIRDPARTY
-        }
-
-		/// <summary>
 		/// Auth request payload
 		/// </summary>
         private class AuthRequestPayload
