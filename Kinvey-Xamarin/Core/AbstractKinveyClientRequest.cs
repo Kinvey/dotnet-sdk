@@ -31,7 +31,7 @@ namespace KinveyXamarin
 	/// This is a client request to be sent to Kinvey
 	/// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class AbstractKinveyClientRequest<T>
+    public abstract class AbstractKinveyClientRequest<T>
     {
 		#region Properties and constructors
 		/// <summary>
