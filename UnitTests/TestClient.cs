@@ -8,16 +8,6 @@ namespace UnitTestFramework
 	[TestFixture]
 	public class TestClient
 	{
-		//		private Client kinveyClient;
-		private const string user = "testuser";
-		private const string pass = "testpass";
-
-		private const string app_id_fake = "abcdefg";
-		private const string app_secret_fake = "0123456789abcdef";
-
-		private const string app_id = "kid_Zy0JOYPKkZ";
-		private const string app_secret = "d83de70e64d540e49acd6cfce31415df";
-
 		[SetUp]
 		public void Setup ()
 		{
@@ -33,7 +23,7 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			const string url = "https://baas.kinvey.com/";
-			Client.Builder builder = new Client.Builder(app_id, app_secret);
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
 			Client client = builder.build();
@@ -59,7 +49,7 @@ namespace UnitTestFramework
 		public void TestClientBuilderSetValues()
 		{
 			// Arrange
-			Client.Builder builder = new Client.Builder(app_id, app_secret);
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
 			builder.setFilePath("")
@@ -80,7 +70,7 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			const string url = "https://www.test.com/";
-			Client.Builder builder = new Client.Builder(app_id, app_secret);
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
 			builder.setBaseURL(url);
@@ -94,7 +84,7 @@ namespace UnitTestFramework
 		public void ClientBuilderSetBaseURLBad()
 		{
 			// Arrange
-			Client.Builder builder = new Client.Builder(app_id, app_secret);
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
 			// Assert
@@ -107,7 +97,7 @@ namespace UnitTestFramework
 		public async Task TestClientPingAsync()
 		{
 			// Arrange
-			Client.Builder builder = new Client.Builder(app_id, app_secret);
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 			Client client = builder.build();
 
 			// Act
@@ -123,7 +113,7 @@ namespace UnitTestFramework
 		public async Task TestClientPingAsyncBad()
 		{
 			// Arrange
-			Client.Builder builder = new Client.Builder(app_id_fake, app_secret_fake);
+			Client.Builder builder = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake);
 			Client client = builder.build();
 
 			// Act

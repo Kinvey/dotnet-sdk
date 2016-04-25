@@ -11,12 +11,6 @@ namespace UnitTestFramework
 	{
 		private Client kinveyClient;
 
-		private const string user = "testuser";
-		private const string pass = "testpass";
-
-		private const string app_key = "kid_Zy0JOYPKkZ";
-		private const string app_secret = "d83de70e64d540e49acd6cfce31415df";
-
 		private const string collectionName = "ToDos";
 
 		private const string db_dir = "../../../UnitTests/TestFiles/";
@@ -26,7 +20,7 @@ namespace UnitTestFramework
 		[SetUp]
 		public void Setup ()
 		{
-			kinveyClient = new Client.Builder(app_key, app_secret)
+			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
 				.build();
@@ -69,7 +63,7 @@ namespace UnitTestFramework
 		public async Task TestGetEntityAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -106,7 +100,7 @@ namespace UnitTestFramework
 		public async Task TestGetAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -150,7 +144,7 @@ namespace UnitTestFramework
 		public async Task TestGetCountAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -187,7 +181,7 @@ namespace UnitTestFramework
 		public async Task TestSaveAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -223,7 +217,7 @@ namespace UnitTestFramework
 		public async Task TestDeleteAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);

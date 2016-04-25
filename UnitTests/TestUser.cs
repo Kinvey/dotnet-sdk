@@ -12,22 +12,13 @@ namespace UnitTestFramework
 	{
 		private Client kinveyClient;
 
-		private const string user = "testuser";
-		private const string pass = "testpass";
-
 		private const string newuser = "newuser1";
 		private const string newpass = "newpass1";
-
-		private const string app_id_fake = "abcdefg";
-		private const string app_secret_fake = "0123456789abcdef";
-
-		private const string app_id = "kid_Zy0JOYPKkZ";
-		private const string app_secret = "d83de70e64d540e49acd6cfce31415df";
 
 		[SetUp]
 		public void Setup ()
 		{
-			kinveyClient = new Client.Builder(app_id, app_secret).build();
+			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret).build();
 		}
 
 		[TearDown]
@@ -69,7 +60,7 @@ namespace UnitTestFramework
 		public async Task TestLoginAsyncBad()
 		{
 			// Arrange
-			Client fakeClient = new Client.Builder(app_id_fake, app_secret_fake).build();
+			Client fakeClient = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake).build();
 
 			// Act
 			// Assert
@@ -78,7 +69,7 @@ namespace UnitTestFramework
 			});
 
 			Assert.Catch(async delegate() {
-				await fakeClient.CurrentUser.LoginAsync(user, pass);
+				await fakeClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 			});
 		}
 
@@ -88,7 +79,7 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Assert
 			Assert.NotNull(kinveyClient.CurrentUser);
@@ -330,7 +321,7 @@ namespace UnitTestFramework
 		public async Task TestCreateUserAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			string email = "newuser@test.com";
@@ -365,7 +356,7 @@ namespace UnitTestFramework
 		public async Task TestFindUserAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 
@@ -373,7 +364,7 @@ namespace UnitTestFramework
 			User me = await kinveyClient.CurrentUser.RetrieveAsync();
 
 			// Assert
-			Assert.NotNull(user);
+			Assert.NotNull(me);
 			Assert.True(string.Equals(kinveyClient.CurrentUser.Id, me.Id)); 
 
 			// Teardown
@@ -395,7 +386,7 @@ namespace UnitTestFramework
 		public async Task TestLookupUsersAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(user, pass);
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			UserDiscovery criteria = new UserDiscovery();
