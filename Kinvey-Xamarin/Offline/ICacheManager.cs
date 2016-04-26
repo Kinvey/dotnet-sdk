@@ -24,11 +24,12 @@ namespace KinveyXamarin
 		/// <param name="collectionName">Collection name.</param>
 		ICache<T> GetCache <T>(string collectionName) where T:class;
 
+		ISyncQueue GetSyncQueue (string collectionName);
+
 		/// <summary>
 		/// Clears the storage.
 		/// </summary>
 		void clearStorage();
 
-		ISyncQueue GetSyncQueue (); 
 	}
 }

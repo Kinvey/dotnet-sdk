@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -57,6 +57,7 @@
     <Compile Include="Offline\OfflinePolicy.cs" />
     <Compile Include="Offline\SQLiteHelper.cs" />
     <Compile Include="Offline\SQLTemplates.cs" />
+    <Compile Include="Offline\DatabaseHelper.cs" />
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
@@ -88,15 +89,13 @@
     <Compile Include="Offline\SQLiteCacheManager.cs" />
     <Compile Include="Offline\ICache.cs" />
     <Compile Include="Offline\SQLiteCache.cs" />
-    <Compile Include="Offline\DatabaseHelper.cs" />
     <Compile Include="DataStore.cs" />
     <Compile Include="Offline\ISyncQueue.cs" />
     <Compile Include="Core\INetworkFactory.cs" />
-    <Compile Include="Offline\PendingOperation.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="EnumLoginType.cs" />
-    <Compile Include="Query\KinveyQueryVisitor.cs" />
-    <Compile Include="Query\KinveyQueryable.cs" />
+    <Compile Include="Offline\PendingWriteAction.cs" />
+    <Compile Include="Offline\SqliteSyncQueue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
