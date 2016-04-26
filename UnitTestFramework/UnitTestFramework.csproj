@@ -70,6 +70,9 @@
     <Compile Include="..\UnitTests\TestSetup.cs">
       <Link>UnitTests\TestSetup.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTests\TestSQLiteCache.cs">
+      <Link>UnitTests\TestSQLiteCache.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

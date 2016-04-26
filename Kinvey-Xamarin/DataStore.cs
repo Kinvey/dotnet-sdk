@@ -346,7 +346,6 @@ namespace KinveyXamarin
 //
 //				return ret;
 //			}
-
 		}
 		/// <summary>
 		/// A Get request, which is implemented synchronously
@@ -493,18 +492,16 @@ namespace KinveyXamarin
 			[JsonProperty]
 			public string EntityId { get; set; }
 
-
-			public SaveRequest (T entity, string entityId, SaveMode update, AbstractClient client, string collectionName)
-				: base (client, update.ToString (), REST_PATH, entity, collectionName)
+			public SaveRequest(T entity, string entityId, SaveMode update, AbstractClient client, string collectionName)
+				: base (client, update.ToString(), REST_PATH, entity, collectionName)
 			{
-				if (update.Equals (SaveMode.PUT)) {
+				if (update.Equals(SaveMode.PUT))
+				{
 					this.EntityId = entityId;
 					this.uriTemplate += "/{entityId}";
 					uriResourceParameters.Add ("entityId", entityId);
-
 				}
 			}
-
 		}
 
 		/// <summary>

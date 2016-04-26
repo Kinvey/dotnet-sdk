@@ -38,9 +38,7 @@ namespace KinveyXamarin
 		private string collectionName;
 
 		private ISQLitePlatform platform;
-		/// <summary>
-		/// The db connection.
-		/// </summary>
+
 		private SQLiteAsyncConnection dbConnection;
 
 		private SQLiteConnection dbSyncConnection;
@@ -50,23 +48,24 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="collection">Collection.</param>
 		/// <param name="connection">Connection.</param>
-		public SQLiteCache(string collection, SQLiteAsyncConnection connection, SQLiteConnection syncConnection, ISQLitePlatform platform){
+		public SQLiteCache(string collection, SQLiteAsyncConnection connection, SQLiteConnection syncConnection, ISQLitePlatform platform)
+		{
 			this.collectionName = collection;
 			//this.dbConnection = connection;
 			this.dbSyncConnection = syncConnection;
 			this.platform = platform;
 			//deleteContentsOfTableAsync ();
-			createTableAsync ();
+			createTable();
 		}
 
 
 		/// <summary>
 		/// Creates an Offline Table, which manages all offline collection features.
 		/// </summary>
-		private async Task<int> createTableAsync ()
+		private int createTable()
 		{
 			//dbConnection.CreateTableAsync<T> ();
-			dbSyncConnection.CreateTable<T> (CreateFlags.ImplicitPK);
+			int retVal = dbSyncConnection.CreateTable<T>(CreateFlags.ImplicitPK);
 
 			//set primary key
 //			IEnumerable<PropertyInfo> props = platform.ReflectionService.GetPublicInstanceProperties (typeof (T));
@@ -88,75 +87,105 @@ namespace KinveyXamarin
 //				}
 //			}
 
-			return 0;
+			return retVal;
 		}
 
 
-		private async Task<int> deleteContentsOfTableAsync ()
+		private int dropTable()
 		{
 			//dbConnection.DropTableAsync<T> ();
-			dbSyncConnection.DropTable<T>();
-			return 0;
-
+			return dbSyncConnection.DropTable<T>();
 		}
 
+		#region SQLite Cache CRUD APIs
 
-		public async Task<List<T>> GetAsync (string query){
-			return default(List<T>);
+		// CREATE APIs
+		//
+
+		public async Task<T> SaveAsync (T item)
+		{
+			// TODO implement
+			//dbConnection.InsertAsync (item);
+//			return await Task.Run (() => {
+				dbSyncConnection.Insert (item);
+				return item;
+//			});
 		}
 
-		public async Task<T> GetByIdAsync (string id){
-			//return await dbConnection.GetAsync<T> (id);
-			return await Task.Run (() => {
-				return dbSyncConnection.Get<T> (id);
-			});
-			//return await dbSyncConnection.Get<T> (id);
-			//return default(T);
-		}
-
-		public async Task<List<T>> GetAsync (List<string> ids){
-			return default(List<T>);
-		}
-
-		public async Task<List<T>> GetAsync (){ 
-			//return await dbConnection.Table<T>().ToListAsync();
-
-			return await Task.Run (() => {
-				return dbSyncConnection.Table<T> ().ToList ();
-			});
-
-
-		}
-
-		public async Task<List<T>> SaveAsync (List<T> items){
+		public async Task<List<T>> SaveAsync (List<T> items)
+		{
+			// TODO implement
 			//await dbConnection.InsertAllAsync (items);
 			return await Task.Run (() => {
-				dbSyncConnection.InsertAll (items);	
+				dbSyncConnection.InsertAll (items);
 				return items;
 			});
 			//return default(List<T>);
 		}
 
-		public async Task<T> SaveAsync (T item){
-			//dbConnection.InsertAsync (item);
-			return await Task.Run (() => {
-				dbSyncConnection.Insert (item);
-				return item;
-			});
+
+		// READ APIs
+		//
+
+		public async Task<List<T>> GetAsync()
+		{
+			//return await dbConnection.Table<T>().ToListAsync();
+
+			//			return await Task.Run (() => {
+			return dbSyncConnection.Table<T>().ToList();
+			//			});
 		}
 
-		public async Task<KinveyDeleteResponse> DeleteAsync (string query){
+		public async Task<T> GetByIdAsync(string id)
+		{
+			// TODO implement
+			//return await dbConnection.GetAsync<T> (id);
+			//			return await Task.Run (() => {
+			return dbSyncConnection.Get<T>(id);
+			//			});
+			//return await dbSyncConnection.Get<T> (id);
+			//return default(T);
+		}
+
+		public async Task<List<T>> GetAsync(List<string> ids)
+		{
+			// TODO implement
+			return default(List<T>);
+		}
+
+		public async Task<List<T>> GetAsync(string query)
+		{
+			// TODO implement
+			return default(List<T>);
+		}
+
+
+		// UPDATE APIs
+		//
+
+
+		// DELETE APIs
+		//
+
+		public async Task<KinveyDeleteResponse> DeleteAsync (string query)
+		{
+			// TODO implement
 			return null;
 		}
 
-		public async Task<KinveyDeleteResponse> DeleteByIdAsync (string id){
+		public async Task<KinveyDeleteResponse> DeleteByIdAsync (string id)
+		{
+			// TODO implement
 			return null;
 		}
 
-		public async Task<KinveyDeleteResponse> DeleteAsync (List<string> ids){
+		public async Task<KinveyDeleteResponse> DeleteAsync (List<string> ids)
+		{
+			// TODO implement
 			return null;
 		}
 
+		#endregion
 
 //		public async Task<object> GetAsync(AbstractKinveyOfflineClientRequest<T> request){
 //
