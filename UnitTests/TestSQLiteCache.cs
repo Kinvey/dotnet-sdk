@@ -30,7 +30,7 @@ namespace UnitTestFramework
 		public void Tear ()
 		{
 //			kinveyClient.CurrentUser.Logout();
-//			System.IO.File.Delete(SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete(SQLiteOfflineStoreFilePath);
 			System.IO.File.Delete(SQLiteCredentialStoreFilePath);
 		}
 
@@ -186,6 +186,54 @@ namespace UnitTestFramework
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetByListOfIDsBad()
+		{
+			// Arrange
+
+			// Act
+
+			// Assert
+		}
+
+		[Test]
+		public async Task TestDeleteAsync()
+		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			//			newItem.ID = "2";
+			newItem.Name = "todo save";
+			newItem.Details = "details for save";
+			newItem.DueDate = "2016-04-22T19:56:00.961Z";
+			//			KinveyMetaData kmd = new KinveyMetaData();
+			//			kmd.entityCreationTime = "2016-04-22T19:56:00.900Z";
+			//			kmd.lastModifiedTime = "2016-04-22T19:56:00.902Z";
+			//			newItem.Metadata = kmd;
+
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+			ToDo savedItem = await todoStore.SaveAsync(newItem);
+			string savedItemID = savedItem.ID;
+
+			// Act
+			KinveyDeleteResponse kdr = await todoStore.DeleteAsync(savedItemID);
+
+			// Assert
+			Assert.NotNull(kdr);
+			Assert.AreEqual(1, kdr.count);
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestDeleteAsyncBad()
 		{
 			// Arrange
 

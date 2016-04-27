@@ -22,7 +22,7 @@ namespace KinveyXamarin
 
 		Task<KinveyDeleteResponse> DeleteAsync (string query);
 
-		Task<KinveyDeleteResponse> DeleteByIdAsync (string id);
+		KinveyDeleteResponse DeleteByIdAsync (string id);
 
 		Task<KinveyDeleteResponse> DeleteAsync (List<string> ids);
 

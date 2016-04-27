@@ -193,7 +193,7 @@ namespace KinveyXamarin
 			cache.Save(entity);
 
 			// third, save in network store
-			T savedEntity = await saveRequest.ExecuteAsync ();
+			T savedEntity = await saveRequest.ExecuteAsync();
 
 			// fourth, update ID in cache if necessary
 			if (tempID != null)
@@ -210,9 +210,18 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">the _id of the entity to delete.</param>
-		public async Task<KinveyDeleteResponse> DeleteAsync(string entityId){
-			return await buildDeleteRequest (entityId).ExecuteAsync ();
+		public async Task<KinveyDeleteResponse> DeleteAsync(string entityID)
+		{
+			// first, build delete request
+			DeleteRequest deleteRequest = buildDeleteRequest(entityID);
+
+			// second, delete from cache
+			cache.DeleteByIdAsync(entityID);
+
+			// third, delete from network store and return delete response
+			return await deleteRequest.ExecuteAsync();
 		}
+
 		#endregion
 
 		#region Request Builders

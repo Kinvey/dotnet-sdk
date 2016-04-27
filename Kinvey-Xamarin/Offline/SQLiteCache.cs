@@ -196,10 +196,27 @@ namespace KinveyXamarin
 			return null;
 		}
 
-		public async Task<KinveyDeleteResponse> DeleteByIdAsync (string id)
+		public KinveyDeleteResponse DeleteByIdAsync(string id)
 		{
-			// TODO implement
-			return null;
+			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
+
+			try
+			{
+				string query = $"delete from ToDo where ID=\"{id}\"";
+				dbConnectionSync.Execute(query);
+//				dbConnectionSync.Delete(id);
+				kdr.count = 1;
+			}
+			catch (SQLiteException e)
+			{
+				string s = e.Message;
+			}
+			catch (Exception e)
+			{
+				string s = e.Message;
+			}
+
+			return kdr;
 		}
 
 		public async Task<KinveyDeleteResponse> DeleteAsync (List<string> ids)
