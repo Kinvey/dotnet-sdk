@@ -123,8 +123,12 @@ namespace KinveyXamarin
 			{
 				JObject obj = JObject.FromObject(item);
 				string ID = obj["_id"].ToString();
-				string query = $"update ToDo set ID=\"{ID}\" where ID=\"{tempID}\"";
+				string tableName = typeof(T).Name;
+				string query = $"update {tableName} set ID=\"{ID}\" where ID=\"{tempID}\"";
+
+				//
 				dbConnectionSync.Execute(query);
+
 				dbConnectionSync.Update(item);
 			}
 			catch (SQLiteException e)
@@ -202,10 +206,7 @@ namespace KinveyXamarin
 
 			try
 			{
-				string query = $"delete from ToDo where ID=\"{id}\"";
-				dbConnectionSync.Execute(query);
-//				dbConnectionSync.Delete(id);
-				kdr.count = 1;
+				kdr.count = dbConnectionSync.Delete<T>(id);
 			}
 			catch (SQLiteException e)
 			{
