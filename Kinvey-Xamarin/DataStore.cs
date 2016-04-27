@@ -133,26 +133,37 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Get all entities from a Kinvey collection.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		public async Task<List<T>> GetAsync()
+		{
+			if (DataStoreType.CACHE == this.storeType)
+			{
+				return cache.FindAll();
+			}
+
+			return await buildGetRequest().ExecuteAsync();
+		}
+
+		/// <summary>
 		/// Get a single entity stored in a Kinvey collection.
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">Entity identifier.</param>
-		public async Task<T> GetEntityAsync(string entityId){
-			return await buildGetByIDRequest (entityId).ExecuteAsync ();
-		}
+		public async Task<T> GetEntityAsync(string entityID)
+		{
+			if (DataStoreType.CACHE == this.storeType)
+			{
+				return cache.FindById(entityID);
+			}
 
-		/// <summary>
-		/// Get all entities from a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		public async Task<List<T>> GetAsync(){
-			return await buildGetRequest ().ExecuteAsync ();
+			return await buildGetByIDRequest(entityID).ExecuteAsync();
 		}
 
 		public async Task<List<T>> GetAsync(string queryString){
 			return await buildGetRequest (queryString).ExecuteAsync ();
 		}
-
 
 		/// <summary>
 		/// Gets a count of all the entities in a collection
@@ -161,14 +172,13 @@ namespace KinveyXamarin
 		public async Task<uint> GetCountAsync()
 		{
 			uint count = 0;
-			JObject countObj = await buildGetCountRequest().ExecuteAsync ();
+			JObject countObj = await buildGetCountRequest().ExecuteAsync();
 
 			if (countObj != null)
 			{
 				JToken value = countObj.GetValue("count");
 				count = value.ToObject<uint>();
 			}
-
 			return count;
 		}
 
@@ -216,7 +226,7 @@ namespace KinveyXamarin
 			DeleteRequest deleteRequest = buildDeleteRequest(entityID);
 
 			// second, delete from cache
-			cache.DeleteByIdAsync(entityID);
+			cache.DeleteByID(entityID);
 
 			// third, delete from network store and return delete response
 			return await deleteRequest.ExecuteAsync();

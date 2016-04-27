@@ -142,36 +142,27 @@ namespace KinveyXamarin
 		public async Task<List<T>> SaveAsync (List<T> items)
 		{
 			// TODO implement
-			//await dbConnection.InsertAllAsync (items);
-			return await Task.Run (() => {
-				dbConnectionSync.InsertAll (items);
-				return items;
-			});
-			//return default(List<T>);
+//			//await dbConnection.InsertAllAsync (items);
+//			return await Task.Run (() => {
+//				dbConnectionSync.InsertAll (items);
+//				return items;
+//			});
+			return default(List<T>);
 		}
 
 
 		// READ APIs
 		//
 
-		public async Task<List<T>> GetAsync()
+		public List<T> FindAll()
 		{
-			//return await dbConnection.Table<T>().ToListAsync();
-
-			//			return await Task.Run (() => {
-			return dbConnectionSync.Table<T>().ToList();
-			//			});
+			return (from t in dbConnectionSync.Table<T>()
+			        select t).ToList();
 		}
 
-		public async Task<T> GetByIdAsync(string id)
+		public T FindById(string ID)
 		{
-			// TODO implement
-			//return await dbConnection.GetAsync<T> (id);
-			//			return await Task.Run (() => {
-			return dbConnectionSync.Get<T>(id);
-			//			});
-			//return await dbSyncConnection.Get<T> (id);
-			//return default(T);
+			return dbConnectionSync.Get<T>(ID);
 		}
 
 		public async Task<List<T>> GetAsync(List<string> ids)
@@ -200,7 +191,7 @@ namespace KinveyXamarin
 			return null;
 		}
 
-		public KinveyDeleteResponse DeleteByIdAsync(string id)
+		public KinveyDeleteResponse DeleteByID(string id)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 

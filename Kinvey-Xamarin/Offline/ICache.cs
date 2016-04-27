@@ -4,25 +4,54 @@ using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
-	public interface ICache <T> {
+	/// <summary>
+	/// Interface for the data store cache.
+	/// </summary>
+	public interface ICache <T>
+	{
+		/// <summary>
+		/// Finds all items in the cache.
+		/// </summary>
+		/// <returns>All cache items.</returns>
+		List<T> FindAll();
+
+		/// <summary>
+		/// Finds the by entity ID.
+		/// </summary>
+		/// <returns>The entity with the given ID.</returns>
+		/// <param name="ID">The ID of the entity to find.</param>
+		T FindById(string ID);
 
 		Task<List<T>> GetAsync (string query);
 
-		Task<T> GetByIdAsync (string id);
 
 		Task<List<T>> GetAsync (List<string> ids);
 
-		Task<List<T>> GetAsync ();
-
 		Task<List<T>> SaveAsync (List<T> items);
 
+		/// <summary>
+		/// Save the specified item.
+		/// </summary>
+		/// <returns>The saved item.</returns>
+		/// <param name="item">The item to save in the cache.</param>
 		T Save(T item);
 
+		/// <summary>
+		/// Updates the cached item with the final ID.
+		/// </summary>
+		/// <returns>The cached item.</returns>
+		/// <param name="item">The item to update.</param>
+		/// <param name="tempID">The temporary ID used in the cached, which will be replaced with the permanent ID.</param>
 		T UpdateCacheSave(T item, string tempID);
 
 		Task<KinveyDeleteResponse> DeleteAsync (string query);
 
-		KinveyDeleteResponse DeleteByIdAsync (string id);
+		/// <summary>
+		/// Deletes the cached item by ID.
+		/// </summary>
+		/// <returns>A KinveyDeleteResponse object.</returns>
+		/// <param name="id">The ID of the entity to delete from the cache.</param>
+		KinveyDeleteResponse DeleteByID(string id);
 
 		Task<KinveyDeleteResponse> DeleteAsync (List<string> ids);
 

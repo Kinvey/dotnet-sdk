@@ -71,14 +71,13 @@ namespace UnitTestFramework
 
 			// Arrange
 			ToDo newItem = new ToDo();
-//			newItem.ID = "2";
 			newItem.Name = "todo save";
 			newItem.Details = "details for save";
 			newItem.DueDate = "2016-04-22T19:56:00.961Z";
-//			KinveyMetaData kmd = new KinveyMetaData();
-//			kmd.entityCreationTime = "2016-04-22T19:56:00.900Z";
-//			kmd.lastModifiedTime = "2016-04-22T19:56:00.902Z";
-//			newItem.Metadata = kmd;
+			//			KinveyMetaData kmd = new KinveyMetaData();
+			//			kmd.entityCreationTime = "2016-04-22T19:56:00.900Z";
+			//			kmd.lastModifiedTime = "2016-04-22T19:56:00.902Z";
+			//			newItem.Metadata = kmd;
 
 			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
 
@@ -90,6 +89,7 @@ namespace UnitTestFramework
 			Assert.True(string.Equals(newItem.Details, savedItem.Details));
 
 			// Teardown
+			await todoStore.DeleteAsync(savedItem.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -105,29 +105,49 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetAsync()
 		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
 			// Arrange
-			ToDo newItem = new ToDo();
-			newItem.ID = "1";
-			newItem.Name = "todo1";
-			newItem.Details = "details for 1";
-			newItem.DueDate = "2016-04-22T19:56:00.963Z";
-			KinveyMetaData kmd = new KinveyMetaData();
-			kmd.entityCreationTime = "2016-04-22T19:56:00.900Z";
-			kmd.lastModifiedTime = "2016-04-22T19:56:00.902Z";
-			newItem.Metadata = kmd;
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo1";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "todo2";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "todo3";
+			newItem3.Details = "details for 3";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
 
 			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
 
 			// Act
 			List<ToDo> todoList = await todoStore.GetAsync();
 
 			// Assert
 			Assert.NotNull(todoList);
-			Assert.AreEqual(1, todoList.Count);
-			Assert.True(string.Equals(todoList[0].Details, newItem.Details));
+			Assert.AreEqual(3, todoList.Count);
+
+			// Teardown
+			await todoStore.DeleteAsync(newItem1.ID);
+			await todoStore.DeleteAsync(newItem2.ID);
+			await todoStore.DeleteAsync(newItem3.ID);
+			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
@@ -142,23 +162,49 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetByIDAsync()
 		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
 			// Arrange
-			ToDo newItem = new ToDo();
-			newItem.ID = "1";
-			newItem.Name = "todo1";
-			newItem.Details = "details for 1";
-			newItem.DueDate = "2016-04-22T19:56:00.963Z";
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo1";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "todo2";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "todo3";
+			newItem3.Details = "details for 3";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+
 			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			ToDo savedItemToFind = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
 
 			// Act
-			ToDo entity = await todoStore.GetEntityAsync("1");
+			ToDo entity = await todoStore.GetEntityAsync(savedItemToFind.ID);
 
 			// Assert
 			Assert.NotNull(entity);
-			Assert.True(string.Equals(entity.Details, newItem.Details));
+			Assert.True(string.Equals(entity.ID, savedItemToFind.ID));
+
+			// Teardown
+			await todoStore.DeleteAsync(newItem1.ID);
+			await todoStore.DeleteAsync(savedItemToFind.ID);
+			await todoStore.DeleteAsync(newItem3.ID);
+			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
@@ -207,7 +253,6 @@ namespace UnitTestFramework
 
 			// Arrange
 			ToDo newItem = new ToDo();
-			//			newItem.ID = "2";
 			newItem.Name = "todo save";
 			newItem.Details = "details for save";
 			newItem.DueDate = "2016-04-22T19:56:00.961Z";
