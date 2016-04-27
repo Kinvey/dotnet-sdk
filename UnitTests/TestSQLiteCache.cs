@@ -24,17 +24,14 @@ namespace UnitTestFramework
 				.setFilePath(db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
 				.build();
-
-			// Setup
-			kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 		}
 
 		[TearDown]
 		public void Tear ()
 		{
-			kinveyClient.CurrentUser.Logout();
+//			kinveyClient.CurrentUser.Logout();
 //			System.IO.File.Delete(SQLiteOfflineStoreFilePath);
-//			System.IO.File.Delete(SQLiteCredentialStoreFilePath);
+			System.IO.File.Delete(SQLiteCredentialStoreFilePath);
 		}
 
 		[Test]
@@ -62,9 +59,16 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestSaveAsync()
 		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
 			// Arrange
 			ToDo newItem = new ToDo();
 //			newItem.ID = "2";
@@ -76,7 +80,7 @@ namespace UnitTestFramework
 //			kmd.lastModifiedTime = "2016-04-22T19:56:00.902Z";
 //			newItem.Metadata = kmd;
 
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
 
 			// Act
 			ToDo savedItem = await todoStore.SaveAsync(newItem);
@@ -84,6 +88,9 @@ namespace UnitTestFramework
 			// Assert
 			Assert.NotNull(savedItem);
 			Assert.True(string.Equals(newItem.Details, savedItem.Details));
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]

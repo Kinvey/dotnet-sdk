@@ -37,35 +37,34 @@ namespace KinveyXamarin
 
 		private string collectionName;
 
+//		private SQLiteAsyncConnection dbConnectionAsync;
+
+		private SQLiteConnection dbConnectionSync;
+
 		private ISQLitePlatform platform;
-
-		private SQLiteAsyncConnection dbConnection;
-
-		private SQLiteConnection dbSyncConnection;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteOfflineStore"/> class.
 		/// </summary>
 		/// <param name="collection">Collection.</param>
 		/// <param name="connection">Connection.</param>
-		public SQLiteCache(string collection, SQLiteAsyncConnection connection, SQLiteConnection syncConnection, ISQLitePlatform platform)
+		public SQLiteCache(string collection, SQLiteAsyncConnection connectionAsync, SQLiteConnection connectionSync, ISQLitePlatform platform)
 		{
 			this.collectionName = collection;
-			//this.dbConnection = connection;
-			this.dbSyncConnection = syncConnection;
+//			this.dbConnectionAsync = connectionAsync;
+			this.dbConnectionSync = connectionSync;
 			this.platform = platform;
-			//deleteContentsOfTableAsync ();
+
+			//dropTable();
 			createTable();
 		}
 
 
-		/// <summary>
-		/// Creates an Offline Table, which manages all offline collection features.
-		/// </summary>
+		// Creates an SQLite table, which manages the local representation of the connection.
 		private int createTable()
 		{
 			//dbConnection.CreateTableAsync<T> ();
-			int retVal = dbSyncConnection.CreateTable<T>(CreateFlags.ImplicitPK);
+			int retVal = dbConnectionSync.CreateTable<T>(CreateFlags.ImplicitPK);
 
 			//set primary key
 //			IEnumerable<PropertyInfo> props = platform.ReflectionService.GetPublicInstanceProperties (typeof (T));
@@ -91,10 +90,11 @@ namespace KinveyXamarin
 		}
 
 
+		// Deletes the SQLite table associated with the local representation of this collection.
 		private int dropTable()
 		{
 			//dbConnection.DropTableAsync<T> ();
-			return dbSyncConnection.DropTable<T>();
+			return dbConnectionSync.DropTable<T>();
 		}
 
 		#region SQLite Cache CRUD APIs
@@ -102,14 +102,37 @@ namespace KinveyXamarin
 		// CREATE APIs
 		//
 
-		public async Task<T> SaveAsync (T item)
+		//public async Task<T> SaveAsync (T item)
+		public T Save (T item)
 		{
-			// TODO implement
-			//dbConnection.InsertAsync (item);
-//			return await Task.Run (() => {
-				dbSyncConnection.Insert (item);
-				return item;
-//			});
+			try
+			{
+				dbConnectionSync.Insert(item);
+			}
+			catch (SQLiteException e)
+			{
+				string s = e.Message;
+			}
+
+			return item;
+		}
+
+		public T UpdateCacheSave(T item, string tempID)
+		{
+			try
+			{
+				JObject obj = JObject.FromObject(item);
+				string ID = obj["_id"].ToString();
+				string query = $"update ToDo set ID=\"{ID}\" where ID=\"{tempID}\"";
+				dbConnectionSync.Execute(query);
+				dbConnectionSync.Update(item);
+			}
+			catch (SQLiteException e)
+			{
+				string s = e.Message;
+			}
+
+			return item;
 		}
 
 		public async Task<List<T>> SaveAsync (List<T> items)
@@ -117,7 +140,7 @@ namespace KinveyXamarin
 			// TODO implement
 			//await dbConnection.InsertAllAsync (items);
 			return await Task.Run (() => {
-				dbSyncConnection.InsertAll (items);
+				dbConnectionSync.InsertAll (items);
 				return items;
 			});
 			//return default(List<T>);
@@ -132,7 +155,7 @@ namespace KinveyXamarin
 			//return await dbConnection.Table<T>().ToListAsync();
 
 			//			return await Task.Run (() => {
-			return dbSyncConnection.Table<T>().ToList();
+			return dbConnectionSync.Table<T>().ToList();
 			//			});
 		}
 
@@ -141,7 +164,7 @@ namespace KinveyXamarin
 			// TODO implement
 			//return await dbConnection.GetAsync<T> (id);
 			//			return await Task.Run (() => {
-			return dbSyncConnection.Get<T>(id);
+			return dbConnectionSync.Get<T>(id);
 			//			});
 			//return await dbSyncConnection.Get<T> (id);
 			//return default(T);

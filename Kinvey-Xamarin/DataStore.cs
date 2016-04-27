@@ -177,8 +177,31 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entity">the entity to save.</param>
-		public async Task<T> SaveAsync(T entity){
-			return await buildSaveRequest (entity).ExecuteAsync ();
+		public async Task<T> SaveAsync(T entity)
+		{
+			// first, build save request
+			SaveMode saveMode = SaveMode.PUT;
+			SaveRequest<T> saveRequest = buildSaveRequest(entity, ref saveMode);
+
+			// second, if cache is available, save in cache store
+			string tempID = null;
+			if (SaveMode.POST == saveMode)
+			{
+				tempID = PrepareCacheSave(ref entity);
+			}
+
+			cache.Save(entity);
+
+			// third, save in network store
+			T savedEntity = await saveRequest.ExecuteAsync ();
+
+			// fourth, update ID in cache if necessary
+			if (tempID != null)
+			{
+				cache.UpdateCacheSave(savedEntity, tempID);
+			}
+
+			return savedEntity;
 		}
 
 
@@ -263,7 +286,7 @@ namespace KinveyXamarin
 			return getCountQuery;
 		}
 
-		private SaveRequest<T> buildSaveRequest (T entity)
+		private SaveRequest<T> buildSaveRequest (T entity, ref SaveMode saveMode)
 		{
 			SaveRequest<T> save;
 			var urlParameters = new Dictionary<string, string> ();
@@ -282,8 +305,7 @@ namespace KinveyXamarin
 			} else {
 				mode = SaveMode.POST;
 			}
-				
-
+			saveMode = mode;
 			save = new SaveRequest<T> (entity, id, mode, client, this.CollectionName);
 			//save.SetCache (this.cache, storeType.ReadPolicy);
 			//save.Cache = this.cache;
@@ -292,7 +314,18 @@ namespace KinveyXamarin
 			save.customRequestHeaders = this.GetCustomRequestProperties ();
 			return save;
 		}
-			
+
+		private string PrepareCacheSave(ref T entity)
+		{
+			string guid = System.Guid.NewGuid().ToString();
+			string tempID = "temp_" + guid;
+
+			JObject obj = JObject.FromObject(entity);
+			obj["_id"] = tempID;
+			entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
+
+			return tempID;
+		}
 
 		private DeleteRequest buildDeleteRequest (string entityId)
 		{

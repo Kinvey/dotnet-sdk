@@ -16,7 +16,9 @@ namespace KinveyXamarin
 
 		Task<List<T>> SaveAsync (List<T> items);
 
-		Task<T> SaveAsync (T item);
+		T Save(T item);
+
+		T UpdateCacheSave(T item, string tempID);
 
 		Task<KinveyDeleteResponse> DeleteAsync (string query);
 
