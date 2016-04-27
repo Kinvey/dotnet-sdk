@@ -17,34 +17,32 @@ namespace KinveyXamarin
 	/// </summary>
 	public class SQLiteCacheManager : ICacheManager
 	{
-
 		//The version of the internal structure of the database.
 		private int databaseSchemaVersion = 1;
 
-		/// <summary>
-		/// The db connection.
-		/// </summary>
-		private SQLiteAsyncConnection dbConnection;
+		// The asynchronous db connection.
+		private SQLiteAsyncConnection dbConnectionAsync;
 
+		// The asynchronous db connection.
 		private SQLiteConnection dbConnectionSync;
 
 		/// <summary>
 		/// Gets or sets the platform.
 		/// </summary>
 		/// <value>The platform.</value>
-		public ISQLitePlatform platform {get; set;}
+		public ISQLitePlatform platform { get; set; }
 
 		/// <summary>
 		/// Gets or sets the database file path.
 		/// </summary>
 		/// <value>The dbpath.</value>
-		public string dbpath{ get; set;}
-
+		public string dbpath { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteCacheManager"/> class.
 		/// </summary>
-		public SQLiteCacheManager (ISQLitePlatform platform, string filePath){
+		public SQLiteCacheManager(ISQLitePlatform platform, string filePath)
+		{
 			this.platform = platform;
 			this.dbpath = Path.Combine (filePath, "kinveyOffline.sqlite");
 
@@ -52,65 +50,91 @@ namespace KinveyXamarin
 			//			Task.Run (kickOffUpgrade ());
 		}
 
-		private async Task<int> kickOffUpgrade(){
-			//get stored version number, if it's null set it to the current dbscheme version and save it it
-			//call onupgrade with current version number and dbsv.
-			//DatabaseHelper<JObject> handler = getDatabaseHelper<JObject> ();
-			SQLTemplates.OfflineVersion ver = await getConnection ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
-			if (ver == null) {
-				ver = new SQLTemplates.OfflineVersion ();
-				ver.currentVersion = databaseSchemaVersion;
-				await updateDBSchemaVersion (ver.currentVersion);
+		private int kickOffUpgrade()
+		{
+			// Get stored version number.  If null, set to the current dbscheme version and save.
+			int newVersion = 0;
+			SQLTemplates.OfflineVersion ver = getDBSchemaVersion();
+
+			if (ver == null)
+			{
+				newVersion = databaseSchemaVersion;
 			}
-			int newVersion = onUpgrade (ver.currentVersion, databaseSchemaVersion);
+			else
+			{
+				newVersion = ver.currentVersion + 1;
+			}
+
+			updateDBSchemaVersion(newVersion);
+
 			return newVersion;
 		}
 
+//		private async Task<int> kickOffUpgradeAsync(){
+//			//get stored version number, if it's null set it to the current dbscheme version and save it it
+//			//call onupgrade with current version number and dbsv.
+//			//DatabaseHelper<JObject> handler = getDatabaseHelper<JObject> ();
+//			SQLTemplates.OfflineVersion ver = await getConnectionAsync ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
+//			if (ver == null) {
+//				ver = new SQLTemplates.OfflineVersion ();
+//				ver.currentVersion = databaseSchemaVersion;
+//				await updateDBSchemaVersion (ver.currentVersion);
+//			}
+//			int newVersion = onUpgrade (ver.currentVersion, databaseSchemaVersion);
+//			return newVersion;
+//		}
 
-		private SQLiteAsyncConnection getConnection(){
+		private SQLiteConnection getConnection()
+		{
 			//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
-			if (dbConnection == null) {
+			if (dbConnectionSync == null)
+			{
 				//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
 				//dbConnection = new SQLiteAsyncConnection (connectionFactory);			
 				dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
-
 			}
-			return dbConnection;
+
+			return dbConnectionSync;
 		}
 
+//		private SQLiteAsyncConnection getConnectionAsync(){
+//			//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
+//			if (dbConnectionAsync == null) {
+//				//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
+//				//dbConnection = new SQLiteAsyncConnection (connectionFactory);			
+//				dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
+//
+//			}
+//			return dbConnectionAsync;
+//		}
 
-		/// <summary>
-		/// Gets the DB schema version.
-		/// </summary>
-		/// <returns>The DB schema version.</returns>
-		private async Task<SQLTemplates.OfflineVersion> getDBSchemaVersion (){
-			SQLTemplates.OfflineVersion ver =  await getConnection ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
+
+		// Gets the DB schema version.
+		private SQLTemplates.OfflineVersion getDBSchemaVersion()
+		{
+			SQLTemplates.OfflineVersion ver = getConnection().Table<SQLTemplates.OfflineVersion>().FirstOrDefault();
 			return ver;
 		}
+
+//		// Gets the DB schema version asynchronously.
+//		private async Task<SQLTemplates.OfflineVersion> getDBSchemaVersionAsync (){
+//			SQLTemplates.OfflineVersion ver =  await getConnection ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
+//			return ver;
+//		}
 
 		/// <summary>
 		/// Updates the DB schema version.
 		/// </summary>
 		/// <returns>The DB schema version.</returns>
 		/// <param name="newVersion">New version.</param>
-		public async Task<int> updateDBSchemaVersion (int newVersion){
-			SQLTemplates.OfflineVersion ver = new SQLTemplates.OfflineVersion ();
+		public int updateDBSchemaVersion(int newVersion)
+		{
+			SQLTemplates.OfflineVersion ver = new SQLTemplates.OfflineVersion();
 			ver.currentVersion = newVersion;
 
-			await getConnection().InsertAsync (ver);
-			return 0;
-		}
+			getConnection().Insert(ver);
 
-		private int onUpgrade(int currentVersion, int newVersion){
-			while (currentVersion < newVersion) {
-				//if (currentVersion == 1){
-				//upgrade to 2
-				//}
-
-				currentVersion++;
-			}
-
-			return currentVersion;
+			return ver.currentVersion;
 		}
 
 		/// <summary>
@@ -133,17 +157,33 @@ namespace KinveyXamarin
 		public ICache<T> GetCache<T> (string collectionName) where T: class {
 			//int ret = dbConnectionSync.DropTable<T> ();
 			//int ret = dbConnectionSync.Dispose();
-			return new SQLiteCache<T> (collectionName, dbConnection, dbConnectionSync, platform);
+			return new SQLiteCache<T> (collectionName, dbConnectionAsync, dbConnectionSync, platform);
 		}
-
 
 		/// <summary>
 		/// Gets the collection tables.
 		/// </summary>
 		/// <returns>The collection tables.</returns>
+		public List<string> getCollectionTables()
+		{
+			List<SQLTemplates.TableItem> result = dbConnectionSync.Table<SQLTemplates.TableItem>().OrderByDescending(t => t.name).ToList();
+			List<string> collections = new List<string>();
+
+			foreach (SQLTemplates.TableItem item in result)
+			{
+				collections.Add(item.name);
+			}
+
+			return collections;
+		}
+
+		/// <summary>
+		/// Gets the collection tables asynchronously.
+		/// </summary>
+		/// <returns>The collection tables.</returns>
 		public async Task<List<string>> getCollectionTablesAsync ()
 		{
-			List<SQLTemplates.TableItem> result = await dbConnection.Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToListAsync ();
+			List<SQLTemplates.TableItem> result = await dbConnectionAsync.Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToListAsync ();
 			List<string> collections = new List<string> ();
 
 
