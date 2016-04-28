@@ -33,13 +33,9 @@ namespace KinveyXamarin
 	public class DataStore<T> : KinveyQueryable<T>  where T:class
 	{
 		#region Member variables
-		/// <summary>
-		/// The name of the collection.
-		/// </summary>
+
 		private String collectionName;
-		/// <summary>
-		/// The Type of the class.
-		/// </summary>
+
 		//private Type typeof(T);
 
 		private AbstractClient client;
@@ -127,6 +123,7 @@ namespace KinveyXamarin
 		}
 
 		#region Public interface
+
 		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client)
 		{
 			return new DataStore<T> (type, collectionName, client);
@@ -155,10 +152,25 @@ namespace KinveyXamarin
 		{
 			if (DataStoreType.CACHE == this.storeType)
 			{
-				return cache.FindById(entityID);
+				return cache.FindByID(entityID);
 			}
 
 			return await buildGetByIDRequest(entityID).ExecuteAsync();
+		}
+
+		/// <summary>
+		/// Get a single entity stored in a Kinvey collection.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="entityId">Entity identifier.</param>
+		public async Task<List<T>> GetEntitiesAsync(List<string> entityIDs)
+		{
+			if (DataStoreType.CACHE == this.storeType)
+			{
+				return cache.FindByIDs(entityIDs);
+			}
+			return default(List<T>);
+			//return await buildGetByIDRequest(entityID).ExecuteAsync();
 		}
 
 		public async Task<List<T>> GetAsync(string queryString){
@@ -312,25 +324,31 @@ namespace KinveyXamarin
 			//urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			//urlParameters.Add ("collectionName", CollectionName);
 
-			SaveMode mode;
+			SaveMode mode = SaveMode.POST;
+
 			JToken idToken = JObject.FromObject (entity) ["_id"];
 			string id = null;
-			if (idToken != null) {
+			if (idToken != null)
+			{
 				id = idToken.ToString ();
 			}
-			if (id != null && id.Length > 0) {
+
+			if (!string.IsNullOrEmpty(id))
+			{
+//			if (id != null && id.Length > 0) {
 				mode = SaveMode.PUT;
 				//urlParameters.Add ("entityId", id);
-			} else {
-				mode = SaveMode.POST;
 			}
+
 			saveMode = mode;
+
 			save = new SaveRequest<T> (entity, id, mode, client, this.CollectionName);
 			//save.SetCache (this.cache, storeType.ReadPolicy);
 			//save.Cache = this.cache;
 			client.InitializeRequest (save);
 			//save.clientAppVersion = this.GetClientAppVersion ();
 			save.customRequestHeaders = this.GetCustomRequestProperties ();
+
 			return save;
 		}
 

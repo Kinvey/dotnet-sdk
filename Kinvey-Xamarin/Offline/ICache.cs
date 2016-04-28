@@ -20,14 +20,17 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The entity with the given ID.</returns>
 		/// <param name="ID">The ID of the entity to find.</param>
-		T FindById(string ID);
+		T FindByID(string ID);
 
-		Task<List<T>> GetAsync (string query);
+		/// <summary>
+		/// Finds a list of entities by the given IDs.
+		/// </summary>
+		/// <returns>A list of the entities matching the given IDs.</returns>
+		/// <param name="ids">The IDs to find.</param>
+		List<T> FindByIDs(List<string> ids);
 
-
-		Task<List<T>> GetAsync (List<string> ids);
-
-		Task<List<T>> SaveAsync (List<T> items);
+		// TODO do this via LINQ
+		//Task<List<T>> GetAsync (string query);
 
 		/// <summary>
 		/// Save the specified item.
@@ -37,14 +40,19 @@ namespace KinveyXamarin
 		T Save(T item);
 
 		/// <summary>
+		/// Save the specified list of item.
+		/// </summary>
+		/// <returns>The list of saved items.</returns>
+		/// <param name="items">The list of items to save in the cache.</param>
+		List<T> Save(List<T> items);
+
+		/// <summary>
 		/// Updates the cached item with the final ID.
 		/// </summary>
 		/// <returns>The cached item.</returns>
 		/// <param name="item">The item to update.</param>
 		/// <param name="tempID">The temporary ID used in the cached, which will be replaced with the permanent ID.</param>
 		T UpdateCacheSave(T item, string tempID);
-
-		Task<KinveyDeleteResponse> DeleteAsync (string query);
 
 		/// <summary>
 		/// Deletes the cached item by ID.
@@ -53,8 +61,14 @@ namespace KinveyXamarin
 		/// <param name="id">The ID of the entity to delete from the cache.</param>
 		KinveyDeleteResponse DeleteByID(string id);
 
-		Task<KinveyDeleteResponse> DeleteAsync (List<string> ids);
+		/// <summary>
+		/// Deletes a list of entities by the given IDs.
+		/// </summary>
+		/// <returns>A KinveyDeleteResponse object.</returns>
+		/// <param name="ids">The IDs of the entities to delete from the cache.</param>
+		KinveyDeleteResponse DeleteByIDs(List<string> IDs);
 
+		Task<KinveyDeleteResponse> DeleteAsync (string query);
 
 		//Task<int> InsertEntityAsync (T entity);
 

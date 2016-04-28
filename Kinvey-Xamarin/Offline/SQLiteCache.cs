@@ -103,7 +103,7 @@ namespace KinveyXamarin
 		//
 
 		//public async Task<T> SaveAsync (T item)
-		public T Save (T item)
+		public T Save(T item)
 		{
 			try
 			{
@@ -115,6 +115,18 @@ namespace KinveyXamarin
 			}
 
 			return item;
+		}
+
+		public List<T> Save(List<T> items)
+		{
+			// TODO implement
+//			int result = dbConnectionSync.InsertAll(items); 
+//			if (result > 0)
+//			{
+//				return items;
+//			}
+
+			return default(List<T>);
 		}
 
 		public T UpdateCacheSave(T item, string tempID)
@@ -139,18 +151,6 @@ namespace KinveyXamarin
 			return item;
 		}
 
-		public async Task<List<T>> SaveAsync (List<T> items)
-		{
-			// TODO implement
-//			//await dbConnection.InsertAllAsync (items);
-//			return await Task.Run (() => {
-//				dbConnectionSync.InsertAll (items);
-//				return items;
-//			});
-			return default(List<T>);
-		}
-
-
 		// READ APIs
 		//
 
@@ -160,15 +160,21 @@ namespace KinveyXamarin
 			        select t).ToList();
 		}
 
-		public T FindById(string ID)
+		public T FindByID(string ID)
 		{
 			return dbConnectionSync.Get<T>(ID);
 		}
 
-		public async Task<List<T>> GetAsync(List<string> ids)
+		public List<T> FindByIDs(List<string> IDs)
 		{
-			// TODO implement
-			return default(List<T>);
+			List<T> listEntities = new List<T>();
+
+			foreach (string ID in IDs)
+			{
+				listEntities.Add(this.FindByID(ID));
+			}
+
+			return listEntities;
 		}
 
 		public async Task<List<T>> GetAsync(string query)
@@ -184,12 +190,6 @@ namespace KinveyXamarin
 
 		// DELETE APIs
 		//
-
-		public async Task<KinveyDeleteResponse> DeleteAsync (string query)
-		{
-			// TODO implement
-			return null;
-		}
 
 		public KinveyDeleteResponse DeleteByID(string id)
 		{
@@ -211,7 +211,19 @@ namespace KinveyXamarin
 			return kdr;
 		}
 
-		public async Task<KinveyDeleteResponse> DeleteAsync (List<string> ids)
+		public KinveyDeleteResponse DeleteByIDs(List<string> IDs)
+		{
+			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
+
+			foreach (string ID in IDs)
+			{
+				kdr.count += DeleteByID(ID).count;
+			}
+
+			return kdr;
+		}
+
+		public async Task<KinveyDeleteResponse> DeleteAsync (string query)
 		{
 			// TODO implement
 			return null;
