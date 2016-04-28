@@ -50,6 +50,8 @@ namespace KinveyXamarin
 			//			Task.Run (kickOffUpgrade ());
 		}
 
+		private Dictionary<string, object> mapCollectionToCache = new Dictionary<string, object>();
+
 		private int kickOffUpgrade()
 		{
 			// Get stored version number.  If null, set to the current dbscheme version and save.
@@ -154,10 +156,17 @@ namespace KinveyXamarin
 //			return SQLiteHelper<T>.getInstance (platform, dbpath);
 //		}
 
-		public ICache<T> GetCache<T> (string collectionName) where T: class {
+		public ICache<T> GetCache<T> (string collectionName) where T : class
+		{
 			//int ret = dbConnectionSync.DropTable<T> ();
 			//int ret = dbConnectionSync.Dispose();
-			return new SQLiteCache<T> (collectionName, dbConnectionAsync, dbConnectionSync, platform);
+			if (mapCollectionToCache.ContainsKey(collectionName))
+			{
+				return mapCollectionToCache[collectionName] as ICache<T>;
+			}
+
+			mapCollectionToCache[collectionName] = new SQLiteCache<T> (collectionName, dbConnectionAsync, dbConnectionSync, platform);
+			return mapCollectionToCache[collectionName] as ICache<T>;
 		}
 
 		/// <summary>
