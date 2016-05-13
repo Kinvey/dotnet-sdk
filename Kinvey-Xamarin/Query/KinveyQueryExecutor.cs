@@ -23,7 +23,6 @@ namespace KinveyXamarin
 
 		public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
 		{
-		
 			writer.Reset ();
 
 			KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer, typeof(K));
@@ -34,11 +33,26 @@ namespace KinveyXamarin
 
 			//Logger.Log (writer.GetFullString ());
 
-			T[] results = (T[]) queryable.executeQuery (writer.GetFullString ());
-			foreach (T res in results) {
-				yield return res;
+			T[] cacheResults = (T[])queryable.executeQueryOnCache(KinveyQueryable<T>.express);
+			//T[] cacheResults = (T[])queryable.executeQueryOnCache(visitor.cacheExpr);
+			if (cacheResults != null)
+			{
+				foreach (T result in cacheResults)
+				{
+					yield return result;
+				}
 			}
-		
+			else
+			{
+				T[] results = (T[]) queryable.executeQuery (writer.GetFullString ());
+				if (results != null)
+				{
+					foreach (T res in results)
+					{
+						yield return res;
+					}
+				}
+			}
 		}
 
 		public T ExecuteSingle<T>(QueryModel queryModel, bool returnDefaultWhenEmpty)
@@ -65,6 +79,7 @@ namespace KinveyXamarin
 	public class KinveyQueryable<T> : QueryableBase<T>
 	{
 		public StringQueryBuilder writer;
+		static public Expression express;  // TODO find a way to not use a static class variable to capture query Expression
 
 		public KinveyQueryable(IQueryParser queryParser, IQueryExecutor executor, Type myClass)
 			: base(new DefaultQueryProvider(typeof(KinveyQueryable<>), queryParser, executor))
@@ -81,6 +96,7 @@ namespace KinveyXamarin
 		public KinveyQueryable(IQueryProvider provider, Expression expression)
 			: base(provider, expression)
 		{
+			express = expression;
 		}
 
 		/// <summary>
@@ -92,12 +108,19 @@ namespace KinveyXamarin
 			Logger.Log ("can't execute a query without overriding this method!");
 			return default(object);
 		}
+
+		public virtual object executeQueryOnCache(Expression expr)
+		{
+			Logger.Log ("can't execute a query on cache without overriding this method!");
+			return default(object);
+		}
 	}
 
 	public class KinveyQueryVisitor : QueryModelVisitorBase {
 
 		private IQueryBuilder writer;
 		private Dictionary<string, string> keyMap;
+		public Expression cacheExpr { get; set; }
 
 		public KinveyQueryVisitor(IQueryBuilder builder, Type type){
 			writer = builder;
@@ -188,6 +211,8 @@ namespace KinveyXamarin
 
 		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index){
 			base.VisitWhereClause (whereClause, queryModel, index);
+			cacheExpr = whereClause.Predicate;
+
 			//Logger.Log ("visiting where clause: " + whereClause.Predicate.ToString());
 			if (whereClause.Predicate.NodeType.ToString ().Equals ("Equal")) {
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;

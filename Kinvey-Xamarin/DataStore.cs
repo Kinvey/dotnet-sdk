@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Collections;
 using Newtonsoft.Json.Linq;
+using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
 using KinveyUtils;
 
@@ -124,8 +125,28 @@ namespace KinveyXamarin
 
 		#region Public interface
 
+		public override object executeQueryOnCache(Expression expr)
+		{
+			T[] results = null;
+			if (DataStoreType.CACHE == this.storeType)
+			{
+				results = cache.FindByQuery(expr)?.ToArray();
+			}
+
+			return results;
+		}
+
+		public override object executeQuery(string queryMongo)
+		{
+			// TODO implement
+			T[] results = default(T[]);
+
+			return results;
+		}
+
 		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client)
 		{
+			// TODO do we need to make this a singleton based on collection, store type and store ID?
 			return new DataStore<T> (type, collectionName, client);
 		}
 

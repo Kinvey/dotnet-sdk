@@ -19,11 +19,13 @@ using System.Threading.Tasks;
 using SQLite.Net.Async;
 using SQLite.Net;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using SQLite.Net.Interop;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Remotion.Linq;
 
 namespace KinveyXamarin
 {
@@ -175,6 +177,46 @@ namespace KinveyXamarin
 			}
 
 			return listEntities;
+		}
+
+		public List<T> FindByQuery(Expression expr)
+		{
+			// TODO implement
+			List<T> results = null;
+
+			if (expr.NodeType == ExpressionType.Call)
+			{
+				MethodCallExpression mcb = expr as MethodCallExpression;
+
+				var args = mcb?.Arguments;
+				if (args.Count >= 2)
+				{
+					var nodeType = args[1]?.NodeType;
+					if (nodeType == ExpressionType.Quote)
+					{
+						UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+
+						if (quote.Operand.NodeType == ExpressionType.Lambda)
+						{
+							LambdaExpression le = quote.Operand as LambdaExpression;
+							var comp = le.Compile();
+							MethodInfo mi = comp.GetMethodInfo();
+							if (mi.ReturnType == typeof(bool))
+							{
+								Func<T, bool> func = (Func<T, bool>)comp;
+								results = (from t in dbConnectionSync.Table<T>().Where(func)
+								           select t).ToList();
+							}
+							else
+							{
+								results = (from t in dbConnectionSync.Table<T>() select t).ToList();
+							}
+						}
+					}
+				}
+			}
+
+			return results;
 		}
 
 		public async Task<List<T>> GetAsync(string query)

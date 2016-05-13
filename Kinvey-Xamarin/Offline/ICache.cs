@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
@@ -53,6 +54,13 @@ namespace KinveyXamarin
 		/// <param name="item">The item to update.</param>
 		/// <param name="tempID">The temporary ID used in the cached, which will be replaced with the permanent ID.</param>
 		T UpdateCacheSave(T item, string tempID);
+
+		/// <summary>
+		/// Finds entities by query.
+		/// </summary>
+		/// <returns>List of entities matching the given query</returns>
+		/// <param name="query">QueryModel object.</param>
+		List<T> FindByQuery (Expression expr);
 
 		/// <summary>
 		/// Deletes the cached item by ID.
