@@ -63,6 +63,7 @@ namespace KinveyXamarin
 		[DataMember]
 		private Dictionary<string, JToken> attributes;
 
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
 		[Preserve]
