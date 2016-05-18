@@ -154,7 +154,7 @@ namespace KinveyXamarin
 		/// Get all entities from a Kinvey collection.
 		/// </summary>
 		/// <returns>The async task.</returns>
-		public async Task<List<T>> GetAsync()
+		public async Task<List<T>> FindAsync()
 		{
 			if (DataStoreType.CACHE == this.storeType)
 			{
@@ -169,7 +169,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">Entity identifier.</param>
-		public async Task<T> GetEntityAsync(string entityID)
+		public async Task<T> FindByIDAsync(string entityID)
 		{
 			if (DataStoreType.CACHE == this.storeType)
 			{
@@ -184,7 +184,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">Entity identifier.</param>
-		public async Task<List<T>> GetEntitiesAsync(List<string> entityIDs)
+		public async Task<List<T>> FindByIDsAsync(List<string> entityIDs)
 		{
 			if (DataStoreType.CACHE == this.storeType)
 			{
@@ -194,7 +194,7 @@ namespace KinveyXamarin
 			//return await buildGetByIDRequest(entityID).ExecuteAsync();
 		}
 
-		public async Task<List<T>> GetAsync(string queryString){
+		public async Task<List<T>> FindAsync(string queryString){
 			return await buildGetRequest (queryString).ExecuteAsync ();
 		}
 
@@ -252,8 +252,8 @@ namespace KinveyXamarin
 		/// Deletes the entity associated with the provided id
 		/// </summary>
 		/// <returns>The async task.</returns>
-		/// <param name="entityId">the _id of the entity to delete.</param>
-		public async Task<KinveyDeleteResponse> DeleteAsync(string entityID)
+		/// <param name="entityID">the _id of the entity to delete.</param>
+		public async Task<KinveyDeleteResponse> RemoveAsync(string entityID)
 		{
 			// first, build delete request
 			DeleteRequest deleteRequest = buildDeleteRequest(entityID);

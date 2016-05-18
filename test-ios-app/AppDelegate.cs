@@ -309,7 +309,7 @@ namespace testiosapp
 			DataStore<Book> store = myClient.AppData<Book>("Book", DataStoreType.NETWORK);
 			try{
 				
-				List<Book> books = await store.GetAsync ();
+				List<Book> books = await store.FindAsync();
 
 			} catch (Exception e){
 				Console.Write (e);

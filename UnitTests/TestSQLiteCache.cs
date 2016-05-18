@@ -89,7 +89,7 @@ namespace UnitTestFramework
 			Assert.True(string.Equals(newItem.Details, savedItem.Details));
 
 			// Teardown
-			await todoStore.DeleteAsync(savedItem.ID);
+			await todoStore.RemoveAsync(savedItem.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -171,7 +171,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestGetAsync()
+		public async Task TestFindAsync()
 		{
 			// Setup
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
@@ -204,16 +204,16 @@ namespace UnitTestFramework
 			DataStore<ToDo> todoStore1 = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
 
 			// Act
-			List<ToDo> todoList = await todoStore1.GetAsync();
+			List<ToDo> todoList = await todoStore1.FindAsync();
 
 			// Assert
 			Assert.NotNull(todoList);
 			Assert.AreEqual(3, todoList.Count);
 
 			// Teardown
-			await todoStore.DeleteAsync(newItem1.ID);
-			await todoStore1.DeleteAsync(newItem2.ID);
-			await todoStore.DeleteAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore1.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -229,7 +229,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestGetByIDAsync()
+		public async Task TestFindByIDAsync()
 		{
 			// Setup
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
@@ -261,16 +261,16 @@ namespace UnitTestFramework
 			newItem3 = await todoStore.SaveAsync(newItem3);
 
 			// Act
-			ToDo entity = await todoStore.GetEntityAsync(savedItemToFind.ID);
+			ToDo entity = await todoStore.FindByIDAsync(savedItemToFind.ID);
 
 			// Assert
 			Assert.NotNull(entity);
 			Assert.True(string.Equals(entity.ID, savedItemToFind.ID));
 
 			// Teardown
-			await todoStore.DeleteAsync(newItem1.ID);
-			await todoStore.DeleteAsync(savedItemToFind.ID);
-			await todoStore.DeleteAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(savedItemToFind.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -332,9 +332,9 @@ namespace UnitTestFramework
 			Assert.AreEqual(3, listEntities.Count);
 
 			// Teardown
-			await todoStore.DeleteAsync(newItem1.ID);
-			await todoStore.DeleteAsync(newItem2.ID);
-			await todoStore.DeleteAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -400,9 +400,9 @@ namespace UnitTestFramework
 			Assert.AreEqual(3, listEntities.Count);
 
 			// Teardown
-			await todoStore.DeleteAsync(newItem1.ID);
-			await todoStore.DeleteAsync(newItem2.ID);
-			await todoStore.DeleteAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -418,7 +418,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestDeleteAsync()
+		public async Task TestRemoveAsync()
 		{
 			// Setup
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
@@ -443,7 +443,7 @@ namespace UnitTestFramework
 			string savedItemID = savedItem.ID;
 
 			// Act
-			KinveyDeleteResponse kdr = await todoStore.DeleteAsync(savedItemID);
+			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(savedItemID);
 
 			// Assert
 			Assert.NotNull(kdr);
@@ -511,9 +511,9 @@ namespace UnitTestFramework
 			Assert.AreEqual(3, kdr.count);
 
 			// Teardown
-			await todoStore.DeleteAsync(newItem1.ID);
-			await todoStore.DeleteAsync(newItem2.ID);
-			await todoStore.DeleteAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -572,8 +572,8 @@ namespace UnitTestFramework
 			Assert.AreEqual(1, listToDo.Count);
 
 			// Teardown
-			await todoStore.DeleteAsync(newItem1.ID);
-			await todoStore.DeleteAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 	}

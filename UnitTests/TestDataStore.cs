@@ -60,7 +60,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestGetEntityAsync()
+		public async Task TestFindByIDAsync()
 		{
 			// Setup
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
@@ -74,14 +74,14 @@ namespace UnitTestFramework
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			// Act
-			ToDo entity = await todoStore.GetEntityAsync(t.ID);
+			ToDo entity = await todoStore.FindByIDAsync(t.ID);
 
 			// Assert
 			Assert.NotNull(entity);
 			Assert.True(string.Equals(entity.ID, t.ID));
 
 			// Teardown
-			await todoStore.DeleteAsync(t.ID);
+			await todoStore.RemoveAsync(t.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -97,7 +97,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestGetAsync()
+		public async Task TestFindAsync()
 		{
 			// Setup
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
@@ -117,15 +117,15 @@ namespace UnitTestFramework
 			ToDo t2 = await todoStore.SaveAsync(newItem);
 
 			// Act
-			List<ToDo> todoList = await todoStore.GetAsync();
+			List<ToDo> todoList = await todoStore.FindAsync();
 
 			// Assert
 			Assert.NotNull(todoList);
 			Assert.AreEqual(2, todoList.Count);
 
 			// Teardown
-			await todoStore.DeleteAsync(t.ID);
-			await todoStore.DeleteAsync(t2.ID);
+			await todoStore.RemoveAsync(t.ID);
+			await todoStore.RemoveAsync(t2.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -162,7 +162,7 @@ namespace UnitTestFramework
 			Assert.AreEqual(1, count);
 
 			// Teardown
-			await todoStore.DeleteAsync(t.ID);
+			await todoStore.RemoveAsync(t.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -198,7 +198,7 @@ namespace UnitTestFramework
 			Assert.True(string.Equals(savedToDo.Name, newItem.Name));
 
 			// Teardown
-			await todoStore.DeleteAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
@@ -227,7 +227,7 @@ namespace UnitTestFramework
 			ToDo deleteToDo = await todoStore.SaveAsync(newItem);
 
 			// Act
-			KinveyDeleteResponse kdr = await todoStore.DeleteAsync(deleteToDo.ID);
+			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(deleteToDo.ID);
 
 			// Assert
 			Assert.NotNull(kdr);

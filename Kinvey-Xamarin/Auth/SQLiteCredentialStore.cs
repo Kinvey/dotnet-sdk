@@ -99,7 +99,11 @@ namespace KinveyXamarin
 			Credential cred = null;
 			if (sqlcred != null)
 			{
-				Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
+				Dictionary<string, JToken> attributes = null;
+				if (sqlcred.Attributes != null)
+				{
+					JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
+				}
 				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
