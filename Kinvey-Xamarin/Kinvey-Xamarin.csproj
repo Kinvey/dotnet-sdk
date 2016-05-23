@@ -91,11 +91,19 @@
     <Compile Include="Offline\SQLiteCache.cs" />
     <Compile Include="DataStore.cs" />
     <Compile Include="Offline\ISyncQueue.cs" />
-    <Compile Include="Core\INetworkFactory.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="EnumLoginType.cs" />
     <Compile Include="Offline\PendingWriteAction.cs" />
     <Compile Include="Offline\SqliteSyncQueue.cs" />
+    <Compile Include="Core\AbstractDataRequest.cs" />
+    <Compile Include="Store\RemoveRequest.cs" />
+    <Compile Include="Store\WriteRequest.cs" />
+    <Compile Include="Store\PushRequest.cs" />
+    <Compile Include="Store\ReadRequest.cs" />
+    <Compile Include="Store\SaveRequest.cs" />
+    <Compile Include="Core\NetworkRequest.cs" />
+    <Compile Include="Store\DataStoreResponse.cs" />
+    <Compile Include="Core\NetworkFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
@@ -108,6 +116,7 @@
     <Folder Include="Query\" />
     <Folder Include="Util\" />
     <Folder Include="File\" />
+    <Folder Include="Store\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

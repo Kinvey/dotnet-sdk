@@ -29,6 +29,8 @@ namespace KinveyXamarin
     public abstract class AbstractClient : AbstractKinveyClient
     {
 		public ICacheManager CacheManager { get; set; }
+
+		public NetworkFactory NetworkFactory { get ; set ;}
 		/// <summary>
 		/// The default base URL.
 		/// </summary>
@@ -119,6 +121,7 @@ namespace KinveyXamarin
         {
             this.store = store;
 			this.MICHostName = "https://auth.kinvey.com/";
+			this.NetworkFactory = new NetworkFactory (this);
         }
 
 		/// <summary>

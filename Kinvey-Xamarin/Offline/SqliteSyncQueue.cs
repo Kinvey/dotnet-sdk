@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using SQLite.Net.Async;
 using System.Threading.Tasks;
+
+
 namespace KinveyXamarin
 {
 	public class SqliteSyncQueue : ISyncQueue
@@ -15,35 +17,44 @@ namespace KinveyXamarin
 			this.Collection = collection;
 		}
 
-		public async Task<bool> Enqueue (PendingWriteAction pending){
-			return false;
+		public async Task<int> Enqueue (PendingWriteAction pending){
+			return await dbConnection.InsertAsync (pending);
 		}
+
 		public async Task<List<PendingWriteAction>> GetAll () {
-			return default(List<PendingWriteAction>);
+			return await dbConnection.Table <PendingWriteAction> ()
+				.Where(t => t.collection == this.Collection).ToListAsync();
 		}
-		public async Task<List<PendingWriteAction>> GetByCollection (string collection) {
-			return default(List<PendingWriteAction>);
-		}
-		public async Task<PendingWriteAction> GetByID(string entityID) {
-			return default(PendingWriteAction);
+
+		public async Task<PendingWriteAction> GetByID(string entityId) {
+			return await dbConnection.Table<PendingWriteAction> ()
+				.Where (t => t.collection == this.Collection && t.entityId == entityId)
+				.FirstOrDefaultAsync();
 		}
 
 		public async Task<PendingWriteAction> Peek () {
-			return default(PendingWriteAction);
-
+			return await dbConnection.Table<PendingWriteAction> ()
+				.Where (t => t.collection == this.Collection)
+				.FirstOrDefaultAsync();
 		}
 
 		public async Task<PendingWriteAction> Pop () {
-			return default(PendingWriteAction);
-
+			try{
+				PendingWriteAction item = await Peek ();
+				await dbConnection.DeleteAsync <PendingWriteAction> (item.key);
+				return item;
+			} catch (Exception e){
+				return null;
+			}
 		}
 
-		public async Task<bool> Remove (string entityID) {
-			return false;
+		public async Task<int> Remove (string entityId) {
+			PendingWriteAction item = await GetByID (entityId);
+			return await dbConnection.DeleteAsync (item.key);
 		}
 
-		public async Task<bool> RemoveAll () {
-			return false;
+		public async Task<int> RemoveAll () {
+			return await dbConnection.DeleteAllAsync <PendingWriteAction> ();
 		}
 
 
