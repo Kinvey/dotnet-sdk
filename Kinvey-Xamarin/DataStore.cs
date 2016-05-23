@@ -166,8 +166,8 @@ namespace KinveyXamarin
 				return cache.FindAll();
 			}
 
-			return await buildGetRequest().ExecuteAsync();
-		}
+			return await client.NetworkFactory.buildGetRequest <T> (collectionName).ExecuteAsync();
+		}   
 
 		/// <summary>
 		/// Get a single entity stored in a Kinvey collection.
@@ -181,7 +181,7 @@ namespace KinveyXamarin
 				return cache.FindByID(entityID);
 			}
 
-			return await buildGetByIDRequest(entityID).ExecuteAsync();
+			return await client.NetworkFactory.buildGetByIDRequest <T> (collectionName, entityID).ExecuteAsync();
 		}
 
 		/// <summary>

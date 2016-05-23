@@ -146,7 +146,6 @@ namespace KinveyXamarin
 			//TODO
 		}
 
-<<<<<<< 12a7cd5a28f7b59d6ca0f8315664b690ebd3f91f
 
 		/// <summary>
 		/// Gets the database helper.
@@ -159,9 +158,7 @@ namespace KinveyXamarin
 
 		public ICache<T> GetCache<T> (string collectionName) where T : class
 		{
-=======
-		public ICache<T> GetCache<T> (string collectionName) where T: class {
->>>>>>> Empty sync queue implementation - first pass
+
 			//int ret = dbConnectionSync.DropTable<T> ();
 			//int ret = dbConnectionSync.Dispose();
 			if (mapCollectionToCache.ContainsKey(collectionName))
@@ -210,10 +207,10 @@ namespace KinveyXamarin
 
 		public ISyncQueue GetSyncQueue(string collectionName) {
 			if (!TableExists<PendingWriteAction>(dbConnectionSync)){
-				dbConnection.CreateTableAsync<PendingWriteAction> ();
+				dbConnectionSync.CreateTable<PendingWriteAction> ();
 			}
 
-			return new SqliteSyncQueue(collectionName, dbConnection);
+			return new SqliteSyncQueue(collectionName, dbConnectionSync);
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)

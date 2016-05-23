@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SQLite.Net.Async;
+using SQLite.Net;
 using System.Threading.Tasks;
 
 
@@ -9,52 +9,56 @@ namespace KinveyXamarin
 	public class SqliteSyncQueue : ISyncQueue
 	{
 		public string Collection { get;}
-		private SQLiteAsyncConnection dbConnection;
+		private SQLiteConnection dbConnection;
 
-		public SqliteSyncQueue (string collection, SQLiteAsyncConnection connection)
+		public SqliteSyncQueue (string collection, SQLiteConnection connection)
 		{
 			this.dbConnection = connection;
 			this.Collection = collection;
 		}
 
-		public async Task<int> Enqueue (PendingWriteAction pending){
-			return await dbConnection.InsertAsync (pending);
+		public int Enqueue (PendingWriteAction pending){
+			return dbConnection.Insert (pending);
 		}
 
-		public async Task<List<PendingWriteAction>> GetAll () {
-			return await dbConnection.Table <PendingWriteAction> ()
-				.Where(t => t.collection == this.Collection).ToListAsync();
+		public List<PendingWriteAction> GetAll () {
+			//return dbConnection.Table <PendingWriteAction> ()
+			//	.Where(t => t.collection == this.Collection);
+
+			//TODO pending implementation
+			return null; 
+
 		}
 
-		public async Task<PendingWriteAction> GetByID(string entityId) {
-			return await dbConnection.Table<PendingWriteAction> ()
+		public PendingWriteAction GetByID(string entityId) {
+			return  dbConnection.Table<PendingWriteAction> ()
 				.Where (t => t.collection == this.Collection && t.entityId == entityId)
-				.FirstOrDefaultAsync();
+				.FirstOrDefault();
 		}
 
-		public async Task<PendingWriteAction> Peek () {
-			return await dbConnection.Table<PendingWriteAction> ()
+		public  PendingWriteAction Peek () {
+			return  dbConnection.Table<PendingWriteAction> ()
 				.Where (t => t.collection == this.Collection)
-				.FirstOrDefaultAsync();
+				.FirstOrDefault();
 		}
 
-		public async Task<PendingWriteAction> Pop () {
+		public PendingWriteAction Pop () {
 			try{
-				PendingWriteAction item = await Peek ();
-				await dbConnection.DeleteAsync <PendingWriteAction> (item.key);
+				PendingWriteAction item = Peek ();
+				dbConnection.Delete <PendingWriteAction> (item.key);
 				return item;
 			} catch (Exception e){
 				return null;
 			}
 		}
 
-		public async Task<int> Remove (string entityId) {
-			PendingWriteAction item = await GetByID (entityId);
-			return await dbConnection.DeleteAsync (item.key);
+		public int Remove (string entityId) {
+			PendingWriteAction item = GetByID (entityId);
+			return  dbConnection.Delete (item.key);
 		}
 
-		public async Task<int> RemoveAll () {
-			return await dbConnection.DeleteAllAsync <PendingWriteAction> ();
+		public int RemoveAll () {
+			return  dbConnection.DeleteAll <PendingWriteAction> ();
 		}
 
 
