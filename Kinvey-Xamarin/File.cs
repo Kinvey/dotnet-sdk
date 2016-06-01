@@ -13,6 +13,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -91,10 +92,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="metadata">Metadata associated with the file; supports arbitrary key/value pairs.</param>
 		/// <param name="content">The actual bytes of the file to upload.</param>
-		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, byte[] content)
+		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
 		{
 			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
+			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await uploadRequest.ExecuteAsync();
+			ct.ThrowIfCancellationRequested();
 			await uploadRequest.uploadFileAsync(fmd, content);
 			return fmd;
 		}
@@ -104,10 +108,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="metadata">Metadata associated with the file; supports arbitrary key/value pairs.</param>
 		/// <param name="content">The stream of file content to upload.</param>
-		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, Stream content)
+		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
 		{
 			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
+			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await uploadRequest.ExecuteAsync();
+			ct.ThrowIfCancellationRequested();
 			await uploadRequest.uploadFileAsync(fmd, content);
 			return fmd;
 		}
@@ -116,9 +123,11 @@ namespace KinveyXamarin
 		/// Uploads metadata associated with a file, without changing the file itself.  Do not modify the id or filename using this method-- it's for any other key/value pairs.
 		/// </summary>
 		/// <param name="metadata">The updated FileMetaData to upload to Kinvey.</param>
-		public async Task<FileMetaData> uploadMetadataAsync(FileMetaData metadata)
+		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+		public async Task<FileMetaData> uploadMetadataAsync(FileMetaData metadata, CancellationToken ct = default(CancellationToken))
 		{
 			UploadMetaDataRequest uploadMetaDataRequest = buildUploadMetaDataRequest(metadata);
+			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await uploadMetaDataRequest.ExecuteAsync();
 			return fmd;
 		}
@@ -132,10 +141,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
 		/// <param name="content">Content.</param>
-		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content)
+		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
 		{
 			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
+			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await downloadRequest.ExecuteAsync();
+			ct.ThrowIfCancellationRequested();
 			await downloadRequest.downloadFileAsync(fmd, content);
 			return fmd;
 		}
@@ -145,10 +157,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
 		/// <param name="content">Where the contents of the file will be streamed.</param>
-		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content)
+		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
 		{
 			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
+			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await downloadRequest.ExecuteAsync();
+			ct.ThrowIfCancellationRequested();
 			await downloadRequest.downloadFileAsync(fmd, content);
 			return fmd;
 		}
@@ -157,9 +172,11 @@ namespace KinveyXamarin
 		/// Downloads the metadata of a File, without actually downloading the file.
 		/// </summary>
 		/// <param name="fileId">The _id of the file's metadata to download. </param>
-		public async Task<FileMetaData> downloadMetadataAsync(string fileId)
+		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+		public async Task<FileMetaData> downloadMetadataAsync(string fileId, CancellationToken ct = default(CancellationToken))
 		{
 			DownloadMetaDataRequest downloadMetadataRequest = buildDownloadMetaDataRequest(fileId);
+			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await downloadMetadataRequest.ExecuteAsync();
 			return fmd;
 		}
@@ -172,9 +189,11 @@ namespace KinveyXamarin
 		/// Delete the specified file.
 		/// </summary>
 		/// <param name="fileId">The _id of the file to delete.</param>
-		public async Task<KinveyDeleteResponse> delete(string fileId)
+		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+		public async Task<KinveyDeleteResponse> delete(string fileId, CancellationToken ct = default(CancellationToken))
 		{
 			DeleteFileAndMetaDataRequest request = buildDeleteFileRequest(fileId);
+			ct.ThrowIfCancellationRequested();
 			KinveyDeleteResponse deleteResponse = await request.ExecuteAsync();
 			return deleteResponse;
 		}
