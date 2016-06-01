@@ -64,10 +64,10 @@ namespace KinveyXamarin
 		/// <param name="reason">Reason.</param>
 		/// <param name="fix">Fix.</param>
 		/// <param name="explanation">Explanation.</param>
-		public KinveyException(string reason)
-			: base(FormatMessage(reason))
+		public KinveyException(EnumErrorCode errorCode, string info = null)
+			: base(MessageFromErrorCode(errorCode, info))
 		{
-			this.reason = reason;
+			this.reason = MessageFromErrorCode(errorCode, info);
 		}
 			
 		/// <summary>
@@ -133,5 +133,61 @@ namespace KinveyXamarin
 			return "\nREASON: " + reason;
 		}
 
+		private static string MessageFromErrorCode(EnumErrorCode code, string info = null)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			switch (code)
+			{
+				case EnumErrorCode.ERROR_JSON_INVALID:
+					break;
+
+				case EnumErrorCode.ERROR_JSON_PARSE:
+					sb.Append(FormatMessage("Unable to parse the json in the repsonse",
+											"examine BL or DLC to ensure data format is correct.",
+											"If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)"));
+					break;
+
+				case EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE:
+					sb.Append("Redirect does not contain `code=`, was: ");
+					break;
+
+				case EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS:
+					sb.Append("MIC Hostname must use the https protocol, trying to set: ");
+					break;
+
+				case EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER:
+					sb.Append("The response expects `Content-Type` header to be \"application/json\", but was instead: ");
+					break;
+
+				case EnumErrorCode.ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT:
+					sb.Append("Cannot attach more than 2k of Custom Request Properties");
+					break;
+
+				case EnumErrorCode.ERROR_REQUIREMENT_HTTPS:
+					sb.Append("Kinvey requires the usage of SSL over http.  Use `https` as the protocol when setting a base URL");
+					break;
+
+				case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
+					sb.Append(FormatMessage("Attempting to login when a user is already logged in",
+											"call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
+											"Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended"));
+					break;
+
+				case EnumErrorCode.ERROR_USER_NO_ACTIVE:
+					break;
+
+				default:
+					sb.Append("Unknown error: ");
+					break;
+			}
+
+			if (!String.IsNullOrEmpty(info))
+			{
+				sb.Append(info);
+			}
+
+			return sb.ToString();
+		}
     }
 }

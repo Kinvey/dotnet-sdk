@@ -179,7 +179,7 @@ namespace KinveyXamarin
         private static string NormalizeRootUrl(string rootUrl)
         {
 			if (!rootUrl.ToUpper ().StartsWith ("HTTPS")) {
-				throw new KinveyException ("Kinvey requires the usage of SSL over http.  Use `https` as the protocol when setting a base URL");
+				throw new KinveyException (EnumErrorCode.ERROR_REQUIREMENT_HTTPS);
 			}
 
             if (!rootUrl.EndsWith("/"))

@@ -47,7 +47,7 @@ namespace KinveyXamarin
 			{
 				if (!value.StartsWith("https"))
 				{
-					throw new KinveyException("MIC Hostname must use the https protocol, trying to set: " + value);
+					throw new KinveyException(EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS, value);
 				}
 
 				if (!value.EndsWith ("/"))
