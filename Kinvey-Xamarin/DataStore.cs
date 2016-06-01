@@ -31,7 +31,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Class for managing appData access to the Kinvey backend.
 	/// </summary>
-	public class DataStore<T> : KinveyQueryable<T>  where T:class
+	public class DataStore<T> : KinveyQueryable<T>, IObservable<T>  where T:class
 	{
 		#region Member variables
 
@@ -113,7 +113,8 @@ namespace KinveyXamarin
 
 		#endregion
 
-		private DataStore (DataStoreType type, string collectionName, AbstractClient client) : base (QueryParser.CreateDefault(), new KinveyQueryExecutor<T>(), typeof(T))
+		private DataStore (DataStoreType type, string collectionName, AbstractClient client)
+			: base (new KinveyQueryProvider(typeof(KinveyQueryable<T>), QueryParser.CreateDefault(), new KinveyQueryExecutor<T>()), typeof(T))
 		{
 		//	this.collectionName = typeof(T).FullName;
 			this.collectionName = collectionName;
@@ -124,25 +125,6 @@ namespace KinveyXamarin
 		}
 
 		#region Public interface
-
-		public override object executeQueryOnCache(Expression expr)
-		{
-			T[] results = null;
-			if (DataStoreType.CACHE == this.storeType)
-			{
-				results = cache.FindByQuery(expr)?.ToArray();
-			}
-
-			return results;
-		}
-
-		public override object executeQuery(string queryMongo)
-		{
-			// TODO implement
-			T[] results = default(T[]);
-
-			return results;
-		}
 
 		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client)
 		{
@@ -196,6 +178,79 @@ namespace KinveyXamarin
 
 		public async Task<List<T>> FindAsync(string queryString){
 			return await buildGetRequest (queryString).ExecuteAsync ();
+		}
+
+		public IDisposable Subscribe(IObserver<T> observer)
+		{
+			return new Unsubscriber();
+		}
+
+		private class Unsubscriber : IDisposable
+		{
+			public void Dispose()
+			{
+			}
+		}
+
+		/// <summary>
+		/// Find based on query.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
+		public async Task FindAsync(KinveyQuery<T> queryObj)
+		{
+			IDisposable u = this.Subscribe(queryObj);
+			IQueryable<T> query = queryObj.Query;
+
+			if (DataStoreType.CACHE == this.storeType)
+			{
+				try
+				{
+					List<T> cacheResults = cache.FindByQuery(query.Expression);
+					foreach (T cacheItem in cacheResults)
+					{
+						queryObj.OnNext(cacheItem);
+					}
+
+					queryObj.OnCompleted();
+				}
+				catch (Exception e)
+				{
+					queryObj.OnError(e);
+				}
+
+				// now the network portion
+				try
+				{
+					writer.Reset();
+
+					KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer, typeof(T));
+
+					QueryModel queryModel = (queryObj.Query.Provider as KinveyQueryProvider).qm;
+
+					writer.Write("{");
+					queryModel.Accept (visitor);
+					writer.Write("}");
+
+					string mongoQuery = writer.GetFullString();
+
+					List<T> networkResults = await FindAsync(mongoQuery);
+
+					foreach (T networkItem in networkResults)
+					{
+						queryObj.OnNext(networkItem);
+					}
+				}
+				catch (Exception e)
+				{
+					// network error
+					queryObj.OnError(e);
+				}
+
+				queryObj.OnCompleted();
+			}
+
+			u.Dispose();
 		}
 
 		/// <summary>

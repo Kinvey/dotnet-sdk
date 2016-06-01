@@ -15,32 +15,46 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq;
-using Remotion.Linq.Parsing.Structure;
 using KinveyUtils;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Kinvey queryable base class.  Used to provide access to LINQ queries in order to process them.
+	/// </summary>
 	public class KinveyQueryable<T> : QueryableBase<T>
 	{
+		/// <summary>
+		/// Builds the mongo query corresponding to the LINQ query.
+		/// </summary>
 		public StringQueryBuilder writer;
-		static public Expression express;  // TODO find a way to not use a static class variable to capture query Expression
 
-		public KinveyQueryable(IQueryParser queryParser, IQueryExecutor executor, Type myClass)
-			: base(new DefaultQueryProvider(typeof(KinveyQueryable<>), queryParser, executor))
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable<T>"/> class.
+		/// </summary>
+		/// <param name="myQueryProvider">My query provider.</param>
+		/// <param name="myClass">My class.</param>
+		public KinveyQueryable(KinveyQueryProvider queryProvider, Type myClass)
+			: base(queryProvider)
 		{
-			var kExecutor = executor as KinveyQueryExecutor<T>;
-			if (kExecutor != null) {
+			var kExecutor = queryProvider.Executor as KinveyQueryExecutor<T>;
+
+			if (kExecutor != null)
+			{
 				writer = new StringQueryBuilder ();
 				kExecutor.writer = writer;
 				kExecutor.queryable = this;
 			}
-
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable`1"/> class.
+		/// </summary>
+		/// <param name="provider">Provider.</param>
+		/// <param name="expression">Expression.</param>
 		public KinveyQueryable(IQueryProvider provider, Expression expression)
 			: base(provider, expression)
 		{
-			express = expression;
 		}
 
 		/// <summary>
@@ -58,8 +72,7 @@ namespace KinveyXamarin
 		/// Executes the query on cache.
 		/// </summary>
 		/// <returns>The query on cache.</returns>
-		/// <param name="expr">Query expression to be executed on cache.</param>
-		public virtual object executeQueryOnCache(Expression expr)
+		public virtual object executeQueryOnCache()
 		{
 			Logger.Log ("can't execute a query on cache without overriding this method!");
 			return default(object);

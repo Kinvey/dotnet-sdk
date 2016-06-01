@@ -97,6 +97,9 @@
     <Compile Include="EnumLoginType.cs" />
     <Compile Include="Query\KinveyQueryVisitor.cs" />
     <Compile Include="Query\KinveyQueryable.cs" />
+    <Compile Include="Query\KinveyQueryProvider.cs" />
+    <Compile Include="Query\KinveyQueryDelegate.cs" />
+    <Compile Include="Query\KinveyQuery.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

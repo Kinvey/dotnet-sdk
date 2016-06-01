@@ -529,7 +529,58 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestLINQSelect()
+		{
+//			// Setup
+//			if (kinveyClient.CurrentUser.isUserLoggedIn())
+//			{
+//				kinveyClient.CurrentUser.Logout();
+//			}
+//
+//			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+//
+//			// Arrange
+//			ToDo newItem1 = new ToDo();
+//			newItem1.Name = "todo";
+//			newItem1.Details = "details for 1";
+//			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+//
+//			ToDo newItem2 = new ToDo();
+//			newItem2.Name = "another todo";
+//			newItem2.Details = "details for 2";
+//			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+//
+//			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+//
+//			newItem1 = await todoStore.SaveAsync(newItem1);
+//			newItem2 = await todoStore.SaveAsync(newItem2);
+//
+//			// Act
+////			var query = from todo in todoStore
+////						where todo.Details.StartsWith("details for 2")
+////						select todo;
+//
+//			var query = todoStore.Where(x => x.Name.StartsWith("anoth"));
+//			List<ToDo> listToDo = await todoStore.FindAsync(query);
+//
+////			foreach (ToDo td in query2)
+////			{
+////				listToDo2.Add(td);
+////			}
+//
+//			// Assert
+//			Assert.IsNotEmpty(listToDo);
+//			Assert.AreEqual(1, listToDo.Count);
+//
+//			// Teardown
+//			await todoStore.RemoveAsync(newItem1.ID);
+//			await todoStore.RemoveAsync(newItem2.ID);
+//			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestLINQQueryParsing()
 		{
 			// Setup
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
@@ -560,21 +611,30 @@ namespace UnitTestFramework
 //						where todo.Details.StartsWith("details for 2")
 //						select todo;
 
-			var query = todoStore.Where(x => x.Name.StartsWith("anoth"));
 			List<ToDo> listToDo = new List<ToDo>();
-			foreach (ToDo todo in query)
-			{
-				listToDo.Add(todo);
-			}
+			var query = todoStore.Where(x => x.Details.StartsWith("det"));
 
-			// Assert
-			Assert.IsNotEmpty(listToDo);
-			Assert.AreEqual(1, listToDo.Count);
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (ToDo result) => listToDo.Add(result),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(query, kqd);
+
+			await todoStore.FindAsync(queryObj);
+
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
 			await todoStore.RemoveAsync(newItem2.ID);
 			kinveyClient.CurrentUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(4, listToDo.Count);
 		}
 	}
 }
