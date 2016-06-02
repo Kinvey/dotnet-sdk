@@ -350,7 +350,18 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetByQueryAsync()
+		{
+			// Arrange
+
+			// Act
+
+			// Assert
+		}
+
+		[Test]
+		public async Task TestGetByQueryAsyncBad()
 		{
 			// Setup
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
@@ -390,31 +401,20 @@ namespace UnitTestFramework
 			// Act
 			List<ToDo> listEntities = new List<ToDo>();
 			var query = from t in todoStore select t;
-			foreach (var todo in query)
-			{
-				listEntities.Add(todo);
-			}
 
 			// Assert
-			Assert.NotNull(listEntities);
-			Assert.AreEqual(3, listEntities.Count);
+			Assert.Catch(async delegate() {
+				foreach (var todo in query)
+				{
+					listEntities.Add(todo);
+				}
+			});
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
 			await todoStore.RemoveAsync(newItem2.ID);
 			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.CurrentUser.Logout();
-		}
-
-		[Test]
-		[Ignore("Placeholder - No unit test yet")]
-		public async Task TestGetByQueryAsyncBad()
-		{
-			// Arrange
-
-			// Act
-
-			// Assert
 		}
 
 		[Test]
