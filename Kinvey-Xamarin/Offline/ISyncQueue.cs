@@ -1,20 +1,21 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
 	public interface ISyncQueue
 	{
-		bool Enqueue (PendingOperation pending);
-		List<PendingOperation> GetAll ();
-		List<PendingOperation> GetByCollection (string collection);
-		PendingOperation GetByID(string entityID);
+		string Collection { get; }
+		int Enqueue (PendingWriteAction pending);
+		List<PendingWriteAction> GetAll ();
+		PendingWriteAction GetByID(string entityId);
 
-		PendingOperation Peek ();
-		PendingOperation Pop ();
+		PendingWriteAction Peek ();
+		PendingWriteAction Pop ();
 
-		bool Remove (string entityID);
-		bool RemoveAll ();
+		int Remove (string entityId);
+		int RemoveAll ();
 
 	}
 }

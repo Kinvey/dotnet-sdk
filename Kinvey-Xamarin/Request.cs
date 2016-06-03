@@ -1,15 +1,21 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
-	abstract public class Request <T>
+	abstract public class Request <T, U>
 	{
-		public Request ()
+		protected AbstractClient Client { get;} 
+
+		public Request (AbstractClient client)
 		{
+			this.Client = client;
+
 		}
 
-		//public virtual bool Cancel ();
-		//public virtual T ExecuteAsync ();
+		public abstract Task<U> ExecuteAsync ();
+
+		public abstract Task<bool> Cancel();
 	}
 }
 

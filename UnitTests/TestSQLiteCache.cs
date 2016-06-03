@@ -634,7 +634,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.IsNotNull(listToDo);
 			Assert.IsNotEmpty(listToDo);
-			Assert.AreEqual(4, listToDo.Count);
+			Assert.AreEqual(2, listToDo.Count);
 		}
 	}
 }

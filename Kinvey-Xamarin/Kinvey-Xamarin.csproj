@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -57,6 +57,7 @@
     <Compile Include="Offline\OfflinePolicy.cs" />
     <Compile Include="Offline\SQLiteHelper.cs" />
     <Compile Include="Offline\SQLTemplates.cs" />
+    <Compile Include="Offline\DatabaseHelper.cs" />
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
@@ -88,15 +89,23 @@
     <Compile Include="Offline\SQLiteCacheManager.cs" />
     <Compile Include="Offline\ICache.cs" />
     <Compile Include="Offline\SQLiteCache.cs" />
-    <Compile Include="Offline\DatabaseHelper.cs" />
     <Compile Include="DataStore.cs" />
     <Compile Include="Offline\ISyncQueue.cs" />
-    <Compile Include="Core\INetworkFactory.cs" />
-    <Compile Include="Offline\PendingOperation.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="EnumLoginType.cs" />
-    <Compile Include="Query\KinveyQueryVisitor.cs" />
+    <Compile Include="Offline\PendingWriteAction.cs" />
+    <Compile Include="Offline\SqliteSyncQueue.cs" />
+    <Compile Include="Core\AbstractDataRequest.cs" />
+    <Compile Include="Store\RemoveRequest.cs" />
+    <Compile Include="Store\WriteRequest.cs" />
+    <Compile Include="Store\PushRequest.cs" />
+    <Compile Include="Store\ReadRequest.cs" />
+    <Compile Include="Store\SaveRequest.cs" />
+    <Compile Include="Core\NetworkRequest.cs" />
+    <Compile Include="Store\DataStoreResponse.cs" />
+    <Compile Include="Core\NetworkFactory.cs" />
     <Compile Include="Query\KinveyQueryable.cs" />
+    <Compile Include="Query\KinveyQueryVisitor.cs" />
     <Compile Include="Query\KinveyQueryProvider.cs" />
     <Compile Include="Query\KinveyQueryDelegate.cs" />
     <Compile Include="Query\KinveyQuery.cs" />
@@ -113,6 +122,7 @@
     <Folder Include="Query\" />
     <Folder Include="Util\" />
     <Folder Include="File\" />
+    <Folder Include="Store\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

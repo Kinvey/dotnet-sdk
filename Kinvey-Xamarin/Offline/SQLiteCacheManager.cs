@@ -158,6 +158,7 @@ namespace KinveyXamarin
 
 		public ICache<T> GetCache<T> (string collectionName) where T : class
 		{
+
 			//int ret = dbConnectionSync.DropTable<T> ();
 			//int ret = dbConnectionSync.Dispose();
 			if (mapCollectionToCache.ContainsKey(collectionName))
@@ -204,8 +205,12 @@ namespace KinveyXamarin
 		}
 
 
-		public ISyncQueue GetSyncQueue() {
-			return null;
+		public ISyncQueue GetSyncQueue(string collectionName) {
+			if (!TableExists<PendingWriteAction>(dbConnectionSync)){
+				dbConnectionSync.CreateTable<PendingWriteAction> ();
+			}
+
+			return new SqliteSyncQueue(collectionName, dbConnectionSync);
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)
