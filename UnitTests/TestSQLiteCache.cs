@@ -201,10 +201,9 @@ namespace UnitTestFramework
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
 			newItem3 = await todoStore.SaveAsync(newItem3);
-			DataStore<ToDo> todoStore1 = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
 
 			// Act
-			List<ToDo> todoList = await todoStore1.FindAsync();
+			List<ToDo> todoList = await todoStore.FindAsync();
 
 			// Assert
 			Assert.NotNull(todoList);
@@ -212,7 +211,7 @@ namespace UnitTestFramework
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore1.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
 			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
@@ -229,7 +228,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestFindByIDAsync()
+		public async Task TestFindByID()
 		{
 			// Setup
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
@@ -276,7 +275,7 @@ namespace UnitTestFramework
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
-		public async Task TestGetByIDAsyncBad()
+		public async Task TestFindByIDAsyncBad()
 		{
 			// Arrange
 
@@ -286,7 +285,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestGetByListOfIDs()
+		public async Task TestFindByListOfIDs()
 		{
 			// Setup
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
@@ -340,7 +339,7 @@ namespace UnitTestFramework
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
-		public async Task TestGetByListOfIDsBad()
+		public async Task TestFindByListOfIDsBad()
 		{
 			// Arrange
 
@@ -580,6 +579,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestLINQQueryParsing()
 		{
 			// Setup
