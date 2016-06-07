@@ -5,11 +5,12 @@ namespace KinveyXamarin
 {
 	public class PushRequest <T> : WriteRequest<T, DataStoreResponse>
 	{
-		public PushRequest (AbstractClient client, string collection,  ICache<T> cache, ISyncQueue queue) : base (client, collection, cache, queue){
-			
+		public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
+			: base (client, collection, cache, queue, policy)
+		{
 		}
 
-		public override async Task <DataStoreResponse> ExecuteAsync ()
+		public override async Task <DataStoreResponse> ExecuteAsync()
 		{
 			List<PendingWriteAction> pendingActions = SyncQueue.GetAll ();
 			DataStoreResponse response = new DataStoreResponse ();

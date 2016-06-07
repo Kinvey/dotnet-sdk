@@ -23,8 +23,19 @@ namespace KinveyXamarin
 			PendingWriteAction newAction = new PendingWriteAction ();
 			//newAction.collection = request.CollectionName;
 			newAction.action = request.RequestMethod;
-			newAction.entityId = request.uriResourceParameters ["entityId"];
+
+			if (request.uriResourceParameters.ContainsKey("entityId"))
+			{
+				newAction.entityId = request.uriResourceParameters["entityId"];
+			}
+
+			if (request.uriResourceParameters.ContainsKey("collectionName"))
+			{
+				newAction.collection = request.uriResourceParameters["collectionName"];
+			}
+
 			newAction.state = JsonConvert.SerializeObject (request.customRequestHeaders);
+
 			return newAction;
 		}
 

@@ -281,9 +281,9 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entity">the entity to save.</param>
-		public async Task<T> SaveAsync(T entity){
-			//return await networkFactory.buildSaveRequest <T> (this.CollectionName, entity).ExecuteAsync ();
-			SaveRequest<T> request = new SaveRequest<T>(entity, this.client, this.CollectionName, this.cache, this.syncQueue);
+		public async Task<T> SaveAsync(T entity)
+		{
+			SaveRequest<T> request = new SaveRequest<T>(entity, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
 			return await request.ExecuteAsync();
 		}
 

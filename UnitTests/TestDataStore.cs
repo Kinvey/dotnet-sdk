@@ -248,5 +248,31 @@ namespace UnitTestFramework
 
 			// Assert
 		}
+
+		[Test]
+		public async Task TestSyncQueueAdd()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			ToDo newItem = new ToDo();
+			newItem.Name = "Task to save to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem = await todoStore.SaveAsync(newItem);
+
+			// Act
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+
+			// Assert
+			Assert.NotNull(pwa);
+			Assert.IsNotNullOrEmpty(pwa.entityId);
+			Assert.True(String.Equals(collectionName, pwa.collection));
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
 	}
 }
