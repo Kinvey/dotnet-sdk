@@ -155,4 +155,30 @@ Global
 		{DF7B3CED-9867-4353-9363-5D1282160715}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{DF7B3CED-9867-4353-9363-5D1282160715}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.TextStylePolicy = $2
+		$2.inheritsSet = null
+		$2.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $3
+		$3.IndentSwitchBody = True
+		$3.StatementBraceStyle = NextLine
+		$3.ElseNewLinePlacement = NewLine
+		$3.CatchNewLinePlacement = NewLine
+		$3.FinallyNewLinePlacement = NewLine
+		$3.BeforeMethodCallParentheses = False
+		$3.NewLineBeforeConstructorInitializerColon = SameLine
+		$3.NewLineAfterConstructorInitializerColon = NewLine
+		$3.AfterDelegateDeclarationParameterComma = True
+		$3.NewParentheses = False
+		$3.SpaceAroundUnsafeArrowOperator = True
+		$3.SpacesBeforeBrackets = False
+		$3.BlankLinesInsideRegion = 0
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/x-csharp
+		$3.scope = text/x-csharp
+	EndGlobalSection
 EndGlobal
