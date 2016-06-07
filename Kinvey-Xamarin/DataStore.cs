@@ -293,8 +293,10 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">the _id of the entity to delete.</param>
-		public async Task<KinveyDeleteResponse> RemoveAsync(string entityId){
-			return await networkFactory.buildDeleteRequest <KinveyDeleteResponse> (this.CollectionName, entityId).ExecuteAsync ();
+		public async Task<KinveyDeleteResponse> RemoveAsync(string entityID)
+		{
+			RemoveRequest<T> request = new RemoveRequest<T>(entityID, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			return await request.ExecuteAsync();
 		}
 
 		#endregion

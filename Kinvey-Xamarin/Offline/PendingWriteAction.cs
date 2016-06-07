@@ -24,9 +24,9 @@ namespace KinveyXamarin
 			//newAction.collection = request.CollectionName;
 			newAction.action = request.RequestMethod;
 
-			if (request.uriResourceParameters.ContainsKey("entityId"))
+			if (request.uriResourceParameters.ContainsKey("entityID"))
 			{
-				newAction.entityId = request.uriResourceParameters["entityId"];
+				newAction.entityId = request.uriResourceParameters["entityID"];
 			}
 
 			if (request.uriResourceParameters.ContainsKey("collectionName"))

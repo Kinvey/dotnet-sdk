@@ -21,14 +21,14 @@ namespace KinveyXamarin
 
 		#region Request Builders
 
-		public NetworkRequest<T> buildGetByIDRequest <T> (string collectionName, string entityId)
+		public NetworkRequest<T> buildGetByIDRequest <T> (string collectionName, string entityID)
 		{
-			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityId}";
+			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";
 
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("collectionName", collectionName);
-			urlParameters.Add ("entityId", entityId);
+			urlParameters.Add ("entityID", entityID);
 
 			NetworkRequest<T> getEntity = new NetworkRequest<T> (client, "GET", REST_PATH, null, urlParameters);
 			client.InitializeRequest (getEntity);
