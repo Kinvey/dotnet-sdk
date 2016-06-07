@@ -63,6 +63,11 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Requirement Error - Limit on custom request property headers has been exceeded.
 		/// </summary>
-		ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT
+		ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT,
+
+		/// <summary>
+		/// General error condition
+		/// </summary>
+		ERROR_GENERAL
 	}
 }
