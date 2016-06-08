@@ -56,6 +56,12 @@ namespace KinveyXamarin
 		T UpdateCacheSave(T item, string tempID);
 
 		/// <summary>
+		/// Update the specified item.
+		/// </summary>
+		/// <param name="item">Item.</param>
+		T Update(T item);
+
+		/// <summary>
 		/// Finds entities by query.
 		/// </summary>
 		/// <returns>List of entities matching the given query</returns>

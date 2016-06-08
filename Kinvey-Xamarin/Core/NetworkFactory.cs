@@ -109,43 +109,32 @@ namespace KinveyXamarin
 //		}
 
 
-		public NetworkRequest<T> buildCreateRequest <T> (string collectionName, T entity){
-
-			const string REST_PATH = "appdata/{appKey}/{collectionName}";
-			var urlParameters = new Dictionary<string, string> ();
-			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("collectionName", collectionName);
-
-			JToken idToken = JObject.FromObject (entity) ["_id"];
-			string id = null;
-			if (idToken != null) {
-				id = idToken.ToString ();
-			}
-
-			NetworkRequest<T> save = new NetworkRequest<T> (client, "POST", REST_PATH, entity, urlParameters);
-			client.InitializeRequest (save);
-			return save;
-
-		}
-
-		public NetworkRequest<T> buildUpdateRequest <T> (string collectionName, T entity)
+		public NetworkRequest<T> buildCreateRequest <T> (string collectionName, T entity)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}";
-			var urlParameters = new Dictionary<string, string> ();
-			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("collectionName", collectionName);
 
-			JToken idToken = JObject.FromObject (entity) ["_id"];
-			string id = null;
-			if (idToken != null) {
-				id = idToken.ToString ();
-			}
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", collectionName);
 
-			NetworkRequest<T> save = new NetworkRequest<T> (client, "PUT", REST_PATH, entity, urlParameters);
-			client.InitializeRequest (save);
-			return save;
+			NetworkRequest<T> create = new NetworkRequest<T> (client, "POST", REST_PATH, entity, urlParameters);
+			client.InitializeRequest(create);
+			return create;
 		}
 
+		public NetworkRequest<T> buildUpdateRequest <T> (string collectionName, T entity, string entityID)
+		{
+			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", collectionName);
+			urlParameters.Add("entityID", entityID);
+
+			NetworkRequest<T> update = new NetworkRequest<T> (client, "PUT", REST_PATH, entity, urlParameters);
+			client.InitializeRequest(update);
+			return update;
+		}
 
 		public NetworkRequest<T> buildDeleteRequest <T>(string collectionName, string entityID)
 		{	

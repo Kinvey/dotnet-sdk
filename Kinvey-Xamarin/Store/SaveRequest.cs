@@ -18,25 +18,39 @@ namespace KinveyXamarin
 		public override async Task<T> ExecuteAsync()
 		{
 			T savedEntity = default(T);
+			NetworkRequest<T> request = null;
 
-			NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest (Collection, entity);
+			JToken idToken = JObject.FromObject (entity) ["_id"];
+			if (idToken != null &&
+			    !String.IsNullOrEmpty(idToken.ToString()))
+			{
+				string entityID = idToken.ToString();
+				request = Client.NetworkFactory.buildUpdateRequest(Collection, entity, entityID);
+			}
+			else
+			{
+				request = Client.NetworkFactory.buildCreateRequest(Collection, entity);
+			}
 
 			switch (Policy)
 			{
 				case WritePolicy.FORCE_LOCAL:
 					// sync
+					PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
+
 					string sm = request.RequestMethod;
 					string tID = null;
 
 					if (String.Equals("POST", sm))
 					{
 						tID = PrepareCacheSave(ref entity);
+						savedEntity = Cache.Save(entity);
+						pendingAction.entityId = tID;
 					}
-
-					savedEntity = Cache.Save(entity);
-
-					PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
-					pendingAction.entityId = tID;
+					else
+					{
+						savedEntity = Cache.Update(entity);
+					}
 
 					SyncQueue.Enqueue(pendingAction);
 
@@ -55,9 +69,13 @@ namespace KinveyXamarin
 					if (String.Equals("POST", saveMode))
 					{
 						tempID = PrepareCacheSave(ref entity);
+						Cache.Save(entity);
+					}
+					else
+					{
+						Cache.Update(entity);
 					}
 
-					Cache.Save(entity);
 
 					// network save
 					savedEntity = await request.ExecuteAsync();

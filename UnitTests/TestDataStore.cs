@@ -269,6 +269,37 @@ namespace UnitTestFramework
 			Assert.NotNull(pwa);
 			Assert.IsNotNullOrEmpty(pwa.entityId);
 			Assert.True(String.Equals(collectionName, pwa.collection));
+			Assert.True(String.Equals("POST", pwa.action));
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestSyncQueueUpdate()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			ToDo newItem = new ToDo();
+			newItem.Name = "Task to update to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem = await todoStore.SaveAsync(newItem);
+
+			newItem.Details = "A sync update test";
+			ToDo updatedItem = await todoStore.SaveAsync(newItem);
+
+			// Act
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+
+			// Assert
+			Assert.NotNull(pwa);
+			Assert.IsNotNullOrEmpty(pwa.entityId);
+			Assert.True(String.Equals(collectionName, pwa.collection));
+			Assert.True(String.Equals("PUT", pwa.action));
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem.ID);

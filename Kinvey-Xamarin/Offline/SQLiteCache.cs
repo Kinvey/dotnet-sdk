@@ -119,6 +119,20 @@ namespace KinveyXamarin
 			return item;
 		}
 
+		public T Update(T item)
+		{
+			try
+			{
+				dbConnectionSync.Update(item);
+			}
+			catch (SQLiteException e)
+			{
+				string s = e.Message;
+			}
+
+			return item;
+		}
+
 		public List<T> Save(List<T> items)
 		{
 			// TODO implement

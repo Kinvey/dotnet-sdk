@@ -39,6 +39,7 @@ namespace KinveyXamarin
 		public  PendingWriteAction Peek () {
 			return  dbConnection.Table<PendingWriteAction> ()
 				.Where (t => t.collection == this.Collection)
+				.OrderByDescending(u => u.key)
 				.FirstOrDefault();
 		}
 
