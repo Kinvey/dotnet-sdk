@@ -305,5 +305,38 @@ namespace UnitTestFramework
 			await todoStore.RemoveAsync(newItem.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
+
+		[Test]
+		public async Task TestSyncQueuePush()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			ToDo newItem = new ToDo();
+			newItem.Name = "Task to update to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem = await todoStore.SaveAsync(newItem);
+
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance(DataStoreType.SYNC, "FlashCard", kinveyClient);
+			FlashCard firstFlashCard = new FlashCard();
+			firstFlashCard.Question = "What is capital of Djibouti?";
+			firstFlashCard.Answer = "Djibouti";
+			firstFlashCard = await flashCardStore.SaveAsync(firstFlashCard);
+
+			// Act
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+
+			// Assert
+			Assert.NotNull(pwa);
+			Assert.IsNotNullOrEmpty(pwa.entityId);
+			Assert.True(String.Equals(collectionName, pwa.collection));
+			Assert.True(String.Equals("PUT", pwa.action));
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
 	}
 }

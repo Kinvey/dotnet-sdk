@@ -73,6 +73,9 @@
     <Compile Include="..\UnitTests\TestSQLiteCache.cs">
       <Link>UnitTests\TestSQLiteCache.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTests\TestFiles\FlashCard.cs">
+      <Link>UnitTests\TestFiles\FlashCard.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
