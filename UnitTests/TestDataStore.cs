@@ -361,5 +361,82 @@ namespace UnitTestFramework
 //			Assert.AreSame(dsr.Count, kdr.count);
 			kinveyClient.CurrentUser.Logout();
 		}
+
+		[Test]
+		public async Task TestSyncQueuePush10Items()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "Task to update to SyncQ";
+			newItem1.Details = "A sync add test";
+			newItem1 = await todoStore.SaveAsync(newItem1);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "Task to update to SyncQ";
+			newItem2.Details = "A sync add test";
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "Task to update to SyncQ";
+			newItem3.Details = "A sync add test";
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			ToDo newItem4 = new ToDo();
+			newItem4.Name = "Task to update to SyncQ";
+			newItem4.Details = "A sync add test";
+			newItem4 = await todoStore.SaveAsync(newItem4);
+
+			ToDo newItem5 = new ToDo();
+			newItem5.Name = "Task to update to SyncQ";
+			newItem5.Details = "A sync add test";
+			newItem5 = await todoStore.SaveAsync(newItem5);
+
+			ToDo newItem6 = new ToDo();
+			newItem6.Name = "Task to update to SyncQ";
+			newItem6.Details = "A sync add test";
+			newItem6 = await todoStore.SaveAsync(newItem6);
+
+			ToDo newItem7 = new ToDo();
+			newItem7.Name = "Task to update to SyncQ";
+			newItem7.Details = "A sync add test";
+			newItem7 = await todoStore.SaveAsync(newItem7);
+
+			ToDo newItem8 = new ToDo();
+			newItem8.Name = "Task to update to SyncQ";
+			newItem8.Details = "A sync add test";
+			newItem8 = await todoStore.SaveAsync(newItem8);
+
+			ToDo newItem9 = new ToDo();
+			newItem9.Name = "Task to update to SyncQ";
+			newItem9.Details = "A sync add test";
+			newItem9 = await todoStore.SaveAsync(newItem9);
+
+			ToDo newItem10 = new ToDo();
+			newItem10.Name = "Task to update to SyncQ";
+			newItem10.Details = "A sync add test";
+			newItem10 = await todoStore.SaveAsync(newItem10);
+
+			// Act
+			DataStoreResponse dsr = await todoStore.SyncAsync();
+
+			// Assert
+			Assert.NotNull(dsr);
+			Assert.IsNotNull(dsr.Errors);
+			Assert.AreEqual(10, dsr.Count);
+
+			// Teardown
+			List<ToDo> listToDo = await todoStore.FindAsync();
+			foreach (ToDo t in listToDo)
+			{
+				await todoStore.RemoveAsync(t.ID);
+			}
+
+			await todoStore.SyncAsync();
+			kinveyClient.CurrentUser.Logout();
+		}
 	}
 }
