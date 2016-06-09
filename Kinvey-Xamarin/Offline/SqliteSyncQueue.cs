@@ -21,13 +21,17 @@ namespace KinveyXamarin
 			return dbConnection.Insert (pending);
 		}
 
-		public List<PendingWriteAction> GetAll () {
-			//return dbConnection.Table <PendingWriteAction> ()
-			//	.Where(t => t.collection == this.Collection);
+		public List<PendingWriteAction> GetAll()
+		{
+			List<PendingWriteAction> listPWA = new List<PendingWriteAction>();
 
-			//TODO pending implementation
-			return null; 
+			var filter = dbConnection.Table<PendingWriteAction>().Where(blah => blah.collection == this.Collection);
+			foreach (PendingWriteAction pwa in filter)
+			{
+				listPWA.Add(pwa);
+			}
 
+			return listPWA;
 		}
 
 		public PendingWriteAction GetByID(string entityId) {
@@ -53,9 +57,10 @@ namespace KinveyXamarin
 			}
 		}
 
-		public int Remove (string entityId) {
-			PendingWriteAction item = GetByID (entityId);
-			return  dbConnection.Delete (item.key);
+		public int Remove(string entityId)
+		{
+			PendingWriteAction item = GetByID(entityId);
+			return dbConnection.Delete(item);
 		}
 
 		public int RemoveAll () {

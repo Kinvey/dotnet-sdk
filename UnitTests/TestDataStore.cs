@@ -313,11 +313,16 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to update to SyncQ";
 			newItem.Details = "A sync add test";
 			newItem = await todoStore.SaveAsync(newItem);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "Task to add another item to SyncQ";
+			newItem2.Details = "Another sync add test";
+			newItem2 = await todoStore.SaveAsync(newItem2);
 
 			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance(DataStoreType.SYNC, "FlashCard", kinveyClient);
 			FlashCard firstFlashCard = new FlashCard();
@@ -326,17 +331,19 @@ namespace UnitTestFramework
 			firstFlashCard = await flashCardStore.SaveAsync(firstFlashCard);
 
 			// Act
-			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
-
-			// Assert
-			Assert.NotNull(pwa);
-			Assert.IsNotNullOrEmpty(pwa.entityId);
-			Assert.True(String.Equals(collectionName, pwa.collection));
-			Assert.True(String.Equals("PUT", pwa.action));
+			DataStoreResponse dsr = await todoStore.SyncAsync();
+//			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await flashCardStore.RemoveAsync(firstFlashCard.ID);
 			kinveyClient.CurrentUser.Logout();
+
+			// Assert
+			Assert.NotNull(dsr);
+			Assert.IsNotNull(dsr.Errors);
+			Assert.AreEqual(2, dsr.Count);
 		}
 	}
 }

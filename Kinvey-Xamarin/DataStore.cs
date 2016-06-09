@@ -299,9 +299,25 @@ namespace KinveyXamarin
 			return await request.ExecuteAsync();
 		}
 
+		/// <summary>
+		/// Sync the data in this data store
+		/// </summary>
+		/// <returns>The async.</returns>
+		public async Task<DataStoreResponse> SyncAsync()
+		{
+			DataStoreResponse dsr = default(DataStoreResponse);
+
+			// push
+			PushRequest<T> request = new PushRequest<T>(client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			dsr = await request.ExecuteAsync();
+
+			// pull
+			// TODO VRG implement
+
+			return dsr;
+		}
+
 		#endregion
-
-
 
 		#region Requests
 
