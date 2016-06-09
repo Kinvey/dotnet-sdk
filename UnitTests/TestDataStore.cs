@@ -277,36 +277,6 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestSyncQueueUpdate()
-		{
-			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
-
-			// Arrange
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
-			ToDo newItem = new ToDo();
-			newItem.Name = "Task to update to SyncQ";
-			newItem.Details = "A sync add test";
-			newItem = await todoStore.SaveAsync(newItem);
-
-			newItem.Details = "A sync update test";
-			ToDo updatedItem = await todoStore.SaveAsync(newItem);
-
-			// Act
-			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
-
-			// Assert
-			Assert.NotNull(pwa);
-			Assert.IsNotNullOrEmpty(pwa.entityId);
-			Assert.True(String.Equals(collectionName, pwa.collection));
-			Assert.True(String.Equals("PUT", pwa.action));
-
-			// Teardown
-			await todoStore.RemoveAsync(newItem.ID);
-			kinveyClient.CurrentUser.Logout();
-		}
-
-		[Test]
 		public async Task TestSyncQueuePush()
 		{
 			// Setup
@@ -332,7 +302,6 @@ namespace UnitTestFramework
 
 			// Act
 			DataStoreResponse dsr = await todoStore.SyncAsync();
-//			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
 
 			// Assert
 			Assert.NotNull(dsr);
@@ -345,15 +314,51 @@ namespace UnitTestFramework
 			{
 				await todoStore.RemoveAsync(td.ID);
 			}
+
 			List<FlashCard> listRemoveFlash = await flashCardStore.FindAsync();
 			foreach (FlashCard fc in listRemoveFlash)
 			{
 				await flashCardStore.RemoveAsync(fc.ID);
 			}
+
 			DataStoreResponse dsrDelete = await todoStore.SyncAsync();
 			Assert.NotNull(dsrDelete);
 			Assert.IsNotNull(dsrDelete.Errors);
 			Assert.AreEqual(2, dsrDelete.Count);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestSyncQueuePushUpdate()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
+			ToDo newItem = new ToDo();
+			newItem.Name = "Task to update to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem = await todoStore.SaveAsync(newItem);
+
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			ToDo updatedItem = await todoStore.SaveAsync(newItem);
+
+			// Act
+			DataStoreResponse dsr = await todoStore.SyncAsync();
+
+			// Assert
+			Assert.NotNull(dsr);
+			Assert.IsNotNull(dsr.Errors);
+			Assert.AreEqual(1, dsr.Count);
+
+			// Teardown
+			List<ToDo> listToDo = await todoStore.FindAsync();
+			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(listToDo[0].ID);
+			dsr = await todoStore.SyncAsync();
+			Assert.NotNull(dsr);
+			Assert.AreEqual(1, dsr.Count);
+//			Assert.AreSame(dsr.Count, kdr.count);
 			kinveyClient.CurrentUser.Logout();
 		}
 	}

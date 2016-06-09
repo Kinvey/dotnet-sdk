@@ -14,17 +14,19 @@ namespace KinveyXamarin
 
 		public override async Task <DataStoreResponse> ExecuteAsync()
 		{
-			List<PendingWriteAction> pendingActions = SyncQueue.GetAll ();
-			DataStoreResponse response = new DataStoreResponse ();
+			List<PendingWriteAction> pendingActions = SyncQueue.GetAll();
+
+			DataStoreResponse response = new DataStoreResponse();
+
 			foreach (PendingWriteAction pwa in pendingActions)
 			{
 				try
 				{
-					string tempID = pwa.entityId;
-					T entity = Cache.FindByID(pwa.entityId);
-
 					if (String.Equals("POST", pwa.action))
 					{
+						string tempID = pwa.entityId;
+						T entity = Cache.FindByID(pwa.entityId);
+
 						JObject obj = JObject.FromObject(entity);
 						obj["_id"] = null;
 						entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
@@ -33,19 +35,32 @@ namespace KinveyXamarin
 						entity = await request.ExecuteAsync();
 
 						Cache.UpdateCacheSave(entity, tempID);
+
+						SyncQueue.Remove(tempID);
 					}
+
+
 					else if (String.Equals("PUT", pwa.action))
 					{
+						string tempID = pwa.entityId;
+						T entity = Cache.FindByID(pwa.entityId);
+
 						NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
 						await request.ExecuteAsync();
+						SyncQueue.Remove(tempID);
 					}
+
+
 					else if (String.Equals("DELETE", pwa.action))
 					{
 						NetworkRequest<KinveyDeleteResponse> request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(pwa.collection, pwa.entityId);
-						await request.ExecuteAsync();
+						KinveyDeleteResponse kdr = await request.ExecuteAsync();
+						if (kdr.count == 1)
+						{
+							SyncQueue.Remove(pwa.entityId);
+						}
 					}
 
-					SyncQueue.Remove(tempID);
 					response.Count++;
 				}
 				catch (Exception e)
