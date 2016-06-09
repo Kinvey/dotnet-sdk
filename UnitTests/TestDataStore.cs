@@ -334,16 +334,27 @@ namespace UnitTestFramework
 			DataStoreResponse dsr = await todoStore.SyncAsync();
 //			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
 
-			// Teardown
-			await todoStore.RemoveAsync(newItem.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await flashCardStore.RemoveAsync(firstFlashCard.ID);
-			kinveyClient.CurrentUser.Logout();
-
 			// Assert
 			Assert.NotNull(dsr);
 			Assert.IsNotNull(dsr.Errors);
 			Assert.AreEqual(2, dsr.Count);
+
+			// Teardown
+			List<ToDo> listRemoveToDo = await todoStore.FindAsync();
+			foreach (ToDo td in listRemoveToDo)
+			{
+				await todoStore.RemoveAsync(td.ID);
+			}
+			List<FlashCard> listRemoveFlash = await flashCardStore.FindAsync();
+			foreach (FlashCard fc in listRemoveFlash)
+			{
+				await flashCardStore.RemoveAsync(fc.ID);
+			}
+			DataStoreResponse dsrDelete = await todoStore.SyncAsync();
+			Assert.NotNull(dsrDelete);
+			Assert.IsNotNull(dsrDelete.Errors);
+			Assert.AreEqual(2, dsrDelete.Count);
+			kinveyClient.CurrentUser.Logout();
 		}
 	}
 }

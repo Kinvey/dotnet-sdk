@@ -178,7 +178,17 @@ namespace KinveyXamarin
 
 		public T FindByID(string ID)
 		{
-			return dbConnectionSync.Get<T>(ID);
+			T item = default(T);
+			try
+			{
+				item = dbConnectionSync.Get<T>(ID);
+			}
+			catch (Exception e)
+			{
+				// item not found, just return the default item
+			}
+
+			return item;
 		}
 
 		public List<T> FindByIDs(List<string> IDs)
