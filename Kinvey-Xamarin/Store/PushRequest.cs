@@ -14,44 +14,47 @@ namespace KinveyXamarin
 
 		public override async Task <DataStoreResponse> ExecuteAsync()
 		{
-			var tasks = new List<Task<int>>();
-
-			List<PendingWriteAction> pendingActions = SyncQueue.GetAll();
-
 			DataStoreResponse response = new DataStoreResponse();
 
-			foreach (PendingWriteAction pwa in pendingActions)
+			int limit = 3;
+			int offset = 0;
+
+			List<PendingWriteAction> pendingActions = SyncQueue.GetFirstN(limit, offset);
+
+			while (pendingActions != null && pendingActions.Count > 0)
 			{
-				try
+				var tasks = new List<Task<int>>();
+				foreach (PendingWriteAction pwa in pendingActions)
 				{
-					if (String.Equals("POST", pwa.action))
+					try
 					{
-						tasks.Add(HandlePushPOST(pwa));
+						if (String.Equals("POST", pwa.action))
+						{
+							tasks.Add(HandlePushPOST(pwa));
+						}
+						else if (String.Equals("PUT", pwa.action))
+						{
+							tasks.Add(HandlePushPUT(pwa));
+						}
+						else if (String.Equals("DELETE", pwa.action))
+						{
+							tasks.Add(HandlePushDELETE(pwa));
+						}
 					}
-
-					else if (String.Equals("PUT", pwa.action))
+					catch (Exception e)
 					{
-						tasks.Add(HandlePushPUT(pwa));
+						//Do nothing for now
+						response.addError(new KinveyJsonError());	//TODO
 					}
-
-					else if (String.Equals("DELETE", pwa.action))
-					{
-						tasks.Add(HandlePushDELETE(pwa));
-					}
-
-					//response.Count++;
 				}
-				catch (Exception e)
+
+				Task.WaitAll(tasks.ToArray());
+				foreach (var t in tasks)
 				{
-					//Do nothing for now
-					response.addError(new KinveyJsonError());	//TODO
+					response.Count += t.Result;
 				}
-			}
 
-			Task.WaitAll(tasks.ToArray());
-			foreach (var t in tasks)
-			{
-				response.Count += t.Result;
+				pendingActions = SyncQueue.GetFirstN(limit, offset);
 			}
 
 			return response;

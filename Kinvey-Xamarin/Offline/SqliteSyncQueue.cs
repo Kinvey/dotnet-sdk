@@ -61,6 +61,12 @@ namespace KinveyXamarin
 			return listPWA;
 		}
 
+		public List<PendingWriteAction> GetFirstN(int limit, int offset)
+		{
+			string query = $"SELECT * FROM PendingWriteAction LIMIT {limit} OFFSET {offset}";
+			return dbConnection.Query<PendingWriteAction>(query);
+		}
+
 		public PendingWriteAction GetByID(string entityId) {
 			return  dbConnection.Table<PendingWriteAction> ()
 				.Where (t => t.collection == this.Collection && t.entityId == entityId)
