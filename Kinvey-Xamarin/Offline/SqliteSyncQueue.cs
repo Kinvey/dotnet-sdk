@@ -63,7 +63,7 @@ namespace KinveyXamarin
 
 		public List<PendingWriteAction> GetFirstN(int limit, int offset)
 		{
-			string query = $"SELECT * FROM PendingWriteAction LIMIT {limit} OFFSET {offset}";
+			string query = $"SELECT * FROM PendingWriteAction WHERE collection == \"{this.Collection}\" LIMIT {limit} OFFSET {offset}";
 			return dbConnection.Query<PendingWriteAction>(query);
 		}
 
