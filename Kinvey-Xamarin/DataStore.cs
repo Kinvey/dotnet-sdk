@@ -312,7 +312,8 @@ namespace KinveyXamarin
 			dsr = await request.ExecuteAsync();
 
 			// pull
-			// TODO VRG implement
+			PullRequest<T> pullRequest = new PullRequest<T>(client, CollectionName, cache, storeType.ReadPolicy);
+			List<T> resolvedList = await pullRequest.ExecuteAsync();
 
 			return dsr;
 		}

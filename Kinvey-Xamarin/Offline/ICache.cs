@@ -62,6 +62,13 @@ namespace KinveyXamarin
 		T Update(T item);
 
 		/// <summary>
+		/// Refreshs the cache with the latest items from the backend.
+		/// </summary>
+		/// <returns>The list of cached items.</returns>
+		/// <param name="items">List of items used to refresh cache.</param>
+		List<T> RefreshCache(List<T> items);
+
+		/// <summary>
 		/// Finds entities by query.
 		/// </summary>
 		/// <returns>List of entities matching the given query</returns>

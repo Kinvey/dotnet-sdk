@@ -252,6 +252,19 @@ namespace KinveyXamarin
 
 		// UPDATE APIs
 		//
+		public List<T> RefreshCache(List<T> items)
+		{
+			try
+			{
+				dbConnectionSync.InsertOrReplaceAll(items);
+			}
+			catch (SQLiteException e)
+			{
+				string s = e.Message;
+			}
+
+			return items;
+		}
 
 
 		// DELETE APIs
