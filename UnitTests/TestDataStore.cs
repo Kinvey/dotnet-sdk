@@ -60,32 +60,6 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestFindByIDAsync()
-		{
-			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
-
-			// Arrange
-			ToDo newItem = new ToDo();
-			newItem.Name = "Next Task";
-			newItem.Details = "A test";
-			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
-			ToDo t = await todoStore.SaveAsync(newItem);
-
-			// Act
-			ToDo entity = await todoStore.FindByIDAsync(t.ID);
-
-			// Assert
-			Assert.NotNull(entity);
-			Assert.True(string.Equals(entity.ID, t.ID));
-
-			// Teardown
-			await todoStore.RemoveAsync(t.ID);
-			kinveyClient.CurrentUser.Logout();
-		}
-
-		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetEntityAsyncBad()
 		{
@@ -97,7 +71,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestFindAsync()
+		public async Task TestNetworkStoreFindAsync()
 		{
 			// Setup
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
@@ -127,6 +101,183 @@ namespace UnitTestFramework
 			await todoStore.RemoveAsync(t.ID);
 			await todoStore.RemoveAsync(t2.ID);
 			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindAsync()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			ToDo anotherNewItem = new ToDo();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+
+			// Act
+			List<ToDo> todoList = await todoStore.FindAsync();
+
+			// Assert
+			Assert.NotNull(todoList);
+			Assert.AreEqual(2, todoList.Count);
+
+			// Teardown
+			await todoStore.RemoveAsync(t.ID);
+			await todoStore.RemoveAsync(t2.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestCacheStoreFindAsync()
+		{
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByIDAsync()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			// Act
+			ToDo entity = await todoStore.FindByIDAsync(t.ID);
+
+			// Assert
+			Assert.NotNull(entity);
+			Assert.True(string.Equals(entity.ID, t.ID));
+
+			// Teardown
+			await todoStore.RemoveAsync(t.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByIDAsync()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			// Act
+			ToDo entity = await todoStore.FindByIDAsync(t.ID);
+
+			// Assert
+			Assert.NotNull(entity);
+			Assert.True(string.Equals(entity.ID, t.ID));
+
+			// Teardown
+			await todoStore.RemoveAsync(t.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestCacheStoreFindByIDAsync()
+		{
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByIDsAsync()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			ToDo anotherNewItem = new ToDo();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+
+			List<string> listFind = new List<string>();
+			listFind.Add(t.ID);
+			listFind.Add(t2.ID);
+
+			// Act
+			List<ToDo> todoList = await todoStore.FindByIDsAsync(listFind);
+
+			// Assert
+			Assert.NotNull(todoList);
+			Assert.AreEqual(2, todoList.Count);
+
+			// Teardown
+			await todoStore.RemoveAsync(t.ID);
+			await todoStore.RemoveAsync(t2.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByIDsAsync()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			ToDo anotherNewItem = new ToDo();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+
+			List<string> listFind = new List<string>();
+			listFind.Add(t.ID);
+			listFind.Add(t2.ID);
+
+			// Act
+			List<ToDo> todoList = await todoStore.FindByIDsAsync(listFind);
+
+			// Assert
+			Assert.NotNull(todoList);
+			Assert.AreEqual(2, todoList.Count);
+
+			// Teardown
+			await todoStore.RemoveAsync(t.ID);
+			await todoStore.RemoveAsync(t2.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		[Ignore("Placeholder - No unit test yet")]
+		public async Task TestCacheStoreFindByIDsAsync()
+		{
 		}
 
 		[Test]

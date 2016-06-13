@@ -111,6 +111,7 @@
     <Compile Include="Query\KinveyQuery.cs" />
     <Compile Include="EnumErrorCode.cs" />
     <Compile Include="Store\PullRequest.cs" />
+    <Compile Include="Store\FindRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

@@ -66,6 +66,11 @@ namespace KinveyXamarin
 		ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT,
 
 		/// <summary>
+		/// Error condition for a method not being implemented
+		/// </summary>
+		ERROR_METHOD_NOT_IMPLEMENTED,
+
+		/// <summary>
 		/// General error condition
 		/// </summary>
 		ERROR_GENERAL

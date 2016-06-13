@@ -143,12 +143,8 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		public async Task<List<T>> FindAsync()
 		{
-			if (DataStoreType.CACHE == this.storeType)
-			{
-				return cache.FindAll();
-			}
-
-			return await client.NetworkFactory.buildGetRequest <T> (collectionName).ExecuteAsync();
+			FindRequest<T> findRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, null, null);
+			return await findRequest.ExecuteAsync();
 		}   
 
 		/// <summary>
@@ -158,12 +154,11 @@ namespace KinveyXamarin
 		/// <param name="entityId">Entity identifier.</param>
 		public async Task<T> FindByIDAsync(string entityID)
 		{
-			if (DataStoreType.CACHE == this.storeType)
-			{
-				return cache.FindByID(entityID);
-			}
-
-			return await client.NetworkFactory.buildGetByIDRequest <T> (collectionName, entityID).ExecuteAsync();
+			List<string> entityIDs = new List<string>();
+			entityIDs.Add(entityID);
+			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
+			List<T> listEntities = await findByIDsRequest.ExecuteAsync();
+			return listEntities.FirstOrDefault();
 		}
 
 		/// <summary>
@@ -173,12 +168,8 @@ namespace KinveyXamarin
 		/// <param name="entityId">Entity identifier.</param>
 		public async Task<List<T>> FindByIDsAsync(List<string> entityIDs)
 		{
-			if (DataStoreType.CACHE == this.storeType)
-			{
-				return cache.FindByIDs(entityIDs);
-			}
-			return default(List<T>);
-			//return await buildGetByIDRequest(entityID).ExecuteAsync();
+			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
+			return await findByIDsRequest.ExecuteAsync();
 		}
 
 		public async Task<List<T>> FindAsync(string queryString){

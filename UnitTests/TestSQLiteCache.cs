@@ -197,7 +197,7 @@ namespace UnitTestFramework
 			newItem3.Details = "details for 3";
 			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
 			newItem3 = await todoStore.SaveAsync(newItem3);
@@ -254,7 +254,7 @@ namespace UnitTestFramework
 			newItem3.Details = "details for 3";
 			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			ToDo savedItemToFind = await todoStore.SaveAsync(newItem2);
 			newItem3 = await todoStore.SaveAsync(newItem3);
