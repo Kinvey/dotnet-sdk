@@ -171,52 +171,6 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestFindAsync()
-		{
-			// Setup
-			if (kinveyClient.CurrentUser.isUserLoggedIn())
-			{
-				kinveyClient.CurrentUser.Logout();
-			}
-
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
-
-			// Arrange
-			ToDo newItem1 = new ToDo();
-			newItem1.Name = "todo1";
-			newItem1.Details = "details for 1";
-			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
-
-			ToDo newItem2 = new ToDo();
-			newItem2.Name = "todo2";
-			newItem2.Details = "details for 2";
-			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
-
-			ToDo newItem3 = new ToDo();
-			newItem3.Name = "todo3";
-			newItem3.Details = "details for 3";
-			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
-
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
-			newItem1 = await todoStore.SaveAsync(newItem1);
-			newItem2 = await todoStore.SaveAsync(newItem2);
-			newItem3 = await todoStore.SaveAsync(newItem3);
-
-			// Act
-			List<ToDo> todoList = await todoStore.FindAsync();
-
-			// Assert
-			Assert.NotNull(todoList);
-			Assert.AreEqual(3, todoList.Count);
-
-			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
-			kinveyClient.CurrentUser.Logout();
-		}
-
-		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetAsyncBad()
 		{

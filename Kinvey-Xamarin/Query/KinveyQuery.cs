@@ -19,14 +19,14 @@ namespace KinveyXamarin
 {
 	public class KinveyQuery<T> : IObserver<T>
 	{
-		public IQueryable<T> Query { get; set; }
-		public KinveyQueryDelegate<T> kqd;
+		public IQueryable<T> Query { get; }
+		public KinveyQueryDelegate<T> QueryDelegate { get; }
 		private List<T> results;
 
 		public KinveyQuery(IQueryable<T> query, KinveyQueryDelegate<T> queryDelegate)
 		{
 			Query = query;
-			kqd = queryDelegate;
+			QueryDelegate = queryDelegate;
 			results = new List<T>();
 		}
 
@@ -37,14 +37,14 @@ namespace KinveyXamarin
 
 		public void OnError(Exception e)
 		{
-			kqd.onError(e);
+			QueryDelegate.onError(e);
 		}
 
 		public void OnCompleted()
 		{
-			kqd.onSuccess(results);
+			QueryDelegate.onSuccess(results);
 			results.Clear();
-			kqd.onCompleted();
+			QueryDelegate.onCompleted();
 		}
 	}
 }

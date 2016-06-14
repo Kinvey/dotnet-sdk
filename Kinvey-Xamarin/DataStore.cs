@@ -138,16 +138,6 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Get all entities from a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		public async Task<List<T>> FindAsync()
-		{
-			FindRequest<T> findRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, null, null);
-			return await findRequest.ExecuteAsync();
-		}   
-
-		/// <summary>
 		/// Get a single entity stored in a Kinvey collection.
 		/// </summary>
 		/// <returns>The async task.</returns>

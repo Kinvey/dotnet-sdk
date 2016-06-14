@@ -309,7 +309,13 @@ namespace testiosapp
 			DataStore<Book> store = myClient.AppData<Book>("Book", DataStoreType.NETWORK);
 			try{
 				
-				List<Book> books = await store.FindAsync();
+				List<Book> listBooks = new List<Book>();
+				KinveyQuery<Book> queryObj = new KinveyQuery<Book>(null, new KinveyQueryDelegate<Book> {
+					onSuccess = (results) => listBooks.AddRange(results),
+					onError = (e) => Console.WriteLine(e.Message),
+					onCompleted = () => Console.WriteLine("completed")
+				});
+				await store.FindAsync(queryObj);
 
 			} catch (Exception e){
 				Console.Write (e);

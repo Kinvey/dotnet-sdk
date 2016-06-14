@@ -92,7 +92,13 @@ namespace UnitTestFramework
 			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
 
 			// Act
-			List<ToDo> todoList = await todoStore.FindAsync();
+			List<ToDo> todoList = new List<ToDo>();
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, new KinveyQueryDelegate<ToDo> {
+				onSuccess = (results) => todoList.AddRange(results),
+				onError = (e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("completed")
+			});
+			await todoStore.FindAsync(queryObj);
 
 			// Assert
 			Assert.NotNull(todoList);
@@ -125,11 +131,20 @@ namespace UnitTestFramework
 			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
 
 			// Act
-			List<ToDo> todoList = await todoStore.FindAsync();
+			List<ToDo> listToDo = new List<ToDo>();
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (List<ToDo> results) => listToDo.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			await todoStore.FindAsync(queryObj);
 
 			// Assert
-			Assert.NotNull(todoList);
-			Assert.AreEqual(2, todoList.Count);
+			Assert.NotNull(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
 
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
@@ -635,13 +650,33 @@ namespace UnitTestFramework
 			Assert.AreEqual(2, dsr.Count);
 
 			// Teardown
-			List<ToDo> listRemoveToDo = await todoStore.FindAsync();
+			List<ToDo> listRemoveToDo = new List<ToDo>();
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (List<ToDo> results) => listRemoveToDo.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			await todoStore.FindAsync(queryObj);
+
 			foreach (ToDo td in listRemoveToDo)
 			{
 				await todoStore.RemoveAsync(td.ID);
 			}
 
-			List<FlashCard> listRemoveFlash = await flashCardStore.FindAsync();
+			List<FlashCard> listRemoveFlash = new List<FlashCard>();
+			KinveyQueryDelegate<FlashCard> kqdFlash = new KinveyQueryDelegate<FlashCard>()
+			{
+				onSuccess = (List<FlashCard> results) => listRemoveFlash.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<FlashCard> queryObjFlash = new KinveyQuery<FlashCard>(null, kqdFlash);
+			await flashCardStore.FindAsync(queryObjFlash);
+
 			foreach (FlashCard fc in listRemoveFlash)
 			{
 				await flashCardStore.RemoveAsync(fc.ID);
@@ -679,8 +714,23 @@ namespace UnitTestFramework
 			Assert.AreEqual(1, dsr.Count);
 
 			// Teardown
-			List<ToDo> listToDo = await todoStore.FindAsync();
-			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(listToDo[0].ID);
+			List<ToDo> listRemoveToDo = new List<ToDo>();
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (List<ToDo> results) => listRemoveToDo.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			await todoStore.FindAsync(queryObj);
+
+			KinveyDeleteResponse kdr;
+			foreach (ToDo td in listRemoveToDo)
+			{
+				kdr = await todoStore.RemoveAsync(td.ID);
+			}
+
 			dsr = await todoStore.SyncAsync();
 			Assert.NotNull(dsr);
 			Assert.AreEqual(1, dsr.Count);
@@ -755,8 +805,18 @@ namespace UnitTestFramework
 			Assert.AreEqual(10, dsr.Count);
 
 			// Teardown
-			List<ToDo> listToDo = await todoStore.FindAsync();
-			foreach (ToDo t in listToDo)
+			List<ToDo> listRemoveToDo = new List<ToDo>();
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (List<ToDo> results) => listRemoveToDo.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			await todoStore.FindAsync(queryObj);
+
+			foreach (ToDo t in listRemoveToDo)
 			{
 				await todoStore.RemoveAsync(t.ID);
 			}
