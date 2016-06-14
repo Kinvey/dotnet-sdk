@@ -13,7 +13,7 @@ namespace KinveyXamarin
 		private KinveyQuery<T> QueryObj { get; }
 		private StringQueryBuilder Writer { get; }
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, List<string> listIDs, KinveyQuery<T> queryObj)
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyQuery<T> queryObj, List<string> listIDs)
 			: base(client, collection, cache, policy)
 		{
 			EntityIDs = listIDs;
@@ -21,89 +21,69 @@ namespace KinveyXamarin
 			Writer = new StringQueryBuilder();
 		}
 
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyQuery<T> queryObj, string entityID)
+			: base(client, collection, cache, policy)
+		{
+			List<string> listIDs = new List<string>();
+			if (entityID != null)
+			{
+				listIDs.Add(entityID);
+			}
+			EntityIDs = listIDs;
+
+			QueryObj = queryObj;
+			Writer = new StringQueryBuilder();
+		}
+
 		public override async Task<List<T>> ExecuteAsync()
 		{
+			if (QueryObj == null)
+			{
+				throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "FindRequest query object cannot be null");
+			}
+
 			List<T> listResult = default(List<T>);
 
 			switch (Policy)
 			{
 				case ReadPolicy.FORCE_LOCAL:
 					// sync
-					if (EntityIDs?.Count > 0)
+					try
 					{
-						listResult = Cache.FindByIDs(EntityIDs);
+						PerformLocalFind();
 					}
-					else if (QueryObj == null)
+					catch (Exception e)
 					{
-						throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "FindRequest query object cannot be null");
-					}
-					else
-					{
-						try
-						{
-							PerformLocalQuery();
-						}
-						catch (Exception e)
-						{
-							QueryObj.OnError(e);
-						}
+						QueryObj.OnError(e);
 					}
 					break;
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					if (EntityIDs?.Count > 0)
+					try
 					{
-						listResult = new List<T>();
-
-						foreach (string entityID in EntityIDs)
-						{
-							T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
-							listResult.Add(item);
-						}
+						await PerformNetworkFind();
 					}
-					else if (QueryObj == null)
+					catch (Exception e)
 					{
-						throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "FindRequest query object cannot be null");
-					}
-					else
-					{
-						try
-						{
-							await PerformNetworkQuery();
-						}
-						catch (Exception e)
-						{
-							// network error
-							QueryObj.OnError(e);
-						}
+						// network error
+						QueryObj.OnError(e);
 					}
 					break;
 
 				case ReadPolicy.BOTH:
 					// cache
-					if (EntityIDs?.Count > 0)
+					try
 					{
-						// TODO VRG implement
-					}
-					else if (QueryObj == null)
-					{
-						throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "FindRequest query object cannot be null");
-					}
-					else
-					{
-						try
-						{
-							// first, perform local query
-							PerformLocalQuery();
+						// first, perform local query
+						PerformLocalFind();
 
-							// once local query finishes, perform network query
-							PerformNetworkQuery();
-						}
-						catch (Exception e)
-						{
-							QueryObj.OnError(e);
-						}
+						// once local query finishes, perform network query
+						PerformNetworkFind();
+					}
+					catch (Exception e)
+					{
+						QueryObj.OnError(e);
 					}
 					break;
 
@@ -119,7 +99,33 @@ namespace KinveyXamarin
 			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on FindRequest not implemented.");
 		}
 
-		private async Task PerformNetworkQuery()
+		private void PerformLocalFind()
+		{
+			List<T> cacheResults = default(List<T>);
+
+			if (QueryObj.Query != null)
+			{
+				IQueryable<T> query = QueryObj.Query;
+				cacheResults = Cache.FindByQuery(query.Expression);
+			}
+			else if (EntityIDs?.Count > 0)
+			{
+				cacheResults = Cache.FindByIDs(EntityIDs);
+			}
+			else
+			{
+				cacheResults = Cache.FindAll();
+			}
+
+			foreach (T cacheItem in cacheResults)
+			{
+				QueryObj.OnNext(cacheItem);
+			}
+
+			QueryObj.OnCompleted();
+		}
+
+		private async Task PerformNetworkFind()
 		{
 			List<T> networkResults = default(List<T>);
 
@@ -139,6 +145,15 @@ namespace KinveyXamarin
 
 				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
 			}
+			else if (EntityIDs?.Count > 0)
+			{
+				networkResults = new List<T>();
+				foreach (string entityID in EntityIDs)
+				{
+					T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
+					networkResults.Add(item);
+				}
+			}
 			else
 			{
 				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
@@ -147,28 +162,6 @@ namespace KinveyXamarin
 			foreach (T networkItem in networkResults)
 			{
 				QueryObj.OnNext(networkItem);
-			}
-
-			QueryObj.OnCompleted();
-		}
-
-		private void PerformLocalQuery()
-		{
-			List<T> cacheResults = default(List<T>);
-
-			if (QueryObj.Query != null)
-			{
-				IQueryable<T> query = QueryObj.Query;
-				cacheResults = Cache.FindByQuery(query.Expression);
-			}
-			else
-			{
-				cacheResults = Cache.FindAll();
-			}
-
-			foreach (T cacheItem in cacheResults)
-			{
-				QueryObj.OnNext(cacheItem);
 			}
 
 			QueryObj.OnCompleted();

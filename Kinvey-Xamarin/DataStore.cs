@@ -142,25 +142,25 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">Entity identifier.</param>
-		public async Task<T> FindByIDAsync(string entityID)
-		{
-			List<string> entityIDs = new List<string>();
-			entityIDs.Add(entityID);
-			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
-			List<T> listEntities = await findByIDsRequest.ExecuteAsync();
-			return listEntities.FirstOrDefault();
-		}
+//		public async Task<T> FindByIDAsync(string entityID)
+//		{
+//			List<string> entityIDs = new List<string>();
+//			entityIDs.Add(entityID);
+//			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
+//			List<T> listEntities = await findByIDsRequest.ExecuteAsync();
+//			return listEntities.FirstOrDefault();
+//		}
 
 		/// <summary>
 		/// Get a single entity stored in a Kinvey collection.
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityId">Entity identifier.</param>
-		public async Task<List<T>> FindByIDsAsync(List<string> entityIDs)
-		{
-			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
-			return await findByIDsRequest.ExecuteAsync();
-		}
+//		internal async Task<List<T>> FindByIDsAsync(List<string> entityIDs)
+//		{
+//			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
+//			return await findByIDsRequest.ExecuteAsync();
+//		}
 
 		public async Task<List<T>> FindAsync(string queryString){
 			return await networkFactory.buildGetRequest <T> (this.CollectionName, queryString).ExecuteAsync ();
@@ -183,10 +183,10 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
-		public async Task FindAsync(KinveyQuery<T> queryObj)
+		public async Task FindAsync(KinveyQuery<T> queryObj, string entityID = null)
 		{
 			IDisposable u = this.Subscribe(queryObj);
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, null, queryObj);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, queryObj, entityID);
 			await findByQueryRequest.ExecuteAsync();
 			u.Dispose();
 		}
