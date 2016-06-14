@@ -41,7 +41,7 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.NETWORK, collectionName, kinveyClient);
 
 			// Assert
 			Assert.NotNull(todoStore);
