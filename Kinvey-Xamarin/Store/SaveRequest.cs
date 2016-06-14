@@ -97,9 +97,9 @@ namespace KinveyXamarin
 			//PendingWriteAction action = await this.SyncQueue.Pop ();
 		}
 
-		public override Task<bool> Cancel ()
+		public override Task<bool> Cancel()
 		{
-			throw new NotImplementedException ();
+			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on SaveRequest not implemented.");
 		}
 
 		private string PrepareCacheSave(ref T entity)

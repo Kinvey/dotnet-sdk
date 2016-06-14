@@ -299,12 +299,12 @@ namespace KinveyXamarin
 			DataStoreResponse dsr = default(DataStoreResponse);
 
 			// push
-			PushRequest<T> request = new PushRequest<T>(client, CollectionName, cache, syncQueue, storeType.WritePolicy);
-			dsr = await request.ExecuteAsync();
+			PushRequest<T> pushRequest = new PushRequest<T>(client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			dsr = await pushRequest.ExecuteAsync();
 
 			// pull
 			PullRequest<T> pullRequest = new PullRequest<T>(client, CollectionName, cache, storeType.ReadPolicy);
-			List<T> resolvedList = await pullRequest.ExecuteAsync();
+			await pullRequest.ExecuteAsync();
 
 			return dsr;
 		}

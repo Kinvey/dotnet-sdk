@@ -5,8 +5,8 @@ namespace KinveyXamarin
 {
 	public abstract class ReadRequest <T, U> : Request <T, U>
 	{
-		public ICache<T> Cache;
-		public string Collection;
+		public ICache<T> Cache { get; }
+		public string Collection { get; }
 		public ReadPolicy Policy { get; }
 
 		public ReadRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy)

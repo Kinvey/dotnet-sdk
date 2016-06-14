@@ -6,13 +6,13 @@ namespace KinveyXamarin
 {
 	public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
-		private List<string> entityIDs { get; }
+		private List<string> EntityIDs { get; }
 		private KinveyQuery<T> Query { get; }
 
 		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, List<string> listIDs, KinveyQuery<T> queryObj)
 			: base(client, collection, cache, policy)
 		{
-			entityIDs = listIDs;
+			EntityIDs = listIDs;
 			Query = queryObj;
 		}
 
@@ -24,9 +24,9 @@ namespace KinveyXamarin
 			{
 				case ReadPolicy.FORCE_LOCAL:
 					// sync
-					if (entityIDs?.Count > 0)
+					if (EntityIDs?.Count > 0)
 					{
-						listResult = Cache.FindByIDs(entityIDs);
+						listResult = Cache.FindByIDs(EntityIDs);
 					}
 					else if (Query != null)
 					{
@@ -40,11 +40,11 @@ namespace KinveyXamarin
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					if (entityIDs?.Count > 0)
+					if (EntityIDs?.Count > 0)
 					{
 						listResult = new List<T>();
 
-						foreach (string entityID in entityIDs)
+						foreach (string entityID in EntityIDs)
 						{
 							T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
 							listResult.Add(item);
@@ -62,7 +62,7 @@ namespace KinveyXamarin
 
 				case ReadPolicy.BOTH:
 					// cache
-					if (entityIDs?.Count > 0)
+					if (EntityIDs?.Count > 0)
 					{
 						// TODO VRG implement
 					}

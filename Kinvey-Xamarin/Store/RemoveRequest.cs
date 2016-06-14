@@ -46,9 +46,9 @@ namespace KinveyXamarin
 			return kdr;
 		}
 
-		public override Task<bool> Cancel ()
+		public override Task<bool> Cancel()
 		{
-			throw new NotImplementedException ();
+			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on RemoveRequest not implemented.");
 		}
 	}
 }
