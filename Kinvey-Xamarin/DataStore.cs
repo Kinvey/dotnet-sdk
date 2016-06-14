@@ -196,56 +196,8 @@ namespace KinveyXamarin
 		public async Task FindAsync(KinveyQuery<T> queryObj)
 		{
 			IDisposable u = this.Subscribe(queryObj);
-			IQueryable<T> query = queryObj.Query;
-
-			if (DataStoreType.CACHE == this.storeType)
-			{
-				try
-				{
-					List<T> cacheResults = cache.FindByQuery(query.Expression);
-					foreach (T cacheItem in cacheResults)
-					{
-						queryObj.OnNext(cacheItem);
-					}
-
-					queryObj.OnCompleted();
-				}
-				catch (Exception e)
-				{
-					queryObj.OnError(e);
-				}
-
-				// now the network portion
-				try
-				{
-					writer.Reset();
-
-					KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer, typeof(T));
-
-					QueryModel queryModel = (queryObj.Query.Provider as KinveyQueryProvider).qm;
-
-					writer.Write("{");
-					queryModel.Accept (visitor);
-					writer.Write("}");
-
-					string mongoQuery = writer.GetFullString();
-
-					List<T> networkResults = await FindAsync(mongoQuery);
-
-					foreach (T networkItem in networkResults)
-					{
-						queryObj.OnNext(networkItem);
-					}
-				}
-				catch (Exception e)
-				{
-					// network error
-					queryObj.OnError(e);
-				}
-
-				queryObj.OnCompleted();
-			}
-
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, null, queryObj);
+			await findByQueryRequest.ExecuteAsync();
 			u.Dispose();
 		}
 

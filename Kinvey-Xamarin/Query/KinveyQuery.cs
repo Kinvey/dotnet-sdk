@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KinveyXamarin
@@ -20,16 +21,18 @@ namespace KinveyXamarin
 	{
 		public IQueryable<T> Query { get; set; }
 		public KinveyQueryDelegate<T> kqd;
+		private List<T> results;
 
 		public KinveyQuery(IQueryable<T> query, KinveyQueryDelegate<T> queryDelegate)
 		{
 			Query = query;
 			kqd = queryDelegate;
+			results = new List<T>();
 		}
 
 		public void OnNext(T item)
 		{
-			kqd.onSuccess(item);
+			results.Add(item);
 		}
 
 		public void OnError(Exception e)
@@ -39,6 +42,8 @@ namespace KinveyXamarin
 
 		public void OnCompleted()
 		{
+			kqd.onSuccess(results);
+			results.Clear();
 			kqd.onCompleted();
 		}
 	}

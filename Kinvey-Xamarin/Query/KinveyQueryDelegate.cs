@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
@@ -20,7 +21,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
 		/// </summary>
-		public Action<T> onSuccess;
+		public Action<List<T>> onSuccess;
 
 		/// <summary>
 		/// This Action is executed when an error occurs, either on the device itself, or returned from the service.

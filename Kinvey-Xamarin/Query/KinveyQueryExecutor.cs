@@ -28,7 +28,7 @@ namespace KinveyXamarin
 
 		public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
 		{
-			throw new NotImplementedException();
+			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "ExecuteCollection<T> method on KinveyQueryExecutor not implemented.");
 //			writer.Reset ();
 //
 //			KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer, typeof(K));
@@ -63,14 +63,14 @@ namespace KinveyXamarin
 
 		public T ExecuteSingle<T>(QueryModel queryModel, bool returnDefaultWhenEmpty)
 		{
-			throw new NotImplementedException();
+			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "ExecuteSingle<T> method on KinveyQueryExecutor not implemented.");
 //			var sequence = ExecuteCollection<T>(queryModel);
 //			return returnDefaultWhenEmpty ? sequence.SingleOrDefault() : sequence.Single();
 		}
 
 		public T ExecuteScalar<T>(QueryModel queryModel)
 		{
-			throw new NotImplementedException();
+			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "ExecuteScalar<T> method on KinveyQueryExecutor not implemented.");
 		}
 	}
 }

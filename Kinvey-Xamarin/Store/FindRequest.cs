@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Remotion.Linq;
 
 namespace KinveyXamarin
 {
 	public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
 		private List<string> EntityIDs { get; }
-		private KinveyQuery<T> Query { get; }
+		private KinveyQuery<T> QueryObj { get; }
+		private StringQueryBuilder Writer { get; }
 
 		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, List<string> listIDs, KinveyQuery<T> queryObj)
 			: base(client, collection, cache, policy)
 		{
 			EntityIDs = listIDs;
-			Query = queryObj;
+			QueryObj = queryObj;
+			Writer = new StringQueryBuilder();
 		}
 
 		public override async Task<List<T>> ExecuteAsync()
@@ -28,9 +33,16 @@ namespace KinveyXamarin
 					{
 						listResult = Cache.FindByIDs(EntityIDs);
 					}
-					else if (Query != null)
+					else if (QueryObj != null)
 					{
-						// TODO VRG implement
+						try
+						{
+							PerformLocalQuery();
+						}
+						catch (Exception e)
+						{
+							QueryObj.OnError(e);
+						}
 					}
 					else
 					{
@@ -50,9 +62,17 @@ namespace KinveyXamarin
 							listResult.Add(item);
 						}
 					}
-					else if (Query != null)
+					else if (QueryObj != null)
 					{
-						// TODO implement
+						try
+						{
+							await PerformNetworkQuery();
+						}
+						catch (Exception e)
+						{
+							// network error
+							QueryObj.OnError(e);
+						}
 					}
 					else
 					{
@@ -66,9 +86,20 @@ namespace KinveyXamarin
 					{
 						// TODO VRG implement
 					}
-					else if (Query != null)
+					else if (QueryObj != null)
 					{
-						// TODO VRG implement
+						try
+						{
+							// first, perform local query
+							PerformLocalQuery();
+
+							// once local query finishes, perform network query
+							PerformNetworkQuery();
+						}
+						catch (Exception e)
+						{
+							QueryObj.OnError(e);
+						}
 					}
 					else
 					{
@@ -86,6 +117,43 @@ namespace KinveyXamarin
 		public override async Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on FindRequest not implemented.");
+		}
+
+		private async Task PerformNetworkQuery()
+		{
+			Writer.Reset();
+
+			KinveyQueryVisitor visitor = new KinveyQueryVisitor(Writer, typeof(T));
+
+			QueryModel queryModel = (QueryObj.Query.Provider as KinveyQueryProvider).qm;
+
+			Writer.Write("{");
+			queryModel.Accept (visitor);
+			Writer.Write("}");
+
+			string mongoQuery = Writer.GetFullString();
+
+			List<T> networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
+
+			foreach (T networkItem in networkResults)
+			{
+				QueryObj.OnNext(networkItem);
+			}
+
+			QueryObj.OnCompleted();
+		}
+
+		private void PerformLocalQuery()
+		{
+			IQueryable<T> query = QueryObj.Query;
+			List<T> cacheResults = Cache.FindByQuery(query.Expression);
+
+			foreach (T cacheItem in cacheResults)
+			{
+				QueryObj.OnNext(cacheItem);
+			}
+
+			QueryObj.OnCompleted();
 		}
 	}
 }

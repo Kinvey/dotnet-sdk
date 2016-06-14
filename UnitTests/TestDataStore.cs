@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using KinveyXamarin;
 using System.Threading.Tasks;
@@ -278,6 +279,180 @@ namespace UnitTestFramework
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestCacheStoreFindByIDsAsync()
 		{
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByQuery()
+		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			//			var query = from todo in todoStore
+			//						where todo.Details.StartsWith("details for 2")
+			//						select todo;
+
+			List<ToDo> listToDo = new List<ToDo>();
+			var query = todoStore.Where(x => x.Details.StartsWith("det"));
+
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (List<ToDo> results) => listToDo.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(query, kqd);
+
+			await todoStore.FindAsync(queryObj);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.CurrentUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQuery()
+		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			//			var query = from todo in todoStore
+			//						where todo.Details.StartsWith("details for 2")
+			//						select todo;
+
+			List<ToDo> listToDo = new List<ToDo>();
+			var query = todoStore.Where(x => x.Details.StartsWith("det"));
+
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (List<ToDo> results) => listToDo.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(query, kqd);
+
+			await todoStore.FindAsync(queryObj);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.CurrentUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestCacheStoreFindByQuery()
+		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			//			var query = from todo in todoStore
+			//						where todo.Details.StartsWith("details for 2")
+			//						select todo;
+
+			List<ToDo> listToDo = new List<ToDo>();
+			var query = todoStore.Where(x => x.Details.StartsWith("det"));
+
+			KinveyQueryDelegate<ToDo> kqd = new KinveyQueryDelegate<ToDo>()
+			{
+				onSuccess = (List<ToDo> results) => listToDo.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+				onCompleted = () => Console.WriteLine("Query completed")
+			};
+
+			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(query, kqd);
+
+			await todoStore.FindAsync(queryObj);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.CurrentUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(4, listToDo.Count); // 2 from local, 2 from network
 		}
 
 		[Test]
