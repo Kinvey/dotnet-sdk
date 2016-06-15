@@ -536,7 +536,7 @@ namespace KinveyXamarin
 			var response = await ExecuteUnparsedAsync();
 
 			if (OverrideRedirect){
-				return await onRedirectAsync(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.Equals("Location")).ToString());
+				return await onRedirectAsync(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.ToString().ToLower().Equals("location")).ToString());
 			}
 			// special case to handle void or empty responses
 			if (response.Content == null) 

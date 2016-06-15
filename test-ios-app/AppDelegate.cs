@@ -64,7 +64,7 @@ namespace testiosapp
 				if (!myClient.CurrentUser.isUserLoggedIn ()) {
 					user = await myClient.CurrentUser.LoginAsync ("test", "test");
 
-//					await myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
+//					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
 //						onSuccess = (loggedInUser) => { user = loggedInUser; },
 //						onError = (e) => { Console.WriteLine("Error with MIC Login"); },
 //						onReadyToRender = (url) => { UIApplication.SharedApplication.OpenUrl(new NSUrl(url)); }

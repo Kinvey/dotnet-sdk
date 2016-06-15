@@ -284,7 +284,7 @@ namespace UnitTestFramework
 
 			// Act
 			string renderURL = null;
-			await kinveyClient.CurrentUser.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
+			kinveyClient.CurrentUser.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
 				onSuccess = (user) => { loggedInUser = user; },
 				onError = (e) => { Console.WriteLine("TEST MIC ERROR"); },
 				onReadyToRender = (url) => { renderURL = url; }
@@ -309,7 +309,7 @@ namespace UnitTestFramework
 			localClient.MICApiVersion = "v2";
 
 			// Act
-			await localClient.CurrentUser.LoginWithAuthorizationCodeAPI(username, password, redirectURI);
+			await localClient.CurrentUser.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI);
 
 			// Assert
 			Assert.True(localClient.CurrentUser.isUserLoggedIn());
