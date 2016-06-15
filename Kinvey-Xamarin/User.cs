@@ -383,7 +383,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="redirectURI">Redirect URI which will contain grant code.</param>
 		/// <returns> Task<string> returning the login URL.</returns>
-		public async Task<string> LoginWithAuthorizationCodeLoginPage(string redirectURI)
+		public async Task LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate)
 		{
 			//return URL for login page
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
@@ -399,8 +399,12 @@ namespace KinveyXamarin
 
 			//keep a reference to the redirect uri for later
 			this.KinveyClient.MICRedirectURI = redirectURI;
+			this.KinveyClient.MICDelegate = MICDelegate;
 
-			return myURLToRender;
+			if (MICDelegate != null)
+			{
+				MICDelegate.onReadyToRender(myURLToRender);
+			}
 		}
 
 		/// <summary>

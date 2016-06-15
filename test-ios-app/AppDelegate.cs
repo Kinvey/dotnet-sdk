@@ -2,6 +2,7 @@
 using UIKit;
 
 using KinveyXamarin;
+using KinveyXamariniOS;
 using SQLite.Net.Platform.XamarinIOS;
 using System.Threading.Tasks;
 using System;
@@ -31,6 +32,7 @@ namespace testiosapp
 			// If not required for your application you can safely delete this method
 
 			myClient = new Client.Builder ("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
+//			myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
 				.setFilePath(NSFileManager.DefaultManager.GetUrls (NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User) [0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setLogger(delegate(string msg) { Console.WriteLine(msg);})
@@ -38,6 +40,10 @@ namespace testiosapp
 			DoStuff ();
 
 			return true;
+		}
+
+		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation){
+			return myClient.CurrentUser.OnOAuthCallbackRecieved (url);
 		}
 
 		private async Task<User> DoStuff()
@@ -57,6 +63,12 @@ namespace testiosapp
 			{
 				if (!myClient.CurrentUser.isUserLoggedIn ()) {
 					user = await myClient.CurrentUser.LoginAsync ("test", "test");
+
+//					await myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
+//						onSuccess = (loggedInUser) => { user = loggedInUser; },
+//						onError = (e) => { Console.WriteLine("Error with MIC Login"); },
+//						onReadyToRender = (url) => { UIApplication.SharedApplication.OpenUrl(new NSUrl(url)); }
+//					});
 				}
 
 

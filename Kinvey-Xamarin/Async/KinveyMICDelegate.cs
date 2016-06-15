@@ -7,7 +7,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// This Action is executed when the MIC login page is ready to be rendered.
 		/// </summary>
-		public Action<string> OnReadyToRender;
+		public Action<string> onReadyToRender;
 	}
 }
 

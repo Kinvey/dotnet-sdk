@@ -280,9 +280,15 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			string redirectURI = "http://test.redirect";
+			User loggedInUser = null;
 
 			// Act
-			string renderURL = await kinveyClient.CurrentUser.LoginWithAuthorizationCodeLoginPage(redirectURI);
+			string renderURL = null;
+			await kinveyClient.CurrentUser.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
+				onSuccess = (user) => { loggedInUser = user; },
+				onError = (e) => { Console.WriteLine("TEST MIC ERROR"); },
+				onReadyToRender = (url) => { renderURL = url; }
+			});
 
 			// Assert
 			Assert.IsNotNullOrEmpty(renderURL);
