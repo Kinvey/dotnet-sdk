@@ -10,6 +10,7 @@ build:
 doc:
 	mdoc update \
 		-L packages/Microsoft.Bcl.1.1.10/lib/net40 \
+		-L Android-Libtester/obj/Release/assemblies \
 		-o api/reference/doc \
 		-i Kinvey-Xamarin/bin/Release/Kinvey-Xamarin.xml Kinvey-Xamarin/bin/Release/Kinvey-Xamarin.dll \
 		-i Kinvey-Xamarin-iOS/bin/Release/Kinvey-Xamarin-iOS.xml Kinvey-Xamarin-iOS/bin/Release/Kinvey-Xamarin-iOS.dll \
