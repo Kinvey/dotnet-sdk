@@ -28,7 +28,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The version of the library.
 		/// </summary>
-		public static string VERSION = "3.0.0-mvp01";
+		public static string VERSION = "3.0.0-mvp02";
 
 		/// <summary>
 		/// The kinvey API version key.
