@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey</id>
-    <version>3.0.0-mvp02.1</version>
+    <version>3.0.0-mvp02-1</version>
     <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
     <title>Kinvey-Xamarin</title>
     <authors>Kinvey</authors>
