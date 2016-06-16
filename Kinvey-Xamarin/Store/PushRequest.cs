@@ -48,7 +48,7 @@ namespace KinveyXamarin
 					}
 				}
 
-				Task.WaitAll(tasks.ToArray());
+				await Task.WhenAll(tasks.ToArray());
 				foreach (var t in tasks)
 				{
 					response.Count += t.Result;
