@@ -66,7 +66,7 @@ namespace KinveyXamarin
 		private int createTable()
 		{
 			//dbConnection.CreateTableAsync<T> ();
-			int retVal = dbConnectionSync.CreateTable<T>(CreateFlags.ImplicitPK);
+			int retVal = dbConnectionSync.CreateTable<T>();
 
 			//set primary key
 //			IEnumerable<PropertyInfo> props = platform.ReflectionService.GetPublicInstanceProperties (typeof (T));
@@ -152,7 +152,7 @@ namespace KinveyXamarin
 				JObject obj = JObject.FromObject(item);
 				string ID = obj["_id"].ToString();
 				string tableName = typeof(T).Name;
-				string query = $"update {tableName} set ID=\"{ID}\" where ID=\"{tempID}\"";
+				string query = $"update {tableName} set _id=\"{ID}\" where _id=\"{tempID}\"";
 
 				//
 				dbConnectionSync.Execute(query);
