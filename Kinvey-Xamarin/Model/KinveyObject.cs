@@ -12,6 +12,11 @@ namespace KinveyXamarin
 		[PrimaryKey, Column("_id")]
 		public string ID { get; set; }
 
+		[JsonProperty ("_acl")]
+		[Preserve]
+		[Column ("_acl")]
+		public AccessControlList _acl { get; set; }
+
 		[JsonProperty ("_kmd")]
 		[Preserve]
 		[Column("_kmd")]
