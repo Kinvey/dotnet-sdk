@@ -11,5 +11,10 @@ namespace KinveyXamarin
 		[Preserve]
 		[PrimaryKey, Column("_id")]
 		public string ID { get; set; }
+
+		[JsonProperty ("_kmd")]
+		[Preserve]
+		[Column("_kmd")]
+		public KinveyMetaData _kmd { get; set; }
 	}
 }

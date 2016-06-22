@@ -15,9 +15,6 @@ namespace UnitTestFramework
 
 		[JsonProperty("mastered")]
 		public bool Mastered { get; set; }
-
-		[JsonProperty("_kmd")]
-		public KinveyMetaData Metadata { get; set; }
 	}
 }
 

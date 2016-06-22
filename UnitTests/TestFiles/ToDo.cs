@@ -15,9 +15,6 @@ namespace UnitTestFramework
 
 		[JsonProperty("due_date")]
 		public string DueDate { get; set; }
-
-		[JsonProperty("_kmd")]
-		public KinveyMetaData Metadata { get; set; }
 	}
 }
 
