@@ -85,9 +85,9 @@ namespace KinveyXamarin
 				try
 				{
 					uint count = 0;
-					T countObj = base.getCountBlocking().Execute();
-					if (countObj is JObject) {
-						JToken value = (countObj as JObject).GetValue("count");
+					JObject countObj = base.getCountBlocking().Execute();
+					if (countObj != null) {
+						JToken value = countObj.GetValue("count");
 						count = value.ToObject<uint>();
 					}
 					delegates.onSuccess(count);
@@ -110,9 +110,9 @@ namespace KinveyXamarin
 				try
 				{
 					uint count = 0;
-					T countObj = base.getCountBlocking(queryString).Execute();
-					if (countObj is JObject) {
-						JToken value = (countObj as JObject).GetValue("count");
+					JObject countObj = base.getCountBlocking(queryString).Execute();
+					if (countObj != null) {
+						JToken value = countObj.GetValue("count");
 						count = value.ToObject<uint>();
 					}
 					delegates.onSuccess(count);
@@ -131,9 +131,9 @@ namespace KinveyXamarin
 		public async Task<uint> GetCountAsync()
 		{
 			uint count = 0;
-			T countObj = await base.getCountBlocking().ExecuteAsync ();
-			if (countObj is JObject) {
-				JToken value = (countObj as JObject).GetValue("count");
+			JObject countObj = await base.getCountBlocking().ExecuteAsync ();
+			if (countObj != null) {
+				JToken value = countObj.GetValue("count");
 				count = value.ToObject<uint>();
 			}
 			return count;
@@ -147,9 +147,9 @@ namespace KinveyXamarin
 		public async Task<uint> GetCountAsync(string queryString)
 		{
 			uint count = 0;
-			T countObj = await base.getCountBlocking(queryString).ExecuteAsync ();
-			if (countObj is JObject) {
-				JToken value = (countObj as JObject).GetValue("count");
+			JObject countObj = await base.getCountBlocking(queryString).ExecuteAsync ();
+			if (countObj != null) {
+				JToken value = countObj.GetValue("count");
 				count = value.ToObject<uint>();
 			}
 			return count;

@@ -262,7 +262,6 @@ namespace KinveyXamarin
 
 			GetCountRequest getCount = new GetCountRequest(myClass, client, urlParameters, CollectionName);
 			client.InitializeRequest(getCount);
-			getCount.setCache(this.cache, this.cachePolicy);
 			getCount.clientAppVersion = this.GetClientAppVersion ();
 			getCount.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCount;
@@ -282,7 +281,6 @@ namespace KinveyXamarin
 
 			GetCountQueryRequest getCountQuery = new GetCountQueryRequest(queryString, myClass, client, urlParameters, CollectionName);
 			client.InitializeRequest(getCountQuery);
-			getCountQuery.setCache(this.cache, this.cachePolicy);
 			getCountQuery.clientAppVersion = this.GetClientAppVersion ();
 			getCountQuery.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCountQuery;
@@ -464,7 +462,7 @@ namespace KinveyXamarin
 		/// Get the count request, which is implemented synchronously.
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetCountRequest : AbstractKinveyCachedClientRequest<T>
+		public class GetCountRequest : AbstractKinveyCachedClientRequest<JObject>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count";
 
@@ -472,7 +470,7 @@ namespace KinveyXamarin
 			public string collectionName;
 
 			public GetCountRequest(Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
+				: base(client, "GET", REST_PATH, default(JObject), urlParameters, collection)
 			{
 				this.collectionName = urlParameters ["collectionName"];
 			}
@@ -482,7 +480,7 @@ namespace KinveyXamarin
 		/// Get the count request, which is implemented synchronously.
 		/// </summary>
 		[JsonObject (MemberSerialization.OptIn)]
-		public class GetCountQueryRequest : AbstractKinveyCachedClientRequest<T>
+		public class GetCountQueryRequest : AbstractKinveyCachedClientRequest<JObject>
 		{
 			private const string REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
 
@@ -493,7 +491,7 @@ namespace KinveyXamarin
 			public string collectionName;
 
 			public GetCountQueryRequest(string queryString, Type myClass, AbstractClient client, Dictionary<string, string> urlParameters, string collection)
-				: base(client, "GET", REST_PATH, default(T), urlParameters, collection)
+				: base(client, "GET", REST_PATH, default(JObject), urlParameters, collection)
 			{
 				this.collectionName = urlParameters ["collectionName"];
 				string queryBuilder = "query=" + urlParameters["querystring"];
