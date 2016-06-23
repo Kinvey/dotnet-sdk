@@ -17,19 +17,24 @@ namespace KinveyXamarin
 			{
 				var item = response.Headers
 					.Cast<Parameter>()
-					.SingleOrDefault(i => i.Name.Equals("X-Kinvey-Request-Id"))
+					.SingleOrDefault(i => i.Name.ToLower().Equals("x-kinvey-request-id"))
 					.Value;
 
-				Type valueType = item.GetType();
-				if ((valueType.IsArray) &&
-					(valueType.GetElementType() == typeof(string)))
+				if (item != null) 
 				{
-					string[] arrRequestID = ((string[])item);
-					if (arrRequestID != null &&
-						arrRequestID.Length > 0)
+					Type valueType = item.GetType();
+					if (valueType != null 
+						&& valueType.IsArray 
+						&& valueType.GetElementType() == typeof(string))
 					{
-						return arrRequestID[0];
+						string[] arrRequestID = ((string[])item);
+						if (arrRequestID != null &&
+							arrRequestID.Length > 0)
+						{
+							return arrRequestID[0];
+						}
 					}
+				
 				}
 			}
 
