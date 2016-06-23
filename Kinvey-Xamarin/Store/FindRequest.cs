@@ -79,7 +79,7 @@ namespace KinveyXamarin
 						PerformLocalFind();
 
 						// once local query finishes, perform network query
-						PerformNetworkFind();
+						await PerformNetworkFind();
 					}
 					catch (Exception e)
 					{

@@ -5,11 +5,8 @@ using KinveyXamarin;
 namespace UnitTestFramework
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class FlashCard
+	public class FlashCard : KinveyObject
 	{
-		[JsonProperty("_id")]
-		public string ID {get; set;}
-
 		[JsonProperty("question")]
 		public string Question { get; set; }
 
@@ -18,9 +15,6 @@ namespace UnitTestFramework
 
 		[JsonProperty("mastered")]
 		public bool Mastered { get; set; }
-
-		[JsonProperty("_kmd")]
-		public KinveyMetaData Metadata { get; set; }
 	}
 }
 

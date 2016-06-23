@@ -233,9 +233,13 @@ namespace KinveyXamarin
 
 			public static object Deserialize(Type t, object [] obj){
 				//if (t == typeof(ISerializable<string>)) {
-				if (t.GetTypeInfo().ImplementedInterfaces.Contains(typeof (ISerializable<string>))){
+				if (t.GetTypeInfo().ImplementedInterfaces.Contains(typeof (ISerializable<string>)) &&
+				    obj != null &&
+				    obj.Count() > 0)
+				{
 					return JsonConvert.DeserializeObject (obj[0].ToString(), t);
 				}
+
 				return Activator.CreateInstance(t, obj);
 			} 
 		}

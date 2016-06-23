@@ -5,11 +5,8 @@ using KinveyXamarin;
 namespace UnitTestFramework
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class ToDo
+	public class ToDo : KinveyObject
 	{
-		[JsonProperty("_id")]
-		public string ID {get; set;}
-
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
@@ -18,9 +15,6 @@ namespace UnitTestFramework
 
 		[JsonProperty("due_date")]
 		public string DueDate { get; set; }
-
-		[JsonProperty("_kmd")]
-		public KinveyMetaData Metadata { get; set; }
 	}
 }
 
