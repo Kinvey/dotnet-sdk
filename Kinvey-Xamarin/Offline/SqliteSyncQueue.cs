@@ -90,6 +90,11 @@ namespace KinveyXamarin
 			}
 		}
 
+		public int Count()
+		{
+			return dbConnection.Table<PendingWriteAction>().Count();
+		}
+
 		public int Remove(string entityId)
 		{
 			PendingWriteAction item = GetByID(entityId);

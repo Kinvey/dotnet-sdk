@@ -11,6 +11,7 @@ namespace KinveyXamarin
 		int Enqueue (PendingWriteAction pending);
 		PendingWriteAction Peek ();
 		PendingWriteAction Pop ();
+		int Count();
 
 		List<PendingWriteAction> GetAll ();
 		List<PendingWriteAction> GetFirstN(int limit, int offset);

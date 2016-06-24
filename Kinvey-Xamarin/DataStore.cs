@@ -251,6 +251,15 @@ namespace KinveyXamarin
 			return dsr;
 		}
 
+		/// <summary>
+		/// Gets the count of the number of items in the sync queue.
+		/// </summary>
+		/// <returns>The sync queue item count.</returns>
+		public int GetSyncCount()
+		{
+			return syncQueue.Count();
+		}
+
 		#endregion
 
 		#region Requests
