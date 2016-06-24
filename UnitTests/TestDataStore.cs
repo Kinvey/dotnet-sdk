@@ -774,14 +774,25 @@ namespace UnitTestFramework
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
 			ToDo updatedItem = await todoStore.SaveAsync(newItem);
 
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance(DataStoreType.SYNC, "FlashCard", kinveyClient);
+			FlashCard firstFlashCard = new FlashCard();
+			firstFlashCard.Question = "What is capital of Djibouti?";
+			firstFlashCard.Answer = "Djibouti";
+			firstFlashCard = await flashCardStore.SaveAsync(firstFlashCard);
+
 			// Act
-			int syncCount = todoStore.GetSyncCount();
+			int syncCountToDo = todoStore.GetSyncCount();
+			int syncCountFlashCard = flashCardStore.GetSyncCount();
+			int syncCountTotal = todoStore.GetSyncCount(true);
 
 			// Assert
-			Assert.AreEqual(1, syncCount);
+			Assert.AreEqual(1, syncCountToDo);
+			Assert.AreEqual(1, syncCountFlashCard);
+			Assert.AreEqual(2, syncCountTotal);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem.ID);
+			await todoStore.RemoveAsync(firstFlashCard.ID);
 			kinveyClient.CurrentUser.Logout();
 		}
 
