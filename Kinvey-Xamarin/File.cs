@@ -73,10 +73,18 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.File"/> class.
 		/// </summary>
-		/// <param name="client">Client.</param>
-		public File (AbstractClient client)
+		/// <param name="client">[optional] Client (default set to SharedClient).</param>
+		public File (AbstractClient client = null)
 		{
-			this.client = client;
+			if (client != null)
+			{
+				this.client = client;
+			}
+			else
+			{
+				this.client = Client.SharedClient;
+			}
+
 			this.customRequestProperties = client.GetCustomRequestProperties ();
 			//this.clientAppVersion = client.GetClientAppVersion ();
 		}
