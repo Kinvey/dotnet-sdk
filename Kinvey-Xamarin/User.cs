@@ -125,12 +125,20 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
-		/// <param name="client">Client.</param>
 		/// <param name="builder">Builder.</param>
-        public User(AbstractClient client, KinveyAuthRequest.Builder builder) 
+		/// <param name="client">[optional] Client (default is SharedClient).</param>
+		public User(KinveyAuthRequest.Builder builder, AbstractClient client = null) 
         {
-            this.client = client;
-            this.builder = builder;
+			if (client != null)
+			{
+				this.client = client;
+			}
+			else
+			{
+				this.client = Client.SharedClient;
+			}
+
+			this.builder = builder;
             builder.KinveyUser = this;
 			this.Attributes = new Dictionary<string, JToken>();
         }

@@ -178,7 +178,7 @@ namespace KinveyXamarin
 					{
 						var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
 						var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-						this.CurrentUser = new User(this, new KinveyAuthRequest.Builder(this, appKey, appSecret, null));
+						this.CurrentUser = new User(new KinveyAuthRequest.Builder(this, appKey, appSecret, null), this);
 					}
                     return currentUser;
                 }

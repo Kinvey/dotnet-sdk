@@ -57,6 +57,22 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestSharedClientLoginAsync()
+		{
+			// Arrange
+
+			// Act
+			await Client.SharedClient.CurrentUser.LoginAsync ();
+
+			// Assert
+			Assert.NotNull (kinveyClient.CurrentUser);
+			Assert.True (kinveyClient.CurrentUser.isUserLoggedIn ());
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout ();
+		}
+
+		[Test]
 		public async Task TestLoginAsyncBad()
 		{
 			// Arrange
