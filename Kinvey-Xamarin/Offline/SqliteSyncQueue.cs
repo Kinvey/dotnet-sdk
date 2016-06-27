@@ -90,6 +90,19 @@ namespace KinveyXamarin
 			}
 		}
 
+		public int Count(bool allCollections)
+		{
+			if (allCollections)
+			{
+				return dbConnection.Table<PendingWriteAction>()
+								   .Count();
+			}
+
+			return dbConnection.Table<PendingWriteAction>()
+				               .Where (t => t.collection == this.Collection)
+				               .Count();
+		}
+
 		public int Remove(string entityId)
 		{
 			PendingWriteAction item = GetByID(entityId);

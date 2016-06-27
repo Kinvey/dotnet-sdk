@@ -759,6 +759,44 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestSyncQueueCount ()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.SYNC, collectionName, kinveyClient);
+			ToDo newItem = new ToDo ();
+			newItem.Name = "Task to update to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem = await todoStore.SaveAsync(newItem);
+
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			ToDo updatedItem = await todoStore.SaveAsync(newItem);
+
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance(DataStoreType.SYNC, "FlashCard", kinveyClient);
+			FlashCard firstFlashCard = new FlashCard();
+			firstFlashCard.Question = "What is capital of Djibouti?";
+			firstFlashCard.Answer = "Djibouti";
+			firstFlashCard = await flashCardStore.SaveAsync(firstFlashCard);
+
+			// Act
+			int syncCountToDo = todoStore.GetSyncCount();
+			int syncCountFlashCard = flashCardStore.GetSyncCount();
+			int syncCountTotal = todoStore.GetSyncCount(true);
+
+			// Assert
+			Assert.AreEqual(1, syncCountToDo);
+			Assert.AreEqual(1, syncCountFlashCard);
+			Assert.AreEqual(2, syncCountTotal);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem.ID);
+			await todoStore.RemoveAsync(firstFlashCard.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
 		public async Task TestSyncQueuePush10Items()
 		{
 			// Setup
