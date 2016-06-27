@@ -116,22 +116,31 @@ namespace KinveyXamarin
 
 		#endregion
 
-		private DataStore (DataStoreType type, string collectionName, AbstractClient client)
+		private DataStore (DataStoreType type, string collectionName, AbstractClient client = null)
 			: base (new KinveyQueryProvider(typeof(KinveyQueryable<T>), QueryParser.CreateDefault(), new KinveyQueryExecutor<T>()), typeof(T))
 		{
 		//	this.collectionName = typeof(T).FullName;
 			this.collectionName = collectionName;
-			this.cache = client.CacheManager.GetCache<T> (collectionName);
-			this.syncQueue = client.CacheManager.GetSyncQueue (collectionName);
-			this.client = client;
+
+			if (client != null)
+			{
+				this.client = client;
+			}
+			else
+			{
+				this.client = Client.SharedClient;
+			}
+
+			this.cache = this.client.CacheManager.GetCache<T> (collectionName);
+			this.syncQueue = this.client.CacheManager.GetSyncQueue (collectionName);
 			this.storeType = type;
-			this.customRequestProperties = client.GetCustomRequestProperties ();
-			this.networkFactory = new NetworkFactory (client);
+			this.customRequestProperties = this.client.GetCustomRequestProperties();
+			this.networkFactory = new NetworkFactory(this.client);
 		}
 
 		#region Public interface
 
-		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client)
+		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client = null)
 		{
 			// TODO do we need to make this a singleton based on collection, store type and store ID?
 			return new DataStore<T> (type, collectionName, client);

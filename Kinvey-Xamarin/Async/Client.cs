@@ -52,6 +52,8 @@ namespace KinveyXamarin
 		/// <value>The sender ID.</value>
 		public string senderID { get; set;}
 
+		static public Client SharedClient { get; set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Client"/> class.  Use a Client.Builder to create one.
 		/// </summary>
@@ -163,6 +165,7 @@ namespace KinveyXamarin
 					c.CurrentUser.LoginAsync(currentCredential);
 				}
 
+				SharedClient = c;
 				return c;
 			}
 
