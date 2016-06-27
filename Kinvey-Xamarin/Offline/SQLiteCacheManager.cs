@@ -142,8 +142,16 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Clears the storage.
 		/// </summary>
-		public void clearStorage(){
-			//TODO
+		public void clearStorage()
+		{
+			foreach (KeyValuePair<string, object> kvp in mapCollectionToCache)
+			{
+				string key = kvp.Key;
+				object value = kvp.Value;
+				(value as IClearable).Clear();
+
+				GetSyncQueue(key).RemoveAll();
+			}
 		}
 
 

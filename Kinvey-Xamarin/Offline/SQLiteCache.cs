@@ -34,7 +34,7 @@ namespace KinveyXamarin
 	/// This class is responsible for breaking apart a request, and determing what actions to take
 	/// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
 	/// </summary>
-	public class SQLiteCache <T> : ICache <T> where T:class
+	public class SQLiteCache <T> : IClearable, ICache <T> where T:class
 	{
 
 		private string collectionName;
@@ -61,6 +61,10 @@ namespace KinveyXamarin
 			createTable();
 		}
 
+		public void Clear ()
+		{
+			dbConnectionSync.DropTable<T>();
+		}
 
 		// Creates an SQLite table, which manages the local representation of the connection.
 		private int createTable()
