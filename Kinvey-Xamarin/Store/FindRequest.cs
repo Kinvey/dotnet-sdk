@@ -76,10 +76,17 @@ namespace KinveyXamarin
 					try
 					{
 						// first, perform local query
-						PerformLocalFind();
+						PerformLocalFind ();
+					}
+					catch (Exception e)
+					{
+						QueryObj.OnError(e);
+					}
 
+					try
+					{
 						// once local query finishes, perform network query
-						await PerformNetworkFind();
+						await PerformNetworkFind ();
 					}
 					catch (Exception e)
 					{
