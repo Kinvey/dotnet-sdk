@@ -192,10 +192,28 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
-		public async Task FindAsync(KinveyQuery<T> queryObj, string entityID = null)
+		public async Task FindAsync(KinveyObserver<T> queryObj, IQueryable<T> query = null)
+		{
+			IDisposable u = this.Subscribe (queryObj);
+			FindRequest<T> findByQueryRequest = new FindRequest<T> (client, collectionName, cache, storeType.ReadPolicy, queryObj, query, null);
+			await findByQueryRequest.ExecuteAsync ();
+			u.Dispose ();
+		}
+
+		/// <summary>
+		/// Find based on query.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
+		public async Task FindAsync(KinveyObserver<T> queryObj, string entityID)
 		{
 			IDisposable u = this.Subscribe(queryObj);
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, queryObj, entityID);
+			List<string> listIDs = new List<string>();
+			if (entityID != null)
+			{
+				listIDs.Add(entityID);
+			}
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, queryObj, null, listIDs);
 			await findByQueryRequest.ExecuteAsync();
 			u.Dispose();
 		}

@@ -17,15 +17,15 @@ using System.Linq;
 
 namespace KinveyXamarin
 {
-	public class KinveyQuery<T> : IObserver<T>
+	public class KinveyObserver<T> : IObserver<T>
 	{
-		public IQueryable<T> Query { get; }
+		//public IQueryable<T> Query { get; }
 		public KinveyQueryDelegate<T> QueryDelegate { get; }
 		private List<T> results;
 
-		public KinveyQuery(IQueryable<T> query, KinveyQueryDelegate<T> queryDelegate)
+		public KinveyObserver (KinveyQueryDelegate<T> queryDelegate)
 		{
-			Query = query;
+			//Query = query;
 			QueryDelegate = queryDelegate;
 			results = new List<T>();
 		}

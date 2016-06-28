@@ -106,7 +106,7 @@ namespace UnitTestFramework
 
 			// Act
 			List<ToDo> todoList = new List<ToDo>();
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, new KinveyQueryDelegate<ToDo> {
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(new KinveyQueryDelegate<ToDo> {
 				onSuccess = (results) => todoList.AddRange(results),
 				onError = (e) => Console.WriteLine(e.Message),
 				onCompleted = () => Console.WriteLine("completed")
@@ -152,7 +152,7 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 			await todoStore.FindAsync(queryObj);
 
 			// Assert
@@ -194,7 +194,7 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 			await todoStore.FindAsync(queryObj, t.ID);
 
 			// Assert
@@ -229,7 +229,7 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 			await todoStore.FindAsync(queryObj, t.ID);
 
 			// Assert
@@ -371,9 +371,9 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(query, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 
-			await todoStore.FindAsync(queryObj);
+			await todoStore.FindAsync(queryObj, query);
 
 
 			// Teardown
@@ -429,9 +429,9 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(query, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 
-			await todoStore.FindAsync(queryObj);
+			await todoStore.FindAsync(queryObj, query);
 
 
 			// Teardown
@@ -487,10 +487,9 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(query, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 
-			await todoStore.FindAsync(queryObj);
-
+			await todoStore.FindAsync(queryObj, query);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -691,7 +690,7 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 			await todoStore.FindAsync(queryObj);
 
 			foreach (ToDo td in listRemoveToDo)
@@ -707,7 +706,7 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<FlashCard> queryObjFlash = new KinveyQuery<FlashCard>(null, kqdFlash);
+			KinveyObserver<FlashCard> queryObjFlash = new KinveyObserver<FlashCard>(kqdFlash);
 			await flashCardStore.FindAsync(queryObjFlash);
 
 			foreach (FlashCard fc in listRemoveFlash)
@@ -755,7 +754,7 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 			await todoStore.FindAsync(queryObj);
 
 			KinveyDeleteResponse kdr;
@@ -884,7 +883,7 @@ namespace UnitTestFramework
 				onCompleted = () => Console.WriteLine("Query completed")
 			};
 
-			KinveyQuery<ToDo> queryObj = new KinveyQuery<ToDo>(null, kqd);
+			KinveyObserver<ToDo> queryObj = new KinveyObserver<ToDo>(kqd);
 			await todoStore.FindAsync(queryObj);
 
 			foreach (ToDo t in listRemoveToDo)

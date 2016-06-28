@@ -10,30 +10,33 @@ namespace KinveyXamarin
 	public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
 		private List<string> EntityIDs { get; }
-		private KinveyQuery<T> QueryObj { get; }
+		private KinveyObserver<T> QueryObj { get; }
 		private StringQueryBuilder Writer { get; }
+		private IQueryable<T> Query { get; }
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyQuery<T> queryObj, List<string> listIDs)
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, List<string> listIDs)
 			: base(client, collection, cache, policy)
 		{
 			EntityIDs = listIDs;
 			QueryObj = queryObj;
+			Query = query;
 			Writer = new StringQueryBuilder();
 		}
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyQuery<T> queryObj, string entityID)
-			: base(client, collection, cache, policy)
-		{
-			List<string> listIDs = new List<string>();
-			if (entityID != null)
-			{
-				listIDs.Add(entityID);
-			}
-			EntityIDs = listIDs;
+		//public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, string entityID)
+		//	: base(client, collection, cache, policy)
+		//{
+		//	List<string> listIDs = new List<string>();
+		//	if (entityID != null)
+		//	{
+		//		listIDs.Add(entityID);
+		//	}
 
-			QueryObj = queryObj;
-			Writer = new StringQueryBuilder();
-		}
+		//	EntityIDs = listIDs;
+		//	QueryObj = queryObj;
+		//	Query = query;
+		//	Writer = new StringQueryBuilder();
+		//}
 
 		public override async Task<List<T>> ExecuteAsync()
 		{
@@ -110,9 +113,9 @@ namespace KinveyXamarin
 		{
 			List<T> cacheResults = default(List<T>);
 
-			if (QueryObj.Query != null)
+			if (Query != null)
 			{
-				IQueryable<T> query = QueryObj.Query;
+				IQueryable<T> query = Query;
 				cacheResults = Cache.FindByQuery(query.Expression);
 			}
 			else if (EntityIDs?.Count > 0)
@@ -136,13 +139,13 @@ namespace KinveyXamarin
 		{
 			List<T> networkResults = default(List<T>);
 
-			if (QueryObj.Query != null)
+			if (Query != null)
 			{
 				Writer.Reset();
 
 				KinveyQueryVisitor visitor = new KinveyQueryVisitor(Writer, typeof(T));
 
-				QueryModel queryModel = (QueryObj.Query.Provider as KinveyQueryProvider).qm;
+				QueryModel queryModel = (Query.Provider as KinveyQueryProvider).qm;
 
 				Writer.Write("{");
 				queryModel.Accept(visitor);
