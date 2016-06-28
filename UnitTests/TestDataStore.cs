@@ -50,6 +50,19 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestGetInstanceSharedClient()
+		{
+			// Arrange
+
+			// Act
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.NETWORK, collectionName);
+
+			// Assert
+			Assert.NotNull (todoStore);
+			Assert.True (string.Equals (todoStore.CollectionName, collectionName));
+		}
+
+		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetInstanceBad()
 		{

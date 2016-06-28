@@ -62,6 +62,34 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestFileUploadByteSharedClientAsync()
+		{
+			// Setup
+			await Client.SharedClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			FileMetaData fileMetaData = new FileMetaData();
+			fileMetaData.fileName = image_name;
+			bool publicAccess = true;
+			fileMetaData._public = publicAccess;
+			byte [] content = System.IO.File.ReadAllBytes(image_path);
+			int contentSize = (content.Length) * sizeof (byte);
+			fileMetaData.size = contentSize;
+
+			// Act
+			FileMetaData fmd = await Client.SharedClient.File().uploadAsync(fileMetaData, content);
+
+			// Assert
+			Assert.NotNull(fmd);
+			Assert.AreEqual(contentSize, fmd.size);
+			Assert.IsNotEmpty(fmd.uploadUrl);
+			Assert.AreEqual(publicAccess, fmd._public);
+
+			// Teardown
+			Client.SharedClient.CurrentUser.Logout();
+		}
+
+		[Test]
 		public async Task TestFileUploadStreamAsync()
 		{
 			// Setup
