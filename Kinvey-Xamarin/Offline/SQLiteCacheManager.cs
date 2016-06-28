@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SQLite.Net;
 using SQLite.Net.Async;
 using SQLite.Net.Interop;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.IO;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
 
 namespace KinveyXamarin
 {
@@ -142,10 +143,24 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Clears the storage.
 		/// </summary>
-		public void clearStorage(){
-			//TODO
-		}
+		public void clearStorage()
+		{
+			if (TableExists<CollectionTableMap>(dbConnectionSync))
+			{
+				List<CollectionTableMap> collections = dbConnectionSync.Table<CollectionTableMap>().ToList();
+				if (collections != null)
+				{
+					foreach (var collection in collections)
+					{
+						string dropQuery = $"DROP TABLE {collection.TableName}";
+						dbConnectionSync.Execute(dropQuery);
+						GetSyncQueue(collection.CollectionName).RemoveAll();
+					}
 
+					dbConnectionSync.DeleteAll<CollectionTableMap>();
+				}
+			}
+		}
 
 		/// <summary>
 		/// Gets the database helper.
@@ -156,11 +171,19 @@ namespace KinveyXamarin
 //			return SQLiteHelper<T>.getInstance (platform, dbpath);
 //		}
 
-		public ICache<T> GetCache<T> (string collectionName) where T : class
+		public ICache<T> GetCache<T>(string collectionName) where T : class
 		{
+			if (!TableExists<CollectionTableMap>(dbConnectionSync))
+			{
+				dbConnectionSync.CreateTable<CollectionTableMap>();
+			}
 
-			//int ret = dbConnectionSync.DropTable<T> ();
-			//int ret = dbConnectionSync.Dispose();
+			CollectionTableMap ctm = new CollectionTableMap();
+			ctm.CollectionName = collectionName;
+			ctm.TableName = typeof(T).Name;
+
+			dbConnectionSync.InsertOrReplace(ctm);
+
 			if (mapCollectionToCache.ContainsKey(collectionName))
 			{
 				return mapCollectionToCache[collectionName] as ICache<T>;
@@ -203,7 +226,6 @@ namespace KinveyXamarin
 
 			return collections;
 		}
-
 
 		public ISyncQueue GetSyncQueue(string collectionName) {
 			if (!TableExists<PendingWriteAction>(dbConnectionSync)){

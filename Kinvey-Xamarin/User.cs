@@ -1040,6 +1040,10 @@ namespace KinveyXamarin
 
 			internal void Execute()
 			{
+				// delete cache and sync queue
+				ICacheManager cm = ((Client)memberUser.KinveyClient).CacheManager;
+				cm?.clearStorage();
+
 				CredentialManager manager = new CredentialManager(this.store);
 				var userId = memberUser.id;
 				if (userId != null)

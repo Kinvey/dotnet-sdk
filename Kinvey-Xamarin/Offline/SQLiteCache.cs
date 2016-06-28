@@ -61,7 +61,6 @@ namespace KinveyXamarin
 			createTable();
 		}
 
-
 		// Creates an SQLite table, which manages the local representation of the connection.
 		private int createTable()
 		{

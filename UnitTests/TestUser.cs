@@ -15,16 +15,29 @@ namespace UnitTestFramework
 		private const string newuser = "newuser1";
 		private const string newpass = "newpass1";
 
+		private const string collectionName = "ToDos";
+		private const string db_dir = "../../../UnitTests/TestFiles/";
+		private const string SQLiteOfflineStoreFilePath = db_dir + "kinveyOffline.sqlite";
+		private const string SQLiteCredentialStoreFilePath = db_dir + "kinvey_tokens.sqlite";
+
 		[SetUp]
 		public void Setup ()
 		{
-			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret).build();
+			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath (db_dir)
+				.setOfflinePlatform (new SQLite.Net.Platform.Generic.SQLitePlatformGeneric ())
+				.build ();
 		}
 
 		[TearDown]
 		public void Tear ()
 		{
-			kinveyClient.CurrentUser.Logout();
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout ();
+			}
+			System.IO.File.Delete (SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete (SQLiteCredentialStoreFilePath);
 		}
 
 		[Test]
@@ -332,6 +345,29 @@ namespace UnitTestFramework
 
 			// Teardown
 			localClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestLogout ()
+		{
+			// Arrange
+			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
+			ToDo td = new ToDo();
+			td.Name = "test";
+			await todoStore.SaveAsync(td);
+
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance (DataStoreType.SYNC, "FlashCard", kinveyClient);
+			FlashCard fc = new FlashCard ();
+			fc.Answer = "huh";
+			await flashCardStore.SaveAsync (fc);
+
+			// Act
+			kinveyClient.CurrentUser.Logout();
+
+			// Assert
+			Assert.False(kinveyClient.CurrentUser.isUserLoggedIn());
+			Assert.IsEmpty(kinveyClient.CacheManager.GetSyncQueue(collectionName).GetFirstN(1,0));
 		}
 
 		#endregion
