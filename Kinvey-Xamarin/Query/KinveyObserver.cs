@@ -19,16 +19,27 @@ namespace KinveyXamarin
 {
 	public class KinveyObserver<T> : IObserver<T>
 	{
-		//public IQueryable<T> Query { get; }
-		public KinveyQueryDelegate<T> QueryDelegate { get; }
 		private List<T> results;
 
-		public KinveyObserver (KinveyQueryDelegate<T> queryDelegate)
+		public KinveyObserver()
 		{
-			//Query = query;
-			QueryDelegate = queryDelegate;
 			results = new List<T>();
 		}
+
+		/// <summary>
+		/// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
+		/// </summary>
+		public Action<List<T>> onSuccess;
+
+		/// <summary>
+		/// This Action is executed when an error occurs, either on the device itself, or returned from the service.
+		/// </summary>
+		public Action<Exception> onError;
+
+		/// <summary>
+		/// This Action is executed when the operation is completed.
+		/// </summary>
+		public Action onCompleted;
 
 		public void OnNext(T item)
 		{
@@ -37,14 +48,14 @@ namespace KinveyXamarin
 
 		public void OnError(Exception e)
 		{
-			QueryDelegate.onError(e);
+			onError(e);
 		}
 
 		public void OnCompleted()
 		{
-			QueryDelegate.onSuccess(results);
+			onSuccess(results);
 			results.Clear();
-			QueryDelegate.onCompleted();
+			onCompleted();
 		}
 	}
 }
