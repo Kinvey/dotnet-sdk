@@ -35,14 +35,15 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public void TestClientBuilderBasicBad()
 		{
 			// Arrange
 
 			// Act
-
 			// Assert
+			Assert.Catch (delegate () {
+				DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.NETWORK, "ToDos");
+			});
 		}
 
 		[Test]
