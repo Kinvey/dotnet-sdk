@@ -32,7 +32,12 @@ namespace UnitTestFramework
 		[TearDown]
 		public void Tear ()
 		{
-			kinveyClient.CurrentUser.Logout();
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout ();
+			}
+			System.IO.File.Delete (SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete (SQLiteCredentialStoreFilePath);
 		}
 
 		[Test]
@@ -335,6 +340,11 @@ namespace UnitTestFramework
 			ToDo td = new ToDo();
 			td.Name = "test";
 			await todoStore.SaveAsync(td);
+
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance (DataStoreType.SYNC, "FlashCard", kinveyClient);
+			FlashCard fc = new FlashCard ();
+			fc.Answer = "huh";
+			await flashCardStore.SaveAsync (fc);
 
 			// Act
 			kinveyClient.CurrentUser.Logout();

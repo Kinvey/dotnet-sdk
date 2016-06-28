@@ -122,10 +122,5 @@ namespace KinveyXamarin
 		//
 		//
 	}
-
-	public interface IClearable
-	{
-		void Clear();
-	}
 }
 
