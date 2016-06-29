@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace KinveyXamarin
 {
@@ -10,8 +11,8 @@ namespace KinveyXamarin
 	/// </summary>
 	public class PullRequest<T> : ReadRequest<T, List<T>>
 	{
-		public PullRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy)
-			: base(client, collection, cache, policy)
+		public PullRequest(AbstractClient client, string collection, ICache<T> cache, IQueryable<T> query)
+			: base(client, collection, cache, query, ReadPolicy.FORCE_NETWORK)
 		{
 		}
 
@@ -19,7 +20,8 @@ namespace KinveyXamarin
 		{
 			List<T> listResults = default(List<T>);
 
-			listResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
+			string mongoQuery = this.BuildMongoQuery ();
+			listResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
 
 			Cache.RefreshCache(listResults);
 

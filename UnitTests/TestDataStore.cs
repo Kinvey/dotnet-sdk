@@ -642,6 +642,27 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestStoreInvalidOperation () {
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.NETWORK, collectionName, kinveyClient);
+
+			Assert.Catch (async delegate () {
+				await todoStore.PullAsync ();
+			});
+
+			Assert.Catch (async delegate () {
+				await todoStore.PushAsync ();
+			});
+
+			Assert.Catch (async delegate () {
+				await todoStore.SyncAsync ();
+			});
+
+		}
+
+		[Test]
 		public async Task TestSyncQueuePush()
 		{
 			// Setup
@@ -881,5 +902,50 @@ namespace UnitTestFramework
 			await todoStore.SyncAsync();
 			kinveyClient.CurrentUser.Logout();
 		}
+
+		[Test]
+		public async Task TestSyncStorePullAsync ()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.SYNC, collectionName);
+
+			List<ToDo> todosBeforeSave = await todoStore.PullAsync ();
+
+			// Assert
+			Assert.IsNotNull (todosBeforeSave);
+			Assert.IsEmpty (todosBeforeSave);
+
+			// Arrange
+			ToDo newItem = new ToDo ();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+
+			ToDo t = await todoStore.SaveAsync (newItem);
+
+			ToDo anotherNewItem = new ToDo ();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			ToDo t2 = await todoStore.SaveAsync (anotherNewItem);
+
+
+			await todoStore.PushAsync ();
+
+			List<ToDo> todosAfterSave = await todoStore.PullAsync ();
+
+			// Assert
+			Assert.NotNull (todosAfterSave);
+			Assert.AreEqual (2, todosAfterSave.Count);
+
+			// Teardown
+			await todoStore.RemoveAsync (t.ID);
+			await todoStore.RemoveAsync (t2.ID);
+			kinveyClient.CurrentUser.Logout ();
+		}
+
+
 	}
 }

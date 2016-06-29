@@ -38,31 +38,18 @@ namespace KinveyXamarin
 			return getEntity;
 		}
 
-
-		public NetworkRequest<List<T>> buildGetRequest <T> (string collectionName)
+		public NetworkRequest<List<T>> buildGetRequest <T> (string collectionName, string queryString = null)
 		{
-			const string REST_PATH = "appdata/{appKey}/{collectionName}";
-
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("collectionName", collectionName);
-			NetworkRequest<List<T>> get = new NetworkRequest<List<T>> (client, "GET", REST_PATH, null, urlParameters);
-			client.InitializeRequest (get);
-			//get.Cache = this.cache;
-			//get.clientAppVersion = this.GetClientAppVersion ();
-			//get.customRequestHeaders = this.GetCustomRequestProperties ();
-			return get;
-		}
 
-		public NetworkRequest<List<T>> buildGetRequest <T> (string collectionName, string queryString)
-		{
-			string REST_PATH = "appdata/{appKey}/{collectionName}/";
+			string REST_PATH = "appdata/{appKey}/{collectionName}";
 
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add("collectionName", collectionName);
-			urlParameters.Add("querystring", queryString);
-
+			if (!string.IsNullOrEmpty (queryString)) {
+				REST_PATH = "appdata/{appKey}/{collectionName}?query={querystring}";
+				urlParameters.Add ("querystring", queryString);
+			}
 
 			NetworkRequest<List<T>> getQuery = new NetworkRequest<List<T>> (client, "GET", REST_PATH, null, urlParameters);
 			client.InitializeRequest(getQuery);
