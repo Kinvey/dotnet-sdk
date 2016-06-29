@@ -171,7 +171,7 @@ namespace KinveyXamarin
 //			return await findByIDsRequest.ExecuteAsync();
 //		}
 
-		public async Task<List<T>> FindAsync(string queryString){
+		internal async Task<List<T>> FindAsync(string queryString){
 			return await networkFactory.buildGetRequest <T> (this.CollectionName, queryString).ExecuteAsync ();
 		}
 
@@ -192,10 +192,28 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
-		public async Task FindAsync(KinveyQuery<T> queryObj, string entityID = null)
+		public async Task FindAsync(KinveyObserver<T> observer, IQueryable<T> query = null)
 		{
-			IDisposable u = this.Subscribe(queryObj);
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, queryObj, entityID);
+			IDisposable u = this.Subscribe (observer);
+			FindRequest<T> findByQueryRequest = new FindRequest<T> (client, collectionName, cache, storeType.ReadPolicy, observer, query, null);
+			await findByQueryRequest.ExecuteAsync ();
+			u.Dispose ();
+		}
+
+		/// <summary>
+		/// Find based on query.
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
+		public async Task FindAsync(KinveyObserver<T> observer, string entityID)
+		{
+			IDisposable u = this.Subscribe(observer);
+			List<string> listIDs = new List<string>();
+			if (entityID != null)
+			{
+				listIDs.Add(entityID);
+			}
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, observer, null, listIDs);
 			await findByQueryRequest.ExecuteAsync();
 			u.Dispose();
 		}
@@ -242,24 +260,70 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Sync the data in this data store
+		/// Pulls data from the backend to local storage
 		/// </summary>
-		/// <returns>The async.</returns>
-		public async Task<DataStoreResponse> SyncAsync()
+		/// <returns>Entities that were pulled from the backend.</returns>
+		/// <param name="query">Optional Query parameter.</param>
+		public async Task<List<T>> PullAsync (IQueryable<T> query = null) 
 		{
-			DataStoreResponse dsr = default(DataStoreResponse);
+			if (this.storeType == DataStoreType.NETWORK) {
+				throw new KinveyException ("Invalid operation for this data store",
+										   "Calling pull() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.",
+										   "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
+			}
 
-			// push
-			PushRequest<T> pushRequest = new PushRequest<T>(client, CollectionName, cache, syncQueue, storeType.WritePolicy);
-			dsr = await pushRequest.ExecuteAsync();
+			if (this.GetSyncCount () > 0) {
+				throw new KinveyException ("Cannot pull until all local changes are pushed to the backend.", 
+				                           "Call store.push() to push pending local changes, or store.purge() to clean local changes.", "" +
+				                           "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
+			}
 
-			// pull
-			PullRequest<T> pullRequest = new PullRequest<T>(client, CollectionName, cache, storeType.ReadPolicy);
-			await pullRequest.ExecuteAsync();
-
-			return dsr;
+			//TODO query
+			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, cache, query);
+			return await pullRequest.ExecuteAsync ();
 		}
 
+		/// <summary>
+		/// Push local data in the datastore to the backend.
+		/// </summary>
+		/// <returns>DataStoreResponse indicating errors, if any.</returns>
+		public async Task<DataStoreResponse> PushAsync () 
+		{
+			if (this.storeType == DataStoreType.NETWORK) {
+				throw new KinveyException ("Invalid operation for this data store", 
+				                           "Calling push() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.", 
+				                           "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
+			}
+
+			PushRequest<T> pushRequest = new PushRequest<T> (client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			return await pushRequest.ExecuteAsync ();
+
+		}
+		/// <summary>
+		/// Sync the data in this data store
+		/// </summary>
+		/// <returns>DataStoreResponse indicating errors, if any.</returns>
+		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null)
+		{
+			if (this.storeType == DataStoreType.NETWORK) {
+				throw new KinveyException ("Invalid operation for this data store",
+										   "Calling sync() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.",
+										   "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
+			}
+
+			// first push
+			DataStoreResponse response = await this.PushAsync ();   //partial success
+
+			//then pull
+			try {
+				await this.PullAsync ();
+			} catch (KinveyException e) {
+				response.addKinveyException (e);
+			}
+
+
+			return response;
+		}
 		/// <summary>
 		/// Gets the count of the number of items in the sync queue.
 		/// </summary>
@@ -269,6 +333,10 @@ namespace KinveyXamarin
 		{
 			return syncQueue.Count(allCollections);
 		}
+
+
+
+
 
 		#endregion
 

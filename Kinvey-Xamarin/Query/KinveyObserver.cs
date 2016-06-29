@@ -13,11 +13,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KinveyXamarin
 {
-	public class KinveyQueryDelegate<T>
+	public class KinveyObserver<T> : IObserver<T>
 	{
+		private List<T> results;
+
+		public KinveyObserver()
+		{
+			results = new List<T>();
+		}
+
 		/// <summary>
 		/// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
 		/// </summary>
@@ -32,5 +40,22 @@ namespace KinveyXamarin
 		/// This Action is executed when the operation is completed.
 		/// </summary>
 		public Action onCompleted;
+
+		public void OnNext(T item)
+		{
+			results.Add(item);
+		}
+
+		public void OnError(Exception e)
+		{
+			onError(e);
+		}
+
+		public void OnCompleted()
+		{
+			onSuccess(results);
+			results.Clear();
+			onCompleted();
+		}
 	}
 }

@@ -10,34 +10,34 @@ namespace KinveyXamarin
 	public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
 		private List<string> EntityIDs { get; }
-		private KinveyQuery<T> QueryObj { get; }
-		private StringQueryBuilder Writer { get; }
+		private KinveyObserver<T> Observer { get; }
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyQuery<T> queryObj, List<string> listIDs)
-			: base(client, collection, cache, policy)
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, List<string> listIDs)
+			: base(client, collection, cache, query, policy)
 		{
 			EntityIDs = listIDs;
-			QueryObj = queryObj;
-			Writer = new StringQueryBuilder();
+			Observer = queryObj;
+
 		}
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyQuery<T> queryObj, string entityID)
-			: base(client, collection, cache, policy)
-		{
-			List<string> listIDs = new List<string>();
-			if (entityID != null)
-			{
-				listIDs.Add(entityID);
-			}
-			EntityIDs = listIDs;
+		//public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, string entityID)
+		//	: base(client, collection, cache, policy)
+		//{
+		//	List<string> listIDs = new List<string>();
+		//	if (entityID != null)
+		//	{
+		//		listIDs.Add(entityID);
+		//	}
 
-			QueryObj = queryObj;
-			Writer = new StringQueryBuilder();
-		}
+		//	EntityIDs = listIDs;
+		//	QueryObj = queryObj;
+		//	Query = query;
+		//	Writer = new StringQueryBuilder();
+		//}
 
 		public override async Task<List<T>> ExecuteAsync()
 		{
-			if (QueryObj == null)
+			if (Observer == null)
 			{
 				throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "FindRequest query object cannot be null");
 			}
@@ -54,7 +54,7 @@ namespace KinveyXamarin
 					}
 					catch (Exception e)
 					{
-						QueryObj.OnError(e);
+						Observer.OnError(e);
 					}
 					break;
 
@@ -67,7 +67,7 @@ namespace KinveyXamarin
 					catch (Exception e)
 					{
 						// network error
-						QueryObj.OnError(e);
+						Observer.OnError(e);
 					}
 					break;
 
@@ -76,14 +76,21 @@ namespace KinveyXamarin
 					try
 					{
 						// first, perform local query
-						PerformLocalFind();
-
-						// once local query finishes, perform network query
-						await PerformNetworkFind();
+						PerformLocalFind ();
 					}
 					catch (Exception e)
 					{
-						QueryObj.OnError(e);
+						Observer.OnError(e);
+					}
+
+					try
+					{
+						// once local query finishes, perform network query
+						await PerformNetworkFind ();
+					}
+					catch (Exception e)
+					{
+						Observer.OnError(e);
 					}
 					break;
 
@@ -103,9 +110,9 @@ namespace KinveyXamarin
 		{
 			List<T> cacheResults = default(List<T>);
 
-			if (QueryObj.Query != null)
+			if (Query != null)
 			{
-				IQueryable<T> query = QueryObj.Query;
+				IQueryable<T> query = Query;
 				cacheResults = Cache.FindByQuery(query.Expression);
 			}
 			else if (EntityIDs?.Count > 0)
@@ -119,31 +126,19 @@ namespace KinveyXamarin
 
 			foreach (T cacheItem in cacheResults)
 			{
-				QueryObj.OnNext(cacheItem);
+				Observer.OnNext(cacheItem);
 			}
 
-			QueryObj.OnCompleted();
+			Observer.OnCompleted();
 		}
 
 		private async Task PerformNetworkFind()
 		{
 			List<T> networkResults = default(List<T>);
 
-			if (QueryObj.Query != null)
-			{
-				Writer.Reset();
-
-				KinveyQueryVisitor visitor = new KinveyQueryVisitor(Writer, typeof(T));
-
-				QueryModel queryModel = (QueryObj.Query.Provider as KinveyQueryProvider).qm;
-
-				Writer.Write("{");
-				queryModel.Accept(visitor);
-				Writer.Write("}");
-
-				string mongoQuery = Writer.GetFullString();
-
-				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
+			if (Query != null) { 
+				string mongoQuery = this.BuildMongoQuery ();
+				networkResults = await Client.NetworkFactory.buildGetRequest<T> (Collection, mongoQuery).ExecuteAsync ();
 			}
 			else if (EntityIDs?.Count > 0)
 			{
@@ -161,11 +156,12 @@ namespace KinveyXamarin
 
 			foreach (T networkItem in networkResults)
 			{
-				QueryObj.OnNext(networkItem);
+				Observer.OnNext(networkItem);
 			}
 
-			QueryObj.OnCompleted();
+			Observer.OnCompleted();
 		}
+
 	}
 }
 
