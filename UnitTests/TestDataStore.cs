@@ -941,11 +941,12 @@ namespace UnitTestFramework
 			Assert.AreEqual (2, todosAfterSave.Count);
 
 			// Teardown
-			await todoStore.RemoveAsync (t.ID);
-			await todoStore.RemoveAsync (t2.ID);
+			foreach (var todo in todosAfterSave)
+			{
+				await todoStore.RemoveAsync(todo.ID);
+			}
+			await todoStore.PushAsync();
 			kinveyClient.CurrentUser.Logout ();
 		}
-
-
 	}
 }
