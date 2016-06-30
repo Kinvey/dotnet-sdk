@@ -31,7 +31,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Class for managing appData access to the Kinvey backend.
 	/// </summary>
-	public class DataStore<T> : KinveyQueryable<T>, IObservable<T>  where T:class
+	public class DataStore<T> : KinveyQueryable<T>  where T:class
 	{
 		#region Member variables
 
@@ -175,27 +175,16 @@ namespace KinveyXamarin
 			return await networkFactory.buildGetRequest <T> (this.CollectionName, queryString).ExecuteAsync ();
 		}
 
-		public IDisposable Subscribe(IObserver<T> observer)
-		{
-			return new Unsubscriber();
-		}
-
-		private class Unsubscriber : IDisposable
-		{
-			public void Dispose()
-			{
-			}
-		}
-
 		/// <summary>
 		/// Find based on query.
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
-		public async Task FindAsync(KinveyObserver<T> observer, IQueryable<T> query = null)
+		public async Task FindAsync(KinveyObserver<List<T>> observer, IQueryable<T> query = null)
 		{
-			IDisposable u = this.Subscribe (observer);
-			FindRequest<T> findByQueryRequest = new FindRequest<T> (client, collectionName, cache, storeType.ReadPolicy, observer, query, null);
+			FindRequest<T> findByQueryRequest = new FindRequest<T> (client, collectionName, cache, storeType.ReadPolicy, query, null);
+
+			IDisposable u = findByQueryRequest.Subscribe (observer);
 			await findByQueryRequest.ExecuteAsync ();
 			u.Dispose ();
 		}
@@ -205,15 +194,17 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
-		public async Task FindAsync(KinveyObserver<T> observer, string entityID)
+		public async Task FindAsync(KinveyObserver<List<T>> observer, string entityID)
 		{
-			IDisposable u = this.Subscribe(observer);
 			List<string> listIDs = new List<string>();
 			if (entityID != null)
 			{
 				listIDs.Add(entityID);
 			}
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, observer, null, listIDs);
+
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, null, listIDs);
+
+			IDisposable u = findByQueryRequest.Subscribe (observer);
 			await findByQueryRequest.ExecuteAsync();
 			u.Dispose();
 		}
@@ -222,19 +213,15 @@ namespace KinveyXamarin
 		/// Gets a count of all the entities in a collection
 		/// </summary>
 		/// <returns>The async task which returns the count.</returns>
-//		public async Task<uint> GetCountAsync()
-//		{
-//			uint count = 0;
-//			JObject countObj = await buildGetCountRequest().ExecuteAsync ();
-//
-//			if (countObj != null)
-//			{
-//				JToken value = countObj.GetValue("count");
-//				count = value.ToObject<uint>();
-//			}
-//
-//			return count;
-//		}
+		public async Task GetCountAsync(KinveyObserver<uint> observer, IQueryable<T> query = null)
+		{
+			//IDisposable u = this.Subscribe (observer);
+			GetCountRequest<T> getCountRequest = new GetCountRequest<T> (client, collectionName, cache, storeType.ReadPolicy, query);
+			IDisposable u = getCountRequest.Subscribe (observer);
+			await getCountRequest.ExecuteAsync ();
+			u.Dispose ();
+
+		}
 
 		/// <summary>
 		/// Save the specified entity to a Kinvey collection.

@@ -19,21 +19,21 @@ namespace KinveyXamarin
 {
 	public class KinveyObserver<T> : IObserver<T>
 	{
-		private List<T> results;
+		//private List<T> results;
 
-		public KinveyObserver()
-		{
-			results = new List<T>();
-		}
+		//public KinveyObserver()
+		//{
+		//	results = new List<T>();
+		//}
 
-		/// <summary>
-		/// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
-		/// </summary>
-		public Action<List<T>> onSuccess;
+		///// <summary>
+		///// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
+		///// </summary>
+		public Action<T> onSuccess;
 
-		/// <summary>
-		/// This Action is executed when an error occurs, either on the device itself, or returned from the service.
-		/// </summary>
+		///// <summary>
+		///// This Action is executed when an error occurs, either on the device itself, or returned from the service.
+		///// </summary>
 		public Action<Exception> onError;
 
 		/// <summary>
@@ -41,21 +41,30 @@ namespace KinveyXamarin
 		/// </summary>
 		public Action onCompleted;
 
-		public void OnNext(T item)
-		{
-			results.Add(item);
+		public void OnNext (T item) {
+			onSuccess (item);
 		}
+		public void OnError (Exception e) {
+			onError (e);
+		}
+		public void OnCompleted () {
+			onCompleted ();
+		}
+		//public void OnNext(T item)
+		//{
+		//	//results.Add(item);
+		//}
 
-		public void OnError(Exception e)
-		{
-			onError(e);
-		}
+		//public void OnError(Exception e)
+		//{
+		//	onError(e);
+		//}
 
-		public void OnCompleted()
-		{
-			onSuccess(results);
-			results.Clear();
-			onCompleted();
-		}
+		//public void OnCompleted()
+		//{
+		//	//onSuccess(results);
+		//	//results.Clear();
+		//	//onCompleted();
+		//}
 	}
 }

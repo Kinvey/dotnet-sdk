@@ -59,29 +59,18 @@ namespace KinveyXamarin
 			return getQuery;
 		}
 
-		public NetworkRequest<T> buildGetCountRequest <T> (string collectionName)
+		public NetworkRequest<T> buildGetCountRequest <T> (string collectionName, string queryString = null)
 		{
 			string REST_PATH = "appdata/{appKey}/{collectionName}/_count";
-
-			//var urlParameters = new Dictionary<string, string>();
-			//urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			//urlParameters.Add("collectionName", CollectionName);
-
-
-			NetworkRequest<T> getCount = new NetworkRequest<T>(client, "GET", REST_PATH, null, null);
-			client.InitializeRequest(getCount);
-			//getCount.customRequestHeaders = this.GetCustomRequestProperties ();
-			return getCount;
-		}
-
-		public NetworkRequest<T> buildGetCountRequest <T> (string collectionName, string queryString)
-		{
-			string REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
 
 			var urlParameters = new Dictionary<string, string> ();
 			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add ("collectionName", collectionName);
-			urlParameters.Add ("querystring", queryString);
+
+			if (!string.IsNullOrEmpty (queryString)) { 
+				REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
+				urlParameters.Add ("querystring", queryString);
+			}
 
 			NetworkRequest<T> getCountQuery = new NetworkRequest<T>(client, "GET", REST_PATH, null, urlParameters);
 			client.InitializeRequest(getCountQuery);

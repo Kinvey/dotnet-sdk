@@ -7,17 +7,29 @@ using Remotion.Linq;
 
 namespace KinveyXamarin
 {
-	public class FindRequest<T> : ReadRequest<T, List<T>>
+	public class FindRequest<T> : ReadRequest<T, List<T>>, IObservable<List<T>>
 	{
 		private List<string> EntityIDs { get; }
-		private KinveyObserver<T> Observer { get; }
+		private IObserver<List<T>> Observer { get; set; }
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, List<string> listIDs)
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, IQueryable<T> query, List<string> listIDs)
 			: base(client, collection, cache, query, policy)
 		{
 			EntityIDs = listIDs;
-			Observer = queryObj;
+			//Observer = queryObj;
 
+		}
+		public IDisposable Subscribe (IObserver<List<T>> observer)
+		{
+			this.Observer = observer;
+			return new Unsubscriber ();
+		}
+
+		private class Unsubscriber : IDisposable
+		{
+			public void Dispose ()
+			{
+			}
 		}
 
 		//public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, string entityID)
@@ -98,6 +110,7 @@ namespace KinveyXamarin
 					throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 
+			Observer.OnCompleted ();
 			return listResult;
 		}
 
@@ -124,12 +137,13 @@ namespace KinveyXamarin
 				cacheResults = Cache.FindAll();
 			}
 
-			foreach (T cacheItem in cacheResults)
-			{
-				Observer.OnNext(cacheItem);
-			}
+			//foreach (T cacheItem in cacheResults)
+			//{
+			//	Observer.OnNext(cacheItem);
+			//}
 
-			Observer.OnCompleted();
+			Observer.OnNext (cacheResults);
+			//Observer.OnCompleted();
 		}
 
 		private async Task PerformNetworkFind()
@@ -154,12 +168,8 @@ namespace KinveyXamarin
 				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
 			}
 
-			foreach (T networkItem in networkResults)
-			{
-				Observer.OnNext(networkItem);
-			}
+			Observer.OnNext (networkResults);
 
-			Observer.OnCompleted();
 		}
 
 	}
