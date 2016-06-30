@@ -43,6 +43,8 @@ pack:
 	cp Kinvey-Utils/bin/Release/Kinvey-Utils.dll release/kinvey-xamarin-$(VERSION)
 	cp Kinvey-Xamarin/bin/Release/Kinvey-Xamarin.dll release/kinvey-xamarin-$(VERSION)
 	cp Kinvey-Xamarin/bin/Release/RestSharp.Portable.dll release/kinvey-xamarin-$(VERSION)
+	cp Kinvey-Xamarin-Android/bin/Release/Kinvey-Xamarin-Android.dll release/kinvey-xamarin-$(VERSION)
+	cp Kinvey-Xamarin-iOS/bin/Release/Kinvey-Xamarin-iOS.dll release/kinvey-xamarin-$(VERSION)
 	cp LICENSE.txt release/kinvey-xamarin-$(VERSION)
 	cp README.txt release/kinvey-xamarin-$(VERSION)
 	cd release; zip -r kinvey-xamarin-$(VERSION).zip kinvey-xamarin-$(VERSION)
