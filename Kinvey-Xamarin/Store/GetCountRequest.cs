@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Remotion.Linq;
+using Newtonsoft.Json.Linq; 
 
 namespace KinveyXamarin
 {
@@ -24,9 +25,7 @@ namespace KinveyXamarin
 
 		private class Unsubscriber : IDisposable
 		{
-			public void Dispose ()
-			{
-			}
+			public void Dispose () { }
 		}
 
 
@@ -92,30 +91,43 @@ namespace KinveyXamarin
 		{
 			uint cacheResults = default (uint);
 
-			if (Query != null) {
-				IQueryable<T> query = Query;
-				cacheResults = (uint) Cache.FindByQuery (query.Expression).Count;
-			} else {
-				cacheResults = (uint) Cache.FindAll ().Count;
+			try {
+				if (Query != null) {
+					IQueryable<T> query = Query;
+					cacheResults = (uint)Cache.FindByQuery (query.Expression).Count;
+				} else {
+					cacheResults = (uint)Cache.FindAll ().Count;
+				}
+
+				//foreach (T cacheItem in cacheResults) {
+				//	Observer.OnNext (cacheItem);
+				//}
+
+				Observer.OnNext (cacheResults);
+			} catch (Exception e) {
+				Observer.OnError (e);
 			}
-
-			//foreach (T cacheItem in cacheResults) {
-			//	Observer.OnNext (cacheItem);
-			//}
-
-			Observer.OnNext (cacheResults);
-			//
 		}
 
 		private async Task PerformNetworkCount ()
 		{
-			uint networkResults = default (uint);
-
 			string mongoQuery = this.BuildMongoQuery ();
-			networkResults = await Client.NetworkFactory.buildGetCountRequest<uint> (Collection, mongoQuery).ExecuteAsync ();
 
-			Observer.OnNext (networkResults);
+			try {
+				JObject networkResults = await Client.NetworkFactory.buildGetCountRequest<JObject> (Collection, mongoQuery).ExecuteAsync ();
 
+				if (networkResults != null) {
+					JToken count = networkResults.GetValue ("count");
+
+					if (count != null) {
+						Observer.OnNext (count.ToObject<uint> ());
+					} else {
+						Observer.OnError (new KinveyException (EnumErrorCode.ERROR_GENERAL, "Failed to read the count from the backend response."));
+					}
+				}
+			} catch (Exception e) {
+				Observer.OnError (e);
+			}
 		}
 	}
 }

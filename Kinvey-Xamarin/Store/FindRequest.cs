@@ -27,9 +27,7 @@ namespace KinveyXamarin
 
 		private class Unsubscriber : IDisposable
 		{
-			public void Dispose ()
-			{
-			}
+			public void Dispose () { }
 		}
 
 		//public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, string entityID)
@@ -122,19 +120,20 @@ namespace KinveyXamarin
 		private void PerformLocalFind()
 		{
 			List<T> cacheResults = default(List<T>);
+			try {
+				if (Query != null) {
+					IQueryable<T> query = Query;
+					cacheResults = Cache.FindByQuery (query.Expression);
+				} else if (EntityIDs?.Count > 0) {
+					cacheResults = Cache.FindByIDs (EntityIDs);
+				} else {
+					cacheResults = Cache.FindAll ();
+				}
 
-			if (Query != null)
-			{
-				IQueryable<T> query = Query;
-				cacheResults = Cache.FindByQuery(query.Expression);
-			}
-			else if (EntityIDs?.Count > 0)
-			{
-				cacheResults = Cache.FindByIDs(EntityIDs);
-			}
-			else
-			{
-				cacheResults = Cache.FindAll();
+				Observer.OnNext (cacheResults);
+
+			} catch (Exception e) {
+				Observer.OnError (e);
 			}
 
 			//foreach (T cacheItem in cacheResults)
@@ -142,33 +141,33 @@ namespace KinveyXamarin
 			//	Observer.OnNext(cacheItem);
 			//}
 
-			Observer.OnNext (cacheResults);
 			//Observer.OnCompleted();
 		}
 
 		private async Task PerformNetworkFind()
 		{
 			List<T> networkResults = default(List<T>);
-
-			if (Query != null) { 
-				string mongoQuery = this.BuildMongoQuery ();
-				networkResults = await Client.NetworkFactory.buildGetRequest<T> (Collection, mongoQuery).ExecuteAsync ();
-			}
-			else if (EntityIDs?.Count > 0)
-			{
-				networkResults = new List<T>();
-				foreach (string entityID in EntityIDs)
-				{
-					T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
-					networkResults.Add(item);
+			try {
+				if (Query != null) {
+					string mongoQuery = this.BuildMongoQuery ();
+					networkResults = await Client.NetworkFactory.buildGetRequest<T> (Collection, mongoQuery).ExecuteAsync ();
+				} else if (EntityIDs?.Count > 0) {
+					networkResults = new List<T> ();
+					foreach (string entityID in EntityIDs) {
+						T item = await Client.NetworkFactory.buildGetByIDRequest<T> (Collection, entityID).ExecuteAsync ();
+						networkResults.Add (item);
+					}
+				} else {
+					networkResults = await Client.NetworkFactory.buildGetRequest<T> (Collection).ExecuteAsync ();
 				}
-			}
-			else
-			{
-				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
+
+				Observer.OnNext (networkResults);
+
+			} catch (Exception e) {
+				Observer.OnError (e);
 			}
 
-			Observer.OnNext (networkResults);
+
 
 		}
 
