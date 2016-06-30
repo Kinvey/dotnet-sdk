@@ -7,17 +7,27 @@ using Remotion.Linq;
 
 namespace KinveyXamarin
 {
-	public class FindRequest<T> : ReadRequest<T, List<T>>
+	public class FindRequest<T> : ReadRequest<T, List<T>>, IObservable<List<T>>
 	{
 		private List<string> EntityIDs { get; }
-		private KinveyObserver<T> Observer { get; }
+		private IObserver<List<T>> Observer { get; set; }
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, List<string> listIDs)
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, IQueryable<T> query, List<string> listIDs)
 			: base(client, collection, cache, query, policy)
 		{
 			EntityIDs = listIDs;
-			Observer = queryObj;
+			//Observer = queryObj;
 
+		}
+		public IDisposable Subscribe (IObserver<List<T>> observer)
+		{
+			this.Observer = observer;
+			return new Unsubscriber ();
+		}
+
+		private class Unsubscriber : IDisposable
+		{
+			public void Dispose () { }
 		}
 
 		//public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyObserver<T> queryObj, IQueryable<T> query, string entityID)
@@ -98,6 +108,7 @@ namespace KinveyXamarin
 					throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 
+			Observer.OnCompleted ();
 			return listResult;
 		}
 
@@ -109,57 +120,55 @@ namespace KinveyXamarin
 		private void PerformLocalFind()
 		{
 			List<T> cacheResults = default(List<T>);
+			try {
+				if (Query != null) {
+					IQueryable<T> query = Query;
+					cacheResults = Cache.FindByQuery (query.Expression);
+				} else if (EntityIDs?.Count > 0) {
+					cacheResults = Cache.FindByIDs (EntityIDs);
+				} else {
+					cacheResults = Cache.FindAll ();
+				}
 
-			if (Query != null)
-			{
-				IQueryable<T> query = Query;
-				cacheResults = Cache.FindByQuery(query.Expression);
-			}
-			else if (EntityIDs?.Count > 0)
-			{
-				cacheResults = Cache.FindByIDs(EntityIDs);
-			}
-			else
-			{
-				cacheResults = Cache.FindAll();
-			}
+				Observer.OnNext (cacheResults);
 
-			foreach (T cacheItem in cacheResults)
-			{
-				Observer.OnNext(cacheItem);
+			} catch (Exception e) {
+				Observer.OnError (e);
 			}
 
-			Observer.OnCompleted();
+			//foreach (T cacheItem in cacheResults)
+			//{
+			//	Observer.OnNext(cacheItem);
+			//}
+
+			//Observer.OnCompleted();
 		}
 
 		private async Task PerformNetworkFind()
 		{
 			List<T> networkResults = default(List<T>);
-
-			if (Query != null) { 
-				string mongoQuery = this.BuildMongoQuery ();
-				networkResults = await Client.NetworkFactory.buildGetRequest<T> (Collection, mongoQuery).ExecuteAsync ();
-			}
-			else if (EntityIDs?.Count > 0)
-			{
-				networkResults = new List<T>();
-				foreach (string entityID in EntityIDs)
-				{
-					T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
-					networkResults.Add(item);
+			try {
+				if (Query != null) {
+					string mongoQuery = this.BuildMongoQuery ();
+					networkResults = await Client.NetworkFactory.buildGetRequest<T> (Collection, mongoQuery).ExecuteAsync ();
+				} else if (EntityIDs?.Count > 0) {
+					networkResults = new List<T> ();
+					foreach (string entityID in EntityIDs) {
+						T item = await Client.NetworkFactory.buildGetByIDRequest<T> (Collection, entityID).ExecuteAsync ();
+						networkResults.Add (item);
+					}
+				} else {
+					networkResults = await Client.NetworkFactory.buildGetRequest<T> (Collection).ExecuteAsync ();
 				}
-			}
-			else
-			{
-				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
+
+				Observer.OnNext (networkResults);
+
+			} catch (Exception e) {
+				Observer.OnError (e);
 			}
 
-			foreach (T networkItem in networkResults)
-			{
-				Observer.OnNext(networkItem);
-			}
 
-			Observer.OnCompleted();
+
 		}
 
 	}
