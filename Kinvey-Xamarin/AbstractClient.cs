@@ -52,12 +52,12 @@ namespace KinveyXamarin
 			get { return micHostName;}
 			set
 			{
-				if (!value.StartsWith("https"))
+				if (!value.StartsWith("https", StringComparison.OrdinalIgnoreCase))
 				{
 					throw new KinveyException(EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS, value);
 				}
 
-				if (!value.EndsWith ("/"))
+				if (!value.EndsWith ("/", StringComparison.OrdinalIgnoreCase))
 				{
 					value += "/";
 				}
@@ -74,7 +74,7 @@ namespace KinveyXamarin
 			get { return this.micApiVersion; }
 			set
 			{
-				if (!value.StartsWith("v"))
+				if (!value.StartsWith("v", StringComparison.OrdinalIgnoreCase))
 				{
 					value = "v" + value;
 				}
@@ -135,6 +135,7 @@ namespace KinveyXamarin
 		/// <returns>An instance of <see cref="KinveyXamarin.DataStore{T}"/> </returns>
 		/// <param name="collection">The name of the Kinvey collection which backs this <see cref="KinveyXamarin.DataStore{T}"/></param>
 		/// <param name="storeType">The <see cref="KinveyXamarin.DataStoreType"/> of the DataStore.</param>
+		[Obsolete ("AppData is deprecated, please use DataStore.getInstance() instead.")]
 		public DataStore<T> AppData<T>(String collection, DataStoreType storeType) where T:class
         {
 			//return new AppData<T>(collectionName, myClass, this);
@@ -244,7 +245,7 @@ namespace KinveyXamarin
 			}
 
 			/// <summary>
-			/// Gets or sets the store.
+			/// Gets or sets the credential store.
 			/// </summary>
 			/// <value>The store.</value>
             public ICredentialStore Store
@@ -254,10 +255,10 @@ namespace KinveyXamarin
             }
 
 			/// <summary>
-			/// Gets the credential for a specified user._id
+			/// Gets the credential for a specified user ID
 			/// </summary>
 			/// <returns><c>true</c>, if credential was loaded, <c>false</c> otherwise.</returns>
-			/// <param name="userId">User identifier.</param>
+			/// <param name="userId">User identifier @see cref="KinveyXamarin.User.id"/>.</param>
 			protected bool GetCredential(String userId) 
 			{
 				CredentialManager credentialManager = new CredentialManager(store);
