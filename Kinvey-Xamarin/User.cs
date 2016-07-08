@@ -188,7 +188,7 @@ namespace KinveyXamarin
         {
             this.id = credential.UserId;
             this.AuthToken = credential.AuthToken;
-			CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
+			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
 			((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).KinveyCredential = credential;
             return this;
         }
@@ -233,7 +233,7 @@ namespace KinveyXamarin
 		/// Login with a Kinvey Auth Token directly.
 		/// </summary>
 		/// <returns>The async task.</returns>
-		/// <param name="userId">The _id of the current user.</param>
+		/// <param name="userID">The _id of the current user.</param>
 		/// <param name="authToken">The user's Kinvey Auth Token..</param>
 		public async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken)
 		{
@@ -328,7 +328,7 @@ namespace KinveyXamarin
 		/// Sends a verification email
 		/// </summary>
 		/// <returns>The async task.</returns>
-		/// <param name="userid">Userid.</param>
+		/// <param name="userID">Userid.</param>
 		public async Task<User> EmailVerificationAsync(string userID)
 		{
 			EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
@@ -387,10 +387,10 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Builds login URL to be rendered by client.
+		/// Performs MIC Login authorization through a login page.
 		/// </summary>
-		/// <param name="redirectURI">Redirect URI which will contain grant code.</param>
-		/// <returns> Task<string> returning the login URL.</returns>
+		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
+		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
 		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate)
 		{
 			//return URL for login page
@@ -416,11 +416,11 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Login the with authorization code API.
+		/// Performs MIC Login authorization through an API.
 		/// </summary>
-		/// <param name="username">Username for authentication.</param>
-		/// <param name="password">Password for authentication.</param>
-		/// <param name="redirectURI">Redirect URI.</param>
+		/// <param name="username">Username for authentication</param>
+		/// <param name="password">Password for authentication</param>
+		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI)
 		{
 			this.KinveyClient.MICRedirectURI = redirectURI;
@@ -518,14 +518,18 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Retrieve the specified User
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="userid">Userid.</param>
+		/// <returns>Task which returns the requested user</returns>
+		/// <param name="userID">Userid.</param>
 		public async Task<User> RetrieveAsync(string userID)
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(userID);
 			return await retrieveRequest.ExecuteAsync();
 		}
 
+		/// <summary>
+		/// Retrieves the async.
+		/// </summary>
+		/// <returns>Task which returns the requested user</returns>
 		public async Task<User> RetrieveAsync()
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(this.Id);
@@ -535,10 +539,10 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Resolve the specified query, resolves, resolve_depth, retain to get a set of users
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="query">Query.</param>
-		/// <param name="resolves">Resolves.</param>
-		/// <param name="resolve_depth">Resolve depth.</param>
+		/// <returns>Task which returns an array of the requested users</returns>
+		/// <param name="query">Query used to filter the results</param>
+		/// <param name="resolves">Resolves</param>
+		/// <param name="resolveDepth">Resolve depth</param>
 		/// <param name="retain">If set to <c>true</c> retain references.</param>
 		public async Task<User[]> RetrieveAsync(string query, string[] resolves, int resolveDepth, bool retain)
 		{
@@ -592,10 +596,10 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Resets the password for the specified user id
+		/// Resets the password for the specified user ID.
 		/// </summary>
 		/// <returns>The async task.</returns>
-		/// <param name="userid">Userid.</param>
+		/// <param name="userID">The user ID of the user whose password is reset.</param>
 		public async Task<User> ResetPasswordAsync(string userID)
 		{
 			ResetPasswordRequest resetPasswordRequest = buildResetPasswordRequest(userID);
@@ -607,16 +611,17 @@ namespace KinveyXamarin
 		//
 
 		/// <summary>
-		/// Delete the specified userid, with a flag for hard delete
+		/// Remove the user with the specified user ID, with a flag for hard delete
 		/// </summary>
 		/// <returns>The async task.</returns>
-		/// <param name="userid">Userid.</param>
+		/// <param name="userID">The user ID of user to delete.</param>
 		/// <param name="hard">If set to <c>true</c> the user will be permanently deleted.</param>
 		public async Task<KinveyDeleteResponse> DeleteAsync(string userID, bool hard)
 		{
 			DeleteRequest deleteRequest = buildDeleteRequest(userID, hard);
 			return await deleteRequest.ExecuteAsync();
 		}
+
 		#endregion
 
 		#endregion
