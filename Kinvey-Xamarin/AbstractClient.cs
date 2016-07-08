@@ -12,13 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RestSharp;
-using Newtonsoft.Json;
-using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -28,16 +22,27 @@ namespace KinveyXamarin
 	/// </summary>
     public abstract class AbstractClient : AbstractKinveyClient
     {
+		/// <summary>
+		/// Gets or sets the cache manager, which manages the caches of each <see cref="KinveyXamarin.DataStore{T}"/>
+		/// </summary>
+		/// <value>The cache manager</value>
 		public ICacheManager CacheManager { get; set; }
 
+		/// <summary>
+		/// Gets or sets the network factory, which is used to build requests against the backend.
+		/// </summary>
+		/// <value>The network factory</value>
 		public NetworkFactory NetworkFactory { get ; set ;}
+
 		/// <summary>
 		/// The default base URL.
 		/// </summary>
         public const string DefaultBaseUrl = "https://baas.kinvey.com/";
 
 		private string micHostName;
+
 		private string micApiVersion;
+
 		/// <summary>
 		/// Gets or sets the host URL for MIC.
 		/// The host name for your MIC API. This is relevant if you are using a dedicated instance of Kinvey, with an auth base URL that differs from https://auth.kinvey.com
@@ -125,12 +130,11 @@ namespace KinveyXamarin
         }
 
 		/// <summary>
-		/// Access AppData operations through this.
+		/// Returns an instance of the <see cref="KinveyXamarin.DataStore{T}"/>
 		/// </summary>
-		/// <returns>The data.</returns>
-		/// <param name="collectionName">Collection name.</param>
-		/// <param name="myClass">The class definition for entities in this collection.</param>
-		/// <typeparam name="T">The Type associated with the Class</typeparam>
+		/// <returns>An instance of <see cref="KinveyXamarin.DataStore{T}"/> </returns>
+		/// <param name="collection">The name of the Kinvey collection which backs this <see cref="KinveyXamarin.DataStore{T}"/></param>
+		/// <param name="storeType">The <see cref="KinveyXamarin.DataStoreType"/> of the DataStore.</param>
 		public DataStore<T> AppData<T>(String collection, DataStoreType storeType) where T:class
         {
 			//return new AppData<T>(collectionName, myClass, this);
@@ -202,22 +206,47 @@ namespace KinveyXamarin
         }
 
 		/// <summary>
-		/// Builder for this AbstractClient implementation.
+		/// Class which sets up the building of the <see cref="KinveyXamarin.AbstractClient"/> class.
 		/// </summary>
 		public new abstract class Builder : AbstractKinveyClient.Builder
         {
             private ICredentialStore store;
             //private Properties props = new Properties();
 
+			/// <summary>
+			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient.Builder"/> class.
+			/// </summary>
+			/// <param name="transport">The REST client used to make network requests.</param>
             public Builder(RestClient transport)
-                : base(transport, DefaultBaseUrl, DefaultServicePath) { }
+                : base(transport, DefaultBaseUrl, DefaultServicePath)
+			{
+			}
 
-            public Builder(RestClient transport, KinveyClientRequestInitializer clientRequestInitializer)
-                : base(transport, DefaultBaseUrl, DefaultServicePath, clientRequestInitializer) { }
+			/// <summary>
+			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient.Builder"/> class.
+			/// </summary>
+			/// <param name="transport">The REST client used to make network requests.</param>
+			/// <param name="clientRequestInitializer">Kinvey client request initializer.</param>
+			public Builder(RestClient transport, KinveyClientRequestInitializer clientRequestInitializer)
+                : base(transport, DefaultBaseUrl, DefaultServicePath, clientRequestInitializer)
+			{
+			}
 
-            public Builder(RestClient transport, string baseUrl, KinveyClientRequestInitializer clientRequestInitializer)
-                : base(transport, baseUrl, DefaultServicePath, clientRequestInitializer) { }
+			/// <summary>
+			/// Initializes a new instance of the <see cref="T:KinveyXamarin.AbstractClient.Builder"/> class.
+			/// </summary>
+			/// <param name="transport">The REST client used to make network requests.</param>
+			/// <param name="baseUrl">Base URL.</param>
+			/// <param name="clientRequestInitializer">Kinvey client request initializer.</param>
+			public Builder(RestClient transport, string baseUrl, KinveyClientRequestInitializer clientRequestInitializer)
+                : base(transport, baseUrl, DefaultServicePath, clientRequestInitializer)
+			{
+			}
 
+			/// <summary>
+			/// Gets or sets the store.
+			/// </summary>
+			/// <value>The store.</value>
             public ICredentialStore Store
             {
                 get { return this.store; }
@@ -231,9 +260,9 @@ namespace KinveyXamarin
 			/// <param name="userId">User identifier.</param>
 			protected bool GetCredential(String userId) 
 			{
-
 				CredentialManager credentialManager = new CredentialManager(store);
 				Credential storedCredential = credentialManager.LoadCredential(userId);
+
 				if (storedCredential != null) 
 				{
 					var kinveyRequestInitializer = ((KinveyClientRequestInitializer) this.RequestInitializer);
