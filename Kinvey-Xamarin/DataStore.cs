@@ -21,7 +21,9 @@ using Remotion.Linq.Parsing.Structure;
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// Class for managing the access of data to the Kinvey backend.
+	/// Each DataStore in your application represents a collection on your backend. The <code>DataStore</code> class manages the access of data between the Kinvey backend and the app.
+	/// The <code>DataStore</code> provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
+	/// 
 	/// </summary>
 	public class DataStore<T> : KinveyQueryable<T>  where T:class
 	{
@@ -42,28 +44,9 @@ namespace KinveyXamarin
 		private JObject customRequestProperties = new JObject();
 
 		private NetworkFactory networkFactory;
-		/// <summary>
-		/// Sets the custom request properties.
-		/// </summary>
-		/// <param name="customheaders">Customheaders.</param>
-		public void SetCustomRequestProperties(JObject customheaders){
-			this.customRequestProperties = customheaders;
-		}
 
 		/// <summary>
-		/// Sets the custom request property.
-		/// </summary>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public void SetCustomRequestProperty(string key, JObject value){
-			if (this.customRequestProperties == null){
-				this.customRequestProperties = new JObject();
-			}
-			this.customRequestProperties.Add (key, value);
-		}
-
-		/// <summary>
-		/// Gets or sets the name of the collection.
+		/// Represents the name of the collection.
 		/// </summary>
 		/// <value>The name of the collection.</value>
 		public string CollectionName {
@@ -71,35 +54,15 @@ namespace KinveyXamarin
 			set { this.collectionName = value; }
 		}
 
-		// /// <summary>
-		// /// Gets or sets the type of the current.
-		// /// </summary>
-		// /// <value>The type of the current.</value>
-		//		public Type CurrentType {
-		//			get { return this.typeof(T); }
-		//			set { this.typeof(T) = value; }
-		//		}
-
 		/// <summary>
-		/// Gets or sets the Kinvey client, which is used for making data requests.
+		/// Gets or sets the Kinvey client that is used for making data requests. 
+		/// <seealso cref="KinveyXamarin.Client"/>
 		/// </summary>
 		/// <value>The Kinvey client.</value>
 		public AbstractClient KinveyClient
 		{
 			get { return this.client; }
 			set { this.client = value; }
-		}
-
-		/// <summary>
-		/// Sets the offline storing mechanism (<see cref="KinveyXamarin.ICache{T}"/>) .
-		/// </summary>
-		/// <param name="cache">The <see cref="KinveyXamarin.ICache{T}"/> which will be used to back the DataStore locally on the device.</param>
-		public void setOffline (ICache<T> cache)
-		{
-
-			this.cache = cache;
-			//			this.store.dbpath = Path.Combine (((Client)KinveyClient).filePath, "kinveyOffline.sqlite");
-			//			this.store.platform = ((Client)KinveyClient).offline_platform;
 		}
 
 		/// <summary>
@@ -110,12 +73,33 @@ namespace KinveyXamarin
 			return this.customRequestProperties;
 		}
 
+		/// <summary>
+		/// Sets the custom request properties.
+		/// </summary>
+		/// <param name="customheaders">Customheaders.</param>
+		public void SetCustomRequestProperties (JObject customheaders)
+		{
+			this.customRequestProperties = customheaders;
+		}
+
+		/// <summary>
+		/// Sets a specific custom request property to a JSON object.
+		/// </summary>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
+		public void SetCustomRequestProperty (string key, JObject value)
+		{
+			if (this.customRequestProperties == null) {
+				this.customRequestProperties = new JObject ();
+			}
+			this.customRequestProperties.Add (key, value);
+		}
+
 		#endregion
 
 		private DataStore (DataStoreType type, string collectionName, AbstractClient client = null)
 			: base (new KinveyQueryProvider(typeof(KinveyQueryable<T>), QueryParser.CreateDefault(), new KinveyQueryExecutor<T>()), typeof(T))
 		{
-		//	this.collectionName = typeof(T).FullName;
 			this.collectionName = collectionName;
 
 			if (client != null)
@@ -142,7 +126,7 @@ namespace KinveyXamarin
 		/// <returns>The DataStore instance.</returns>
 		/// <param name="type">The <see cref="KinveyXamarin.DataStoreType"/> of this DataStore instance</param>
 		/// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
-		/// <param name="client">Kinvey Client used by this DataStore</param>
+		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <code>Client.sharedClient</code> is used.</param>
 		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client = null)
 		{
 			// TODO do we need to make this a singleton based on collection, store type and store ID?
@@ -251,6 +235,8 @@ namespace KinveyXamarin
 
 		/// <summary>
 		/// Pulls data from the backend to local storage
+		///
+		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
 		/// <returns>Entities that were pulled from the backend.</returns>
 		/// <param name="query">Optional Query parameter.</param>
@@ -275,6 +261,7 @@ namespace KinveyXamarin
 
 		/// <summary>
 		/// Push local data in the datastore to the backend.
+		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		public async Task<DataStoreResponse> PushAsync () 
@@ -290,8 +277,13 @@ namespace KinveyXamarin
 
 		}
 		/// <summary>
-		/// Sync the data in this data store
+		/// Kicks off a bi-directional synchronization of data between the library and the backend. 
+		/// First, the library calls push to send local changes to the backend. Subsequently, the library calls pull to fetch data in the collection from the backend and stores it on the device.
+		/// You can provide a query as a parameter to the sync API, to restrict the data that is pulled from the backend. The query does not affect what data gets pushed to the backend.
+		///
+		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
+		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null)
 		{
@@ -315,7 +307,7 @@ namespace KinveyXamarin
 			return response;
 		}
 		/// <summary>
-		/// Gets the count of the number of items in the sync queue.
+		/// 
 		/// </summary>
 		/// <returns>The sync queue item count.</returns>
 		/// <param name="allCollections">[optional] Flag to determine if count should be for all collections.  Default to false.</param>
