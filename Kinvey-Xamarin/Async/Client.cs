@@ -29,18 +29,6 @@ namespace KinveyXamarin
 	public class Client : AbstractClient
 	{
 		/// <summary>
-		/// The file path for writing to disk is platform specific, so this is maintained in the client.
-		/// </summary>
-		/// <value>The file path.</value>
-		//public string filePath { get; set; }
-
-		/// <summary>
-		/// the SQLite platform is platform specific, so this is maintained in the client.
-		/// </summary>
-		/// <value>The offline platform.</value>
-		//public ISQLitePlatform offline_platform { get; set; }
-
-		/// <summary>
 		/// Gets or sets the logger, this action is performed when writing to the logs.
 		/// </summary>
 		/// <value>The logger.</value>
@@ -97,6 +85,10 @@ namespace KinveyXamarin
 			return new AsyncCustomEndpoint<I, O> (this);
 		}
 
+		/// <summary>
+		/// Pings the backend service in order to ensure that a connection can be established to Kinvey from this client.
+		/// </summary>
+		/// <returns>The <see cref="KinveyXamarin.PingResponse"/> object, from which the version can be accessed. </returns>
 		public async Task<PingResponse> PingAsync()
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -148,16 +140,21 @@ namespace KinveyXamarin
 			private Action<string> log{ get ; set;}
 
 			private string senderID { get ; set;}
-		
-			//Constructor for a client builder, takes an app key and an app secret.
-			public Builder(string appKey, string appSecret) 
-				: base(new RestClient (), new KinveyClientRequestInitializer (appKey, appSecret, new KinveyHeaders ())) {}
 
+			/// <summary>
+			/// Initializes a new instance of the <see cref="T:KinveyXamarin.Client.Builder"/> class.
+			/// </summary>
+			/// <param name="appKey">App key from Kinvey</param>
+			/// <param name="appSecret">App secret from Kinvey</param>
+			public Builder(string appKey, string appSecret)
+				: base(new RestClient (), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders()))
+			{
+			}
 
 			/// <summary>
 			/// This method creates and initializes a client for use with Kinvey.
 			/// </summary>
-			public virtual Client build() {
+			public virtual Client build(){
 				if (this.filePath != null && offlinePlatform != null){
 					if (this.Store == null) {
 						this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
@@ -252,14 +249,16 @@ namespace KinveyXamarin
 				return this;
 			}
 
-			public Builder SetProjectId(string senderid){
+			/// <summary>
+			/// Sets the project identifier of the <see cref="KinveyXamarin.Client"/>.
+			/// </summary>
+			/// <returns>The <see cref="KinveyXamarin.Client.Builder"/> object</returns>
+			/// <param name="senderid">Sender ID.</param>
+			public Builder SetProjectId(string senderid)
+			{
 				this.senderID = senderid;
 				return this;
 			}
-
-	
 		}
-
 	}
 }
-

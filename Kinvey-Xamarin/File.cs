@@ -17,7 +17,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
@@ -30,7 +29,7 @@ namespace KinveyXamarin
 		#region File class member variables, properties and constructors
 
 		/// <summary>
-		/// Gets or sets the client.
+		/// Gets or sets the Kinvey client.
 		/// </summary>
 		/// <value>The client.</value>
 		private AbstractClient client { get; set; }
@@ -39,34 +38,57 @@ namespace KinveyXamarin
 
 		private JObject customRequestProperties = new JObject();
 
-//		public void SetClientAppVersion(string appVersion){
-//			this.clientAppVersion = appVersion;	
-//		}
-//
-//		public void SetClientAppVersion(int major, int minor, int revision){
-//			SetClientAppVersion(major + "." + minor + "." + revision);
-//		}
-//
-//		public string GetClientAppVersion(){
-//			return this.clientAppVersion;
-//		}
+		//		public void SetClientAppVersion(string appVersion){
+		//			this.clientAppVersion = appVersion;
+		//		}
+		//
+		//		public void SetClientAppVersion(int major, int minor, int revision){
+		//			SetClientAppVersion(major + "." + minor + "." + revision);
+		//		}
+		//
+		//		public string GetClientAppVersion(){
+		//			return this.clientAppVersion;
+		//		}
 
-		public void SetCustomRequestProperties(JObject customheaders){
+
+		/// <summary>
+		/// Sets a specific custom request property from a Json object.
+		/// </summary>
+		/// <param name="customheaders">Custom request property as a JObject</param>
+		public void SetCustomRequestProperties(JObject customheaders)
+		{
 			this.customRequestProperties = customheaders;
 		}
 
-		public void SetCustomRequestProperty(string key, JObject value){
-			if (this.customRequestProperties == null){
+		/// <summary>
+		/// Sets a specific custom request property from a Json object.
+		/// </summary>
+		/// <param name="key">Custom request property key</param>
+		/// <param name="value">Custom request property value as a JObject</param>
+		public void SetCustomRequestProperty(string key, JObject value)
+		{
+			if (this.customRequestProperties == null)
+			{
 				this.customRequestProperties = new JObject();
 			}
+
 			this.customRequestProperties.Add (key, value);
 		}
 
-		public void ClearCustomRequestProperties(){
+		/// <summary>
+		/// Clears the currently saved custom request properties.
+		/// </summary>
+		public void ClearCustomRequestProperties()
+		{
 			this.customRequestProperties = new JObject();
 		}
 
-		public JObject GetCustomRequestProperties(){
+		/// <summary>
+		/// Gets the custom request properties.
+		/// </summary>
+		/// <returns>The custom request properties.</returns>
+		public JObject GetCustomRequestProperties()
+		{
 			return this.customRequestProperties;
 		}
 

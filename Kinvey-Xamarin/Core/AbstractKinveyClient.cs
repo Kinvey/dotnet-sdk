@@ -11,17 +11,15 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 using KinveyUtils;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Base class of the Kinvey Client.  Handles setup for making requests to Kinvey backend.
+	/// </summary>
 	public abstract class AbstractKinveyClient
 	{
 		/// <summary>
@@ -48,61 +46,114 @@ namespace KinveyXamarin
 
 		private JObject customRequestProperties = new JObject();
 
-		public void SetClientAppVersion(string appVersion){
+		/// <summary>
+		/// Sets the client app version. We strongly recommend (but do not require) using version strings that conform to the pattern:
+		/// <code>major.minor.patch</code>, where all values are integers and minor and patch are optional. 
+		/// Here are some examples for version strings specified in this format - “1.1.5”, “2.6”, “3”
+		/// </summary>
+		/// <returns>The client app version.</returns>
+		/// <param name="appVersion">App version.</param>
+		public void SetClientAppVersion(string appVersion)
+		{
 			this.clientAppVersion = appVersion;	
 		}
 
-		public void SetClientAppVersion(int major, int minor, int revision){
+		/// <summary>
+		/// Sets the client app version, in terms major, minor and revision numbers.
+		/// </summary>
+		/// <param name="major">Major version number</param>
+		/// <param name="minor">Minor version number</param>
+		/// <param name="revision">Revision number</param>
+		public void SetClientAppVersion(int major, int minor, int revision)
+		{
 			SetClientAppVersion(major + "." + minor + "." + revision);
 		}
 
-		public string GetClientAppVersion(){
+		/// <summary>
+		/// Gets the client app version.
+		/// </summary>
+		/// <returns>The client app version.</returns>
+		public string GetClientAppVersion()
+		{
 			return this.clientAppVersion;
 		}
 
-		public void SetCustomRequestProperties(JObject customheaders){
+		/// <summary>
+		/// Sets the custom request properties.
+		/// </summary>
+		/// <returns>The custom request properties.</returns>
+		/// <param name="customheaders">Customheaders.</param>
+		public void SetCustomRequestProperties(JObject customheaders)
+		{
 			this.customRequestProperties = customheaders;
 		}
 
-		public void SetCustomRequestProperty(string key, JObject value){
-			if (this.customRequestProperties == null){
+		/// <summary>
+		/// Sets a specific custom request property from a Json object.
+		/// </summary>
+		/// <param name="key">Custom request property key</param>
+		/// <param name="value">Custom request property value as a JObject</param>
+		public void SetCustomRequestProperty(string key, JObject value)
+		{
+			if (this.customRequestProperties == null)
+			{
 				this.customRequestProperties = new JObject();
 			}
+
 			this.customRequestProperties.Add (key, value);
 		}
 
-		public void SetCustomRequestProperty(string key, string value){
-			if (this.customRequestProperties == null){
+		/// <summary>
+		/// Sets a specific custom request property from a string.
+		/// </summary>
+		/// <param name="key">Custom request property key</param>
+		/// <param name="value">Custom request property value as a string</param>
+		public void SetCustomRequestProperty(string key, string value)
+		{
+			if (this.customRequestProperties == null)
+			{
 				this.customRequestProperties = new JObject();
 			}
+
 			this.customRequestProperties.Add (key, value);
 		}
 
-		public void ClearCustomRequestProperties(){
+		/// <summary>
+		/// Clears the currently saved custom request properties.
+		/// </summary>
+		public void ClearCustomRequestProperties()
+		{
 			this.customRequestProperties = new JObject();
 		}
 
-		public JObject GetCustomRequestProperties(){
+		/// <summary>
+		/// Gets the custom request properties.
+		/// </summary>
+		/// <returns>The custom request properties.</returns>
+		public JObject GetCustomRequestProperties()
+		{
 			return this.customRequestProperties;
 		}
        
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient"/> class.
 		/// </summary>
-		/// <param name="restClient">Rest client.</param>
-		/// <param name="rootUrl">Root URL.</param>
-		/// <param name="servicePath">Service path.</param>
+		/// <param name="restClient">The REST client to be used for network requests.</param>
+		/// <param name="rootUrl">The root URL of the backend service</param>
+		/// <param name="servicePath">The service path</param>
         protected AbstractKinveyClient(RestClient restClient, string rootUrl, string servicePath)
-            : this(restClient, rootUrl, servicePath, null) {}
+            : this(restClient, rootUrl, servicePath, null)
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient"/> class.
 		/// </summary>
-		/// <param name="restClient">Rest client.</param>
-		/// <param name="rootUrl">Root URL.</param>
-		/// <param name="servicePath">Service path.</param>
-		/// <param name="initializer">Initializer.</param>
-        protected AbstractKinveyClient(RestClient restClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
+		/// <param name="restClient">The REST client to be used for network requests.</param>
+		/// <param name="rootUrl">The root URL of the backend service</param>
+		/// <param name="servicePath">The service path</param>
+		/// <param name="initializer">Kinvey request initializer</param>
+		protected AbstractKinveyClient(RestClient restClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
         {
             this.restClient = restClient;
             this.kinveyRequestInitializer = initializer;
@@ -215,28 +266,33 @@ namespace KinveyXamarin
             return servicePath;
         }
 
-        public abstract class Builder
+		/// <summary>
+		/// Class which sets up the building of the <see cref="KinveyXamarin.AbstractKinveyClient"/> class.
+		/// </summary>
+		public abstract class Builder
         {
-
 			/// <summary>
 			/// The rest client.
 			/// </summary>
             private readonly RestClient restClient;
+
 			/// <summary>
 			/// The base URL.
 			/// </summary>
             private string baseUrl;
+
 			/// <summary>
 			/// The service path.
 			/// </summary>
             private string servicePath;
+
 			/// <summary>
 			/// The kinvey request initializer.
 			/// </summary>
             private KinveyClientRequestInitializer kinveyRequestInitializer;
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient+Builder"/> class.
+			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient"/> Builder class.
 			/// </summary>
 			/// <param name="transport">Transport.</param>
 			/// <param name="defaultRootUrl">Default root URL.</param>

@@ -11,25 +11,19 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using KinveyXamarin;
-using System.IO;
-using System.Linq.Expressions;
-using System.Collections;
 using Newtonsoft.Json.Linq;
-using Remotion.Linq;
 using Remotion.Linq.Parsing.Structure;
-using KinveyUtils;
 
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// Class for managing appData access to the Kinvey backend.
+	/// Each DataStore in your application represents a collection on your backend. The <code>DataStore</code> class manages the access of data between the Kinvey backend and the app.
+	/// The <code>DataStore</code> provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
+	/// 
 	/// </summary>
 	public class DataStore<T> : KinveyQueryable<T>  where T:class
 	{
@@ -50,28 +44,9 @@ namespace KinveyXamarin
 		private JObject customRequestProperties = new JObject();
 
 		private NetworkFactory networkFactory;
-		/// <summary>
-		/// Sets the custom request properties.
-		/// </summary>
-		/// <param name="customheaders">Customheaders.</param>
-		public void SetCustomRequestProperties(JObject customheaders){
-			this.customRequestProperties = customheaders;
-		}
 
 		/// <summary>
-		/// Sets the custom request property.
-		/// </summary>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public void SetCustomRequestProperty(string key, JObject value){
-			if (this.customRequestProperties == null){
-				this.customRequestProperties = new JObject();
-			}
-			this.customRequestProperties.Add (key, value);
-		}
-
-		/// <summary>
-		/// Gets or sets the name of the collection.
+		/// Represents the name of the collection.
 		/// </summary>
 		/// <value>The name of the collection.</value>
 		public string CollectionName {
@@ -80,30 +55,14 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Gets or sets the type of the current.
+		/// Gets or sets the Kinvey client that is used for making data requests. 
+		/// <seealso cref="KinveyXamarin.Client"/>
 		/// </summary>
-		/// <value>The type of the current.</value>
-		//		public Type CurrentType {
-		//			get { return this.typeof(T); }
-		//			set { this.typeof(T) = value; }
-		//		}
-
-		/// <summary>
-		/// Gets or sets the kinvey client.
-		/// </summary>
-		/// <value>The kinvey client.</value>
-		public AbstractClient KinveyClient {
+		/// <value>The Kinvey client.</value>
+		public AbstractClient KinveyClient
+		{
 			get { return this.client; }
 			set { this.client = value; }
-		}
-
-
-		public void setOffline (ICache<T> cache)
-		{
-
-			this.cache = cache;
-			//			this.store.dbpath = Path.Combine (((Client)KinveyClient).filePath, "kinveyOffline.sqlite");
-			//			this.store.platform = ((Client)KinveyClient).offline_platform;
 		}
 
 		/// <summary>
@@ -114,12 +73,33 @@ namespace KinveyXamarin
 			return this.customRequestProperties;
 		}
 
+		/// <summary>
+		/// Sets the custom request properties.
+		/// </summary>
+		/// <param name="customheaders">Customheaders.</param>
+		public void SetCustomRequestProperties (JObject customheaders)
+		{
+			this.customRequestProperties = customheaders;
+		}
+
+		/// <summary>
+		/// Sets a specific custom request property to a JSON object.
+		/// </summary>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
+		public void SetCustomRequestProperty (string key, JObject value)
+		{
+			if (this.customRequestProperties == null) {
+				this.customRequestProperties = new JObject ();
+			}
+			this.customRequestProperties.Add (key, value);
+		}
+
 		#endregion
 
 		private DataStore (DataStoreType type, string collectionName, AbstractClient client = null)
 			: base (new KinveyQueryProvider(typeof(KinveyQueryable<T>), QueryParser.CreateDefault(), new KinveyQueryExecutor<T>()), typeof(T))
 		{
-		//	this.collectionName = typeof(T).FullName;
 			this.collectionName = collectionName;
 
 			if (client != null)
@@ -140,17 +120,24 @@ namespace KinveyXamarin
 
 		#region Public interface
 
+		/// <summary>
+		/// Gets an instance of the <see cref="KinveyXamarin.DataStore{T}"/>.
+		/// </summary>
+		/// <returns>The DataStore instance.</returns>
+		/// <param name="type">The <see cref="KinveyXamarin.DataStoreType"/> of this DataStore instance</param>
+		/// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
+		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <code>Client.sharedClient</code> is used.</param>
 		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client = null)
 		{
 			// TODO do we need to make this a singleton based on collection, store type and store ID?
 			return new DataStore<T> (type, collectionName, client);
 		}
 
-		/// <summary>
-		/// Get a single entity stored in a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entityId">Entity identifier.</param>
+//		/// <summary>
+//		/// Get a single entity stored in a Kinvey collection.
+//		/// </summary>
+//		/// <returns>The async task.</returns>
+//		/// <param name="entityId">Entity identifier.</param>
 //		public async Task<T> FindByIDAsync(string entityID)
 //		{
 //			List<string> entityIDs = new List<string>();
@@ -160,11 +147,11 @@ namespace KinveyXamarin
 //			return listEntities.FirstOrDefault();
 //		}
 
-		/// <summary>
-		/// Get a single entity stored in a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entityId">Entity identifier.</param>
+//		/// <summary>
+//		/// Get a single entity stored in a Kinvey collection.
+//		/// </summary>
+//		/// <returns>The async task.</returns>
+//		/// <param name="entityId">Entity identifier.</param>
 //		internal async Task<List<T>> FindByIDsAsync(List<string> entityIDs)
 //		{
 //			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
@@ -176,10 +163,10 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Find based on query.
+		/// Perfoms a find operation, with an optional query filter.
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
+		/// <param name="observer">The KinveyObserver object used to receive the results of the find operation</param>
+		/// <param name="query">[optional] LINQ-style query that can be used to filter the search results</param>
 		public async Task FindAsync(KinveyObserver<List<T>> observer, IQueryable<T> query = null)
 		{
 			FindRequest<T> findByQueryRequest = new FindRequest<T> (client, collectionName, cache, storeType.ReadPolicy, query, null);
@@ -190,10 +177,10 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Find based on query.
+		/// Perfoms a find operation, with an optional query filter.
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="queryObj">Query object, which includes the query to run and the delegates to call back.</param>
+		/// <param name="observer">The KinveyObserver object used to receive the results of the find operation</param>
+		/// <param name="entityID">The ID of the entity to be retrieved</param>
 		public async Task FindAsync(KinveyObserver<List<T>> observer, string entityID)
 		{
 			List<string> listIDs = new List<string>();
@@ -239,7 +226,7 @@ namespace KinveyXamarin
 		/// Deletes the entity associated with the provided id
 		/// </summary>
 		/// <returns>The async task.</returns>
-		/// <param name="entityId">the _id of the entity to delete.</param>
+		/// <param name="entityID">The Kinvey ID of the entity to delete.</param>
 		public async Task<KinveyDeleteResponse> RemoveAsync(string entityID)
 		{
 			RemoveRequest<T> request = new RemoveRequest<T>(entityID, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
@@ -248,6 +235,8 @@ namespace KinveyXamarin
 
 		/// <summary>
 		/// Pulls data from the backend to local storage
+		///
+		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
 		/// <returns>Entities that were pulled from the backend.</returns>
 		/// <param name="query">Optional Query parameter.</param>
@@ -272,6 +261,7 @@ namespace KinveyXamarin
 
 		/// <summary>
 		/// Push local data in the datastore to the backend.
+		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		public async Task<DataStoreResponse> PushAsync () 
@@ -287,8 +277,13 @@ namespace KinveyXamarin
 
 		}
 		/// <summary>
-		/// Sync the data in this data store
+		/// Kicks off a bi-directional synchronization of data between the library and the backend. 
+		/// First, the library calls push to send local changes to the backend. Subsequently, the library calls pull to fetch data in the collection from the backend and stores it on the device.
+		/// You can provide a query as a parameter to the sync API, to restrict the data that is pulled from the backend. The query does not affect what data gets pushed to the backend.
+		///
+		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
+		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null)
 		{
@@ -312,7 +307,7 @@ namespace KinveyXamarin
 			return response;
 		}
 		/// <summary>
-		/// Gets the count of the number of items in the sync queue.
+		/// 
 		/// </summary>
 		/// <returns>The sync queue item count.</returns>
 		/// <param name="allCollections">[optional] Flag to determine if count should be for all collections.  Default to false.</param>
@@ -320,10 +315,6 @@ namespace KinveyXamarin
 		{
 			return syncQueue.Count(allCollections);
 		}
-
-
-
-
 
 		#endregion
 
