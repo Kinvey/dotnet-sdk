@@ -47,7 +47,9 @@ namespace KinveyXamarin
 		private JObject customRequestProperties = new JObject();
 
 		/// <summary>
-		/// Sets the client app version.
+		/// Sets the client app version. We strongly recommend (but do not require) using version strings that conform to the pattern:
+		/// <code>major.minor.patch</code>, where all values are integers and minor and patch are optional. 
+		/// Here are some examples for version strings specified in this format - “1.1.5”, “2.6”, “3”
 		/// </summary>
 		/// <returns>The client app version.</returns>
 		/// <param name="appVersion">App version.</param>
@@ -87,7 +89,7 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Sets the custom request property.
+		/// Sets a specific custom request property from a Json object.
 		/// </summary>
 		/// <param name="key">Custom request property key</param>
 		/// <param name="value">Custom request property value as a JObject</param>
@@ -102,7 +104,7 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Sets the custom request property.
+		/// Sets a specific custom request property from a string.
 		/// </summary>
 		/// <param name="key">Custom request property key</param>
 		/// <param name="value">Custom request property value as a string</param>
