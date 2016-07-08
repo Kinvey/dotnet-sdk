@@ -95,6 +95,9 @@ namespace KinveyXamarin
 		[JsonProperty("_public")]
 		public bool _public {get; set;}
 
+		/// <summary>
+		/// Gets or sets the required headers for file operations.
+		/// </summary>
 		[JsonProperty("_requiredHeaders")]
 		public Dictionary<string, string> headers;
 
