@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using KinveyXamarin;
 using System.Threading.Tasks;
+
+using Moq;
+using NUnit.Framework;
+
+using KinveyXamarin;
 
 namespace UnitTestFramework
 {
@@ -25,7 +28,6 @@ namespace UnitTestFramework
 				.setFilePath(db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
 				.build();
-
 		}
 
 		[TearDown]
@@ -74,14 +76,40 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
-		public async Task TestGetEntityAsyncBad()
+		public async Task TestNetworkStoreFindAsyncBad()
 		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+
+			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient> ();
+			RestSharp.IRestResponse resp = new RestSharp.RestResponse ();
+			resp.Content = "MOCK RESPONSE";
+			moqRC.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(resp);
+
+			Client c = new Client.Builder (TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath (db_dir)
+				.setOfflinePlatform (new SQLite.Net.Platform.Generic.SQLitePlatformGeneric ())
+				.SetRestClient(moqRC.Object)
+				.build ();
+
 			// Arrange
+			DataStore<ToDo> store = DataStore<ToDo>.GetInstance(DataStoreType.NETWORK, "todos", c);
 
 			// Act
+			Exception er = null;
+			await store.FindAsync (new KinveyObserver<List<ToDo>> () {
+				onSuccess = (results) => Console.WriteLine("success"),
+				onError = (error) => er = error,
+				onCompleted = () => Console.WriteLine ("completed")
+			});
 
 			// Assert
+			Assert.NotNull(er);
+			KinveyException ke = er as KinveyException;
+			Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
+
+			// Teardown
+			c.CurrentUser.Logout ();
 		}
 
 		[Test]
