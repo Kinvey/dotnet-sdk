@@ -319,9 +319,9 @@ namespace KinveyXamarin
 		/// Initializes the rest client.
 		/// </summary>
 		/// <returns>The rest client.</returns>
-        private RestClient InitializeRestClient()
+        private IRestClient InitializeRestClient()
         {
-            RestClient restClient = this.client.RestClient;
+            IRestClient restClient = this.client.RestClient;
 			restClient.BaseUrl = this.baseURL;
 
 			if (OverrideRedirect) {
@@ -350,7 +350,7 @@ namespace KinveyXamarin
 		/// <returns>The unparsed.</returns>
         public RestResponse ExecuteUnparsed()
         {
-            RestClient client = InitializeRestClient();
+            IRestClient client = InitializeRestClient();
             RestRequest request = BuildRestRequest();
 
             client.Authenticator = RequestAuth;
@@ -423,7 +423,7 @@ namespace KinveyXamarin
 
 		public async Task<RestResponse> ExecuteUnparsedAsync()
 		{
-			RestClient client = InitializeRestClient();
+			IRestClient client = InitializeRestClient();
 			RestRequest request = BuildRestRequest();
 
 			client.Authenticator = RequestAuth;

@@ -44,6 +44,8 @@ namespace KinveyXamarin
 		/// </summary>
 		private string requestID;
 
+		private EnumErrorCode errorCode;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
 		/// </summary>
@@ -67,6 +69,7 @@ namespace KinveyXamarin
 		public KinveyException(EnumErrorCode errorCode, string info = null)
 			: base(MessageFromErrorCode(errorCode, info))
 		{
+			this.errorCode = errorCode;
 			this.reason = MessageFromErrorCode(errorCode, info);
 		}
 			
@@ -109,6 +112,11 @@ namespace KinveyXamarin
 		{
 			get { return this.requestID == null ? "" : this.requestID; }
 			set { this.requestID = value; }
+		}
+
+		public EnumErrorCode ErrorCode
+		{
+			get { return this.errorCode; }
 		}
 
 		/// <summary>

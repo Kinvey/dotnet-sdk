@@ -121,7 +121,7 @@ namespace KinveyXamarin
 		/// <param name="servicePath">Service path.</param>
 		/// <param name="initializer">Initializer.</param>
 		/// <param name="store">Store.</param>
-        protected AbstractClient(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
+        protected AbstractClient(IRestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
             : base(client, rootUrl, servicePath, initializer)
         {
             this.store = store;
@@ -228,7 +228,7 @@ namespace KinveyXamarin
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
 			/// <param name="clientRequestInitializer">Kinvey client request initializer.</param>
-			public Builder(RestClient transport, KinveyClientRequestInitializer clientRequestInitializer)
+			public Builder(IRestClient transport, KinveyClientRequestInitializer clientRequestInitializer)
                 : base(transport, DefaultBaseUrl, DefaultServicePath, clientRequestInitializer)
 			{
 			}

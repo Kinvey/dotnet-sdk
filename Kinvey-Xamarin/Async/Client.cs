@@ -71,7 +71,7 @@ namespace KinveyXamarin
 		/// <param name="servicePath">The service path, appended to the rootURL.</param>
 		/// <param name="initializer">The request initializer, maintaining headers and authentication.</param>
 		/// <param name="store">The credential store, where the current user's credentials will be stored.</param>
-		protected Client(RestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
+		protected Client(IRestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
 			: base(client, rootUrl, servicePath, initializer, store) {}
 
 
@@ -257,6 +257,12 @@ namespace KinveyXamarin
 			public Builder SetProjectId(string senderid)
 			{
 				this.senderID = senderid;
+				return this;
+			}
+
+			public Builder SetRestClient(IRestClient client)
+			{
+				this.HttpRestClient = client;
 				return this;
 			}
 		}

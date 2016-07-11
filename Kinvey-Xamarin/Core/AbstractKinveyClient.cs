@@ -40,7 +40,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// The rest client.
 		/// </summary>
-		private RestClient restClient;
+		private IRestClient restClient;
 
 		private string clientAppVersion = null;
 
@@ -141,7 +141,7 @@ namespace KinveyXamarin
 		/// <param name="restClient">The REST client to be used for network requests.</param>
 		/// <param name="rootUrl">The root URL of the backend service</param>
 		/// <param name="servicePath">The service path</param>
-        protected AbstractKinveyClient(RestClient restClient, string rootUrl, string servicePath)
+        protected AbstractKinveyClient(IRestClient restClient, string rootUrl, string servicePath)
             : this(restClient, rootUrl, servicePath, null)
 		{
 		}
@@ -153,7 +153,7 @@ namespace KinveyXamarin
 		/// <param name="rootUrl">The root URL of the backend service</param>
 		/// <param name="servicePath">The service path</param>
 		/// <param name="initializer">Kinvey request initializer</param>
-		protected AbstractKinveyClient(RestClient restClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
+		protected AbstractKinveyClient(IRestClient restClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
         {
             this.restClient = restClient;
             this.kinveyRequestInitializer = initializer;
@@ -204,7 +204,7 @@ namespace KinveyXamarin
 		/// Gets the rest client.
 		/// </summary>
 		/// <value>The rest client.</value>
-        public RestClient RestClient
+        public IRestClient RestClient
         {
             get { return this.restClient; }
         }
@@ -274,7 +274,7 @@ namespace KinveyXamarin
 			/// <summary>
 			/// The rest client.
 			/// </summary>
-            private readonly RestClient restClient;
+            private IRestClient restClient;
 
 			/// <summary>
 			/// The base URL.
@@ -298,7 +298,7 @@ namespace KinveyXamarin
 			/// <param name="defaultRootUrl">Default root URL.</param>
 			/// <param name="defaultServicePath">Default service path.</param>
 			/// <param name="kinveyRequestInitializer">[optional] Kinvey request initializer.</param>
-			public Builder(RestClient transport, string defaultRootUrl, string defaultServicePath, KinveyClientRequestInitializer kinveyRequestInitializer = null)
+			public Builder(IRestClient transport, string defaultRootUrl, string defaultServicePath, KinveyClientRequestInitializer kinveyRequestInitializer = null)
             {
                 this.restClient = transport;
                 BaseUrl = defaultRootUrl;
@@ -310,9 +310,10 @@ namespace KinveyXamarin
 			/// Gets the http rest client.
 			/// </summary>
 			/// <value>The http rest client.</value>
-            public RestClient HttpRestClient
+            public IRestClient HttpRestClient
             {
                 get { return this.restClient; }
+				set { this.restClient = value; }
             }
 
 			/// <summary>
