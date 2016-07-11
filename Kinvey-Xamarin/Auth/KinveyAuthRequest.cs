@@ -190,9 +190,9 @@ namespace KinveyXamarin
 		/// Initializes the rest client.
 		/// </summary>
 		/// <returns>The rest client.</returns>
-        private RestClient InitializeRestClient()
+        private IRestClient InitializeRestClient()
         {
-			RestClient restClient = this.client.RestClient;
+			IRestClient restClient = this.client.RestClient;
 			restClient.BaseUrl = client.BaseUrl;
 			return restClient;
         }
@@ -203,7 +203,7 @@ namespace KinveyXamarin
 		/// <returns>The unparsed async.</returns>
 		public async Task<RestResponse> ExecuteUnparsedAsync()
 		{
-			RestClient client = InitializeRestClient();
+			IRestClient client = InitializeRestClient();
 			RestRequest request = BuildRestRequest();
 
 			var response = await client.ExecuteAsync(request);
