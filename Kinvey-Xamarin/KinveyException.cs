@@ -52,13 +52,23 @@ namespace KinveyXamarin
 		/// <param name="reason">Reason.</param>
 		/// <param name="fix">Fix.</param>
 		/// <param name="explanation">Explanation.</param>
-        public KinveyException(string reason, string fix, string explanation)
-            : base(FormatMessage(reason, fix, explanation))
-        {
-            this.reason = reason;
-            this.fix = fix;
-            this.explanation = explanation;
-        }
+		public KinveyException(EnumErrorCode errorCode, string reason, string fix, string explanation)
+			: base(FormatMessage(reason, fix, explanation))
+		{
+			this.errorCode = errorCode;
+			this.reason = reason;
+			this.fix = fix;
+			this.explanation = explanation;
+		}
+
+		public KinveyException(EnumErrorCode errorCode, string reason, string fix, string explanation, Exception innerException)
+			: base(FormatMessage(reason, fix, explanation), innerException)
+		{
+			this.errorCode = errorCode;
+			this.reason = reason;
+			this.fix = fix;
+			this.explanation = explanation;
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.

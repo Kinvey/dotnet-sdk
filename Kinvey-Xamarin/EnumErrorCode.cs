@@ -11,8 +11,6 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-
 namespace KinveyXamarin
 {
 	/// <summary>
@@ -20,6 +18,51 @@ namespace KinveyXamarin
 	/// </summary>
 	public enum EnumErrorCode
 	{
+		/// <summary>
+		/// The shared client is null.
+		/// </summary>
+		ERROR_CLIENT_SHARED_CLIENT_NULL,
+
+		/// <summary>
+		/// Error saving a new entity in the local cache.
+		/// </summary>
+		ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY,
+
+		/// <summary>
+		/// Error saving the permanent entity ID in the local cache.
+		/// </summary>
+		ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID,
+
+		/// <summary>
+		/// Error saving an updated entity in the local cache.
+		/// </summary>
+		ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY,
+
+		/// <summary>
+		/// Error finding entities by query in the local cache.
+		/// </summary>
+		ERROR_DATASTORE_CACHE_FIND_QUERY,
+
+		/// <summary>
+		/// Error refreshing the local cache with a list of new and updated entities.
+		/// </summary>
+		ERROR_DATASTORE_CACHE_REFRESH,
+
+		/// <summary>
+		/// Error removing an entity by ID in the local cache.
+		/// </summary>
+		ERROR_DATASTORE_CACHE_REMOVE_ENTITY,
+
+		/// <summary>
+		/// Error due to an invalid operation being performed on this type of datastore.
+		/// </summary>
+		ERROR_DATASTORE_INVALID_OPERATION,
+
+		/// <summary>
+		/// Error due to attempting to pull when the sync queue has not been cleared.  Try to perform a <code>push</code> operation first.
+		/// </summary>
+		ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
+
 		/// <summary>
 		/// JSON Error - Invalid format.
 		/// </summary>
