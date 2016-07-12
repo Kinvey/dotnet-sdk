@@ -61,7 +61,8 @@ namespace KinveyXamarin
 			if (sqlcred != null)
 			{
 				Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
-				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				KinveyAuthResponse.KinveyUserMetadata userKMD = JsonConvert.DeserializeObject<KinveyAuthResponse.KinveyUserMetadata>(sqlcred.UserKMD);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
 		}
@@ -79,6 +80,7 @@ namespace KinveyXamarin
 			cred.AuthToken = credential.AuthToken;
 			cred.UserName = credential.UserName;
 			cred.Attributes = JsonConvert.SerializeObject(credential.Attributes);
+			cred.UserKMD = JsonConvert.SerializeObject(credential.UserKMD);
 			cred.RefreshToken = credential.RefreshToken;
 			cred.RedirectUri = credential.RedirectUri;
 			_dbConnection.Insert(cred);
@@ -102,9 +104,15 @@ namespace KinveyXamarin
 				Dictionary<string, JToken> attributes = null;
 				if (sqlcred.Attributes != null)
 				{
-					JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
+					attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 				}
-				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, sqlcred.RefreshToken, sqlcred.RedirectUri);
+
+				KinveyAuthResponse.KinveyUserMetadata kmd = null;
+				if (sqlcred.UserKMD != null)
+				{
+					kmd = JsonConvert.DeserializeObject<KinveyAuthResponse.KinveyUserMetadata>(sqlcred.UserKMD);
+				}
+				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
 		}
@@ -147,6 +155,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <value>The redirect uri.</value>
 		public string RedirectUri {get; set;}
+
+		public string UserKMD { get; set; }
 
 		/// <summary>
 		/// Gets or sets the custom attributes for the user.

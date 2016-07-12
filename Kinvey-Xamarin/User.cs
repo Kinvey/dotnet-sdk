@@ -55,6 +55,9 @@ namespace KinveyXamarin
         [JsonProperty("username")]
         private String username;
 
+		[JsonProperty("_kmd")]
+		public KinveyAuthResponse.KinveyUserMetadata UserKMD;
+
 		/// <summary>
 		/// A name-value dictionary of custom attributes of the user
 		/// </summary>
@@ -174,6 +177,7 @@ namespace KinveyXamarin
             //this.username = response
             this.AuthToken = response.AuthToken;
 			this.Attributes = response.Attributes;
+			this.UserKMD = response.UserMetadata;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
             return this;

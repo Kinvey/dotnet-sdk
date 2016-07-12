@@ -267,7 +267,7 @@ namespace KinveyXamarin
 				if (storedCredential != null) 
 				{
 					var kinveyRequestInitializer = ((KinveyClientRequestInitializer) this.RequestInitializer);
-					kinveyRequestInitializer.KinveyCredential = new Credential(userId, storedCredential.AuthToken, storedCredential.UserName, storedCredential.Attributes, null, null);
+					kinveyRequestInitializer.KinveyCredential = new Credential(userId, storedCredential.AuthToken, storedCredential.UserName, storedCredential.Attributes, storedCredential.UserKMD, null, null);
 					return true;
 				}
 				else

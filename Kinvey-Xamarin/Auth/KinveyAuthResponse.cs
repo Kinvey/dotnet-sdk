@@ -71,17 +71,32 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Kinvey user metadata.
 		/// </summary>
-        [JsonObject]
+		[JsonObject(MemberSerialization.OptIn)]
 		public class KinveyUserMetadata : JObject
         {
+			public KinveyUserMetadata() { }
+
+			[Preserve]
+			[JsonProperty("authtoken")]
+			public string AuthToken { get; set; }
+
 			[Preserve]
             [JsonProperty("lmt")]
-            public string LastModifiedTime {get; set;}
+            public string LastModifiedTime { get; set; }
 
+			/// <summary>
+			/// Gets or sets the entity creation time.
+			/// </summary>
 			[Preserve]
-            [JsonProperty("authtoken")]
-            public string AuthToken {get; set; }
-        }
+			[JsonProperty("ect")]
+			public String EntityCreationTime { get; set; }
 
+			/// <summary>
+			/// Gets or sets the email verification information for a user.
+			/// </summary>
+			[Preserve]
+			[JsonProperty("emailVerification")]
+			public KMDEmailVerification EmailVerification { get; set; }
+		}
     }
 }
