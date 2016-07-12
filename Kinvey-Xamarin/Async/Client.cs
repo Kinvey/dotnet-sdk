@@ -48,19 +48,23 @@ namespace KinveyXamarin
 		/// SharedClient must be built before it is accessed. Attempting to access a null SharedClient will result in a KinveyException thrown from the getter.
 		/// </summary>
 		/// <value>The shared client.</value>
-		public static Client SharedClient {
-			get {
-				if (_sharedClient == null) {
-					throw (new KinveyException ("SharedClient is null.", 
-					                            "Call Client.Builder(...).build() to build a new Kinvey shared client.", 
-					                            "A Client must be initialized in the app before using other Kinvey SDK methods. This error indicates that a SharedClient is being accessed by the app before it has been built."));
+		public static Client SharedClient
+		{
+			get
+			{
+				if (_sharedClient == null)
+				{
+					throw new KinveyException(EnumErrorCode.ERROR_CLIENT_SHARED_CLIENT_NULL,
+												"SharedClient is null.",
+												"Call Client.Builder(...).build() to build a new Kinvey shared client.",
+												"A Client must be initialized in the app before using other Kinvey SDK methods. This error indicates that a SharedClient is being accessed by the app before it has been built.");
 				}
 				return _sharedClient;
 			}
-			set {
+			set
+			{
 				_sharedClient = value;
 			}
-
 		}
 
 		/// <summary>

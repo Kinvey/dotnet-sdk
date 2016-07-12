@@ -26,6 +26,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Remotion.Linq;
+using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -112,7 +113,11 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				string s = e.Message;
+				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY,
+											"An exception was thrown while trying to save an entity in the cache.",
+											"",
+											"Error in inserting new entity cache with temporary ID.",
+											e);
 			}
 
 			return item;
@@ -126,7 +131,11 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				string s = e.Message;
+				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY,
+											"An exception was thrown while trying to update an entity in the cache.",
+											"",
+											"Error in updating an existing entity in the cache.",
+											e);
 			}
 
 			return item;
@@ -160,7 +169,11 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				string s = e.Message;
+				throw  new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID,
+											"An exception was thrown while trying to save an entity in the cache.",
+											"",
+											"Error in updating cache with permanent entity ID.",
+											e);
 			}
 
 			return item;
@@ -185,6 +198,7 @@ namespace KinveyXamarin
 			catch (Exception e)
 			{
 				// item not found, just return the default item
+				Logger.Log("Kinvey exception in cache find: item not found.  " + e.Message);
 			}
 
 			return item;
@@ -204,39 +218,50 @@ namespace KinveyXamarin
 
 		public List<T> FindByQuery(Expression expr)
 		{
-			// TODO implement
 			List<T> results = null;
 
-			if (expr.NodeType == ExpressionType.Call)
+			try
 			{
-				MethodCallExpression mcb = expr as MethodCallExpression;
 
-				var args = mcb?.Arguments;
-				if (args.Count >= 2)
+				if (expr.NodeType == ExpressionType.Call)
 				{
-					var nodeType = args[1]?.NodeType;
-					if (nodeType == ExpressionType.Quote)
-					{
-						UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+					MethodCallExpression mcb = expr as MethodCallExpression;
 
-						if (quote.Operand.NodeType == ExpressionType.Lambda)
+					var args = mcb?.Arguments;
+					if (args.Count >= 2)
+					{
+						var nodeType = args[1]?.NodeType;
+						if (nodeType == ExpressionType.Quote)
 						{
-							LambdaExpression le = quote.Operand as LambdaExpression;
-							var comp = le.Compile();
-							MethodInfo mi = comp.GetMethodInfo();
-							if (mi.ReturnType == typeof(bool))
+							UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+
+							if (quote.Operand.NodeType == ExpressionType.Lambda)
 							{
-								Func<T, bool> func = (Func<T, bool>)comp;
-								results = (from t in dbConnectionSync.Table<T>().Where(func)
-								           select t).ToList();
-							}
-							else
-							{
-								results = (from t in dbConnectionSync.Table<T>() select t).ToList();
+								LambdaExpression le = quote.Operand as LambdaExpression;
+								var comp = le.Compile();
+								MethodInfo mi = comp.GetMethodInfo();
+								if (mi.ReturnType == typeof(bool))
+								{
+									Func<T, bool> func = (Func<T, bool>)comp;
+									results = (from t in dbConnectionSync.Table<T>().Where(func)
+											   select t).ToList();
+								}
+								else
+								{
+									results = (from t in dbConnectionSync.Table<T>() select t).ToList();
+								}
 							}
 						}
 					}
 				}
+			}
+			catch (Exception e)
+			{
+				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY,
+											"An exception was thrown while trying to find entities in the cache.",
+											"",
+											"Error in the query expression used to find entities in the cache.",
+											e);
 			}
 
 			return results;
@@ -259,7 +284,11 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				string s = e.Message;
+				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_REFRESH,
+											"An exception was thrown while trying to refresh entities in the cache.",
+											"",
+											"Error in trying to insert or update entities in the cache based on teh list of given entities.",
+											e);
 			}
 
 			return items;
@@ -279,11 +308,15 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				string s = e.Message;
+				Logger.Log("Kinvey exception in cache remove: item not found.  " + e.Message);
 			}
 			catch (Exception e)
 			{
-				string s = e.Message;
+				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVE_ENTITY,
+											"An exception was thrown while trying to remove an entity from the cache.",
+											"",
+											"Error in trying to delete an entity from the cache based on the given entity ID.",
+											e);
 			}
 
 			return kdr;

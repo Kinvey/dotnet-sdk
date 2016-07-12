@@ -243,14 +243,16 @@ namespace KinveyXamarin
 		public async Task<List<T>> PullAsync (IQueryable<T> query = null) 
 		{
 			if (this.storeType == DataStoreType.NETWORK) {
-				throw new KinveyException ("Invalid operation for this data store",
+				throw new KinveyException (EnumErrorCode.ERROR_DATASTORE_INVALID_OPERATION,
+				                           "Invalid operation for this data store",
 										   "Calling pull() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.",
 										   "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
 			}
 
 			if (this.GetSyncCount () > 0) {
-				throw new KinveyException ("Cannot pull until all local changes are pushed to the backend.", 
-				                           "Call store.push() to push pending local changes, or store.purge() to clean local changes.", "" +
+				throw new KinveyException (EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
+				                           "Cannot pull until all local changes are pushed to the backend.",
+				                           "Call store.push() to push pending local changes, or store.purge() to clean local changes.",
 				                           "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
 			}
 
@@ -267,8 +269,9 @@ namespace KinveyXamarin
 		public async Task<DataStoreResponse> PushAsync () 
 		{
 			if (this.storeType == DataStoreType.NETWORK) {
-				throw new KinveyException ("Invalid operation for this data store", 
-				                           "Calling push() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.", 
+				throw new KinveyException (EnumErrorCode.ERROR_DATASTORE_INVALID_OPERATION,
+				                           "Invalid operation for this data store",
+				                           "Calling push() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.",
 				                           "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
 			}
 
@@ -288,9 +291,10 @@ namespace KinveyXamarin
 		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null)
 		{
 			if (this.storeType == DataStoreType.NETWORK) {
-				throw new KinveyException ("Invalid operation for this data store",
-										   "Calling sync() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.",
-										   "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
+				throw new KinveyException (EnumErrorCode.ERROR_DATASTORE_INVALID_OPERATION,
+				                           "Invalid operation for this data store",
+				                           "Calling sync() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.",
+				                           "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.");
 			}
 
 			// first push
