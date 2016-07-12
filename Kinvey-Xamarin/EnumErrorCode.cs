@@ -84,6 +84,11 @@ namespace KinveyXamarin
 		ERROR_USER_NO_ACTIVE,
 
 		/// <summary>
+		/// User Error - Problem attempting to log in.
+		/// </summary>
+		ERROR_USER_LOGIN_ATTEMPT,
+
+		/// <summary>
 		/// MIC Error - Missing redirect code.
 		/// </summary>
 		ERROR_MIC_MISSING_REDIRECT_CODE,
