@@ -107,7 +107,7 @@ namespace KinveyXamarin
 			base.VisitResultOperator (resultOperator, queryModel, index);
 
 			//Logger.Log ("visiting result clause:" + resultOperator.ToString ());
-			if (resultOperator.ToString ().Contains ("Skip"))
+			if (resultOperator.ToString().Contains("Skip"))
 			{
 				SkipResultOperator skip = resultOperator as SkipResultOperator;
 				//				Logger.Log (skip.Count);
@@ -119,21 +119,29 @@ namespace KinveyXamarin
 				TakeResultOperator take = resultOperator as TakeResultOperator;
 				writer.Dangle("&limit=" + take.Count);
 			}
+			else
+			{
+				throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ result operator not supported.");
+			}
 		}
 
-		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index){
+		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index)
+		{
 			base.VisitWhereClause (whereClause, queryModel, index);
 			cacheExpr = whereClause.Predicate;
 
 			//Logger.Log ("visiting where clause: " + whereClause.Predicate.ToString());
-			if (whereClause.Predicate.NodeType.ToString ().Equals ("Equal")) {
+			if (whereClause.Predicate.NodeType.ToString ().Equals ("Equal"))
+			{
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
 
 				writer.Write ("\"" + keyMap[member.Member.Name] + "\"");
 				writer.Write (":");
 				writer.Write (equality.Right);
-			}else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso")){
+			}
+			else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso"))
+			{
 				BinaryExpression and = whereClause.Predicate as BinaryExpression;
 				//recursively traverse tree
 				//				var rightSide = and.Right as BinaryExpression;
@@ -150,7 +158,9 @@ namespace KinveyXamarin
 				//				Logger.Log (and.Left.ToString());
 
 
-			}else if (whereClause.Predicate.NodeType.ToString().Equals("OrElse")){
+			}
+			else if (whereClause.Predicate.NodeType.ToString().Equals("OrElse"))
+			{
 				BinaryExpression or = whereClause.Predicate as BinaryExpression;
 
 				writer.Write ("$or:");
@@ -192,19 +202,23 @@ namespace KinveyXamarin
 					writer.Write(":");
 					writer.Write("\"" + argument + "\"");
 				}
-			} else {
+				else
+				{
+					throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
+				}
+			}
+			else
+			{
+				throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
 				//				Logger.Log (whereClause.Predicate);
 				//				Logger.Log (whereClause.Predicate.NodeType.ToString());
-
 			}
-
-
-
 		}
 
 		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index)
 		{
 			base.VisitOrderByClause (orderByClause, queryModel, index);
+			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ OrderBy clause not supported.");
 			//Logger.Log ("visiting orderby clause");
 			//			foreach (var ordering in orderByClause.Orderings) {
 			//				Logger.Log (ordering.Expression);
