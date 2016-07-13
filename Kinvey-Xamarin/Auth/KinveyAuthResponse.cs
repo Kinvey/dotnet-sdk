@@ -11,15 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using RestSharp;
 using Newtonsoft.Json.Linq;
-
 
 namespace KinveyXamarin
 {
@@ -47,7 +41,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <value>The user metadata.</value>
         [JsonProperty("_kmd")]
-        public KinveyUserMetadata UserMetadata { get; set; }
+        public KinveyUserMetaData UserMetaData { get; set; }
 
 		/// <summary>
 		/// Gets or sets the username.
@@ -65,23 +59,7 @@ namespace KinveyXamarin
 		/// <value>The auth token.</value>
         public string AuthToken
         {
-            get { return (UserMetadata != null ? UserMetadata.AuthToken : null); }
+            get { return (UserMetaData != null ? UserMetaData.AuthToken : null); }
         }
-
-		/// <summary>
-		/// Kinvey user metadata.
-		/// </summary>
-        [JsonObject]
-		public class KinveyUserMetadata : JObject
-        {
-			[Preserve]
-            [JsonProperty("lmt")]
-            public string LastModifiedTime {get; set;}
-
-			[Preserve]
-            [JsonProperty("authtoken")]
-            public string AuthToken {get; set; }
-        }
-
     }
 }
