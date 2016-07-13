@@ -20,11 +20,6 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// The field name within every JSON object.
-		/// </summary>
-		public const string JSON_FIELD_NAME = "emailVerification";
-
-		/// <summary>
 		/// Gets or sets the status of email verification for the user.
 		/// </summary>
 		[Preserve]

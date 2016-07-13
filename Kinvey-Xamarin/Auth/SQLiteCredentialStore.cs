@@ -11,13 +11,11 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.IO;
 using SQLite.Net.Interop;
 using SQLite.Net;
 using SQLite.Net.Attributes;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
@@ -61,7 +59,7 @@ namespace KinveyXamarin
 			if (sqlcred != null)
 			{
 				Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
-				KinveyAuthResponse.KinveyUserMetadata userKMD = JsonConvert.DeserializeObject<KinveyAuthResponse.KinveyUserMetadata>(sqlcred.UserKMD);
+				KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
@@ -107,10 +105,10 @@ namespace KinveyXamarin
 					attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 				}
 
-				KinveyAuthResponse.KinveyUserMetadata kmd = null;
+				KinveyUserMetaData kmd = null;
 				if (sqlcred.UserKMD != null)
 				{
-					kmd = JsonConvert.DeserializeObject<KinveyAuthResponse.KinveyUserMetadata>(sqlcred.UserKMD);
+					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				}
 				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
@@ -165,4 +163,3 @@ namespace KinveyXamarin
 		public string Attributes { get; set; }
 	}
 }
-

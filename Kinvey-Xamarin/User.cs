@@ -55,8 +55,12 @@ namespace KinveyXamarin
         [JsonProperty("username")]
         private String username;
 
+		/// <summary>
+		/// Used to get information regarding email verification.  The metadata object contains
+		///  an instance of <see cref="KinveyXamarin.KMDEmailVerification"/>
+		/// </summary>
 		[JsonProperty("_kmd")]
-		public KinveyAuthResponse.KinveyUserMetadata UserKMD;
+		private KinveyUserMetaData metadata;
 
 		/// <summary>
 		/// A name-value dictionary of custom attributes of the user
@@ -99,6 +103,16 @@ namespace KinveyXamarin
             get { return this.username; }
             set { this.username = value; }
         }
+
+		/// <summary>
+		/// Gets or sets the name of the user.
+		/// </summary>
+		/// <value>The name of the user.</value>
+		public KinveyUserMetaData Metadata
+		{
+			get { return this.metadata; }
+			set { this.metadata = value; }
+		}
 
 		/// <summary>
 		/// Gets the kinvey client.
@@ -177,7 +191,7 @@ namespace KinveyXamarin
             //this.username = response
             this.AuthToken = response.AuthToken;
 			this.Attributes = response.Attributes;
-			this.UserKMD = response.UserMetadata;
+			this.Metadata = response.UserMetaData;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
             return this;
@@ -1174,12 +1188,12 @@ namespace KinveyXamarin
 
 					auth.UserId =  u["_id"].ToString();
 
-					KinveyAuthResponse.KinveyUserMetadata kmd = new KinveyAuthResponse.KinveyUserMetadata();
+					KinveyUserMetaData kmd = new KinveyUserMetaData();
 
 					kmd.Add("lmt", u["_kmd.lmt"]) ;
 					kmd.Add("authtoken", u["_kmd.authtoken"]);
 					kmd.Add("_kmd", u["_kmd"]);
-					auth.UserMetadata = kmd;
+					auth.UserMetaData = kmd;
 					auth.username =  u["username"].ToString();
 					auth.Attributes = u.Attributes;
 

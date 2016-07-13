@@ -11,12 +11,8 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
@@ -64,7 +60,7 @@ namespace KinveyXamarin
 		private Dictionary<string, JToken> attributes;
 
 		[DataMember]
-		private KinveyAuthResponse.KinveyUserMetadata userKMD;
+		private KinveyUserMetaData userKMD;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
@@ -81,7 +77,7 @@ namespace KinveyXamarin
 		                  string authToken,
 		                  string userName,
 		                  Dictionary<string, JToken> attributes,
-		                  KinveyAuthResponse.KinveyUserMetadata kmd,
+		                  KinveyUserMetaData kmd,
 		                  string refresh,
 		                  string redirectUri)
 		{
@@ -133,7 +129,7 @@ namespace KinveyXamarin
 			internal set { this.attributes = value; }
 		}
 
-		public KinveyAuthResponse.KinveyUserMetadata UserKMD
+		public KinveyUserMetaData UserKMD
 		{
 			get { return this.userKMD; }
 			[Preserve]
@@ -159,7 +155,7 @@ namespace KinveyXamarin
 		/// <param name="response">The response of a Kinvey login/create request.</param>
 		public static Credential From(KinveyAuthResponse response)
 		{
-			return new Credential(response.UserId, response.AuthToken, response.username, response.Attributes, response.UserMetadata, null, null);
+			return new Credential(response.UserId, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null);
 		}
 
 		/// <summary>
@@ -168,8 +164,7 @@ namespace KinveyXamarin
 		/// <param name="user">User.</param>
 		public static Credential From(User user)
 		{
-			return new Credential(user.Id, user.AuthToken, user.UserName, user.Attributes, user.UserKMD, null, null);
+			return new Credential(user.Id, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null);
 		}
 	}
 }
-

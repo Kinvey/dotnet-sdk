@@ -539,5 +539,25 @@ namespace UnitTestFramework
 		}
 
 		#endregion
+
+		[Test]
+		public async void TestUserKMD()
+		{
+			// Setup
+			User u = await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			u.Metadata = new KinveyUserMetaData();
+			u.Metadata.EmailVerification.Status = "sent";
+
+			// Act
+			string status = u.Metadata.EmailVerification.Status;
+
+			// Assert
+			Assert.True(String.Equals(status, "sent"));
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout();
+		}
 	}
 }
