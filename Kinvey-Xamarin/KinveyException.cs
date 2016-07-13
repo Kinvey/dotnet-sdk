@@ -195,6 +195,10 @@ namespace KinveyXamarin
 				case EnumErrorCode.ERROR_USER_NO_ACTIVE:
 					break;
 
+				case EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT:
+					sb.Append("Error attempting to log in.");
+					break;
+
 				default:
 					sb.Append("Unknown error: ");
 					break;

@@ -225,8 +225,20 @@ namespace KinveyXamarin
 		/// <returns>The async request.</returns>
 		public async Task<KinveyAuthResponse> ExecuteAsync()
 		{
-			return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
+			try
+			{
+				return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
+			}
+			catch (KinveyJsonResponseException JSONException)
+			{
+				throw JSONException;
+			}
+			catch (Exception e)
+			{
+				throw new KinveyException(EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT, "Error deserializing response content.");
+			}
 		}
+
 		/// <summary>
 		/// Throw an expection when an error occurs.
 		/// </summary>
