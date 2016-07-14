@@ -18,5 +18,10 @@ namespace UnitTestFramework
 
 		public const string app_key_fake = "abcdefg";
 		public const string app_secret_fake = "0123456789abcdef";
+
+		public static string db_dir = TestContext.CurrentContext.TestDirectory + "/../../../UnitTests/TestFiles/";
+		public static string SQLiteOfflineStoreFilePath = db_dir + "kinveyOffline.sqlite";
+		public static string SQLiteCredentialStoreFilePath = db_dir + "kinvey_tokens.sqlite";
+
 	}
 }

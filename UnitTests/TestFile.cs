@@ -11,12 +11,12 @@ namespace UnitTestFramework
 	{
 		private Client kinveyClient;
 
-		private const string image_name = "TestFileUploadImage.png";
-		private const string image_dir = "../../../UnitTests/TestFiles/";
-		private const string image_path = image_dir + image_name;
+		private static string image_name = "TestFileUploadImage.png";
+		private static string image_dir = TestContext.CurrentContext.TestDirectory + "/../../../UnitTests/TestFiles/";
+		private static string image_path = image_dir + image_name;
 
-		private const string downloadByteArrayFilePath = image_dir + "downloadByteArrayTest.png";
-		private const string downloadStreamFilePath = image_dir + "downloadStreamTest.png";
+		private static string downloadByteArrayFilePath = image_dir + "downloadByteArrayTest.png";
+		private static string downloadStreamFilePath = image_dir + "downloadStreamTest.png";
 
 		[SetUp]
 		public void Setup ()
@@ -131,7 +131,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.File().uploadAsync(fileMetaData, content);
 			});
 
@@ -183,7 +183,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.File().uploadMetadataAsync(fileMetaData);
 			});
 
@@ -273,7 +273,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.File().downloadAsync(fileMetaData, content);
 			});
 
@@ -319,7 +319,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.File().downloadMetadataAsync(fileID);
 			});
 

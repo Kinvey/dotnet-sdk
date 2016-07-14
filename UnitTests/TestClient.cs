@@ -105,9 +105,11 @@ namespace UnitTestFramework
 			PingResponse pr = await client.PingAsync();
 
 			// Assert
-			Assert.IsNotNullOrEmpty(pr.kinvey);
+			Assert.IsNotNull(pr.kinvey);
+			Assert.IsNotEmpty(pr.kinvey);
 			Assert.True(pr.kinvey.StartsWith("hello"));
-			Assert.IsNotNullOrEmpty(pr.version);
+			Assert.IsNotNull(pr.version);
+			Assert.IsNotEmpty(pr.version);
 		}
 
 		[Test]
@@ -121,8 +123,9 @@ namespace UnitTestFramework
 			PingResponse pr = await client.PingAsync();
 
 			// Assert
-			Assert.IsNullOrEmpty(pr.kinvey);
-			Assert.IsNullOrEmpty(pr.version);
+			Assert.IsNotNull(pr);
+			Assert.IsNull(pr.kinvey);
+			Assert.IsNull(pr.version);
 		}
 	}
 }

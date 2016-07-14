@@ -16,28 +16,25 @@ namespace UnitTestFramework
 		private const string newpass = "newpass1";
 
 		private const string collectionName = "ToDos";
-		private const string db_dir = "../../../UnitTests/TestFiles/";
-		private const string SQLiteOfflineStoreFilePath = db_dir + "kinveyOffline.sqlite";
-		private const string SQLiteCredentialStoreFilePath = db_dir + "kinvey_tokens.sqlite";
 
 		[SetUp]
-		public void Setup ()
+		public void Setup()
 		{
 			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath (db_dir)
-				.setOfflinePlatform (new SQLite.Net.Platform.Generic.SQLitePlatformGeneric ())
-				.build ();
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
+				.build();
 		}
 
 		[TearDown]
-		public void Tear ()
+		public void Tear()
 		{
 			if (kinveyClient.CurrentUser.isUserLoggedIn())
 			{
-				kinveyClient.CurrentUser.Logout ();
+				kinveyClient.CurrentUser.Logout();
 			}
-			System.IO.File.Delete (SQLiteOfflineStoreFilePath);
-			System.IO.File.Delete (SQLiteCredentialStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
 		[Test]
@@ -93,11 +90,11 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await fakeClient.CurrentUser.LoginAsync();
 			});
 
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await fakeClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 			});
 		}
@@ -155,7 +152,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.CurrentUser.LoginFacebookAsync(facebookAccessTokenBad);
 			});
 		}
@@ -186,7 +183,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.CurrentUser.LoginGoogleAsync(googleAccessTokenBad);
 			});
 		}
@@ -223,7 +220,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.CurrentUser.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
 			});
 		}
@@ -260,7 +257,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.CurrentUser.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
 			});
 		}
@@ -297,7 +294,7 @@ namespace UnitTestFramework
 
 			// Act
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				await kinveyClient.CurrentUser.LoginSalesforceAsync(access, reauth, clientID, ID);
 			});
 		}
@@ -320,7 +317,8 @@ namespace UnitTestFramework
 			});
 
 			// Assert
-			Assert.IsNotNullOrEmpty(renderURL);
+			Assert.IsNotNull(renderURL);
+			Assert.IsNotEmpty(renderURL);
 			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id"));
 		}
 
@@ -518,7 +516,7 @@ namespace UnitTestFramework
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
-		public async void TestDeleteUserHardAsync()
+		public async Task TestDeleteUserHardAsync()
 		{
 			// Arrange
 
@@ -529,7 +527,7 @@ namespace UnitTestFramework
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
-		public async void TestDeleteUserHardAsyncBad()
+		public async Task TestDeleteUserHardAsyncBad()
 		{
 			// Arrange
 
@@ -541,7 +539,7 @@ namespace UnitTestFramework
 		#endregion
 
 		[Test]
-		public async void TestUserKMD()
+		public async Task TestUserKMD()
 		{
 			// Setup
 			User u = await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);

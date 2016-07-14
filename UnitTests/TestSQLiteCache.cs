@@ -14,15 +14,11 @@ namespace UnitTestFramework
 
 		private const string collectionName = "ToDos";
 
-		private const string db_dir = "../../../UnitTests/TestFiles/";
-		private const string SQLiteOfflineStoreFilePath = db_dir + "kinveyOffline.sqlite";
-		private const string SQLiteCredentialStoreFilePath = db_dir + "kinvey_tokens.sqlite";
-
 		[SetUp]
 		public void Setup ()
 		{
 			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(db_dir)
+				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
 				.build();
 		}
@@ -30,8 +26,8 @@ namespace UnitTestFramework
 		[TearDown]
 		public void Tear ()
 		{
-			System.IO.File.Delete(SQLiteOfflineStoreFilePath);
-			System.IO.File.Delete(SQLiteCredentialStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
 		[Test]
@@ -310,7 +306,7 @@ namespace UnitTestFramework
 			var query = from t in todoStore select t;
 
 			// Assert
-			Assert.Catch(async delegate() {
+			Assert.CatchAsync(async delegate() {
 				foreach (var todo in query)
 				{
 					listEntities.Add(todo);
