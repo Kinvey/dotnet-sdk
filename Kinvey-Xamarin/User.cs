@@ -956,7 +956,7 @@ namespace KinveyXamarin
 				if (memberUser.isUserLoggedIn() && 
 					memberUser.type != LoginType.CREDENTIALSTORE)
 				{
-					throw new KinveyException(EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN);
+					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
 				}
 
 				string userType = "";
@@ -1041,7 +1041,7 @@ namespace KinveyXamarin
 				// TODO clean up this code - a lot of assumptions made here
 				int codeIndex = newLocation.IndexOf("code=");
 				if (codeIndex == -1){
-					throw new KinveyException(EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE, newLocation);
+					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE, newLocation);
 				}
 
 				String accesstoken = newLocation.Substring (codeIndex + 5); // TODO change "String" to "string" - use alias everywhere

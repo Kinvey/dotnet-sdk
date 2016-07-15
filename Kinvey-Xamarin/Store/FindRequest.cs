@@ -49,7 +49,7 @@ namespace KinveyXamarin
 		{
 			if (Observer == null)
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "FindRequest query object cannot be null");
+				throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "FindRequest query object cannot be null");
 			}
 
 			List<T> listResult = default(List<T>);
@@ -105,7 +105,7 @@ namespace KinveyXamarin
 					break;
 
 				default:
-					throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
+					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 
 			Observer.OnCompleted ();
@@ -114,7 +114,7 @@ namespace KinveyXamarin
 
 		public override async Task<bool> Cancel()
 		{
-			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on FindRequest not implemented.");
+			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on FindRequest not implemented.");
 		}
 
 		private void PerformLocalFind()

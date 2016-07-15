@@ -62,7 +62,7 @@ namespace KinveyXamarin
 
 		public override Task<bool> Cancel()
 		{
-			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PushRequest not implemented.");
+			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PushRequest not implemented.");
 		}
 
 		private async Task<int> HandlePushPOST(PendingWriteAction pwa)

@@ -54,9 +54,19 @@ namespace KinveyXamarin
 		ERROR_DATASTORE_CACHE_REMOVE_ENTITY,
 
 		/// <summary>
-		/// Error due to an invalid operation being performed on this type of datastore.
+		/// Error due to an invalid pull operation being performed on this type of datastore.
 		/// </summary>
-		ERROR_DATASTORE_INVALID_OPERATION,
+		ERROR_DATASTORE_INVALID_PULL_OPERATION,
+
+		/// <summary>
+		/// Error due to an invalid push operation being performed on this type of datastore.
+		/// </summary>
+		ERROR_DATASTORE_INVALID_PUSH_OPERATION,
+
+		/// <summary>
+		/// Error due to an invalid sync operation being performed on this type of datastore.
+		/// </summary>
+		ERROR_DATASTORE_INVALID_SYNC_OPERATION,
 
 		/// <summary>
 		/// Error due to attempting to pull when the sync queue has not been cleared.  Try to perform a <code>push</code> operation first.

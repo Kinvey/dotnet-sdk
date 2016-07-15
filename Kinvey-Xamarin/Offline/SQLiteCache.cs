@@ -113,11 +113,7 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY,
-											"An exception was thrown while trying to save an entity in the cache.",
-											"",
-											"Error in inserting new entity cache with temporary ID.",
-											e);
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY, "", e);
 			}
 
 			return item;
@@ -131,11 +127,7 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY,
-											"An exception was thrown while trying to update an entity in the cache.",
-											"",
-											"Error in updating an existing entity in the cache.",
-											e);
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY, "", e);
 			}
 
 			return item;
@@ -169,11 +161,7 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				throw  new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID,
-											"An exception was thrown while trying to save an entity in the cache.",
-											"",
-											"Error in updating cache with permanent entity ID.",
-											e);
+				throw  new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID, "", e);
 			}
 
 			return item;
@@ -257,11 +245,7 @@ namespace KinveyXamarin
 			}
 			catch (Exception e)
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY,
-											"An exception was thrown while trying to find entities in the cache.",
-											"",
-											"Error in the query expression used to find entities in the cache.",
-											e);
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY, "", e);
 			}
 
 			return results;
@@ -284,11 +268,7 @@ namespace KinveyXamarin
 			}
 			catch (SQLiteException e)
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_REFRESH,
-											"An exception was thrown while trying to refresh entities in the cache.",
-											"",
-											"Error in trying to insert or update entities in the cache based on teh list of given entities.",
-											e);
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_REFRESH, "", e);
 			}
 
 			return items;
@@ -312,11 +292,7 @@ namespace KinveyXamarin
 			}
 			catch (Exception e)
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVE_ENTITY,
-											"An exception was thrown while trying to remove an entity from the cache.",
-											"",
-											"Error in trying to delete an entity from the cache based on the given entity ID.",
-											e);
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVE_ENTITY, "", e);
 			}
 
 			return kdr;

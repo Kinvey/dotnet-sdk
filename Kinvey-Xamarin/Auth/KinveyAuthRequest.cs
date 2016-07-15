@@ -235,7 +235,7 @@ namespace KinveyXamarin
 			}
 			catch (Exception e)
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT, "Error deserializing response content.");
+				throw new KinveyException(EnumErrorCategory.ERROR_USER,	EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT, "Error deserializing response content.");
 			}
 		}
 

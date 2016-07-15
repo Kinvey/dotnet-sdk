@@ -32,7 +32,7 @@ namespace KinveyXamarin
 		public override async Task<uint> ExecuteAsync ()
 		{
 			if (Observer == null) {
-				throw new KinveyException (EnumErrorCode.ERROR_GENERAL, "The observer to a GetCountRequest cannot be null.");
+				throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "The observer to a GetCountRequest cannot be null.");
 			}
 
 			uint countResult = default (uint);
@@ -75,7 +75,7 @@ namespace KinveyXamarin
 				break;
 
 			default:
-				throw new KinveyException (EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
+				throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 
 			Observer.OnCompleted ();
@@ -84,7 +84,7 @@ namespace KinveyXamarin
 
 		public override async Task<bool> Cancel ()
 		{
-			throw new KinveyException (EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
+			throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
 		}
 
 		private void PerformLocalCount ()
@@ -122,7 +122,7 @@ namespace KinveyXamarin
 					if (count != null) {
 						Observer.OnNext (count.ToObject<uint> ());
 					} else {
-						Observer.OnError (new KinveyException (EnumErrorCode.ERROR_GENERAL, "Failed to read the count from the backend response."));
+						Observer.OnError (new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Failed to read the count from the backend response."));
 					}
 				}
 			} catch (Exception e) {

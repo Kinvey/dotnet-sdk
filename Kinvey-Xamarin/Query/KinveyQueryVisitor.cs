@@ -121,7 +121,7 @@ namespace KinveyXamarin
 			}
 			else
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ result operator not supported.");
+				throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ result operator not supported.");
 			}
 		}
 
@@ -204,12 +204,12 @@ namespace KinveyXamarin
 				}
 				else
 				{
-					throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
+					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
 				}
 			}
 			else
 			{
-				throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
+				throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
 				//				Logger.Log (whereClause.Predicate);
 				//				Logger.Log (whereClause.Predicate.NodeType.ToString());
 			}
@@ -218,7 +218,7 @@ namespace KinveyXamarin
 		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index)
 		{
 			base.VisitOrderByClause (orderByClause, queryModel, index);
-			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ OrderBy clause not supported.");
+			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ OrderBy clause not supported.");
 			//Logger.Log ("visiting orderby clause");
 			//			foreach (var ordering in orderByClause.Orderings) {
 			//				Logger.Log (ordering.Expression);

@@ -12,204 +12,266 @@
 // contents is a violation of applicable laws.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// Wrapper for a kinvey specific exception containing information about how to resolve the issue. 
+	/// Wrapper for a Kinvey-specific exception, which contains information about how to resolve the issue.
 	/// </summary>
     public class KinveyException : Exception 
     {
-		/// <summary>
-		/// The reason.
-		/// </summary>
-        private string reason;
-		/// <summary>
-		/// The fix.
-		/// </summary>
-        private string fix;
-		/// <summary>
-		/// The explanation.
-		/// </summary>
-        private string explanation;
+		#region Class Variables and Properties
 
-		/// <summary>
-		/// [optional] The request ID associated with this exception.
-		/// This field may be empty if there is no associated request ID with
-		/// this exception (e.g. a client-side validation exception)
-		/// </summary>
-		private string requestID;
+		private EnumErrorCategory errorCategory;
 
 		private EnumErrorCode errorCode;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
-		/// </summary>
-		/// <param name="reason">Reason.</param>
-		/// <param name="fix">Fix.</param>
-		/// <param name="explanation">Explanation.</param>
-		public KinveyException(EnumErrorCode errorCode, string reason, string fix, string explanation)
-			: base(FormatMessage(reason, fix, explanation))
-		{
-			this.errorCode = errorCode;
-			this.reason = reason;
-			this.fix = fix;
-			this.explanation = explanation;
-		}
+		private string reason;
 
-		public KinveyException(EnumErrorCode errorCode, string reason, string fix, string explanation, Exception innerException)
-			: base(FormatMessage(reason, fix, explanation), innerException)
+		private string fix;
+
+		private string explanation;
+
+		private string requestID;
+
+		/// <summary>
+		/// Gets the error category.
+		/// </summary>
+		/// <value>The <see cref="KinveyXamarin.EnumErrorCategory"/>  enumeration for this exception.</value>
+		public EnumErrorCategory ErrorCategory
 		{
-			this.errorCode = errorCode;
-			this.reason = reason;
-			this.fix = fix;
-			this.explanation = explanation;
+			get { return this.errorCategory; }
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
+		/// Gets the error code.
 		/// </summary>
-		/// <param name="reason">Reason.</param>
-		/// <param name="fix">Fix.</param>
-		/// <param name="explanation">Explanation.</param>
-		public KinveyException(EnumErrorCode errorCode, string info = null)
-			: base(MessageFromErrorCode(errorCode, info))
-		{
-			this.errorCode = errorCode;
-			this.reason = MessageFromErrorCode(errorCode, info);
-		}
-			
-		/// <summary>
-		/// Gets or sets the reason.
-		/// </summary>
-		/// <value>The reason.</value>
-        public string Reason
-        {
-            get { return reason; }
-            set { this.reason = value; }
-        }
-
-      
-		/// <summary>
-		/// Gets or sets the fix.
-		/// </summary>
-		/// <value>The fix.</value>
-        public string Fix
-        {
-            get { return fix; }
-            set { this.fix = value; }
-        }
-
-		/// <summary>
-		/// Gets or sets the explanation.
-		/// </summary>
-		/// <value>The explanation.</value>
-        public string Explanation
-        {
-            get { return explanation; }
-            set { this.explanation = value; }
-        }
-
-		/// <summary>
-		/// Gets or sets the request ID.  Can be empty if there is no associated request ID.
-		/// </summary>
-		/// <value>The request ID associated with this exception.</value>
-		public string RequestID
-		{
-			get { return this.requestID == null ? "" : this.requestID; }
-			set { this.requestID = value; }
-		}
-
+		/// <value>The <see cref="KinveyXamarin.EnumErrorCode"/> enumeration for this exception.</value>
 		public EnumErrorCode ErrorCode
 		{
 			get { return this.errorCode; }
 		}
 
 		/// <summary>
-		/// Formats the message.
+		/// Gets or sets the reason.
 		/// </summary>
-		/// <returns>The message.</returns>
-		/// <param name="reason">Reason.</param>
-		/// <param name="fix">Fix.</param>
-		/// <param name="explanation">Explanation.</param>
-        private static String FormatMessage(string reason, string fix, string explanation)
-        {
-            return "\nREASON: " + reason + "\n" + "FIX: " + fix + "\n" + "EXPLANATION: " + explanation + "\n";
-        }
-
-		/// <summary>
-		/// Formats the message.
-		/// </summary>
-		/// <returns>The message.</returns>
-		/// <param name="reason">Reason.</param>
-		private static String FormatMessage(string reason)
+		/// <value>The reason for this exception.</value>
+		public string Reason
 		{
-			return "\nREASON: " + reason;
+			get { return reason; }
+			set { this.reason = value; }
 		}
 
-		private static string MessageFromErrorCode(EnumErrorCode code, string info = null)
+		/// <summary>
+		/// Gets or sets the fix.
+		/// </summary>
+		/// <value>The potential fix for this exception.</value>
+		public string Fix
 		{
-			StringBuilder sb = new StringBuilder();
+			get { return fix; }
+			set { this.fix = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the explanation.
+		/// </summary>
+		/// <value>The explanation of this exception.</value>
+		public string Explanation
+		{
+			get { return explanation; }
+			set { this.explanation = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the request ID associated with this exception.
+		/// This field may be empty if there is no associated request ID with
+		/// this exception (e.g. a client-side validation exception).
+		/// </summary>
+		/// <value>The request ID associated with this exception.</value>
+		public string RequestID
+		{
+			get { return this.requestID == null ? String.Empty : this.requestID; }
+			set { this.requestID = value; }
+		}
+
+		#endregion
+
+		#region Constructors
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
+		/// </summary>
+		/// <param name="errorCategory">The <see cref="KinveyXamarin.EnumErrorCategory"/>  of the exception.</param>
+		/// <param name="errorCode">The <see cref="KinveyXamarin.EnumErrorCode"/>  of the exception.</param>
+		/// <param name="info">Additional information about the exception, if available.</param>
+		/// <param name="innerException">[optional] Inner exception thrown, if available.</param>
+		public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, string info, Exception innerException = null)
+			: base(MessageFromErrorCode(errorCategory, errorCode), innerException)
+		{
+			this.errorCategory = errorCategory;
+			this.errorCode = errorCode;
+
+			Tuple<string, string, string> errorInfo = InfoFromErrorCode(errorCategory, errorCode);
+			this.reason = errorInfo.Item1;
+			this.fix = errorInfo.Item2;
+			this.explanation = errorInfo.Item3;
+		}
+
+		#endregion
+
+		#region Message Formatters
+
+		private static string MessageFromErrorCode(EnumErrorCategory category, EnumErrorCode code)
+		{
+			Tuple<string, string, string> errorInfo = InfoFromErrorCode(category, code);
+			return errorInfo.Item1 + errorInfo.Item2 + errorInfo.Item3;
+		}
+
+		private static Tuple<string, string, string> InfoFromErrorCode(EnumErrorCategory category, EnumErrorCode code)
+		{
+			string reason = "";
+			string fix = "";
+			string explanation = "";
 
 			switch (code)
 			{
 				case EnumErrorCode.ERROR_JSON_INVALID:
-					break;
+					reason = "";
+					fix = "";
+					explanation = "";
+				break;
 
 				case EnumErrorCode.ERROR_JSON_PARSE:
-					sb.Append(FormatMessage("Unable to parse the json in the repsonse",
-											"examine BL or DLC to ensure data format is correct.",
-											"If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)"));
-					break;
+					reason = "Unable to parse the json in the repsonse";
+					fix = "examine BL or DLC to ensure data format is correct.";
+					explanation = "If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)";
+				break;
 
 				case EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE:
-					sb.Append("Redirect does not contain `code=`, was: ");
+					reason = "MIC Hostname must use the https protocol, trying to set: ";
+					fix = "";
+					explanation = "";
 					break;
 
 				case EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS:
-					sb.Append("MIC Hostname must use the https protocol, trying to set: ");
+					reason = "Redirect does not contain `code=`, was: ";
+					fix = "";
+					explanation = "";
 					break;
 
 				case EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER:
-					sb.Append("The response expects `Content-Type` header to be \"application/json\", but was instead: ");
+					reason = "The response expects `Content-Type` header to be \"application/json\", but was instead: ";
+					fix = "";
+					explanation = "";
 					break;
 
 				case EnumErrorCode.ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT:
-					sb.Append("Cannot attach more than 2k of Custom Request Properties");
+					reason = "Cannot attach more than 2k of Custom Request Properties";
+					fix = "";
+					explanation = "";
 					break;
 
 				case EnumErrorCode.ERROR_REQUIREMENT_HTTPS:
-					sb.Append("Kinvey requires the usage of SSL over http.  Use `https` as the protocol when setting a base URL");
+					reason = "Kinvey requires the usage of SSL over http.  Use `https` as the protocol when setting a base URL";
+					fix = "";
+					explanation = "";
 					break;
 
 				case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
-					sb.Append(FormatMessage("Attempting to login when a user is already logged in",
-											"call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again",
-											"Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended"));
+					reason = "Attempting to login when a user is already logged in";
+					fix = "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again";
+					explanation = "Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended\")";
 					break;
 
 				case EnumErrorCode.ERROR_USER_NO_ACTIVE:
+					reason = "";
+					fix = "";
+					explanation = "";
 					break;
 
 				case EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT:
-					sb.Append("Error attempting to log in.");
+					reason = "Error attempting to log in.";
+					fix = "";
+					explanation = "";
+					break;
+
+				case EnumErrorCode.ERROR_CLIENT_SHARED_CLIENT_NULL:
+					reason = "SharedClient is null.";
+					fix = "Call Client.Builder(...).build() to build a new Kinvey shared client.";
+					explanation = "A Client must be initialized in the app before using other Kinvey SDK methods. This error indicates that a SharedClient is being accessed by the app before it has been built.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_INVALID_PULL_OPERATION:
+					reason = "Invalid operation for this data store";
+					fix = "Calling pull() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
+					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE:
+					reason = "Cannot pull until all local changes are pushed to the backend.";
+					fix = "Call store.push() to push pending local changes, or store.purge() to clean local changes.";
+					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_INVALID_PUSH_OPERATION:
+					reason = "Invalid operation for this data store";
+					fix = "Calling push() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
+					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_INVALID_SYNC_OPERATION:
+					reason = "Invalid operation for this data store";
+					fix = "Calling sync() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
+					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY:
+					reason = "An exception was thrown while trying to save an entity in the cache.";
+					fix = "";
+					explanation = "Error in inserting new entity cache with temporary ID.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY:
+					reason = "An exception was thrown while trying to update an entity in the cache.";
+					fix = "";
+					explanation = "Error in updating an existing entity in the cache.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY:
+					reason = "An exception was thrown while trying to find entities in the cache.";
+					fix = "";
+					explanation = "Error in the query expression used to find entities in the cache.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID:
+					reason = "An exception was thrown while trying to save an entity in the cache.";
+					fix = "";
+					explanation = "Error in updating cache with permanent entity ID.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_REFRESH:
+					reason = "An exception was thrown while trying to refresh entities in the cache.";
+					fix = "";
+					explanation = "Error in trying to insert or update entities in the cache based on teh list of given entities.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVE_ENTITY:
+					reason = "An exception was thrown while trying to remove an entity from the cache.";
+					fix = "";
+					explanation = "Error in trying to delete an entity from the cache based on the given entity ID.";
 					break;
 
 				default:
-					sb.Append("Unknown error: ");
+					reason = "Unknown error";
+					fix = "Unknown error";
+					explanation = "Unknown error";
 					break;
 			}
 
-			if (!String.IsNullOrEmpty(info))
-			{
-				sb.Append(info);
-			}
-
-			return sb.ToString();
+			return new Tuple<string, string, string>(reason, fix, explanation);
 		}
+
+		#endregion
     }
 }
