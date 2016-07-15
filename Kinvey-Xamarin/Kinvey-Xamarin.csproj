@@ -108,6 +108,7 @@
     <Compile Include="Query\KinveyQueryVisitor.cs" />
     <Compile Include="Query\KinveyQueryProvider.cs" />
     <Compile Include="Query\KinveyObserver.cs" />
+    <Compile Include="EnumErrorCategory.cs" />
     <Compile Include="EnumErrorCode.cs" />
     <Compile Include="Store\PullRequest.cs" />
     <Compile Include="Store\FindRequest.cs" />
