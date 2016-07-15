@@ -17,15 +17,11 @@ namespace UnitTestFramework
 
 		private const string collectionName = "ToDos";
 
-		private const string db_dir = "../../../UnitTests/TestFiles/";
-		private const string SQLiteOfflineStoreFilePath = db_dir + "kinveyOffline.sqlite";
-		private const string SQLiteCredentialStoreFilePath = db_dir + "kinvey_tokens.sqlite";
-
 		[SetUp]
 		public void Setup ()
 		{
 			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(db_dir)
+				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
 				.build();
 		}
@@ -34,8 +30,8 @@ namespace UnitTestFramework
 		public void Tear ()
 		{
 			kinveyClient.CurrentUser.Logout();
-			System.IO.File.Delete(SQLiteOfflineStoreFilePath);
-			System.IO.File.Delete(SQLiteCredentialStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
 		[Test]
@@ -87,7 +83,7 @@ namespace UnitTestFramework
 			moqRC.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(resp);
 
 			Client c = new Client.Builder (TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath (db_dir)
+				.setFilePath (TestSetup.db_dir)
 				.setOfflinePlatform (new SQLite.Net.Platform.Generic.SQLitePlatformGeneric ())
 				.SetRestClient(moqRC.Object)
 				.build ();
@@ -679,7 +675,8 @@ namespace UnitTestFramework
 
 			// Assert
 			Assert.NotNull(pwa);
-			Assert.IsNotNullOrEmpty(pwa.entityId);
+			Assert.IsNotNull(pwa.entityId);
+			Assert.IsNotEmpty(pwa.entityId);
 			Assert.True(String.Equals(collectionName, pwa.collection));
 			Assert.True(String.Equals("POST", pwa.action));
 
@@ -695,18 +692,17 @@ namespace UnitTestFramework
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.NETWORK, collectionName, kinveyClient);
 
-			Assert.Catch (async delegate () {
+			Assert.CatchAsync(async delegate () {
 				await todoStore.PullAsync ();
 			});
 
-			Assert.Catch (async delegate () {
+			Assert.CatchAsync(async delegate () {
 				await todoStore.PushAsync ();
 			});
 
-			Assert.Catch (async delegate () {
+			Assert.CatchAsync(async delegate () {
 				await todoStore.SyncAsync ();
 			});
-
 		}
 
 		[Test]

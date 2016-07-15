@@ -6,7 +6,11 @@ build:
 	xbuild /p:Configuration=Release Kinvey-Xamarin/Kinvey-Xamarin.csproj
 	xbuild /p:Configuration=Release Kinvey-Xamarin-iOS/Kinvey-Xamarin-iOS.csproj
 	xbuild /p:Configuration=Release Kinvey-Xamarin-Android/Kinvey-Xamarin-Android.csproj
-	
+
+test:
+	xbuild /p:Configuration=Release UnitTestFramework/UnitTestFramework.csproj
+	mono packages/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe UnitTestFramework/bin/Release/UnitTestFramework.dll
+
 doc:
 	mdoc update \
 		-L packages/Microsoft.Bcl.1.1.10/lib/net40 \
@@ -116,3 +120,4 @@ clean:
 	rm -Rf Kinvey-Xamarin/bin
 	rm -Rf Kinvey-Xamarin-iOS/bin
 	rm -Rf Kinvey-Xamarin-Android/bin
+	rm -Rf UnitTestFramework/bin
