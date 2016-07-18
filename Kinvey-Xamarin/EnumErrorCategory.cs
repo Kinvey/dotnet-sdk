@@ -24,6 +24,11 @@ namespace KinveyXamarin
 		ERROR_CLIENT,
 
 		/// <summary>
+		/// This error category has to do with a missing requirement
+		/// </summary>
+		ERROR_REQUIREMENT,
+
+		/// <summary>
 		/// The error code associated with this category has to do with the local part of the datastore.
 		/// </summary>
 		ERROR_DATASTORE_CACHE,
@@ -39,9 +44,9 @@ namespace KinveyXamarin
 		ERROR_USER,
 
 		/// <summary>
-		/// This error category has to do with a missing requirement
+		/// The error code associated with this category has to do with an error received from the backend.
 		/// </summary>
-		ERROR_REQUIREMENT,
+		ERROR_BACKEND,
 
 		/// <summary>
 		/// General error category

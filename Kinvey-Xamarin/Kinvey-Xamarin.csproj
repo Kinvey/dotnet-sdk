@@ -48,7 +48,6 @@
     <Compile Include="Core\KinveyClientRequestInitializer.cs" />
     <Compile Include="Core\KinveyHeaders.cs" />
     <Compile Include="Core\KinveyJsonError.cs" />
-    <Compile Include="Core\KinveyJsonResponseException.cs" />
     <Compile Include="Cache\InMemoryCache.cs" />
     <Compile Include="Cache\AbstractKinveyCachedClientRequest.cs" />
     <Compile Include="Async\Client.cs" />

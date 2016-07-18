@@ -12,7 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
-using System.Text;
+using RestSharp;
 
 namespace KinveyXamarin
 {
@@ -116,6 +116,19 @@ namespace KinveyXamarin
 			this.reason = errorInfo.Item1;
 			this.fix = errorInfo.Item2;
 			this.explanation = errorInfo.Item3;
+		}
+
+		public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, IRestResponse responseJSON)
+			: base(responseJSON.ErrorMessage, responseJSON.ErrorException)
+		{
+			this.errorCategory = errorCategory;
+			this.errorCode = errorCode;
+
+			KinveyJsonError errorJSON = KinveyJsonError.parse(responseJSON);
+			this.reason = errorJSON.Error;
+			this.fix = errorJSON.Debug;
+			this.explanation = errorJSON.Description;
+			this.requestID = HelperMethods.getRequestID(responseJSON);
 		}
 
 		#endregion

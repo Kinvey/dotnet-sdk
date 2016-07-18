@@ -213,12 +213,11 @@ namespace KinveyXamarin
 				return await ExecuteUnparsedAsync ();
 			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode >= 300 )
 			{
-				throw NewExceptionOnError(response);
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
 			}
 
 			return (RestResponse)response;
 		}
-
 		/// <summary>
 		/// Executes this request async and parses the result.
 		/// </summary>
@@ -229,7 +228,7 @@ namespace KinveyXamarin
 			{
 				return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
 			}
-			catch (KinveyJsonResponseException JSONException)
+			catch (KinveyException JSONException)
 			{
 				throw JSONException;
 			}
@@ -238,16 +237,6 @@ namespace KinveyXamarin
 				throw new KinveyException(EnumErrorCategory.ERROR_USER,	EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT, "Error deserializing response content.");
 			}
 		}
-
-		/// <summary>
-		/// Throw an expection when an error occurs.
-		/// </summary>
-		/// <returns>The exception.</returns>
-		/// <param name="response">Response.</param>
-        protected KinveyJsonResponseException NewExceptionOnError(IRestResponse response)
-        {
-            return KinveyJsonResponseException.From(response);
-        }
 
 		/// <summary>
 		/// Builder for an auth request.

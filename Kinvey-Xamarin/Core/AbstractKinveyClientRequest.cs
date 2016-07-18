@@ -331,16 +331,6 @@ namespace KinveyXamarin
             return restClient;
         }
 
-		/// <summary>
-		/// returns an Exception if Kinvey returns an error.
-		/// </summary>
-		/// <returns>The exception on error.</returns>
-		/// <param name="response">Response.</param>
-        protected KinveyJsonResponseException NewExceptionOnError(IRestResponse response)
-        {
-            return KinveyJsonResponseException.From(response);
-        }
-
 		#endregion
 
 		#region Request execution
@@ -413,8 +403,8 @@ namespace KinveyXamarin
 
 			if (response.ErrorException != null || ((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302)
             {
-                throw NewExceptionOnError(response);
-            }
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
+			}
 
 
             return (RestResponse) response;
@@ -484,7 +474,7 @@ namespace KinveyXamarin
 
 			if (response.ErrorException != null)
 			{
-				throw NewExceptionOnError(response);
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
 			}
 
 

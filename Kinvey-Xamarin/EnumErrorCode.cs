@@ -84,6 +84,11 @@ namespace KinveyXamarin
 		ERROR_JSON_PARSE,
 
 		/// <summary>
+		/// JSON Error - issue with response.
+		/// </summary>
+		ERROR_JSON_RESPONSE,
+
+		/// <summary>
 		/// User Error - A user is already logged into the app.
 		/// </summary>
 		ERROR_USER_ALREADY_LOGGED_IN,
