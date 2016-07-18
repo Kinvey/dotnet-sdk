@@ -27,11 +27,11 @@ namespace KinveyXamarin
 
 		private EnumErrorCode errorCode;
 
-		private string reason;
+		private string error;
 
-		private string fix;
+		private string description;
 
-		private string explanation;
+		private string debug;
 
 		private string requestID;
 
@@ -54,33 +54,33 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Gets or sets the reason.
+		/// Gets or sets the error.
 		/// </summary>
-		/// <value>The reason for this exception.</value>
-		public string Reason
+		/// <value>The error of this exception.</value>
+		public string Error
 		{
-			get { return reason; }
-			set { this.reason = value; }
+			get { return error; }
+			set { this.error = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the fix.
+		/// Gets or sets the description.
 		/// </summary>
-		/// <value>The potential fix for this exception.</value>
-		public string Fix
+		/// <value>The description of this exception.</value>
+		public string Description
 		{
-			get { return fix; }
-			set { this.fix = value; }
+			get { return description; }
+			set { this.description = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the explanation.
+		/// Gets or sets the debug string.
 		/// </summary>
-		/// <value>The explanation of this exception.</value>
-		public string Explanation
+		/// <value>The debug string for this exception, to help with resolution.</value>
+		public string Debug
 		{
-			get { return explanation; }
-			set { this.explanation = value; }
+			get { return debug; }
+			set { this.debug = value; }
 		}
 
 		/// <summary>
@@ -113,9 +113,9 @@ namespace KinveyXamarin
 			this.errorCode = errorCode;
 
 			Tuple<string, string, string> errorInfo = InfoFromErrorCode(errorCategory, errorCode);
-			this.reason = errorInfo.Item1;
-			this.fix = errorInfo.Item2;
-			this.explanation = errorInfo.Item3;
+			this.error = errorInfo.Item1;
+			this.debug = errorInfo.Item2;
+			this.description = errorInfo.Item3;
 		}
 
 		public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, IRestResponse responseJSON)
@@ -125,9 +125,9 @@ namespace KinveyXamarin
 			this.errorCode = errorCode;
 
 			KinveyJsonError errorJSON = KinveyJsonError.parse(responseJSON);
-			this.reason = errorJSON.Error;
-			this.fix = errorJSON.Debug;
-			this.explanation = errorJSON.Description;
+			this.error = errorJSON.Error;
+			this.debug = errorJSON.Debug;
+			this.description = errorJSON.Description;
 			this.requestID = HelperMethods.getRequestID(responseJSON);
 		}
 
@@ -143,146 +143,146 @@ namespace KinveyXamarin
 
 		private static Tuple<string, string, string> InfoFromErrorCode(EnumErrorCategory category, EnumErrorCode code)
 		{
-			string reason = "";
-			string fix = "";
-			string explanation = "";
+			string error = "";
+			string debug = "";
+			string description = "";
 
 			switch (code)
 			{
 				case EnumErrorCode.ERROR_JSON_INVALID:
-					reason = "";
-					fix = "";
-					explanation = "";
+					error = "";
+					debug = "";
+					description = "";
 				break;
 
 				case EnumErrorCode.ERROR_JSON_PARSE:
-					reason = "Unable to parse the json in the repsonse";
-					fix = "examine BL or DLC to ensure data format is correct.";
-					explanation = "If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)";
+					error = "Unable to parse the json in the repsonse";
+					debug = "examine BL or DLC to ensure data format is correct.";
+					description = "If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)";
 				break;
 
 				case EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE:
-					reason = "MIC Hostname must use the https protocol, trying to set: ";
-					fix = "";
-					explanation = "";
+					error = "MIC Hostname must use the https protocol, trying to set: ";
+					debug = "";
+					description = "";
 					break;
 
 				case EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS:
-					reason = "Redirect does not contain `code=`, was: ";
-					fix = "";
-					explanation = "";
+					error = "Redirect does not contain `code=`, was: ";
+					debug = "";
+					description = "";
 					break;
 
 				case EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER:
-					reason = "The response expects `Content-Type` header to be \"application/json\", but was instead: ";
-					fix = "";
-					explanation = "";
+					error = "The response expects `Content-Type` header to be \"application/json\", but was instead: ";
+					debug = "";
+					description = "";
 					break;
 
 				case EnumErrorCode.ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT:
-					reason = "Cannot attach more than 2k of Custom Request Properties";
-					fix = "";
-					explanation = "";
+					error = "Cannot attach more than 2k of Custom Request Properties";
+					debug = "";
+					description = "";
 					break;
 
 				case EnumErrorCode.ERROR_REQUIREMENT_HTTPS:
-					reason = "Kinvey requires the usage of SSL over http.  Use `https` as the protocol when setting a base URL";
-					fix = "";
-					explanation = "";
+					error = "Kinvey requires the usage of SSL over http.  Use `https` as the protocol when setting a base URL";
+					debug = "";
+					description = "";
 					break;
 
 				case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
-					reason = "Attempting to login when a user is already logged in";
-					fix = "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again";
-					explanation = "Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended\")";
+					error = "Attempting to login when a user is already logged in";
+					debug = "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again";
+					description = "Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended\")";
 					break;
 
 				case EnumErrorCode.ERROR_USER_NO_ACTIVE:
-					reason = "No Active User.";
-					fix = "Please log in a user before retrying this request.";
-					explanation = "There is currently no active user.";
+					error = "No Active User.";
+					debug = "Please log in a user before retrying this request.";
+					description = "There is currently no active user.";
 					break;
 
 				case EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT:
-					reason = "Error attempting to log in.";
-					fix = "";
-					explanation = "";
+					error = "Error attempting to log in.";
+					debug = "";
+					description = "";
 					break;
 
 				case EnumErrorCode.ERROR_CLIENT_SHARED_CLIENT_NULL:
-					reason = "SharedClient is null.";
-					fix = "Call Client.Builder(...).build() to build a new Kinvey shared client.";
-					explanation = "A Client must be initialized in the app before using other Kinvey SDK methods. This error indicates that a SharedClient is being accessed by the app before it has been built.";
+					error = "SharedClient is null.";
+					debug = "Call Client.Builder(...).build() to build a new Kinvey shared client.";
+					description = "A Client must be initialized in the app before using other Kinvey SDK methods. This error indicates that a SharedClient is being accessed by the app before it has been built.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_INVALID_PULL_OPERATION:
-					reason = "Invalid operation for this data store";
-					fix = "Calling pull() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
-					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					error = "Invalid operation for this data store";
+					debug = "Calling pull() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
+					description = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE:
-					reason = "Cannot pull until all local changes are pushed to the backend.";
-					fix = "Call store.push() to push pending local changes, or store.purge() to clean local changes.";
-					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					error = "Cannot pull until all local changes are pushed to the backend.";
+					debug = "Call store.push() to push pending local changes, or store.purge() to clean local changes.";
+					description = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_INVALID_PUSH_OPERATION:
-					reason = "Invalid operation for this data store";
-					fix = "Calling push() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
-					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					error = "Invalid operation for this data store";
+					debug = "Calling push() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
+					description = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_INVALID_SYNC_OPERATION:
-					reason = "Invalid operation for this data store";
-					fix = "Calling sync() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
-					explanation = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
+					error = "Invalid operation for this data store";
+					debug = "Calling sync() on a Network store is not allowed. Use a different type of data store if you need data to be stored locally and pushed to the backend.";
+					description = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY:
-					reason = "An exception was thrown while trying to save an entity in the cache.";
-					fix = "";
-					explanation = "Error in inserting new entity cache with temporary ID.";
+					error = "An exception was thrown while trying to save an entity in the cache.";
+					debug = "";
+					description = "Error in inserting new entity cache with temporary ID.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY:
-					reason = "An exception was thrown while trying to update an entity in the cache.";
-					fix = "";
-					explanation = "Error in updating an existing entity in the cache.";
+					error = "An exception was thrown while trying to update an entity in the cache.";
+					debug = "";
+					description = "Error in updating an existing entity in the cache.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY:
-					reason = "An exception was thrown while trying to find entities in the cache.";
-					fix = "";
-					explanation = "Error in the query expression used to find entities in the cache.";
+					error = "An exception was thrown while trying to find entities in the cache.";
+					debug = "";
+					description = "Error in the query expression used to find entities in the cache.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID:
-					reason = "An exception was thrown while trying to save an entity in the cache.";
-					fix = "";
-					explanation = "Error in updating cache with permanent entity ID.";
+					error = "An exception was thrown while trying to save an entity in the cache.";
+					debug = "";
+					description = "Error in updating cache with permanent entity ID.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_REFRESH:
-					reason = "An exception was thrown while trying to refresh entities in the cache.";
-					fix = "";
-					explanation = "Error in trying to insert or update entities in the cache based on teh list of given entities.";
+					error = "An exception was thrown while trying to refresh entities in the cache.";
+					debug = "";
+					description = "Error in trying to insert or update entities in the cache based on teh list of given entities.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVE_ENTITY:
-					reason = "An exception was thrown while trying to remove an entity from the cache.";
-					fix = "";
-					explanation = "Error in trying to delete an entity from the cache based on the given entity ID.";
+					error = "An exception was thrown while trying to remove an entity from the cache.";
+					debug = "";
+					description = "Error in trying to delete an entity from the cache based on the given entity ID.";
 					break;
 
 				default:
-					reason = "Unknown error";
-					fix = "Unknown error";
-					explanation = "Unknown error";
+					error = "Unknown error";
+					debug = "Unknown error";
+					description = "Unknown error";
 					break;
 			}
 
-			return new Tuple<string, string, string>(reason, fix, explanation);
+			return new Tuple<string, string, string>(error, debug, description);
 		}
 
 		#endregion

@@ -303,9 +303,9 @@ namespace testiosapp
 			catch (KinveyException e)
 			{
 				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
-				Console.WriteLine("VRG (exception caught) Exception Reason -> " + e.Reason);
-				Console.WriteLine("VRG (exception caught) Exception Explanation -> " + e.Explanation);
-				Console.WriteLine("VRG (exception caught) Exception Fix -> " + e.Fix);
+				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
+				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
+				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
 			}
 			return user;
 		}
