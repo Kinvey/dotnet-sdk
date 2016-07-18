@@ -63,7 +63,6 @@
     <Compile Include="File.cs" />
     <Compile Include="Cache\Cache.cs" />
     <Compile Include="Model\KinveyMetaData.cs" />
-    <Compile Include="Troubleshooting\KAssert.cs" />
     <Compile Include="File\FileMetaData.cs" />
     <Compile Include="File\KinveyFileRequest.cs" />
     <Compile Include="Model\KinveyReference.cs" />

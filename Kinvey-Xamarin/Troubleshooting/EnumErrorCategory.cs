@@ -39,6 +39,11 @@ namespace KinveyXamarin
 		ERROR_DATASTORE_NETWORK,
 
 		/// <summary>
+		/// The error code associated with this category has to do with the use of the Kinvey File API.
+		/// </summary>
+		ERROR_FILE,
+
+		/// <summary>
 		/// The error code associated with this category has to do with the user of the app.
 		/// </summary>
 		ERROR_USER,

@@ -198,9 +198,9 @@ namespace KinveyXamarin
 					break;
 
 				case EnumErrorCode.ERROR_USER_NO_ACTIVE:
-					reason = "";
-					fix = "";
-					explanation = "";
+					reason = "No Active User.";
+					fix = "Please log in a user before retrying this request.";
+					explanation = "There is currently no active user.";
 					break;
 
 				case EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT:

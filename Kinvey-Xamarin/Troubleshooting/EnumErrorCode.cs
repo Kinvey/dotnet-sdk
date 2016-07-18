@@ -74,6 +74,22 @@ namespace KinveyXamarin
 		ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
 
 		/// <summary>
+		/// Error due to attempting a file metadata operation without a file ID.
+		/// </summary>
+		ERROR_FILE_MISSING_FILE_ID,
+
+		/// <summary>
+		/// Error due to attempting a file upload operation with either null or missing metadata information.  Verify that the <see cref="KinveyXamarin.FileMetaData"/> is valid.
+		/// </summary>
+		ERROR_FILE_UPLOAD_MISSING_METADATA_INFORMATION,
+
+		/// <summary>
+		/// Error due to attempting a file download operation with either null or missing metadata information.
+		/// Verify that the <see cref="KinveyXamarin.FileMetaData"/> is valid, or download by query if FileID is unknown.
+		/// </summary>
+		ERROR_FILE_DOWNLOAD_MISSING_METADATA_INFORMATION,
+
+		/// <summary>
 		/// JSON Error - Invalid format.
 		/// </summary>
 		ERROR_JSON_INVALID,
