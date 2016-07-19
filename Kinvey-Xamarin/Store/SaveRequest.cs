@@ -88,7 +88,7 @@ namespace KinveyXamarin
 					break;
 
 				default:
-					throw new KinveyException(EnumErrorCode.ERROR_GENERAL, "Invalid write policy");
+					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid write policy");
 			}
 
 			return savedEntity;
@@ -99,7 +99,7 @@ namespace KinveyXamarin
 
 		public override Task<bool> Cancel()
 		{
-			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on SaveRequest not implemented.");
+			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on SaveRequest not implemented.");
 		}
 
 		private string PrepareCacheSave(ref T entity)

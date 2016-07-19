@@ -30,7 +30,7 @@ namespace KinveyXamarin
 
 		public override Task<bool> Cancel()
 		{
-			throw new KinveyException(EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PullRequest not implemented.");
+			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PullRequest not implemented.");
 		}
 	}
 }

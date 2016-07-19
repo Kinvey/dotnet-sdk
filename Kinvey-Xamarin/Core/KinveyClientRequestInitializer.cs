@@ -108,10 +108,14 @@ namespace KinveyXamarin
         public void Initialize<T>(AbstractKinveyClientRequest<T> request)
         {
 			
-			if (!request.RequireAppCredentials){
-				KAssert.notNull(credential, "No Active User - please login a user by calling myClient.User().Login( ... ) before retrying this request.");
-				KAssert.notNull(credential.UserId, "No Active User - please login a user by calling myClient.User().Login( ... ) before retrying this request.");
-				KAssert.notNull(credential.AuthToken, "No Active User - please login a user by calling myClient.User().Login( ... ) before retrying this request.");
+			if (!request.RequireAppCredentials)
+			{
+				if (credential == null ||
+					credential.UserId == null ||
+					credential.AuthToken == null)
+				{
+					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_NO_ACTIVE, "");
+				}
 			}
 
             if (credential != null && !request.RequireAppCredentials)

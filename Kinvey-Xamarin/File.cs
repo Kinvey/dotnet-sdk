@@ -264,9 +264,15 @@ namespace KinveyXamarin
 		// Build upload request for updating metadata for existing file
 		private UploadMetaDataRequest buildUploadMetaDataRequest(FileMetaData metadata)
 		{
+			if (metadata == null ||
+				metadata.id == null)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_FILE, EnumErrorCode.ERROR_FILE_UPLOAD_MISSING_METADATA_INFORMATION, "");
+			}
+
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("fileID", KAssert.notNull(metadata.id, "metadata.id is required to download metadata for a specific file."));
+			urlParameters.Add ("fileID", metadata.id);
 
 			UploadMetaDataRequest uploadMetaDataRequest = new UploadMetaDataRequest(metadata, urlParameters, this.client);
 
@@ -280,9 +286,15 @@ namespace KinveyXamarin
 		// Build download request for file with its corresponding metadata
 		private DownloadFileWithMetaDataRequest buildDownloadFileRequest(FileMetaData metadata)
 		{
+			if (metadata == null ||
+				metadata.id == null)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_FILE, EnumErrorCode.ERROR_FILE_DOWNLOAD_MISSING_METADATA_INFORMATION, "");
+			}
+
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("fileID", KAssert.notNull(metadata.id, "metadata.id is required to download a specific file-- can also download by query if _id is unknown."));
+			urlParameters.Add ("fileID", metadata.id);
 
 			DownloadFileWithMetaDataRequest downloadRequest = new DownloadFileWithMetaDataRequest(urlParameters, this.client);
 
@@ -302,9 +314,14 @@ namespace KinveyXamarin
 		// Build download request for the metadata of a specific file
 		private DownloadMetaDataRequest buildDownloadMetaDataRequest(String fileId)
 		{
+			if (fileId == null)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_FILE, EnumErrorCode.ERROR_FILE_MISSING_FILE_ID, "");
+			}
+
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("fileID", KAssert.notNull(fileId, "fileId is required to download metadata for a specific file."));
+			urlParameters.Add ("fileID", fileId);
 
 			DownloadMetaDataRequest downloadMetaDataRequest = new DownloadMetaDataRequest(urlParameters, this.client);
 
@@ -318,9 +335,14 @@ namespace KinveyXamarin
 		// Build delete request for file with its corresponding metadata
 		private DeleteFileAndMetaDataRequest buildDeleteFileRequest(String fileId)
 		{
+			if (fileId == null)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_FILE, EnumErrorCode.ERROR_FILE_MISSING_FILE_ID, "");
+			}
+
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("fileID", KAssert.notNull(fileId, "fileId is required to download metadata for a specific file."));
+			urlParameters.Add ("fileID", fileId);
 
 			DeleteFileAndMetaDataRequest deleteRequest = new DeleteFileAndMetaDataRequest (urlParameters, this.client);
 

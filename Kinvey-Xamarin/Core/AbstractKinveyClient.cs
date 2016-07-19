@@ -230,7 +230,7 @@ namespace KinveyXamarin
         private static string NormalizeRootUrl(string rootUrl)
         {
 			if (!rootUrl.ToUpper ().StartsWith ("HTTPS")) {
-				throw new KinveyException (EnumErrorCode.ERROR_REQUIREMENT_HTTPS);
+				throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_HTTPS, "");
 			}
 
             if (!rootUrl.EndsWith("/"))

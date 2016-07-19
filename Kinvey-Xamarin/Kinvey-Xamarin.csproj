@@ -40,15 +40,12 @@
     <Compile Include="Auth\KinveyAuthResponse.cs" />
     <Compile Include="AbstractClient.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="KinveyException.cs" />
     <Compile Include="Core\AbstractKinveyClient.cs" />
     <Compile Include="Core\AbstractKinveyClientRequest.cs" />
     <Compile Include="Core\IKinveyRequestInitializer.cs" />
     <Compile Include="Core\KinveyAuthenticator.cs" />
     <Compile Include="Core\KinveyClientRequestInitializer.cs" />
     <Compile Include="Core\KinveyHeaders.cs" />
-    <Compile Include="Core\KinveyJsonError.cs" />
-    <Compile Include="Core\KinveyJsonResponseException.cs" />
     <Compile Include="Cache\InMemoryCache.cs" />
     <Compile Include="Cache\AbstractKinveyCachedClientRequest.cs" />
     <Compile Include="Async\Client.cs" />
@@ -66,7 +63,6 @@
     <Compile Include="File.cs" />
     <Compile Include="Cache\Cache.cs" />
     <Compile Include="Model\KinveyMetaData.cs" />
-    <Compile Include="Util\KAssert.cs" />
     <Compile Include="File\FileMetaData.cs" />
     <Compile Include="File\KinveyFileRequest.cs" />
     <Compile Include="Model\KinveyReference.cs" />
@@ -108,7 +104,6 @@
     <Compile Include="Query\KinveyQueryVisitor.cs" />
     <Compile Include="Query\KinveyQueryProvider.cs" />
     <Compile Include="Query\KinveyObserver.cs" />
-    <Compile Include="EnumErrorCode.cs" />
     <Compile Include="Store\PullRequest.cs" />
     <Compile Include="Store\FindRequest.cs" />
     <Compile Include="Model\KinveyObject.cs" />
@@ -116,6 +111,10 @@
     <Compile Include="Store\GetCountRequest.cs" />
     <Compile Include="Model\KMDEmailVerification.cs" />
     <Compile Include="Model\KinveyUserMetaData.cs" />
+    <Compile Include="Troubleshooting\EnumErrorCategory.cs" />
+    <Compile Include="Troubleshooting\EnumErrorCode.cs" />
+    <Compile Include="Troubleshooting\KinveyException.cs" />
+    <Compile Include="Troubleshooting\KinveyJsonError.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
@@ -126,7 +125,7 @@
     <Folder Include="Offline\" />
     <Folder Include="Model\" />
     <Folder Include="Query\" />
-    <Folder Include="Util\" />
+    <Folder Include="Troubleshooting\" />
     <Folder Include="File\" />
     <Folder Include="Store\" />
   </ItemGroup>

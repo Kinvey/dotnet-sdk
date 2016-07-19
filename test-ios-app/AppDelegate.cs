@@ -300,19 +300,12 @@ namespace testiosapp
 //			Console.WriteLine ("VRG: After DeleteAsync");
 
 			}
-			catch (KinveyJsonResponseException e)
-			{
-				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.Details.RequestID);
-				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Details.Description);
-				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Details.Error);
-				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Details.Debug);
-			}
 			catch (KinveyException e)
 			{
 				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
-				Console.WriteLine("VRG (exception caught) Exception Reason -> " + e.Reason);
-				Console.WriteLine("VRG (exception caught) Exception Explanation -> " + e.Explanation);
-				Console.WriteLine("VRG (exception caught) Exception Fix -> " + e.Fix);
+				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
+				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
+				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
 			}
 			return user;
 		}

@@ -299,7 +299,7 @@ namespace KinveyXamarin
 				if (Encoding.UTF8.GetByteCount(jsonHeaders) < 2000){
 					restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", jsonHeaders);
 				}else{
-					throw new KinveyException(EnumErrorCode.ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT);
+					throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT, "");
 				}
 
 			}
@@ -331,16 +331,6 @@ namespace KinveyXamarin
             return restClient;
         }
 
-		/// <summary>
-		/// returns an Exception if Kinvey returns an error.
-		/// </summary>
-		/// <returns>The exception on error.</returns>
-		/// <param name="response">Response.</param>
-        protected KinveyJsonResponseException NewExceptionOnError(IRestResponse response)
-        {
-            return KinveyJsonResponseException.From(response);
-        }
-
 		#endregion
 
 		#region Request execution
@@ -359,7 +349,7 @@ namespace KinveyXamarin
 			var response = req.Result;
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				KinveyException kinveyException = new KinveyException(EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
+				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
@@ -413,8 +403,8 @@ namespace KinveyXamarin
 
 			if (response.ErrorException != null || ((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302)
             {
-                throw NewExceptionOnError(response);
-            }
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
+			}
 
 
             return (RestResponse) response;
@@ -431,7 +421,7 @@ namespace KinveyXamarin
 			var response = await client.ExecuteAsync(request);
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				KinveyException kinveyException = new KinveyException(EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
+				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
@@ -484,7 +474,7 @@ namespace KinveyXamarin
 
 			if (response.ErrorException != null)
 			{
-				throw NewExceptionOnError(response);
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
 			}
 
 
@@ -515,7 +505,7 @@ namespace KinveyXamarin
 				return JsonConvert.DeserializeObject<T>(response.Content);
             }
 			catch(JsonException ex){
-				KinveyException kinveyException = new KinveyException (EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
+				KinveyException kinveyException = new KinveyException (EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
@@ -548,7 +538,7 @@ namespace KinveyXamarin
 				return JsonConvert.DeserializeObject<T>(response.Content);
 			}
 			catch(JsonException ex){
-				KinveyException kinveyException = new KinveyException (EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
+				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}

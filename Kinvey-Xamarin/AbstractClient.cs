@@ -54,7 +54,7 @@ namespace KinveyXamarin
 			{
 				if (!value.StartsWith("https", StringComparison.OrdinalIgnoreCase))
 				{
-					throw new KinveyException(EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS, value);
+					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS, value);
 				}
 
 				if (!value.EndsWith ("/", StringComparison.OrdinalIgnoreCase))
