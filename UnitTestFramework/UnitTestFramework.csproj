@@ -85,6 +85,12 @@
     <Compile Include="..\UnitTests\TestFiles\Person.cs">
       <Link>UnitTests\TestFiles\Person.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTests\TestFiles\AddressEntity.cs">
+      <Link>UnitTests\TestFiles\AddressEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTests\TestFiles\PersonEntity.cs">
+      <Link>UnitTests\TestFiles\PersonEntity.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
