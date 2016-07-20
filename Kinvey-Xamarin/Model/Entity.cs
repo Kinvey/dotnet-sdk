@@ -13,7 +13,7 @@ namespace KinveyXamarin
 		/// Gets or sets the Kinvey ID.
 		/// </summary>
 		/// <value>The identifier.</value>
-		[JsonProperty ("_id")]
+		[JsonProperty("_id")]
 		[Preserve]
 		[PrimaryKey, Column("_id")]
 		public string ID { get; set; }
@@ -22,18 +22,23 @@ namespace KinveyXamarin
 		/// Gets or sets the <see cref="AccessControlList"/> for this Kinvey-backed object.
 		/// </summary>
 		/// <value>The acl.</value>
-		[JsonProperty ("_acl")]
+		[JsonProperty("_acl")]
 		[Preserve]
-		[Column ("_acl")]
+		[Column("_acl")]
 		public AccessControlList ACL { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="KinveyMetaData"/> for this Kinvey-backed object.
 		/// </summary>
 		/// <value>The kmd.</value>
-		[JsonProperty ("_kmd")]
+		[JsonProperty("_kmd")]
 		[Preserve]
 		[Column("_kmd")]
 		public KinveyMetaData KMD { get; set; }
+
+		virtual public string Serialize()
+		{
+			return JsonConvert.SerializeObject(this);
+		}
 	}
 }

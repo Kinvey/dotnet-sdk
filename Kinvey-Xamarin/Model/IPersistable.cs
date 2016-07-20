@@ -1,10 +1,12 @@
-﻿namespace KinveyXamarin
+﻿using SQLite.Net;
+
+namespace KinveyXamarin
 {
 	/// <summary>
 	/// Persistable interface which model objects can choose to implement as an alternative
 	/// to subclassing from <see cref="Entity"/>
 	/// </summary>
-	public interface IPersistable
+	public interface IPersistable : ISerializable<string>
 	{
 		/// <summary>
 		/// ID field which maps back to Kinvey _id
