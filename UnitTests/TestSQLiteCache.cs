@@ -481,5 +481,56 @@ namespace UnitTestFramework
 //			await todoStore.RemoveAsync(newItem2.ID);
 //			kinveyClient.CurrentUser.Logout();
 		}
+
+		#region ORM Tests
+
+		[Test]
+		public async Task TestORM_IPersistable()
+		{
+			// Setup
+			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			{
+				kinveyClient.CurrentUser.Logout();
+			}
+
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			string collectionAddressName = "Address";
+			string collectionPersonName = "Person";
+
+			Address addr = new Address();
+			addr.IsApartment = true;
+			addr.Street = "1 Infinite Loop";
+			DataStore<Address> addrStore = DataStore<Address>.GetInstance(DataStoreType.SYNC, collectionAddressName, kinveyClient);
+			addr = await addrStore.SaveAsync(addr);
+
+			Person p = new Person();
+			p.FirstName = "Steve";
+			p.LastName = "Wozniak";
+			p.MailAddress = addr;
+			DataStore<Person> personStore = DataStore<Person>.GetInstance(DataStoreType.SYNC, collectionPersonName, kinveyClient);
+			p = await personStore.SaveAsync(p);
+
+			// Act
+			ICache<Person> cache = kinveyClient.CacheManager.GetCache<Person>(collectionPersonName);
+			List<Person> listPerson = cache.FindAll();
+
+			// Assert
+			Assert.NotNull(listPerson);
+			Assert.IsNotEmpty(listPerson);
+			Person savedPerson = listPerson.First();
+			Assert.NotNull(savedPerson);
+			Assert.IsTrue(String.Compare(p.FirstName, savedPerson.FirstName) == 0);
+			Address savedAddr = savedPerson.MailAddress;
+			Assert.IsTrue(String.Compare(addr.Street, savedAddr.Street) == 0);
+
+			// Teardown
+			await personStore.RemoveAsync(addr.ID);
+			await addrStore.RemoveAsync(addr.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		#endregion
 	}
 }
