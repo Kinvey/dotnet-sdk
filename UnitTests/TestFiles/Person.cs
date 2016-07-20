@@ -9,7 +9,7 @@ namespace UnitTestFramework
 	{
 		[JsonProperty("_id")]
 		[Preserve]
-		[Column("_id")]
+		[PrimaryKey, Column("_id")]
 		public string ID { get; set; }
 
 		[JsonProperty("_acl")]
@@ -22,10 +22,13 @@ namespace UnitTestFramework
 		[Column("_kmd")]
 		public KinveyMetaData KMD { get; set; }
 
+		[JsonProperty]
 		public string FirstName { get; set; }
 
+		[JsonProperty]
 		public string LastName { get; set; }
 
+		[JsonProperty]
 		public Address MailAddress { get; set; }
 
 		public string Serialize()
