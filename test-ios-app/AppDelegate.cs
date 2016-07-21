@@ -311,7 +311,7 @@ namespace testiosapp
 		}
 
 		private async Task<DataStore<Book>> ManipulateData(){
-			DataStore<Book> store = myClient.AppData<Book>("Book", DataStoreType.NETWORK);
+			DataStore<Book> store = DataStore<Book>.Collection("Book", DataStoreType.NETWORK);
 			try{
 				
 				List<Book> listBooks = new List<Book>();

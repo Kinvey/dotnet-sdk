@@ -350,12 +350,12 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 			ToDo td = new ToDo();
 			td.Name = "test";
 			await todoStore.SaveAsync(td);
 
-			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance (DataStoreType.SYNC, "FlashCard", kinveyClient);
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC, kinveyClient);
 			FlashCard fc = new FlashCard ();
 			fc.Answer = "huh";
 			await flashCardStore.SaveAsync (fc);
