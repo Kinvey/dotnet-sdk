@@ -130,27 +130,6 @@ namespace KinveyXamarin
         }
 
 		/// <summary>
-		/// Returns an instance of the <see cref="KinveyXamarin.DataStore{T}"/>
-		/// </summary>
-		/// <returns>An instance of <see cref="KinveyXamarin.DataStore{T}"/> </returns>
-		/// <param name="collection">The name of the Kinvey collection which backs this <see cref="KinveyXamarin.DataStore{T}"/></param>
-		/// <param name="storeType">The <see cref="KinveyXamarin.DataStoreType"/> of the DataStore.</param>
-		[Obsolete ("AppData is deprecated, please use DataStore.getInstance() instead.")]
-		public DataStore<T> AppData<T>(String collection, DataStoreType storeType) where T:class
-        {
-			//return new AppData<T>(collectionName, myClass, this);
-			return KinveyXamarin.DataStore<T>.GetInstance(storeType, collection, this);
-//            lock(Lock) 
-//            {
-//                if (appData == null) 
-//                {
-//                    appData = new AppData<T>(collectionName, myClass, this);
-//                }
-//            return (AppData<T>) appData;
-//            }
-        }
-
-		/// <summary>
 		/// Access file operations through this.
 		/// </summary>
 		public File File()

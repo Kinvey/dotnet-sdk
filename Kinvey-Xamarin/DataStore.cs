@@ -127,7 +127,7 @@ namespace KinveyXamarin
 		/// <param name="type">The <see cref="KinveyXamarin.DataStoreType"/> of this DataStore instance</param>
 		/// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
 		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <code>Client.sharedClient</code> is used.</param>
-		public static DataStore<T> GetInstance(DataStoreType type, string collectionName, AbstractClient client = null)
+		public static DataStore<T> Collection(string collectionName, DataStoreType type, AbstractClient client = null)
 		{
 			// TODO do we need to make this a singleton based on collection, store type and store ID?
 			return new DataStore<T> (type, collectionName, client);

@@ -42,7 +42,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.Catch (delegate () {
-				DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.NETWORK, "ToDos");
+				DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.NETWORK);
 			});
 		}
 

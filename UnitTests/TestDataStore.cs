@@ -35,12 +35,12 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestGetInstance()
+		public async Task TestCollection()
 		{
 			// Arrange
 
 			// Act
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.NETWORK, collectionName, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
 			// Assert
 			Assert.NotNull(todoStore);
@@ -48,12 +48,12 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestGetInstanceSharedClient()
+		public async Task TestCollectionSharedClient()
 		{
 			// Arrange
 
 			// Act
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.NETWORK, collectionName);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 
 			// Assert
 			Assert.NotNull (todoStore);
@@ -62,7 +62,7 @@ namespace UnitTestFramework
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
-		public async Task TestGetInstanceBad()
+		public async Task TestCollectionBad()
 		{
 			// Arrange
 
@@ -89,7 +89,7 @@ namespace UnitTestFramework
 				.build ();
 
 			// Arrange
-			DataStore<ToDo> store = DataStore<ToDo>.GetInstance(DataStoreType.NETWORK, "todos", c);
+			DataStore<ToDo> store = DataStore<ToDo>.Collection("todos", DataStoreType.NETWORK, c);
 
 			// Act
 			Exception er = null;
@@ -119,7 +119,7 @@ namespace UnitTestFramework
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			ToDo anotherNewItem = new ToDo();
@@ -161,7 +161,7 @@ namespace UnitTestFramework
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			ToDo anotherNewItem = new ToDo();
@@ -209,7 +209,7 @@ namespace UnitTestFramework
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			// Act
@@ -243,7 +243,7 @@ namespace UnitTestFramework
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			// Act
@@ -375,7 +375,7 @@ namespace UnitTestFramework
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -431,7 +431,7 @@ namespace UnitTestFramework
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -487,7 +487,7 @@ namespace UnitTestFramework
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.CACHE);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -549,7 +549,7 @@ namespace UnitTestFramework
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
 
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 			ToDo t1 = await todoStore.SaveAsync(newItem);
 			ToDo t2 = await todoStore.SaveAsync (newItem2);
 
@@ -597,7 +597,7 @@ namespace UnitTestFramework
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 
 			// Act
 			ToDo savedToDo = await todoStore.SaveAsync(newItem);
@@ -629,7 +629,7 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to Delete";
 			newItem.Details = "A delete test";
@@ -664,7 +664,7 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to save to SyncQ";
 			newItem.Details = "A sync add test";
@@ -690,7 +690,7 @@ namespace UnitTestFramework
 			// Setup
 			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.NETWORK, collectionName, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
 			Assert.CatchAsync(async delegate () {
 				await todoStore.PullAsync ();
@@ -712,7 +712,7 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to update to SyncQ";
 			newItem.Details = "A sync add test";
@@ -723,7 +723,7 @@ namespace UnitTestFramework
 			newItem2.Details = "Another sync add test";
 			newItem2 = await todoStore.SaveAsync(newItem2);
 
-			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance(DataStoreType.SYNC, "FlashCard", kinveyClient);
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC, kinveyClient);
 			FlashCard firstFlashCard = new FlashCard();
 			firstFlashCard.Question = "What is capital of Djibouti?";
 			firstFlashCard.Answer = "Djibouti";
@@ -781,7 +781,7 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to update to SyncQ";
 			newItem.Details = "A sync add test";
@@ -829,7 +829,7 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.SYNC, collectionName, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 			ToDo newItem = new ToDo ();
 			newItem.Name = "Task to update to SyncQ";
 			newItem.Details = "A sync add test";
@@ -838,7 +838,7 @@ namespace UnitTestFramework
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
 			ToDo updatedItem = await todoStore.SaveAsync(newItem);
 
-			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.GetInstance(DataStoreType.SYNC, "FlashCard", kinveyClient);
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC, kinveyClient);
 			FlashCard firstFlashCard = new FlashCard();
 			firstFlashCard.Question = "What is capital of Djibouti?";
 			firstFlashCard.Answer = "Djibouti";
@@ -867,7 +867,7 @@ namespace UnitTestFramework
 			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance(DataStoreType.SYNC, collectionName, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 			ToDo newItem1 = new ToDo();
 			newItem1.Name = "Task to update to SyncQ";
 			newItem1.Details = "A sync add test";
@@ -952,7 +952,7 @@ namespace UnitTestFramework
 			// Setup
 			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.GetInstance (DataStoreType.SYNC, collectionName);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
 			List<ToDo> todosBeforeSave = await todoStore.PullAsync ();
 
