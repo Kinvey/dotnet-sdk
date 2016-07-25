@@ -502,14 +502,14 @@ namespace UnitTestFramework
 			Address addr = new Address();
 			addr.IsApartment = true;
 			addr.Street = "1 Infinite Loop";
-			DataStore<Address> addrStore = DataStore<Address>.GetInstance(DataStoreType.SYNC, collectionAddressName, kinveyClient);
+			DataStore<Address> addrStore = DataStore<Address>.Collection(collectionAddressName, DataStoreType.SYNC, kinveyClient);
 			addr = await addrStore.SaveAsync(addr);
 
 			Person p = new Person();
 			p.FirstName = "Steve";
 			p.LastName = "Wozniak";
 			p.MailAddress = addr;
-			DataStore<Person> personStore = DataStore<Person>.GetInstance(DataStoreType.SYNC, collectionPersonName, kinveyClient);
+			DataStore<Person> personStore = DataStore<Person>.Collection(collectionPersonName, DataStoreType.SYNC, kinveyClient);
 			p = await personStore.SaveAsync(p);
 
 			// Act
@@ -549,14 +549,14 @@ namespace UnitTestFramework
 			AddressEntity addr = new AddressEntity();
 			addr.IsApartment = true;
 			addr.Street = "1 Infinite Loop";
-			DataStore<AddressEntity> addrStore = DataStore<AddressEntity>.GetInstance(DataStoreType.SYNC, collectionAddressName, kinveyClient);
+			DataStore<AddressEntity> addrStore = DataStore<AddressEntity>.Collection(collectionAddressName, DataStoreType.SYNC, kinveyClient);
 			addr = await addrStore.SaveAsync(addr);
 
 			PersonEntity p = new PersonEntity();
 			p.FirstName = "Steve";
 			p.LastName = "Wozniak";
 			p.MailAddress = addr;
-			DataStore<PersonEntity> personStore = DataStore<PersonEntity>.GetInstance(DataStoreType.SYNC, collectionPersonName, kinveyClient);
+			DataStore<PersonEntity> personStore = DataStore<PersonEntity>.Collection(collectionPersonName, DataStoreType.SYNC, kinveyClient);
 			p = await personStore.SaveAsync(p);
 
 			// Act
