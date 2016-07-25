@@ -13,6 +13,7 @@ namespace KinveyXamarin
 		public KinveyUserMetaData()
 		{
 			this.EmailVerification = new KMDEmailVerification();
+			this.PasswordReset = new KMDPasswordReset();
 		}
 
 		[Preserve]
@@ -36,6 +37,12 @@ namespace KinveyXamarin
 		[Preserve]
 		[JsonProperty("emailVerification")]
 		public KMDEmailVerification EmailVerification { get; set; }
+
+		/// <summary>
+		/// Gets or sets the password reset information for a user.
+		/// </summary>
+		[Preserve]
+		[JsonProperty("passwordReset")]
+		public KMDPasswordReset PasswordReset { get; set; }
 	}
 }
-
