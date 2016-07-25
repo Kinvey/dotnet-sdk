@@ -539,7 +539,7 @@ namespace UnitTestFramework
 		#endregion
 
 		[Test]
-		public async Task TestUserKMD()
+		public async Task TestUserKMDEmailVerification()
 		{
 			// Setup
 			User u = await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
@@ -553,6 +553,26 @@ namespace UnitTestFramework
 
 			// Assert
 			Assert.True(String.Equals(status, "sent"));
+
+			// Teardown
+			kinveyClient.CurrentUser.Logout();
+		}
+
+		[Test]
+		public async Task TestUserKMDPasswordReset()
+		{
+			// Setup
+			User u = await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			u.Metadata = new KinveyUserMetaData();
+			u.Metadata.PasswordReset.Status = "InProgress";
+
+			// Act
+			string status = u.Metadata.PasswordReset.Status;
+
+			// Assert
+			Assert.True(String.Equals(status, "InProgress"));
 
 			// Teardown
 			kinveyClient.CurrentUser.Logout();
