@@ -56,8 +56,9 @@ namespace KinveyXamarin
         private String username;
 
 		/// <summary>
-		/// Used to get information regarding email verification.  The metadata object contains
-		///  an instance of <see cref="KinveyXamarin.KMDEmailVerification"/>
+		/// Used to get information regarding email verification.  The metadata object contains 
+		/// an instance of <see cref="KinveyXamarin.KMDEmailVerification"/> as well as an 
+		/// instance of <see cref="KMDPasswordReset"/> 
 		/// </summary>
 		[JsonProperty("_kmd")]
 		private KinveyUserMetaData metadata;
@@ -617,7 +618,8 @@ namespace KinveyXamarin
 		/// Resets the password for the specified user ID.
 		/// </summary>
 		/// <returns>The async task.</returns>
-		/// <param name="userID">The user ID of the user whose password is reset.</param>
+		/// <param name="userID">The user ID of the user whose password is reset.  This can either be the 
+		/// ID of the user, or the email address of the user.</param>
 		public async Task<User> ResetPasswordAsync(string userID)
 		{
 			ResetPasswordRequest resetPasswordRequest = buildResetPasswordRequest(userID);
@@ -1216,10 +1218,10 @@ namespace KinveyXamarin
 			[JsonProperty]
 			private string userID;
 
-			internal ResetPasswordRequest(AbstractClient client, string userid, Dictionary<string, string> urlProperties) :
+			internal ResetPasswordRequest(AbstractClient client, string userID, Dictionary<string, string> urlProperties) :
 				base(client, "POST", REST_PATH, default(User), urlProperties)
 			{
-				this.userID = userid;
+				this.userID = userID;
 				this.RequireAppCredentials = true;
 			}
 		}
@@ -1239,6 +1241,7 @@ namespace KinveyXamarin
 				this.RequireAppCredentials = true;
 			}
 		}
+
 		#endregion
     }
 }
