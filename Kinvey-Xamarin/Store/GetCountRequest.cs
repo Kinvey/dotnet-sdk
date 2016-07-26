@@ -1,84 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Remotion.Linq;
 using Newtonsoft.Json.Linq; 
 
 namespace KinveyXamarin
 {
-	public class GetCountRequest<T> : ReadRequest<T, uint>, IObservable<uint>
+	public class GetCountRequest<T> : ReadRequest<T, uint>
 	{
-		private IObserver<uint> Observer { get; set;}
+		private KinveyDelegate<uint> cacheCount;
 
-		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, IQueryable<T> query)
+		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyDelegate<uint> cacheCount, IQueryable<T> query)
 			: base (client, collection, cache, query, policy)
 		{
 		}
 
-		public IDisposable Subscribe (IObserver<uint> observer)
+		public override async Task<uint> ExecuteAsync()
 		{
-			this.Observer = observer;
-			return new Unsubscriber ();
-		}
+			uint countResult = default(uint);
 
-		private class Unsubscriber : IDisposable
-		{
-			public void Dispose () { }
-		}
+			switch (Policy)
+			{
+				case ReadPolicy.FORCE_LOCAL:
+					// sync
+					countResult = PerformLocalCount();
+					break;
 
+				case ReadPolicy.FORCE_NETWORK:
+					// network
+					countResult = await PerformNetworkCount();
+					break;
 
-		public override async Task<uint> ExecuteAsync ()
-		{
-			if (Observer == null) {
-				throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "The observer to a GetCountRequest cannot be null.");
+				case ReadPolicy.BOTH:
+					// cache
+					try
+					{
+						// first, perform local query
+						PerformLocalCount(cacheCount);
+					}
+					catch (Exception e)
+					{
+						//Observer.OnError (e);
+					}
+
+					try
+					{
+						// once local query finishes, perform network query
+						countResult = await PerformNetworkCount();
+					}
+					catch (Exception e)
+					{
+						//Observer.OnError (e);
+					}
+					break;
+
+				default:
+					throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 
-			uint countResult = default (uint);
-
-			switch (Policy) {
-			case ReadPolicy.FORCE_LOCAL:
-				// sync
-				try {
-					PerformLocalCount ();
-				} catch (Exception e) {
-					Observer.OnError (e);
-				}
-				break;
-
-			case ReadPolicy.FORCE_NETWORK:
-				// network
-				try {
-					await PerformNetworkCount ();
-				} catch (Exception e) {
-					// network error
-					Observer.OnError (e);
-				}
-				break;
-
-			case ReadPolicy.BOTH:
-				// cache
-				try {
-					// first, perform local query
-					PerformLocalCount ();
-				} catch (Exception e) {
-					Observer.OnError (e);
-				}
-
-				try {
-					// once local query finishes, perform network query
-					await PerformNetworkCount ();
-				} catch (Exception e) {
-					Observer.OnError (e);
-				}
-				break;
-
-			default:
-				throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
-			}
-
-			Observer.OnCompleted ();
 			return countResult;
 		}
 
@@ -87,47 +65,71 @@ namespace KinveyXamarin
 			throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
 		}
 
-		private void PerformLocalCount ()
+		private uint PerformLocalCount(KinveyDelegate<uint> intermediateCount = null)
 		{
-			uint cacheResults = default (uint);
+			uint localCount = default(uint);
 
-			try {
-				if (Query != null) {
+			try
+			{
+				if (Query != null)
+				{
 					IQueryable<T> query = Query;
-					cacheResults = (uint)Cache.FindByQuery (query.Expression).Count;
-				} else {
-					cacheResults = (uint)Cache.FindAll ().Count;
+					localCount = (uint)Cache.FindByQuery(query.Expression).Count;
+				}
+				else
+				{
+					localCount = (uint)Cache.FindAll().Count;
 				}
 
-				//foreach (T cacheItem in cacheResults) {
-				//	Observer.OnNext (cacheItem);
-				//}
-
-				Observer.OnNext (cacheResults);
-			} catch (Exception e) {
-				Observer.OnError (e);
+				intermediateCount?.onSuccess(localCount);
 			}
+			catch (Exception e)
+			{
+				intermediateCount?.onError(e);
+			}
+
+			return localCount;
 		}
 
-		private async Task PerformNetworkCount ()
+		private async Task<uint> PerformNetworkCount ()
 		{
-			string mongoQuery = this.BuildMongoQuery ();
+			uint networkCount = default(uint);
 
-			try {
-				JObject networkResults = await Client.NetworkFactory.buildGetCountRequest<JObject> (Collection, mongoQuery).ExecuteAsync ();
+			try
+			{
+				string mongoQuery = this.BuildMongoQuery();
+				NetworkRequest<JObject> request = Client.NetworkFactory.buildGetCountRequest<JObject>(Collection, mongoQuery);
+				JObject networkResults = await request.ExecuteAsync();
 
-				if (networkResults != null) {
-					JToken count = networkResults.GetValue ("count");
+				if (networkResults != null)
+				{
+					JToken count = networkResults.GetValue("count");
 
-					if (count != null) {
-						Observer.OnNext (count.ToObject<uint> ());
-					} else {
-						Observer.OnError (new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Failed to read the count from the backend response."));
+					if (count != null)
+					{
+						networkCount = count.ToObject<uint>();
+					}
+					else
+					{
+						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+												  EnumErrorCode.ERROR_GENERAL,
+						                          "Error in FindCountAsync() for network results.");
 					}
 				}
-			} catch (Exception e) {
-				Observer.OnError (e);
 			}
+			catch (KinveyException ke)
+			{
+				throw ke;
+			}
+			catch (Exception e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+										  EnumErrorCode.ERROR_GENERAL,
+										  "Error in FindCountAsync() for network results.",
+										  e);
+			}
+
+			return networkCount;
 		}
 	}
 }

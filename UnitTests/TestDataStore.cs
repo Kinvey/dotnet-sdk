@@ -488,49 +488,42 @@ namespace UnitTestFramework
 			// Assert
 		}
 
-		//[Test]
-		//public async Task TestGetCountAsync()
-		//{
-		//	// Setup
-		//	await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+		[Test]
+		public async Task TestGetCountAsync()
+		{
+			// Setup
+			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
-		//	// Arrange
-		//	ToDo newItem = new ToDo();
-		//	newItem.Name = "Next Task";
-		//	newItem.Details = "A test";
-		//	newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
 
-		//	ToDo newItem2 = new ToDo ();
-		//	newItem2.Name = "another todo";
-		//	newItem2.Details = "details for 2";
-		//	newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			ToDo newItem2 = new ToDo ();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
 
-		//	DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
-		//	ToDo t1 = await todoStore.SaveAsync(newItem);
-		//	ToDo t2 = await todoStore.SaveAsync (newItem2);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+			ToDo t1 = await todoStore.SaveAsync(newItem);
+			ToDo t2 = await todoStore.SaveAsync (newItem2);
 
-		//	uint count = 0;
-		//	Exception error = null;
+			uint count = 0;
 
-		//	KinveyObserver<uint> observer = new KinveyObserver<uint> () {
-		//		onSuccess = (result) => count = result,
-		//		onError = (Exception e) => error = e,
-		//		onCompleted = () => Console.WriteLine ("Query completed")
-		//	};
-		//	// Act
-		//	await todoStore.GetCountAsync(observer);
+			// Act
+			count = await todoStore.GetCountAsync();
 
-		//	// Assert
-		//	//Assert.GreaterOrEqual(count, 0);
-		//	Assert.AreEqual(2, count);
-		//	Assert.IsNull (error);
+			// Assert
+			//Assert.GreaterOrEqual(count, 0);
+			Assert.AreEqual(2, count);
 
-		//	// Teardown
-		//	await todoStore.RemoveAsync (t1.ID);
-		//	await todoStore.RemoveAsync (t2.ID);
-		//	kinveyClient.CurrentUser.Logout();
-		//}
+			// Teardown
+			await todoStore.RemoveAsync(t1.ID);
+			await todoStore.RemoveAsync(t2.ID);
+			kinveyClient.CurrentUser.Logout();
+		}
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]

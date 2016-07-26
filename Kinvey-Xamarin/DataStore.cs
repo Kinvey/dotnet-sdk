@@ -198,19 +198,16 @@ namespace KinveyXamarin
 			return await findByQueryRequest.ExecuteAsync();
 		}
 
-		///// <summary>
-		///// Gets a count of all the entities in a collection
-		///// </summary>
-		///// <returns>The async task which returns the count.</returns>
-		//public async Task GetCountAsync(KinveyObserver<uint> observer, IQueryable<T> query = null)
-		//{
-		//	//IDisposable u = this.Subscribe (observer);
-		//	GetCountRequest<T> getCountRequest = new GetCountRequest<T> (client, collectionName, cache, storeType.ReadPolicy, query);
-		//	IDisposable u = getCountRequest.Subscribe (observer);
-		//	await getCountRequest.ExecuteAsync ();
-		//	u.Dispose ();
+		/// <summary>
+		/// Gets a count of all the entities in a collection
+		/// </summary>
+		/// <returns>The async task which returns the count.</returns>
+		public async Task<uint> GetCountAsync(IQueryable<T> query = null, KinveyDelegate<uint> cacheCount = null)
+		{
+			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheCount, query);
 
-		//}
+			return await getCountRequest.ExecuteAsync();
+		}
 
 		/// <summary>
 		/// Save the specified entity to a Kinvey collection.
