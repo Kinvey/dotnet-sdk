@@ -32,29 +32,16 @@ namespace KinveyXamarin
 
 				case ReadPolicy.BOTH:
 					// cache
-					try
-					{
-						// first, perform local query
-						PerformLocalCount(cacheCount);
-					}
-					catch (Exception e)
-					{
-						//Observer.OnError (e);
-					}
 
-					try
-					{
-						// once local query finishes, perform network query
-						countResult = await PerformNetworkCount();
-					}
-					catch (Exception e)
-					{
-						//Observer.OnError (e);
-					}
+					// first, perform local query
+					PerformLocalCount(cacheCount);
+
+					// once local query finishes, perform network query
+					countResult = await PerformNetworkCount();
 					break;
 
 				default:
-					throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
+					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 
 			return countResult;
@@ -85,13 +72,20 @@ namespace KinveyXamarin
 			}
 			catch (Exception e)
 			{
-				intermediateCount?.onError(e);
+				if (intermediateCount != null)
+				{
+					intermediateCount.onError(e);
+				}
+				else
+				{
+					throw e;
+				}
 			}
 
 			return localCount;
 		}
 
-		private async Task<uint> PerformNetworkCount ()
+		private async Task<uint> PerformNetworkCount()
 		{
 			uint networkCount = default(uint);
 

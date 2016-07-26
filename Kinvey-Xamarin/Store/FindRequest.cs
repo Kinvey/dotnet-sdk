@@ -35,25 +35,12 @@ namespace KinveyXamarin
 
 				case ReadPolicy.BOTH:
 					// cache
-					try
-					{
-						// first, perform local query
-						PerformLocalFind(cacheResults);
-					}
-					catch (Exception e)
-					{
-						//Observer.OnError(e);
-					}
 
-					try
-					{
-						// once local query finishes, perform network query
-						listResult = await PerformNetworkFind();
-					}
-					catch (Exception e)
-					{
-						//Observer.OnError(e);
-					}
+					// first, perform local query
+					PerformLocalFind(cacheResults);
+
+					// once local query finishes, perform network query
+					listResult = await PerformNetworkFind();
 					break;
 
 				default:
@@ -92,7 +79,14 @@ namespace KinveyXamarin
 			}
 			catch (Exception e)
 			{
-				intermediateResults?.onError(e);
+				if (intermediateResults != null)
+				{
+					intermediateResults.onError(e);
+				}
+				else
+				{
+					throw e;
+				}
 			}
 
 			return cacheHits;
