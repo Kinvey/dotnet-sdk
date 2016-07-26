@@ -315,12 +315,7 @@ namespace testiosapp
 			try{
 				
 				List<Book> listBooks = new List<Book>();
-				KinveyObserver<List<Book>> queryObj = new KinveyObserver<List<Book>>(){
-					onSuccess = (results) => listBooks.AddRange(results),
-					onError = (e) => Console.WriteLine(e.Message),
-					onCompleted = () => Console.WriteLine("completed")
-				};
-				await store.FindAsync(queryObj);
+				listBooks = await store.FindAsync();
 
 			} catch (Exception e){
 				Console.Write (e);
