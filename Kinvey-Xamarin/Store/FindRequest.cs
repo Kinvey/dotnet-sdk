@@ -8,13 +8,13 @@ namespace KinveyXamarin
 	public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
 		private List<string> EntityIDs { get; }
-		private KinveyDelegate<List<T>> cacheResults;
+		private KinveyDelegate<List<T>> cacheDelegate;
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyDelegate<List<T>> cacheResults, IQueryable<T> query, List<string> listIDs)
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyDelegate<List<T>> cacheDelegate, IQueryable<T> query, List<string> listIDs)
 			: base(client, collection, cache, query, policy)
 		{
 			EntityIDs = listIDs;
-			this.cacheResults = cacheResults;
+			this.cacheDelegate = cacheDelegate;
 		}
 
 		public override async Task<List<T>> ExecuteAsync()
@@ -37,7 +37,7 @@ namespace KinveyXamarin
 					// cache
 
 					// first, perform local query
-					PerformLocalFind(cacheResults);
+					PerformLocalFind(cacheDelegate);
 
 					// once local query finishes, perform network query
 					listResult = await PerformNetworkFind();
@@ -55,7 +55,7 @@ namespace KinveyXamarin
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on FindRequest not implemented.");
 		}
 
-		private List<T> PerformLocalFind(KinveyDelegate<List<T>> intermediateResults = null)
+		private List<T> PerformLocalFind(KinveyDelegate<List<T>> localDelegate = null)
 		{
 			List<T> cacheHits = default(List<T>);
 
@@ -75,13 +75,13 @@ namespace KinveyXamarin
 					cacheHits = Cache.FindAll();
 				}
 
-				intermediateResults?.onSuccess(cacheHits);
+				localDelegate?.onSuccess(cacheHits);
 			}
 			catch (Exception e)
 			{
-				if (intermediateResults != null)
+				if (localDelegate != null)
 				{
-					intermediateResults.onError(e);
+					localDelegate.onError(e);
 				}
 				else
 				{

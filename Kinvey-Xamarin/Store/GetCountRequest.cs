@@ -7,11 +7,12 @@ namespace KinveyXamarin
 {
 	public class GetCountRequest<T> : ReadRequest<T, uint>
 	{
-		private KinveyDelegate<uint> cacheCount;
+		private KinveyDelegate<uint> cacheDelegate;
 
-		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyDelegate<uint> cacheCount, IQueryable<T> query)
+		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyDelegate<uint> cacheDelegate, IQueryable<T> query)
 			: base (client, collection, cache, query, policy)
 		{
+			this.cacheDelegate = cacheDelegate;
 		}
 
 		public override async Task<uint> ExecuteAsync()
@@ -34,7 +35,7 @@ namespace KinveyXamarin
 					// cache
 
 					// first, perform local query
-					PerformLocalCount(cacheCount);
+					PerformLocalCount(cacheDelegate);
 
 					// once local query finishes, perform network query
 					countResult = await PerformNetworkCount();
@@ -52,7 +53,7 @@ namespace KinveyXamarin
 			throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
 		}
 
-		private uint PerformLocalCount(KinveyDelegate<uint> intermediateCount = null)
+		private uint PerformLocalCount(KinveyDelegate<uint> localDelegate = null)
 		{
 			uint localCount = default(uint);
 
@@ -68,13 +69,13 @@ namespace KinveyXamarin
 					localCount = (uint)Cache.FindAll().Count;
 				}
 
-				intermediateCount?.onSuccess(localCount);
+				localDelegate?.onSuccess(localCount);
 			}
 			catch (Exception e)
 			{
-				if (intermediateCount != null)
+				if (localDelegate != null)
 				{
-					intermediateCount.onError(e);
+					localDelegate.onError(e);
 				}
 				else
 				{
@@ -127,4 +128,3 @@ namespace KinveyXamarin
 		}
 	}
 }
-
