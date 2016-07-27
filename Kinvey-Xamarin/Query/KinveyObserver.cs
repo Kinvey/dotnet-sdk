@@ -11,60 +11,60 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
 
-namespace KinveyXamarin
-{
-	public class KinveyObserver<T> : IObserver<T>
-	{
-		//private List<T> results;
+//namespace KinveyXamarin
+//{
+//	public class KinveyObserver<T> : IObserver<T>
+//	{
+//		//private List<T> results;
 
-		//public KinveyObserver()
-		//{
-		//	results = new List<T>();
-		//}
+//		//public KinveyObserver()
+//		//{
+//		//	results = new List<T>();
+//		//}
 
-		///// <summary>
-		///// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
-		///// </summary>
-		public Action<T> onSuccess;
+//		///// <summary>
+//		///// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
+//		///// </summary>
+//		public Action<T> onSuccess;
 
-		///// <summary>
-		///// This Action is executed when an error occurs, either on the device itself, or returned from the service.
-		///// </summary>
-		public Action<Exception> onError;
+//		///// <summary>
+//		///// This Action is executed when an error occurs, either on the device itself, or returned from the service.
+//		///// </summary>
+//		public Action<Exception> onError;
 
-		/// <summary>
-		/// This Action is executed when the operation is completed.
-		/// </summary>
-		public Action onCompleted;
+//		/// <summary>
+//		/// This Action is executed when the operation is completed.
+//		/// </summary>
+//		public Action onCompleted;
 
-		public void OnNext (T item) {
-			onSuccess (item);
-		}
-		public void OnError (Exception e) {
-			onError (e);
-		}
-		public void OnCompleted () {
-			onCompleted ();
-		}
-		//public void OnNext(T item)
-		//{
-		//	//results.Add(item);
-		//}
+//		public void OnNext (T item) {
+//			onSuccess (item);
+//		}
+//		public void OnError (Exception e) {
+//			onError (e);
+//		}
+//		public void OnCompleted () {
+//			onCompleted ();
+//		}
+//		//public void OnNext(T item)
+//		//{
+//		//	//results.Add(item);
+//		//}
 
-		//public void OnError(Exception e)
-		//{
-		//	onError(e);
-		//}
+//		//public void OnError(Exception e)
+//		//{
+//		//	onError(e);
+//		//}
 
-		//public void OnCompleted()
-		//{
-		//	//onSuccess(results);
-		//	//results.Clear();
-		//	//onCompleted();
-		//}
-	}
-}
+//		//public void OnCompleted()
+//		//{
+//		//	//onSuccess(results);
+//		//	//results.Clear();
+//		//	//onCompleted();
+//		//}
+//	}
+//}

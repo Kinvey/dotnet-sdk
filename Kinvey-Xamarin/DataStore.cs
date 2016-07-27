@@ -158,56 +158,55 @@ namespace KinveyXamarin
 //			return await findByIDsRequest.ExecuteAsync();
 //		}
 
-		internal async Task<List<T>> FindAsync(string queryString){
-			return await networkFactory.buildGetRequest <T> (this.CollectionName, queryString).ExecuteAsync ();
-		}
-
-		/// <summary>
-		/// Perfoms a find operation, with an optional query filter.
-		/// </summary>
-		/// <param name="observer">The KinveyObserver object used to receive the results of the find operation</param>
-		/// <param name="query">[optional] LINQ-style query that can be used to filter the search results</param>
-		public async Task FindAsync(KinveyObserver<List<T>> observer, IQueryable<T> query = null)
+		internal async Task<List<T>> FindWithMongoQueryAsync(string queryString)
 		{
-			FindRequest<T> findByQueryRequest = new FindRequest<T> (client, collectionName, cache, storeType.ReadPolicy, query, null);
-
-			IDisposable u = findByQueryRequest.Subscribe (observer);
-			await findByQueryRequest.ExecuteAsync ();
-			u.Dispose ();
+			return await networkFactory.buildGetRequest<T>(this.CollectionName, queryString).ExecuteAsync();
 		}
 
 		/// <summary>
 		/// Perfoms a find operation, with an optional query filter.
 		/// </summary>
-		/// <param name="observer">The KinveyObserver object used to receive the results of the find operation</param>
+		/// <param name="query">[optional] LINQ-style query that can be used to filter the search results</param>
+		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
+		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
+		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
+		public async Task<List<T>> FindAsync(IQueryable<T> query = null, KinveyDelegate<List<T>> cacheResults = null)
+		{
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheResults, query, null);
+
+			return await findByQueryRequest.ExecuteAsync();
+		}
+
+		/// <summary>
+		/// Perfoms a find operation, with an optional query filter.
+		/// </summary>
 		/// <param name="entityID">The ID of the entity to be retrieved</param>
-		public async Task FindAsync(KinveyObserver<List<T>> observer, string entityID)
+		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
+		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
+		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
+		public async Task<List<T>> FindAsync(string entityID, KinveyDelegate<List<T>> cacheResults = null)
 		{
 			List<string> listIDs = new List<string>();
+
 			if (entityID != null)
 			{
 				listIDs.Add(entityID);
 			}
 
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, null, listIDs);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheResults, null, listIDs);
 
-			IDisposable u = findByQueryRequest.Subscribe (observer);
-			await findByQueryRequest.ExecuteAsync();
-			u.Dispose();
+			return await findByQueryRequest.ExecuteAsync();
 		}
 
 		/// <summary>
 		/// Gets a count of all the entities in a collection
 		/// </summary>
 		/// <returns>The async task which returns the count.</returns>
-		public async Task GetCountAsync(KinveyObserver<uint> observer, IQueryable<T> query = null)
+		public async Task<uint> GetCountAsync(IQueryable<T> query = null, KinveyDelegate<uint> cacheCount = null)
 		{
-			//IDisposable u = this.Subscribe (observer);
-			GetCountRequest<T> getCountRequest = new GetCountRequest<T> (client, collectionName, cache, storeType.ReadPolicy, query);
-			IDisposable u = getCountRequest.Subscribe (observer);
-			await getCountRequest.ExecuteAsync ();
-			u.Dispose ();
+			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheCount, query);
 
+			return await getCountRequest.ExecuteAsync();
 		}
 
 		/// <summary>
