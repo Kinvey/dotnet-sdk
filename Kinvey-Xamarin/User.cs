@@ -13,8 +13,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -230,9 +229,11 @@ namespace KinveyXamarin
 		/// Login (and create) an new kinvey user without any specified details.
 		/// </summary>
 		/// <returns>The async task.</returns>
-		public async Task<User> LoginAsync()
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginAsync(CancellationToken ct = default(CancellationToken))
 		{
 			LoginRequest loginRequest = buildLoginRequest();
+			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
 
@@ -242,9 +243,11 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="username">Username.</param>
 		/// <param name="password">Password.</param>
-		public async Task<User> LoginAsync(string username, string password)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginAsync(string username, string password, CancellationToken ct = default(CancellationToken))
 		{
 			LoginRequest loginRequest = buildLoginRequest(username, password);
+			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
 
@@ -254,9 +257,11 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="userID">The _id of the current user.</param>
 		/// <param name="authToken">The user's Kinvey Auth Token..</param>
-		public async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken, CancellationToken ct = default(CancellationToken))
 		{
 			LoginRequest loginRequest = buildLoginRequestWithKinveyAuthToken(userID, authToken);
+			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
 
@@ -265,9 +270,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
-		public async Task<User> LoginAsync(ThirdPartyIdentity identity)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginAsync(ThirdPartyIdentity identity, CancellationToken ct = default(CancellationToken))
 		{
 			LoginRequest loginRequest = buildLoginRequestWithThirdParty(identity);
+			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
 
@@ -279,10 +286,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">Facebook Access token.</param>
-		public async Task<User> LoginFacebookAsync(string accessToken)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginFacebookAsync(string accessToken, CancellationToken ct = default(CancellationToken))
 		{
 			Provider provider = new Provider ();
+			ct.ThrowIfCancellationRequested();
 			provider.facebook = new FacebookCredential (accessToken);
+			ct.ThrowIfCancellationRequested();
 			return await LoginAsync(new ThirdPartyIdentity(provider));
 		}
 
@@ -294,10 +304,13 @@ namespace KinveyXamarin
 		/// <param name="accesstokensecret">Twitter Accesstokensecret.</param>
 		/// <param name="consumerkey">Twitter Consumerkey.</param>
 		/// <param name="consumersecret">Twitter Consumersecret.</param>
-		public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, CancellationToken ct = default(CancellationToken))
 		{
 			Provider provider = new Provider ();
+			ct.ThrowIfCancellationRequested();
 			provider.twitter = new TwitterCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			ct.ThrowIfCancellationRequested();
 			return await LoginAsync(new ThirdPartyIdentity(provider));
 		}
 
@@ -306,10 +319,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">Google Access token.</param>
-		public async Task<User> LoginGoogleAsync(string accessToken)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginGoogleAsync(string accessToken, CancellationToken ct = default(CancellationToken))
 		{
 			Provider provider = new Provider ();
+			ct.ThrowIfCancellationRequested();
 			provider.google = new GoogleCredential (accessToken);
+			ct.ThrowIfCancellationRequested();
 			return await LoginAsync(new ThirdPartyIdentity(provider));
 		}
 
@@ -321,10 +337,13 @@ namespace KinveyXamarin
 		/// <param name="accesstokensecret">Linkedin Accesstokensecret.</param>
 		/// <param name="consumerkey">Linkedin Consumerkey.</param>
 		/// <param name="consumersecret">Linkedin Consumersecret.</param>
-		public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, CancellationToken ct = default(CancellationToken))
 		{
 			Provider provider = new Provider ();
+			ct.ThrowIfCancellationRequested();
 			provider.linkedin = new LinkedInCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			ct.ThrowIfCancellationRequested();
 			return await LoginAsync(new ThirdPartyIdentity(provider));
 		}
 
@@ -336,10 +355,13 @@ namespace KinveyXamarin
 		/// <param name="reauth">Salesforce Reauth.</param>
 		/// <param name="clientid">Salesforce Clientid.</param>
 		/// <param name="id">Salesforce Identifier.</param>
-		public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, CancellationToken ct = default(CancellationToken))
 		{
 			Provider provider = new Provider ();
+			ct.ThrowIfCancellationRequested();
 			provider.salesforce = new SalesforceCredential (access, reauth, clientid, id);
+			ct.ThrowIfCancellationRequested();
 			return await LoginAsync(new ThirdPartyIdentity(provider));
 		}
 
@@ -348,9 +370,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="userID">Userid.</param>
-		public async Task<User> EmailVerificationAsync(string userID)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> EmailVerificationAsync(string userID, CancellationToken ct = default(CancellationToken))
 		{
 			EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
+			ct.ThrowIfCancellationRequested();
 			return await emailVerificationRequest.ExecuteAsync();
 		}
 
@@ -375,10 +399,13 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="accesstoken">Auth Link Accesstoken.</param>
 		/// <param name="refreshtoken">Auth Link Refreshtoken.</param>
-		public async Task<User> LoginAuthlinkAsync(string accesstoken, string refreshtoken)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginAuthlinkAsync(string accesstoken, string refreshtoken, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			Provider provider = new Provider();
+			ct.ThrowIfCancellationRequested();
 			provider.authlink = new AuthLinkCredential (accesstoken, refreshtoken);
+			ct.ThrowIfCancellationRequested();
 			return await LoginAsync(new ThirdPartyIdentity(provider));
 		}
 
@@ -387,10 +414,13 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">MIC Access token.</param>
-		public async Task<User> LoginMICWithAccessTokenAsync(string accessToken)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginMICWithAccessTokenAsync(string accessToken, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
-			provider.kinveyAuth = new MICCredential (accessToken);
+			Provider provider = new Provider();
+			ct.ThrowIfCancellationRequested();
+			provider.kinveyAuth = new MICCredential(accessToken);
+			ct.ThrowIfCancellationRequested();
 			return await LoginMICAsync(new ThirdPartyIdentity(provider));
 		}
 
@@ -399,9 +429,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
-		public async Task<User> LoginMICAsync(ThirdPartyIdentity identity)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> LoginMICAsync(ThirdPartyIdentity identity, CancellationToken ct = default(CancellationToken))
 		{
 			MICLoginRequest loginRequestMIC = buildLoginRequestWithMIC(identity);
+			ct.ThrowIfCancellationRequested();
 			return await loginRequestMIC.ExecuteAsync();
 		}
 
@@ -410,17 +442,20 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
-		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate, CancellationToken ct = default(CancellationToken))
 		{
 			//return URL for login page
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
-			string appkey = ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).AppKey;
+			string appkey = ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey;
 			string hostname = KinveyClient.MICHostName;
 			if (KinveyClient.MICApiVersion != null && KinveyClient.MICApiVersion.Length > 0)
 			{
 				hostname += KinveyClient.MICApiVersion + "/";
 			}
+
+			ct.ThrowIfCancellationRequested();
 
 			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
 
@@ -430,6 +465,7 @@ namespace KinveyXamarin
 
 			if (MICDelegate != null)
 			{
+				ct.ThrowIfCancellationRequested();
 				MICDelegate.onReadyToRender(myURLToRender);
 			}
 		}
@@ -440,23 +476,33 @@ namespace KinveyXamarin
 		/// <param name="username">Username for authentication</param>
 		/// <param name="password">Password for authentication</param>
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
-		public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI, CancellationToken ct = default(CancellationToken))
 		{
 			this.KinveyClient.MICRedirectURI = redirectURI;
 
 			try
 			{
+				ct.ThrowIfCancellationRequested();
+
 				GetMICTempURLRequest  MICTempURLRequest = buildMICTempURLRequest();
+				ct.ThrowIfCancellationRequested();
 				JObject tempResult = await MICTempURLRequest.ExecuteAsync();
 
 				string tempURL = tempResult["temp_login_uri"].ToString();
 
 				LoginToTempURLRequest MICLoginToTempURL = buildMICLoginToTempURL(username, password, tempURL);
+				ct.ThrowIfCancellationRequested();
 				JObject accessResult = await MICLoginToTempURL.ExecuteAsync();
+
+				ct.ThrowIfCancellationRequested();
 
 				string accessToken = accessResult["access_token"].ToString();
 
+				ct.ThrowIfCancellationRequested();
 				User u = await LoginMICWithAccessTokenAsync(accessToken);
+
+				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
 				Credential currentCred = KinveyClient.Store.Load(u.Id);
@@ -474,14 +520,19 @@ namespace KinveyXamarin
 		/// Gets the MIC access token, given the grant code passed in.
 		/// </summary>
 		/// <param name="token">Grant token passed back from MIC grant request</param>
-		public async Task GetMICAccessTokenAsync(String token)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task GetMICAccessTokenAsync(String token, CancellationToken ct = default(CancellationToken))
 		{
 			try
 			{
+				ct.ThrowIfCancellationRequested();
 				JObject result = await getMICToken(token).ExecuteAsync();
 				string accessToken = result["access_token"].ToString();
 
+				ct.ThrowIfCancellationRequested();
 				User u = await LoginMICWithAccessTokenAsync(accessToken);
+
+				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
 				Credential currentCred = KinveyClient.Store.Load(u.Id);
@@ -491,6 +542,7 @@ namespace KinveyXamarin
 
 				if (KinveyClient.MICDelegate != null)
 				{
+					ct.ThrowIfCancellationRequested();
 					KinveyClient.MICDelegate.onSuccess(u);
 				}
 				else
@@ -502,6 +554,7 @@ namespace KinveyXamarin
 			{
 				if (KinveyClient.MICDelegate != null)
 				{
+					ct.ThrowIfCancellationRequested();
 					KinveyClient.MICDelegate.onError(e);
 				}
 				else
@@ -524,9 +577,11 @@ namespace KinveyXamarin
 		/// <param name="username">the username.</param>
 		/// <param name="password">the password.</param>
 		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
-		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, CancellationToken ct = default(CancellationToken))
 		{
 			LoginRequest loginRequest = buildCreateRequest(username, password, customFieldsAndValues);
+			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
 
@@ -539,9 +594,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>Task which returns the requested user</returns>
 		/// <param name="userID">Userid.</param>
-		public async Task<User> RetrieveAsync(string userID)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> RetrieveAsync(string userID, CancellationToken ct = default(CancellationToken))
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(userID);
+			ct.ThrowIfCancellationRequested();
 			return await retrieveRequest.ExecuteAsync();
 		}
 
@@ -549,9 +606,11 @@ namespace KinveyXamarin
 		/// Retrieves the async.
 		/// </summary>
 		/// <returns>Task which returns the requested user</returns>
-		public async Task<User> RetrieveAsync()
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> RetrieveAsync(CancellationToken ct = default(CancellationToken))
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(this.Id);
+			ct.ThrowIfCancellationRequested();
 			return await retrieveRequest.ExecuteAsync();
 		}
 
@@ -563,9 +622,11 @@ namespace KinveyXamarin
 		/// <param name="resolves">Resolves</param>
 		/// <param name="resolveDepth">Resolve depth</param>
 		/// <param name="retain">If set to <c>true</c> retain references.</param>
-		public async Task<User[]> RetrieveAsync(string query, string[] resolves, int resolveDepth, bool retain)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User[]> RetrieveAsync(string query, string[] resolves, int resolveDepth, bool retain, CancellationToken ct = default(CancellationToken))
 		{
 			RetrieveUsersRequest retrieveUsersRequest = buildRetrieveUsersRequest(query, resolves, resolveDepth, retain);
+			ct.ThrowIfCancellationRequested();
 			return await retrieveUsersRequest.ExecuteAsync();
 		}
 
@@ -574,7 +635,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task which will return an array of User objects.</returns>
 		/// <param name="criteria">UserDiscovery object which contains the lookup criteria.</param>
-		public async Task<User[]> LookupAsync(UserDiscovery criteria)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User[]> LookupAsync(UserDiscovery criteria, CancellationToken ct = default(CancellationToken))
 		{
 			User[] users = default(User[]);
 
@@ -583,6 +645,7 @@ namespace KinveyXamarin
 				(criteria.getCriteria().Count > 0))
 			{
 				LookupRequest lookupRequest = buildLookupRequest(criteria);
+				ct.ThrowIfCancellationRequested();
 				users = await lookupRequest.ExecuteAsync();
 			}
 
@@ -597,9 +660,11 @@ namespace KinveyXamarin
 		/// Updates the current user.
 		/// </summary>
 		/// <returns>The async task.</returns>
-		public async Task<User> UpdateAsync()
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> UpdateAsync(CancellationToken ct = default(CancellationToken))
 		{
 			UpdateRequest updateRequest = buildUpdateRequest(this);
+			ct.ThrowIfCancellationRequested();
 			return await updateRequest.ExecuteAsync();
 		}
 
@@ -608,9 +673,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="user">User.</param>
-		public async Task<User> UpdateAsync(User user)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> UpdateAsync(User user, CancellationToken ct = default(CancellationToken))
 		{
 			UpdateRequest updateRequest = buildUpdateRequest(user);
+			ct.ThrowIfCancellationRequested();
 			return await updateRequest.ExecuteAsync();
 		}
 
@@ -620,9 +687,11 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="userID">The user ID of the user whose password is reset.  This can either be the 
 		/// ID of the user, or the email address of the user.</param>
-		public async Task<User> ResetPasswordAsync(string userID)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> ResetPasswordAsync(string userID, CancellationToken ct = default(CancellationToken))
 		{
 			ResetPasswordRequest resetPasswordRequest = buildResetPasswordRequest(userID);
+			ct.ThrowIfCancellationRequested();
 			return await resetPasswordRequest.ExecuteAsync();
 		}
 
@@ -636,9 +705,11 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="userID">The user ID of user to delete.</param>
 		/// <param name="hard">If set to <c>true</c> the user will be permanently deleted.</param>
-		public async Task<KinveyDeleteResponse> DeleteAsync(string userID, bool hard)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<KinveyDeleteResponse> DeleteAsync(string userID, bool hard, CancellationToken ct = default(CancellationToken))
 		{
 			DeleteRequest deleteRequest = buildDeleteRequest(userID, hard);
+			ct.ThrowIfCancellationRequested();
 			return await deleteRequest.ExecuteAsync();
 		}
 
