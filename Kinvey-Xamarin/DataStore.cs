@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Remotion.Linq.Parsing.Structure;
@@ -170,10 +171,11 @@ namespace KinveyXamarin
 		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
 		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
 		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
-		public async Task<List<T>> FindAsync(IQueryable<T> query = null, KinveyDelegate<List<T>> cacheResults = null)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<List<T>> FindAsync(IQueryable<T> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheResults, query, null);
-
+			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync();
 		}
 
@@ -184,7 +186,8 @@ namespace KinveyXamarin
 		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
 		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
 		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
-		public async Task<List<T>> FindAsync(string entityID, KinveyDelegate<List<T>> cacheResults = null)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<List<T>> FindAsync(string entityID, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
 			List<string> listIDs = new List<string>();
 
@@ -194,7 +197,7 @@ namespace KinveyXamarin
 			}
 
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheResults, null, listIDs);
-
+			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync();
 		}
 
@@ -202,10 +205,11 @@ namespace KinveyXamarin
 		/// Gets a count of all the entities in a collection
 		/// </summary>
 		/// <returns>The async task which returns the count.</returns>
-		public async Task<uint> GetCountAsync(IQueryable<T> query = null, KinveyDelegate<uint> cacheCount = null)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<uint> GetCountAsync(IQueryable<T> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
 		{
 			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheCount, query);
-
+			ct.ThrowIfCancellationRequested();
 			return await getCountRequest.ExecuteAsync();
 		}
 
@@ -214,9 +218,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entity">the entity to save.</param>
-		public async Task<T> SaveAsync(T entity)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<T> SaveAsync(T entity, CancellationToken ct = default(CancellationToken))
 		{
 			SaveRequest<T> request = new SaveRequest<T>(entity, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
+			ct.ThrowIfCancellationRequested();
 			return await request.ExecuteAsync();
 		}
 
@@ -226,9 +232,11 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="entityID">The Kinvey ID of the entity to delete.</param>
-		public async Task<KinveyDeleteResponse> RemoveAsync(string entityID)
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<KinveyDeleteResponse> RemoveAsync(string entityID, CancellationToken ct = default(CancellationToken))
 		{
 			RemoveRequest<T> request = new RemoveRequest<T>(entityID, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			ct.ThrowIfCancellationRequested();
 			return await request.ExecuteAsync();
 		}
 
@@ -239,18 +247,22 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>Entities that were pulled from the backend.</returns>
 		/// <param name="query">Optional Query parameter.</param>
-		public async Task<List<T>> PullAsync (IQueryable<T> query = null) 
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<List<T>> PullAsync(IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
 		{
-			if (this.storeType == DataStoreType.NETWORK) {
+			if (this.storeType == DataStoreType.NETWORK)
+			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_INVALID_PULL_OPERATION, "");
 			}
 
-			if (this.GetSyncCount () > 0) {
+			if (this.GetSyncCount () > 0)
+			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE, "");
 			}
 
 			//TODO query
 			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, cache, query);
+			ct.ThrowIfCancellationRequested();
 			return await pullRequest.ExecuteAsync ();
 		}
 
@@ -259,16 +271,19 @@ namespace KinveyXamarin
 		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
-		public async Task<DataStoreResponse> PushAsync () 
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<DataStoreResponse> PushAsync(CancellationToken ct = default(CancellationToken))
 		{
-			if (this.storeType == DataStoreType.NETWORK) {
+			if (this.storeType == DataStoreType.NETWORK)
+			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_INVALID_PUSH_OPERATION, "");
 			}
 
-			PushRequest<T> pushRequest = new PushRequest<T> (client, CollectionName, cache, syncQueue, storeType.WritePolicy);
-			return await pushRequest.ExecuteAsync ();
-
+			PushRequest<T> pushRequest = new PushRequest<T>(client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			ct.ThrowIfCancellationRequested();
+			return await pushRequest.ExecuteAsync();
 		}
+
 		/// <summary>
 		/// Kicks off a bi-directional synchronization of data between the library and the backend. 
 		/// First, the library calls push to send local changes to the backend. Subsequently, the library calls pull to fetch data in the collection from the backend and stores it on the device.
@@ -276,29 +291,36 @@ namespace KinveyXamarin
 		///
 		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
 		/// </summary>
-		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
-		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null)
+		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
 		{
-			if (this.storeType == DataStoreType.NETWORK) {
+			if (this.storeType == DataStoreType.NETWORK)
+			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_INVALID_SYNC_OPERATION, "");
 			}
 
 			// first push
-			DataStoreResponse response = await this.PushAsync ();   //partial success
+			DataStoreResponse response = await this.PushAsync();   //partial success
+
+			ct.ThrowIfCancellationRequested();
 
 			//then pull
-			try {
-				await this.PullAsync ();
-			} catch (KinveyException e) {
+			try
+			{
+				await this.PullAsync();
+			}
+			catch (KinveyException e)
+			{
 				response.addKinveyException (e);
 			}
 
-
 			return response;
 		}
+
 		/// <summary>
-		/// 
+		/// Get a count of the number of items currently in the sync queue, either for a particular collection or total count.
 		/// </summary>
 		/// <returns>The sync queue item count.</returns>
 		/// <param name="allCollections">[optional] Flag to determine if count should be for all collections.  Default to false.</param>
