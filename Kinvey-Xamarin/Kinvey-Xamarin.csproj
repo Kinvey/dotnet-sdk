@@ -43,13 +43,9 @@
     <Compile Include="Core\KinveyAuthenticator.cs" />
     <Compile Include="Core\KinveyClientRequestInitializer.cs" />
     <Compile Include="Core\KinveyHeaders.cs" />
-    <Compile Include="Offline\AbstractKinveyOfflineClientRequest.cs" />
-    <Compile Include="Offline\OfflinePolicy.cs" />
     <Compile Include="Offline\SQLiteHelper.cs" />
     <Compile Include="Offline\SQLTemplates.cs" />
-    <Compile Include="Offline\DatabaseHelper.cs" />
     <Compile Include="Model\KinveyDeleteResponse.cs" />
-    <Compile Include="Offline\BackgroundExecutor.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
     <Compile Include="Query\IQueryBuilder.cs" />
     <Compile Include="Query\StringQueryBuilder.cs" />
