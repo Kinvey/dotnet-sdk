@@ -232,7 +232,7 @@ namespace KinveyXamarin
 				dbConnectionSync.CreateTable<PendingWriteAction> ();
 			}
 
-			return new SqliteSyncQueue(collectionName, dbConnectionSync);
+			return new SQLiteSyncQueue(collectionName, dbConnectionSync);
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)

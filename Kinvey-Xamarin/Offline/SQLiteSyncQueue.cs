@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
-	public class SqliteSyncQueue : ISyncQueue
+	public class SQLiteSyncQueue : ISyncQueue
 	{
 		public string Collection { get;}
 		private SQLiteConnection dbConnection;
 
-		public SqliteSyncQueue (string collection, SQLiteConnection connection)
+		public SQLiteSyncQueue (string collection, SQLiteConnection connection)
 		{
 			this.dbConnection = connection;
 			this.Collection = collection;
