@@ -43,7 +43,6 @@
     <Compile Include="Core\KinveyAuthenticator.cs" />
     <Compile Include="Core\KinveyClientRequestInitializer.cs" />
     <Compile Include="Core\KinveyHeaders.cs" />
-    <Compile Include="Offline\SQLiteHelper.cs" />
     <Compile Include="Offline\SQLTemplates.cs" />
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
