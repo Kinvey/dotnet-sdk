@@ -131,10 +131,10 @@ namespace KinveyXamarin
         private KinveyAuthRequest.Builder builder;
 
 		/// <summary>
-		/// The type of user
+		/// The login type of the user
 		/// </summary>
 		[JsonIgnore]
-		private LoginType type { get; set;}
+		private EnumLoginType type { get; set; }
 
 		#endregion
 
@@ -730,25 +730,25 @@ namespace KinveyXamarin
 
 		private LoginRequest buildLoginRequest()
 		{
-			this.type = LoginType.IMPLICIT;
+			this.type = EnumLoginType.IMPLICIT;
 			return new LoginRequest(this).buildAuthRequest();
 		}
 
 		private LoginRequest buildLoginRequest(string username, string password)
 		{
-			this.type = LoginType.KINVEY;
+			this.type = EnumLoginType.KINVEY;
 			return new LoginRequest(username, password, false, this).buildAuthRequest();
 		}
 
 		private LoginRequest buildLoginRequest(Credential cred) 
 		{
-			this.type = LoginType.CREDENTIALSTORE;
+			this.type = EnumLoginType.CREDENTIALSTORE;
 			return new LoginRequest(cred, this).buildAuthRequest();
 		}
 
 		private LoginRequest buildLoginRequestWithThirdParty(ThirdPartyIdentity identity)
 		{
-			this.type = LoginType.THIRDPARTY;
+			this.type = EnumLoginType.THIRDPARTY;
 			return new LoginRequest(identity, this).buildAuthRequest();
 		}
 
@@ -762,7 +762,7 @@ namespace KinveyXamarin
 
 		private MICLoginRequest buildLoginRequestWithMIC(ThirdPartyIdentity identity)
 		{
-			this.type = LoginType.THIRDPARTY;
+			this.type = EnumLoginType.THIRDPARTY;
 			return new MICLoginRequest(identity, this).buildAuthRequest();
 		}
 
@@ -963,7 +963,7 @@ namespace KinveyXamarin
 
 		private LoginRequest buildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
         {
-			this.type = LoginType.KINVEY;
+			this.type = EnumLoginType.KINVEY;
 			if (customFieldsAndValues != null)
 			{
 				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
@@ -982,7 +982,7 @@ namespace KinveyXamarin
 		private class LoginRequest
 		{
 			Credential credential;
-			LoginType type;
+			EnumLoginType type;
 			protected KinveyAuthRequest request;
 			protected User memberUser;
 
@@ -1027,13 +1027,13 @@ namespace KinveyXamarin
 			internal async Task<User> ExecuteAsync()
 			{
 				if (memberUser.isUserLoggedIn() && 
-					memberUser.type != LoginType.CREDENTIALSTORE)
+					memberUser.type != EnumLoginType.CREDENTIALSTORE)
 				{
 					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
 				}
 
 				string userType = "";
-				if (this.type == LoginType.CREDENTIALSTORE) 
+				if (this.type == EnumLoginType.CREDENTIALSTORE)
 				{
 					return memberUser.InitUser(credential);
 				}
