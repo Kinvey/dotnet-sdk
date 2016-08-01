@@ -139,13 +139,22 @@ namespace KinveyXamarin
 		#endregion
 
 		#region User class Constructors and Initializers
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
+		/// </summary>
+		internal User()
+		{
+			this.Attributes = new Dictionary<string, JToken>();
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="client">[optional] Client (default is SharedClient).</param>
-		public User(KinveyAuthRequest.Builder builder, AbstractClient client = null) 
-        {
+		internal User(KinveyAuthRequest.Builder builder, AbstractClient client = null)
+		{
 			if (client != null)
 			{
 				this.client = client;
@@ -156,13 +165,7 @@ namespace KinveyXamarin
 			}
 
 			this.builder = builder;
-            builder.KinveyUser = this;
-			this.Attributes = new Dictionary<string, JToken>();
-        }
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
-		/// </summary>
-        public User() {
+			builder.KinveyUser = this;
 			this.Attributes = new Dictionary<string, JToken>();
 		}
 
