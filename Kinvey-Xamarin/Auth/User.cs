@@ -128,13 +128,13 @@ namespace KinveyXamarin
 		/// the auth request builder.
 		/// </summary>
 		[JsonIgnore]
-        private KinveyAuthRequest.Builder builder;
+        internal KinveyAuthRequest.Builder builder; // TODO change back to private, or remove altogether.
 
 		/// <summary>
 		/// The login type of the user
 		/// </summary>
 		[JsonIgnore]
-		private EnumLoginType type { get; set; }
+		internal EnumLoginType type { get; set; } // TODO change back to private, or remove altogether.
 
 		#endregion
 
@@ -184,7 +184,7 @@ namespace KinveyXamarin
 		/// <returns>The user.</returns>
 		/// <param name="response">Response.</param>
 		/// <param name="userType">User type.</param>
-        private User InitUser(KinveyAuthResponse response, string userType) 
+        internal User InitUser(KinveyAuthResponse response, string userType) // TODO change back to private?
         {
             this.id = response.UserId;
             // TODO process Unknown keys
@@ -205,8 +205,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The user.</returns>
 		/// <param name="credential">Credential.</param>
-        private User InitUser(Credential credential)
-        {
+        internal User InitUser(Credential credential) // TODO change back to private?
+		{
             this.id = credential.UserId;
             this.AuthToken = credential.AuthToken;
 			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
@@ -982,74 +982,6 @@ namespace KinveyXamarin
 		#region User class Request inner classes
 
 		// A login request
-		private class LoginRequest
-		{
-			Credential credential;
-			EnumLoginType type;
-			protected KinveyAuthRequest request;
-			protected User memberUser;
-
-			internal LoginRequest(User user)
-			{
-				memberUser = user;
-				memberUser.builder.Create = true;
-				this.type = user.type;
-			}
-
-			internal LoginRequest(string username, string password, bool setCreate, User user)
-			{
-				this.memberUser = user;
-				memberUser.builder.Username = username;
-				memberUser.builder.Password = password;
-				memberUser.builder.Create = setCreate;
-				memberUser.builder.KinveyUser = user;
-				this.type = user.type;
-			}
-
-			internal LoginRequest(Credential credential, User user)
-			{
-				this.memberUser = user;
-				this.credential = credential;
-				this.type = user.type;
-			}
-
-			internal LoginRequest(ThirdPartyIdentity identity, User user)
-			{
-				this.memberUser = user;
-				this.memberUser.builder.Identity = identity;
-				this.type = user.type;
-				this.memberUser.builder.Create = false;
-			}
-
-			internal LoginRequest buildAuthRequest()
-			{
-				this.request = memberUser.builder.build();
-				return this;
-			}
-
-			internal async Task<User> ExecuteAsync()
-			{
-				if (memberUser.isUserLoggedIn() && 
-					memberUser.type != EnumLoginType.CREDENTIALSTORE)
-				{
-					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
-				}
-
-				string userType = "";
-				if (this.type == EnumLoginType.CREDENTIALSTORE)
-				{
-					return memberUser.InitUser(credential);
-				}
-				else 
-				{
-					userType = this.type.ToString ();
-				}
-
-				KinveyAuthResponse response = await this.request.ExecuteAsync();
-
-				return memberUser.InitUser(response, userType);
-			}
-        }
 
 		// A login request to MIC
 		private class MICLoginRequest : LoginRequest
