@@ -29,9 +29,9 @@ namespace UnitTestFramework
 		[TearDown]
 		public void Tear()
 		{
-			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser.isUserLoggedIn())
 			{
-				kinveyClient.CurrentUser.Logout();
+				kinveyClient.ActiveUser.Logout();
 			}
 			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
 			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
@@ -56,14 +56,14 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await kinveyClient.CurrentUser.LoginAsync();
+			await kinveyClient.ActiveUser.LoginAsync();
 
 			// Assert
-			Assert.NotNull(kinveyClient.CurrentUser);
-			Assert.True(kinveyClient.CurrentUser.isUserLoggedIn());
+			Assert.NotNull(kinveyClient.ActiveUser);
+			Assert.True(kinveyClient.ActiveUser.isUserLoggedIn());
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -72,14 +72,14 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await Client.SharedClient.CurrentUser.LoginAsync ();
+			await Client.SharedClient.ActiveUser.LoginAsync ();
 
 			// Assert
-			Assert.NotNull (kinveyClient.CurrentUser);
-			Assert.True (kinveyClient.CurrentUser.isUserLoggedIn ());
+			Assert.NotNull (kinveyClient.ActiveUser);
+			Assert.True (kinveyClient.ActiveUser.isUserLoggedIn ());
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout ();
+			kinveyClient.ActiveUser.Logout ();
 		}
 
 		[Test]
@@ -91,11 +91,11 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await fakeClient.CurrentUser.LoginAsync();
+				await fakeClient.ActiveUser.LoginAsync();
 			});
 
 			Assert.CatchAsync(async delegate() {
-				await fakeClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+				await fakeClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
 			});
 		}
 
@@ -105,14 +105,14 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Assert
-			Assert.NotNull(kinveyClient.CurrentUser);
-			Assert.True(kinveyClient.CurrentUser.isUserLoggedIn());
+			Assert.NotNull(kinveyClient.ActiveUser);
+			Assert.True(kinveyClient.ActiveUser.isUserLoggedIn());
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -134,7 +134,7 @@ namespace UnitTestFramework
 			string facebookAccessToken = "";
 
 			// Act
-			User fbUser = await kinveyClient.CurrentUser.LoginFacebookAsync(facebookAccessToken);
+			User fbUser = await kinveyClient.ActiveUser.LoginFacebookAsync(facebookAccessToken);
 
 			// Assert
 			Assert.IsNotNull(fbUser);
@@ -153,7 +153,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.CurrentUser.LoginFacebookAsync(facebookAccessTokenBad);
+				await kinveyClient.ActiveUser.LoginFacebookAsync(facebookAccessTokenBad);
 			});
 		}
 
@@ -165,7 +165,7 @@ namespace UnitTestFramework
 			string googleAccessToken = "";
 
 			// Act
-			User googleUser = await kinveyClient.CurrentUser.LoginGoogleAsync(googleAccessToken);
+			User googleUser = await kinveyClient.ActiveUser.LoginGoogleAsync(googleAccessToken);
 
 			// Assert
 			Assert.IsNotNull(googleUser);
@@ -184,7 +184,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.CurrentUser.LoginGoogleAsync(googleAccessTokenBad);
+				await kinveyClient.ActiveUser.LoginGoogleAsync(googleAccessTokenBad);
 			});
 		}
 
@@ -199,7 +199,7 @@ namespace UnitTestFramework
 			string consumerKeySecret = "";
 
 			// Act
-			User twitterUser = await kinveyClient.CurrentUser.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+			User twitterUser = await kinveyClient.ActiveUser.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
 
 			// Assert
 			Assert.IsNotNull(twitterUser);
@@ -221,7 +221,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.CurrentUser.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+				await kinveyClient.ActiveUser.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
 			});
 		}
 
@@ -236,7 +236,7 @@ namespace UnitTestFramework
 			string consumerKeySecret = "";
 
 			// Act
-			User linkedinUser = await kinveyClient.CurrentUser.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+			User linkedinUser = await kinveyClient.ActiveUser.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
 
 			// Assert
 			Assert.IsNotNull(linkedinUser);
@@ -258,7 +258,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.CurrentUser.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+				await kinveyClient.ActiveUser.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
 			});
 		}
 
@@ -273,7 +273,7 @@ namespace UnitTestFramework
 			string ID = "";
 
 			// Act
-			User salesforceUser = await kinveyClient.CurrentUser.LoginSalesforceAsync(access, reauth, clientID, ID);
+			User salesforceUser = await kinveyClient.ActiveUser.LoginSalesforceAsync(access, reauth, clientID, ID);
 
 			// Assert
 			Assert.IsNotNull(salesforceUser);
@@ -295,7 +295,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.CurrentUser.LoginSalesforceAsync(access, reauth, clientID, ID);
+				await kinveyClient.ActiveUser.LoginSalesforceAsync(access, reauth, clientID, ID);
 			});
 		}
 
@@ -310,7 +310,7 @@ namespace UnitTestFramework
 
 			// Act
 			string renderURL = null;
-			kinveyClient.CurrentUser.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
+			kinveyClient.ActiveUser.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
 				onSuccess = (user) => { loggedInUser = user; },
 				onError = (e) => { Console.WriteLine("TEST MIC ERROR"); },
 				onReadyToRender = (url) => { renderURL = url; }
@@ -336,20 +336,20 @@ namespace UnitTestFramework
 			localClient.MICApiVersion = "v2";
 
 			// Act
-			await localClient.CurrentUser.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI);
+			await localClient.ActiveUser.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI);
 
 			// Assert
-			Assert.True(localClient.CurrentUser.isUserLoggedIn());
+			Assert.True(localClient.ActiveUser.isUserLoggedIn());
 
 			// Teardown
-			localClient.CurrentUser.Logout();
+			localClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestLogout ()
 		{
 			// Arrange
-			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await kinveyClient.ActiveUser.LoginAsync (TestSetup.user, TestSetup.pass);
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 			ToDo td = new ToDo();
 			td.Name = "test";
@@ -361,10 +361,10 @@ namespace UnitTestFramework
 			await flashCardStore.SaveAsync (fc);
 
 			// Act
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 
 			// Assert
-			Assert.False(kinveyClient.CurrentUser.isUserLoggedIn());
+			Assert.False(kinveyClient.ActiveUser.isUserLoggedIn());
 			Assert.IsEmpty(kinveyClient.CacheManager.GetSyncQueue(collectionName).GetFirstN(1,0));
 		}
 
@@ -377,7 +377,7 @@ namespace UnitTestFramework
 		public async Task TestCreateUserAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			string email = "newuser@test.com";
@@ -385,7 +385,7 @@ namespace UnitTestFramework
 			customFields.Add("email", email);
 
 			// Act
-			User newUser = await kinveyClient.CurrentUser.CreateAsync("newuser1", "newpass1", customFields);
+			User newUser = await kinveyClient.ActiveUser.CreateAsync("newuser1", "newpass1", customFields);
 
 			// Assert
 			Assert.NotNull(newUser);
@@ -394,7 +394,7 @@ namespace UnitTestFramework
 
 			// Teardown
 //			await kinveyClient.CurrentUser.DeleteAsync(newUser.Id, true);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -412,19 +412,19 @@ namespace UnitTestFramework
 		public async Task TestFindUserAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 
 			// Act
-			User me = await kinveyClient.CurrentUser.RetrieveAsync();
+			User me = await kinveyClient.ActiveUser.RetrieveAsync();
 
 			// Assert
 			Assert.NotNull(me);
-			Assert.True(string.Equals(kinveyClient.CurrentUser.Id, me.Id)); 
+			Assert.True(string.Equals(kinveyClient.ActiveUser.Id, me.Id)); 
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -442,21 +442,21 @@ namespace UnitTestFramework
 		public async Task TestLookupUsersAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			UserDiscovery criteria = new UserDiscovery();
 			criteria.FirstName = "George";
 
 			// Act
-			User[] users = await kinveyClient.CurrentUser.LookupAsync(criteria);
+			User[] users = await kinveyClient.ActiveUser.LookupAsync(criteria);
 
 			// Assert
 			Assert.NotNull(users);
 			Assert.AreEqual(3, users.Length);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -542,7 +542,7 @@ namespace UnitTestFramework
 		public async Task TestUserKMDEmailVerification()
 		{
 			// Setup
-			User u = await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			User u = await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			u.Metadata = new KinveyUserMetaData();
@@ -555,14 +555,14 @@ namespace UnitTestFramework
 			Assert.True(String.Equals(status, "sent"));
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestUserKMDPasswordReset()
 		{
 			// Setup
-			User u = await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			User u = await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			u.Metadata = new KinveyUserMetaData();
@@ -575,7 +575,7 @@ namespace UnitTestFramework
 			Assert.True(String.Equals(status, "InProgress"));
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 	}
 }

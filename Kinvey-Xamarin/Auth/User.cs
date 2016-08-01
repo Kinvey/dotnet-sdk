@@ -1148,7 +1148,7 @@ namespace KinveyXamarin
 				}
 
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
-				memberUser.KinveyClient.CurrentUser = null;
+				memberUser.KinveyClient.ActiveUser = null;
 			}
 		}
 

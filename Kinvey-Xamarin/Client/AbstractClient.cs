@@ -99,9 +99,9 @@ namespace KinveyXamarin
         public const string DefaultServicePath = "";
 
 		/// <summary>
-		/// The current user.
+		/// The active user, whose credentials are currently used for authenticating requests.
 		/// </summary>
-        protected User currentUser;
+		protected User activeUser;
 
 		/// <summary>
 		/// The current credential store.
@@ -149,29 +149,29 @@ namespace KinveyXamarin
 		}
 			
 		/// <summary>
-		/// Gets or sets the current user.
+		/// Gets or sets the active user.
 		/// </summary>
-		/// <value>The current user.</value>
-        public virtual User CurrentUser
+		/// <value>The active user.</value>
+        public virtual User ActiveUser
         {
             get
             {
                 lock (Lock)
                 {
-					if (currentUser == null)
+					if (activeUser == null)
 					{
 						var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
 						var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-						this.CurrentUser = new User(new KinveyAuthRequest.Builder(this, appKey, appSecret, null), this);
+						this.ActiveUser = new User(new KinveyAuthRequest.Builder(this, appKey, appSecret, null), this);
 					}
-                    return currentUser;
+                    return activeUser;
                 }
             }
             set
             {
                 lock (Lock)
                 {
-                    currentUser = value;
+                    activeUser = value;
                 }
             }
         }

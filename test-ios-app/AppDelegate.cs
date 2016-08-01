@@ -43,7 +43,7 @@ namespace testiosapp
 		}
 
 		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation){
-			return myClient.CurrentUser.OnOAuthCallbackRecieved (url);
+			return myClient.ActiveUser.OnOAuthCallbackRecieved (url);
 		}
 
 		private async Task<User> DoStuff()
@@ -58,11 +58,11 @@ namespace testiosapp
 //			await myClient.CurrentUser.CreateAsync ("Lindsay Bluth", "me", last_name);
 //			await myClient.CurrentUser.CreateAsync ("Maeby Bluth", "Surely", last_name);
 
-			User user = myClient.CurrentUser;
+			User user = myClient.ActiveUser;
 			try
 			{
-				if (!myClient.CurrentUser.isUserLoggedIn ()) {
-					user = await myClient.CurrentUser.LoginAsync ("test", "test");
+				if (!myClient.ActiveUser.isUserLoggedIn ()) {
+					user = await myClient.ActiveUser.LoginAsync ("test", "test");
 
 //					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
 //						onSuccess = (loggedInUser) => { user = loggedInUser; },
@@ -74,7 +74,7 @@ namespace testiosapp
 
 				string str = "Finished Launching.";
 				Console.WriteLine("VRG : " + str);
-				Console.WriteLine("VRG: Logged in as: " + myClient.CurrentUser.Id);
+				Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
 
 				ManipulateData();
 
