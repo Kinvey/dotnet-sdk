@@ -11,6 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
 namespace KinveyXamarin
 {
 	public class UserFactory
@@ -29,10 +32,32 @@ namespace KinveyXamarin
 			this.AuthRequestBuilder = new KinveyAuthRequest.Builder(Client, appKey, appSecret);
 		}
 
+		internal LoginRequest BuildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null)
+		{
+			//this.type = EnumLoginType.KINVEY;
+			if (customFieldsAndValues != null)
+			{
+				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
+				{
+					// TODO add back in
+					//this.Attributes.Add(entry.Key, entry.Value);
+				}
+			}
+
+			//LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
+			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, true).BuildAuthRequest();
+		}
+
 		internal LoginRequest BuildLoginRequest()
 		{
 			//this.type = EnumLoginType.IMPLICIT;
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.IMPLICIT).BuildAuthRequest();
+		}
+
+		internal LoginRequest BuildLoginRequest(string username, string password)
+		{
+			//this.type = EnumLoginType.KINVEY;
+			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, false).BuildAuthRequest();
 		}
 	}
 }

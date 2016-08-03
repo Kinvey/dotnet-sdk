@@ -251,11 +251,12 @@ namespace KinveyXamarin
 		/// <param name="username">Username.</param>
 		/// <param name="password">Password.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAsync(string username, string password, CancellationToken ct = default(CancellationToken))
+		public async Task<User> LoginAsync(string username, string password, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildLoginRequest(username, password);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.VRGExecuteAsync();
 		}
 
 		/// <summary>
@@ -585,11 +586,12 @@ namespace KinveyXamarin
 		/// <param name="password">the password.</param>
 		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, CancellationToken ct = default(CancellationToken))
+		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildCreateRequest(username, password, customFieldsAndValues);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildCreateRequest(username, password, customFieldsAndValues);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.VRGExecuteAsync();
 		}
 
 
@@ -733,12 +735,6 @@ namespace KinveyXamarin
 
 			LoginRequest loginRequest = buildLoginRequest(cred);
 			await loginRequest.ExecuteAsync();
-		}
-
-		private LoginRequest buildLoginRequest(string username, string password)
-		{
-			this.type = EnumLoginType.KINVEY;
-			return new LoginRequest(username, password, false, this).buildAuthRequest();
 		}
 
 		private LoginRequest buildLoginRequest(Credential cred) 
@@ -961,20 +957,6 @@ namespace KinveyXamarin
 
 			return email;
 		}
-
-		private LoginRequest buildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
-        {
-			this.type = EnumLoginType.KINVEY;
-			if (customFieldsAndValues != null)
-			{
-				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
-				{
-					this.Attributes.Add (entry.Key, entry.Value);
-				}
-			}
-
-			return new LoginRequest(username, password, true, this).buildAuthRequest();
-        }
 
 		#endregion
 

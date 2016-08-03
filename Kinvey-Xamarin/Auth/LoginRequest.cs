@@ -40,15 +40,21 @@ namespace KinveyXamarin
 			this.type = loginType;
 		}
 
-		internal LoginRequest(string username, string password, bool setCreate, User user = null)
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, string username, string password, bool setCreate, User user = null)
 		{
-			this.memberUser = user;
-			memberUser.builder.Username = username;
-			memberUser.builder.Password = password;
-			memberUser.builder.Create = setCreate;
-			memberUser.builder.KinveyUser = user;
+			this.abstractClient = client;
+			//this.memberUser = user;
+			this.builder = builder;
+			this.builder.Username = username;
+			this.builder.Password = password;
+			this.builder.Create = setCreate;
 
-			this.type = user.type;
+			if (user != null)
+			{
+				this.abstractClient.ActiveUser.builder.KinveyUser = user;
+			}
+
+			this.type = loginType;
 		}
 
 		internal LoginRequest(Credential credential, User user)
