@@ -19,23 +19,35 @@ namespace KinveyXamarin
 	{
 		Credential credential;
 		EnumLoginType type;
+		protected KinveyAuthRequest.Builder builder;
 		protected KinveyAuthRequest request;
 		protected User memberUser;
 
-		internal LoginRequest(User user)
+		protected AbstractClient abstractClient;
+
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, User user = null)
 		{
-			memberUser = user;
-			memberUser.builder.Create = true;
-			this.type = user.type;
+			this.abstractClient = client;
+			//memberUser = user;
+			this.builder = builder;
+			this.builder.Create = true;
+
+			if (user != null)
+			{
+				this.abstractClient.ActiveUser.builder.KinveyUser = user;
+			}
+
+			this.type = loginType;
 		}
 
-		internal LoginRequest(string username, string password, bool setCreate, User user)
+		internal LoginRequest(string username, string password, bool setCreate, User user = null)
 		{
 			this.memberUser = user;
 			memberUser.builder.Username = username;
 			memberUser.builder.Password = password;
 			memberUser.builder.Create = setCreate;
 			memberUser.builder.KinveyUser = user;
+
 			this.type = user.type;
 		}
 
@@ -54,6 +66,12 @@ namespace KinveyXamarin
 			this.memberUser.builder.Create = false;
 		}
 
+		internal LoginRequest BuildAuthRequest()
+		{
+			this.request = this.builder.build();
+			return this;
+		}
+
 		internal LoginRequest buildAuthRequest()
 		{
 			this.request = memberUser.builder.build();
@@ -63,7 +81,7 @@ namespace KinveyXamarin
 		internal async Task<User> ExecuteAsync()
 		{
 			if (memberUser.isUserLoggedIn() &&
-				memberUser.type != EnumLoginType.CREDENTIALSTORE)
+			    memberUser.type != EnumLoginType.CREDENTIALSTORE)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
 			}
@@ -81,6 +99,64 @@ namespace KinveyXamarin
 			KinveyAuthResponse response = await this.request.ExecuteAsync();
 
 			return memberUser.InitUser(response, userType);
+		}
+
+		internal async Task<User> VRGExecuteAsync()
+		{
+			if (this.abstractClient.ActiveUser != null &&
+				this.abstractClient.ActiveUser.isUserLoggedIn() &&
+				this.type != EnumLoginType.CREDENTIALSTORE)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
+			}
+
+			string userType = "";
+			if (this.type == EnumLoginType.CREDENTIALSTORE)
+			{
+				return this.InitUser(credential);
+			}
+			else
+			{
+				userType = this.type.ToString();
+			}
+
+			KinveyAuthResponse response = await this.request.ExecuteAsync();
+
+			return InitUser(response, userType);
+		}
+
+		private User InitUser(Credential credential) // TODO move to UserFactory?
+		{
+			User u = new User(this.abstractClient);
+			u.Id = credential.UserId;
+			u.AuthToken = credential.AuthToken;
+
+			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
+			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = credential;
+
+			this.abstractClient.ActiveUser = u;
+			return u;
+		}
+
+		private User InitUser(KinveyAuthResponse response, string userType) // TODO move to UserFactory?
+		{
+			User u = new User(this.abstractClient);
+
+			u.Id = response.UserId;
+			// TODO process Unknown keys
+			// this.put("_kmd", response.getMetadata());
+			// this.putAll(response.getUnknownKeys());
+
+			//this.username = response
+			u.AuthToken = response.AuthToken;
+			u.Attributes = response.Attributes;
+			u.Metadata = response.UserMetaData;
+
+			CredentialManager credentialManager = new CredentialManager(this.abstractClient.Store);
+			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, u.Id);
+
+			this.abstractClient.ActiveUser = u;
+			return u;
 		}
 	}
 }

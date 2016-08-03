@@ -143,8 +143,9 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
-		internal User()
+		internal User(AbstractClient client)
 		{
+			this.client = client;
 			this.Attributes = new Dictionary<string, JToken>();
 		}
 
@@ -228,16 +229,19 @@ namespace KinveyXamarin
 		#region User class Public APIs
 
 		#region User class Login APIs
+
 		/// <summary>
-		/// Login (and create) an new kinvey user without any specified details.
+		/// Login a new, anonymous Kinvey user, without any specified details.
 		/// </summary>
-		/// <returns>The async task.</returns>
+		/// <returns>The user that is logged into the app.</returns>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAsync(CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildLoginRequest();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest();
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.VRGExecuteAsync();
 		}
 
 		/// <summary>
@@ -731,12 +735,6 @@ namespace KinveyXamarin
 			await loginRequest.ExecuteAsync();
 		}
 
-		private LoginRequest buildLoginRequest()
-		{
-			this.type = EnumLoginType.IMPLICIT;
-			return new LoginRequest(this).buildAuthRequest();
-		}
-
 		private LoginRequest buildLoginRequest(string username, string password)
 		{
 			this.type = EnumLoginType.KINVEY;
@@ -977,6 +975,7 @@ namespace KinveyXamarin
 
 			return new LoginRequest(username, password, true, this).buildAuthRequest();
         }
+
 		#endregion
 
 		#region User class Request inner classes

@@ -56,7 +56,7 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await kinveyClient.ActiveUser.LoginAsync();
+			await User.LoginAsync(kinveyClient);
 
 			// Assert
 			Assert.NotNull(kinveyClient.ActiveUser);
@@ -72,14 +72,14 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await Client.SharedClient.ActiveUser.LoginAsync ();
+			await User.LoginAsync(Client.SharedClient);
 
 			// Assert
-			Assert.NotNull (kinveyClient.ActiveUser);
-			Assert.True (kinveyClient.ActiveUser.isUserLoggedIn ());
+			Assert.NotNull(Client.SharedClient.ActiveUser);
+			Assert.True(Client.SharedClient.ActiveUser.isUserLoggedIn());
 
 			// Teardown
-			kinveyClient.ActiveUser.Logout ();
+			Client.SharedClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -91,7 +91,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await fakeClient.ActiveUser.LoginAsync();
+				await User.LoginAsync(fakeClient);
 			});
 
 			Assert.CatchAsync(async delegate() {

@@ -269,7 +269,7 @@ namespace KinveyXamarin
 			/// <param name="appKey">App key.</param>
 			/// <param name="appSecret">App secret.</param>
 			/// <param name="user">User.</param>
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, User user)
+			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, User user = null)
             {
                 this.client = transport;
                 this.appKeyAuthentication = new HttpBasicAuthenticator(appKey, appSecret);
@@ -287,7 +287,7 @@ namespace KinveyXamarin
 			/// <param name="username">Username.</param>
 			/// <param name="password">Password.</param>
 			/// <param name="user">User.</param>
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, User user)
+			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, User user = null)
                 : this(transport, appKey, appSecret, user)
             {
 				this.client = transport;
@@ -299,7 +299,7 @@ namespace KinveyXamarin
             }
 
 
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, ThirdPartyIdentity identity, User user)
+			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, ThirdPartyIdentity identity, User user = null)
 				: this(transport, appKey, appSecret, user)
 			{
 				this.identity = identity;

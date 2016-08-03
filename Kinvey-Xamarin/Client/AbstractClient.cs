@@ -34,6 +34,8 @@ namespace KinveyXamarin
 		/// <value>The network factory</value>
 		public NetworkFactory NetworkFactory { get ; set ;}
 
+		public UserFactory UserFactory { get; set; }
+
 		/// <summary>
 		/// The default base URL.
 		/// </summary>
@@ -127,6 +129,7 @@ namespace KinveyXamarin
             this.store = store;
 			this.MICHostName = "https://auth.kinvey.com/";
 			this.NetworkFactory = new NetworkFactory (this);
+			this.UserFactory = new UserFactory(this);
         }
 
 		/// <summary>
