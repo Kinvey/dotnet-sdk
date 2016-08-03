@@ -37,7 +37,7 @@ namespace UnitTestFramework
 		public async Task TestFileUploadByteAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -65,7 +65,7 @@ namespace UnitTestFramework
 		public async Task TestFileUploadByteSharedClientAsync()
 		{
 			// Setup
-			await Client.SharedClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -93,7 +93,7 @@ namespace UnitTestFramework
 		public async Task TestFileUploadStreamAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -123,7 +123,7 @@ namespace UnitTestFramework
 		public async Task TestFileUploadAsyncBad()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = null;
@@ -143,7 +143,7 @@ namespace UnitTestFramework
 		public async Task TestFileUploadMetadataAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -174,7 +174,7 @@ namespace UnitTestFramework
 		public async Task TestFileUploadMetadataAsyncBad()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -195,7 +195,7 @@ namespace UnitTestFramework
 		public async Task TestFileDownloadByteAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData uploadMetaData = new FileMetaData();
@@ -228,7 +228,7 @@ namespace UnitTestFramework
 		public async Task TestFileDownloadStreamAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData uploadMetaData = new FileMetaData();
@@ -265,7 +265,7 @@ namespace UnitTestFramework
 		public async Task TestFileDownloadAsyncBad()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = null;
@@ -285,7 +285,7 @@ namespace UnitTestFramework
 		public async Task TestFileDownloadMetadataAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData uploadMetaData = new FileMetaData();
@@ -312,7 +312,7 @@ namespace UnitTestFramework
 		public async Task TestFileDownloadMetadataAsyncBad()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			string fileID = null;

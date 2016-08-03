@@ -63,7 +63,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -110,7 +110,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -197,7 +197,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -272,7 +272,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -329,7 +329,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -376,7 +376,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -493,7 +493,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			string collectionAddressName = "Address";
@@ -540,7 +540,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			string collectionAddressName = "AddressEntity";

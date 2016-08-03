@@ -95,7 +95,7 @@ namespace UnitTestFramework
 			});
 
 			Assert.CatchAsync(async delegate() {
-				await fakeClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+				await User.LoginAsync(TestSetup.user, TestSetup.pass, fakeClient);
 			});
 		}
 
@@ -105,7 +105,7 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Assert
 			Assert.NotNull(kinveyClient.ActiveUser);
@@ -349,7 +349,7 @@ namespace UnitTestFramework
 		public async Task TestLogout ()
 		{
 			// Arrange
-			await kinveyClient.ActiveUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync (TestSetup.user, TestSetup.pass, kinveyClient);
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 			ToDo td = new ToDo();
 			td.Name = "test";
@@ -377,7 +377,7 @@ namespace UnitTestFramework
 		public async Task TestCreateUserAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			string email = "newuser@test.com";
@@ -412,7 +412,7 @@ namespace UnitTestFramework
 		public async Task TestFindUserAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 
@@ -442,7 +442,7 @@ namespace UnitTestFramework
 		public async Task TestLookupUsersAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			UserDiscovery criteria = new UserDiscovery();
@@ -542,7 +542,7 @@ namespace UnitTestFramework
 		public async Task TestUserKMDEmailVerification()
 		{
 			// Setup
-			User u = await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			User u = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			u.Metadata = new KinveyUserMetaData();
@@ -562,7 +562,7 @@ namespace UnitTestFramework
 		public async Task TestUserKMDPasswordReset()
 		{
 			// Setup
-			User u = await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			User u = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			u.Metadata = new KinveyUserMetaData();

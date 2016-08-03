@@ -75,7 +75,7 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindAsyncBad()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync (TestSetup.user, TestSetup.pass, kinveyClient);
 
 			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient> ();
 			RestSharp.IRestResponse resp = new RestSharp.RestResponse ();
@@ -109,7 +109,7 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -144,7 +144,7 @@ namespace UnitTestFramework
 		public async Task TestSyncStoreFindAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -185,7 +185,7 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindByIDAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -212,7 +212,7 @@ namespace UnitTestFramework
 		public async Task TestSyncStoreFindByIDAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -332,7 +332,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -381,7 +381,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -430,7 +430,7 @@ namespace UnitTestFramework
 				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -492,7 +492,7 @@ namespace UnitTestFramework
 		public async Task TestGetCountAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -540,7 +540,7 @@ namespace UnitTestFramework
 		public async Task TestSaveAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -576,7 +576,7 @@ namespace UnitTestFramework
 		public async Task TestDeleteAsync()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
@@ -611,7 +611,7 @@ namespace UnitTestFramework
 		public async Task TestSyncQueueAdd()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
@@ -638,7 +638,7 @@ namespace UnitTestFramework
 		[Test]
 		public async Task TestStoreInvalidOperation () {
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync (TestSetup.user, TestSetup.pass, kinveyClient);
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
@@ -659,7 +659,7 @@ namespace UnitTestFramework
 		public async Task TestSyncQueuePush()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -715,7 +715,7 @@ namespace UnitTestFramework
 		public async Task TestSyncQueuePushUpdate()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -757,7 +757,7 @@ namespace UnitTestFramework
 		public async Task TestSyncQueueCount ()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -795,7 +795,7 @@ namespace UnitTestFramework
 		public async Task TestSyncQueuePush10Items()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -874,7 +874,7 @@ namespace UnitTestFramework
 		public async Task TestSyncStorePullAsync ()
 		{
 			// Setup
-			await kinveyClient.ActiveUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 

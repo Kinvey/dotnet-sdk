@@ -143,6 +143,12 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
+		internal User()
+		{
+			// This ctor is necessary for deserailzation of the JSON representation of the User.
+			this.Attributes = new Dictionary<string, JToken>();
+		}
+
 		internal User(AbstractClient client)
 		{
 			this.client = client;
@@ -250,8 +256,9 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="username">Username.</param>
 		/// <param name="password">Password.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAsync(string username, string password, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginAsync(string username, string password, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
@@ -581,10 +588,11 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Create a new Kinvey user, with the specified username and password.
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="username">the username.</param>
-		/// <param name="password">the password.</param>
+		/// <returns>The newly created user.</returns>
+		/// <param name="username">The username of the new user.</param>
+		/// <param name="password">The password of the new user.</param>
 		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> SignupAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
