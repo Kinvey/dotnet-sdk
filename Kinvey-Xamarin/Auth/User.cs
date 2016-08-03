@@ -586,7 +586,7 @@ namespace KinveyXamarin
 		/// <param name="password">the password.</param>
 		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> SignupAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildCreateRequest(username, password, customFieldsAndValues);

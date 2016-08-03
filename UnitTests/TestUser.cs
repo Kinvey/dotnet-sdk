@@ -385,7 +385,7 @@ namespace UnitTestFramework
 			customFields.Add("email", email);
 
 			// Act
-			User newUser = await kinveyClient.ActiveUser.CreateAsync("newuser1", "newpass1", customFields);
+			User newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
 
 			// Assert
 			Assert.NotNull(newUser);
