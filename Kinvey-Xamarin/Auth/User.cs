@@ -267,20 +267,6 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Login with a Kinvey Auth Token directly.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="userID">The _id of the current user.</param>
-		/// <param name="authToken">The user's Kinvey Auth Token..</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken, CancellationToken ct = default(CancellationToken))
-		{
-			LoginRequest loginRequest = buildLoginRequestWithKinveyAuthToken(userID, authToken);
-			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
-		}
-
-		/// <summary>
 		/// Login with a third party identity
 		/// </summary>
 		/// <returns>The async task.</returns>
@@ -293,8 +279,7 @@ namespace KinveyXamarin
 			return await loginRequest.ExecuteAsync();
 		}
 
-		// Social Login Convenence APIs
-		//
+		#region User class login methods - Social Login Convenience APIs
 
 		/// <summary>
 		/// Login with Facebook Credentials
@@ -380,6 +365,8 @@ namespace KinveyXamarin
 			return await LoginAsync(new ThirdPartyIdentity(provider));
 		}
 
+		#endregion
+
 		/// <summary>
 		/// Sends a verification email
 		/// </summary>
@@ -407,6 +394,8 @@ namespace KinveyXamarin
 				logoutRequest.Execute();
 			}
 		}
+
+		#region User class login methods - MIC methods
 
 		/// <summary>
 		/// Login with Auth Link Credentials
@@ -578,6 +567,9 @@ namespace KinveyXamarin
 				}
 			}
 		}
+
+		#endregion
+
 		#endregion
 
 		#region User CRUD APIs
@@ -734,7 +726,8 @@ namespace KinveyXamarin
 
 		#endregion
 
-		#region User class blocking private classes - used to build up requests
+		#region User class internal login methods - internal use only.
+
 		// Logs a user in asynchronously with a credential object.  Internal use only.
 		internal async Task LoginAsync(Credential cred)
 		{
@@ -744,6 +737,18 @@ namespace KinveyXamarin
 			LoginRequest loginRequest = buildLoginRequest(cred);
 			await loginRequest.ExecuteAsync();
 		}
+
+		// Logs a user in asynchronously  with a Kinvey Auth Token directly.  Internal use only.
+		internal async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken, CancellationToken ct = default(CancellationToken))
+		{
+			LoginRequest loginRequest = buildLoginRequestWithKinveyAuthToken(userID, authToken);
+			ct.ThrowIfCancellationRequested();
+			return await loginRequest.ExecuteAsync();
+		}
+
+		#endregion
+
+		#region User class blocking private classes - used to build up requests
 
 		private LoginRequest buildLoginRequest(Credential cred) 
 		{
