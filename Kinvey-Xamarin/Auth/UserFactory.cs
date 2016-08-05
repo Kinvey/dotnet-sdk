@@ -59,5 +59,17 @@ namespace KinveyXamarin
 			//this.type = EnumLoginType.KINVEY;
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, false).BuildAuthRequest();
 		}
+
+		internal LoginRequest BuildLoginRequest(ThirdPartyIdentity identity)
+		{
+			//this.type = EnumLoginType.THIRDPARTY;
+			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.THIRDPARTY, identity).BuildAuthRequest();
+		}
+
+		internal MICLoginRequest BuildMICLoginRequest(ThirdPartyIdentity identity)
+		{
+			//this.type = EnumLoginType.THIRDPARTY;
+			return new MICLoginRequest(Client, AuthRequestBuilder, EnumLoginType.THIRDPARTY, identity).buildAuthRequest();
+		}
 	}
 }

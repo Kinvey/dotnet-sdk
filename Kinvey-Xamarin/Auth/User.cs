@@ -272,11 +272,12 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAsync(ThirdPartyIdentity identity, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginAsync(ThirdPartyIdentity identity, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildLoginRequestWithThirdParty(identity);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.VRGExecuteAsync();
 		}
 
 		#region User class login methods - Social Login Convenience APIs
@@ -434,11 +435,12 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginMICAsync(ThirdPartyIdentity identity, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginMICAsync(ThirdPartyIdentity identity, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			MICLoginRequest loginRequestMIC = buildLoginRequestWithMIC(identity);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			MICLoginRequest loginRequestMIC = uc.UserFactory.BuildMICLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequestMIC.ExecuteAsync();
+			return await loginRequestMIC.VRGExecuteAsync();
 		}
 
 		/// <summary>
@@ -756,24 +758,12 @@ namespace KinveyXamarin
 			return new LoginRequest(cred, this).buildAuthRequest();
 		}
 
-		private LoginRequest buildLoginRequestWithThirdParty(ThirdPartyIdentity identity)
-		{
-			this.type = EnumLoginType.THIRDPARTY;
-			return new LoginRequest(identity, this).buildAuthRequest();
-		}
-
 		private LoginRequest buildLoginRequestWithKinveyAuthToken(string userID, string authToken) 
 		{
 			this.AuthToken = authToken;
 			this.id = userID;
 
 			return buildLoginRequest(Credential.From(this));
-		}
-
-		private MICLoginRequest buildLoginRequestWithMIC(ThirdPartyIdentity identity)
-		{
-			this.type = EnumLoginType.THIRDPARTY;
-			return new MICLoginRequest(identity, this).buildAuthRequest();
 		}
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
@@ -976,23 +966,6 @@ namespace KinveyXamarin
 		#region User class Request inner classes
 
 		// A login request
-
-		// A login request to MIC
-		private class MICLoginRequest : LoginRequest
-		{
-			internal MICLoginRequest(ThirdPartyIdentity identity, User user) :
-				base(identity, user)
-			{
-				memberUser.builder.Create = false;
-			}
-
-			internal MICLoginRequest buildAuthRequest()
-			{
-				base.buildAuthRequest ();
-				request.buildRequestPayload ();
-				return this;
-			}
-		}
 
 		// Request to retrieve MIC access token
 		internal class RetrieveMICAccessTokenRequest : AbstractKinveyClientRequest<JObject>

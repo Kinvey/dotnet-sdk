@@ -57,19 +57,27 @@ namespace KinveyXamarin
 			this.type = loginType;
 		}
 
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, ThirdPartyIdentity identity, User user = null)
+		{
+			this.abstractClient = client;
+			//this.memberUser = user;
+			this.builder = builder;
+			this.builder.Identity = identity;
+			this.builder.Create = false;
+
+			if (user != null)
+			{
+				this.abstractClient.ActiveUser.builder.KinveyUser = user;
+			}
+
+			this.type = loginType;
+		}
+
 		internal LoginRequest(Credential credential, User user)
 		{
 			this.memberUser = user;
 			this.credential = credential;
 			this.type = user.type;
-		}
-
-		internal LoginRequest(ThirdPartyIdentity identity, User user)
-		{
-			this.memberUser = user;
-			this.memberUser.builder.Identity = identity;
-			this.type = user.type;
-			this.memberUser.builder.Create = false;
 		}
 
 		internal LoginRequest BuildAuthRequest()
@@ -163,6 +171,23 @@ namespace KinveyXamarin
 
 			this.abstractClient.ActiveUser = u;
 			return u;
+		}
+	}
+
+	// A login request to MIC
+	internal class MICLoginRequest : LoginRequest
+	{
+		internal MICLoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, ThirdPartyIdentity identity, User user = null) :
+			base(client, builder, loginType, identity, user)
+		{
+			memberUser.builder.Create = false;
+		}
+
+		internal MICLoginRequest buildAuthRequest()
+		{
+			base.buildAuthRequest();
+			request.buildRequestPayload();
+			return this;
 		}
 	}
 }
