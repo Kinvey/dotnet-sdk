@@ -134,7 +134,7 @@ namespace UnitTestFramework
 			string facebookAccessToken = "";
 
 			// Act
-			User fbUser = await kinveyClient.ActiveUser.LoginFacebookAsync(facebookAccessToken);
+			User fbUser = await User.LoginFacebookAsync(facebookAccessToken, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(fbUser);
@@ -153,7 +153,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.ActiveUser.LoginFacebookAsync(facebookAccessTokenBad);
+				await User.LoginFacebookAsync(facebookAccessTokenBad, kinveyClient);
 			});
 		}
 
@@ -165,7 +165,7 @@ namespace UnitTestFramework
 			string googleAccessToken = "";
 
 			// Act
-			User googleUser = await kinveyClient.ActiveUser.LoginGoogleAsync(googleAccessToken);
+			User googleUser = await User.LoginGoogleAsync(googleAccessToken, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(googleUser);
@@ -184,7 +184,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.ActiveUser.LoginGoogleAsync(googleAccessTokenBad);
+				await User.LoginGoogleAsync(googleAccessTokenBad, kinveyClient);
 			});
 		}
 
@@ -199,7 +199,7 @@ namespace UnitTestFramework
 			string consumerKeySecret = "";
 
 			// Act
-			User twitterUser = await kinveyClient.ActiveUser.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+			User twitterUser = await User.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(twitterUser);
@@ -221,7 +221,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.ActiveUser.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+				await User.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
 			});
 		}
 
@@ -236,7 +236,7 @@ namespace UnitTestFramework
 			string consumerKeySecret = "";
 
 			// Act
-			User linkedinUser = await kinveyClient.ActiveUser.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+			User linkedinUser = await User.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(linkedinUser);
@@ -258,7 +258,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.ActiveUser.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret);
+				await User.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
 			});
 		}
 
@@ -273,7 +273,7 @@ namespace UnitTestFramework
 			string ID = "";
 
 			// Act
-			User salesforceUser = await kinveyClient.ActiveUser.LoginSalesforceAsync(access, reauth, clientID, ID);
+			User salesforceUser = await User.LoginSalesforceAsync(access, reauth, clientID, ID, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(salesforceUser);
@@ -295,7 +295,7 @@ namespace UnitTestFramework
 			// Act
 			// Assert
 			Assert.CatchAsync(async delegate() {
-				await kinveyClient.ActiveUser.LoginSalesforceAsync(access, reauth, clientID, ID);
+				await User.LoginSalesforceAsync(access, reauth, clientID, ID, kinveyClient);
 			});
 		}
 

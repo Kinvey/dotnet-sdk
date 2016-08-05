@@ -288,13 +288,30 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">Facebook Access token.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginFacebookAsync(string accessToken, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginFacebookAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.facebook = new FacebookCredential (accessToken);
+			provider.facebook = new FacebookCredential(accessToken);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
+		}
+
+		/// <summary>
+		/// Login with Google Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">Google Access token.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		static public async Task<User> LoginGoogleAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
+			ct.ThrowIfCancellationRequested();
+			provider.google = new GoogleCredential(accessToken);
+			ct.ThrowIfCancellationRequested();
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
 		/// <summary>
@@ -306,28 +323,14 @@ namespace KinveyXamarin
 		/// <param name="consumerkey">Twitter Consumerkey.</param>
 		/// <param name="consumersecret">Twitter Consumersecret.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.twitter = new TwitterCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			provider.twitter = new TwitterCredential(accesstoken, accesstokensecret, consumerkey, consumersecret);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
-		}
-
-		/// <summary>
-		/// Login with Google Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accessToken">Google Access token.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginGoogleAsync(string accessToken, CancellationToken ct = default(CancellationToken))
-		{
-			Provider provider = new Provider ();
-			ct.ThrowIfCancellationRequested();
-			provider.google = new GoogleCredential (accessToken);
-			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
 		/// <summary>
@@ -339,13 +342,14 @@ namespace KinveyXamarin
 		/// <param name="consumerkey">Linkedin Consumerkey.</param>
 		/// <param name="consumersecret">Linkedin Consumersecret.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.linkedin = new LinkedInCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			provider.linkedin = new LinkedInCredential(accesstoken, accesstokensecret, consumerkey, consumersecret);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
 		/// <summary>
@@ -357,13 +361,14 @@ namespace KinveyXamarin
 		/// <param name="clientid">Salesforce Clientid.</param>
 		/// <param name="id">Salesforce Identifier.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.salesforce = new SalesforceCredential (access, reauth, clientid, id);
+			provider.salesforce = new SalesforceCredential(access, reauth, clientid, id);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
 		#endregion
