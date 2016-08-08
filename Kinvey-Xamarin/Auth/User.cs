@@ -749,25 +749,17 @@ namespace KinveyXamarin
 		}
 
 		// Logs a user in asynchronously  with a Kinvey Auth Token directly.  Internal use only.
-		internal async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken, CancellationToken ct = default(CancellationToken))
+		static internal async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildLoginRequestWithKinveyAuthToken(userID, authToken);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequestWithKinveyAuthToken(userID, authToken);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.VRGExecuteAsync();
 		}
 
 		#endregion
 
 		#region User class blocking private classes - used to build up requests
-
-		private LoginRequest buildLoginRequestWithKinveyAuthToken(string userID, string authToken) 
-		{
-			this.AuthToken = authToken;
-			this.id = userID;
-
-			//return buildLoginRequest(Credential.From(this)); // TODO VRG fix this
-			return null; // TODO VRG temoprary
-		}
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
 		private RetrieveMICAccessTokenRequest getMICToken(String code)
