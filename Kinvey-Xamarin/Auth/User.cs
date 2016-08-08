@@ -193,8 +193,8 @@ namespace KinveyXamarin
 		/// <returns>The user.</returns>
 		/// <param name="response">Response.</param>
 		/// <param name="userType">User type.</param>
-        internal User InitUser(KinveyAuthResponse response, string userType) // TODO change back to private?
-        {
+		private User UpdateUser(KinveyAuthResponse response, string userType) // TODO refactor into LoginRequest.InitUser()
+		{
             this.id = response.UserId;
             // TODO process Unknown keys
             // this.put("_kmd", response.getMetadata());
@@ -206,20 +206,6 @@ namespace KinveyXamarin
 			this.Metadata = response.UserMetaData;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
-            return this;
-        }
-
-		/// <summary>
-		/// Inits the user from a credential
-		/// </summary>
-		/// <returns>The user.</returns>
-		/// <param name="credential">Credential.</param>
-        internal User InitUser(Credential credential) // TODO change back to private?
-		{
-            this.id = credential.UserId;
-            this.AuthToken = credential.AuthToken;
-			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-			((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).KinveyCredential = credential;
             return this;
         }
 
@@ -1169,7 +1155,7 @@ namespace KinveyXamarin
 
 					string utype = user.type.ToString();
 				
-					return this.user.InitUser(auth, utype);
+					return this.user.UpdateUser(auth, utype);
 				}
 				else
 				{
