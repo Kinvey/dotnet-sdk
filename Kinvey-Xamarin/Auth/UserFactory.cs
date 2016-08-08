@@ -35,17 +35,9 @@ namespace KinveyXamarin
 		internal LoginRequest BuildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null)
 		{
 			//this.type = EnumLoginType.KINVEY;
-			if (customFieldsAndValues != null)
-			{
-				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
-				{
-					// TODO add back in
-					//this.Attributes.Add(entry.Key, entry.Value);
-				}
-			}
 
 			//LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
-			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, true).BuildAuthRequest();
+			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, true).BuildAuthRequest(customFieldsAndValues);
 		}
 
 		internal LoginRequest BuildLoginRequest()

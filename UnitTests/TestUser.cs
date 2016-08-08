@@ -376,6 +376,27 @@ namespace UnitTestFramework
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestCreateUserAsync()
 		{
+			// Arrange
+			string email = "newuser@test.com";
+			Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
+			customFields.Add("email", email);
+
+			// Act
+			User newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+
+			// Teardown
+			//await kinveyClient.ActiveUser.DeleteAsync(newUser.Id, true);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.NotNull(newUser);
+			Assert.NotNull(newUser.Attributes);
+			Assert.True(String.Compare((newUser.Attributes["email"]).ToString(), email) == 0);
+		}
+
+		[Test]
+		public async Task TestCreateUserAsyncBad()
+		{
 			// Setup
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -385,27 +406,17 @@ namespace UnitTestFramework
 			customFields.Add("email", email);
 
 			// Act
-			User newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+			Exception er = Assert.CatchAsync(async delegate () {
+				await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+			});
 
 			// Assert
-			Assert.NotNull(newUser);
-			Assert.NotNull(newUser.Attributes);
-//			Assert.AreSame(newUser.Attributes["email"], email);
+			Assert.NotNull(er);
+			KinveyException ke = er as KinveyException;
+			Assert.AreEqual(EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, ke.ErrorCode);
 
 			// Teardown
-//			await kinveyClient.CurrentUser.DeleteAsync(newUser.Id, true);
 			kinveyClient.ActiveUser.Logout();
-		}
-
-		[Test]
-		[Ignore("Placeholder - No unit test yet")]
-		public async Task TestCreateUserAsyncBad()
-		{
-			// Arrange
-
-			// Act
-
-			// Assert
 		}
 
 		[Test]

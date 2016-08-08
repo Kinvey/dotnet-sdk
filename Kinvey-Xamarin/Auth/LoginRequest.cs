@@ -11,7 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -88,8 +90,9 @@ namespace KinveyXamarin
 			this.type = loginType;
 		}
 
-		internal LoginRequest BuildAuthRequest()
+		internal LoginRequest BuildAuthRequest(Dictionary<string, JToken> customFieldsAndValues = null)
 		{
+			this.builder.CustomFieldsAndValues = customFieldsAndValues;
 			this.request = this.builder.build();
 			return this;
 		}

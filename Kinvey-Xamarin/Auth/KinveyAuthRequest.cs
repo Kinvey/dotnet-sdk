@@ -86,7 +86,7 @@ namespace KinveyXamarin
 		/// <param name="password">Password.</param>
 		/// <param name="user">User.</param>
 		/// <param name="create">If set to <c>true</c> create.</param>
-		public KinveyAuthRequest(AbstractKinveyClient client, HttpBasicAuthenticator auth, string appKey, string username, string password, User user, bool create)
+		public KinveyAuthRequest(AbstractKinveyClient client, HttpBasicAuthenticator auth, string appKey, string username, string password, Dictionary<string, JToken> customFieldsAndValues, User user, bool create)
 			
 		{
             this.client = client;
@@ -110,8 +110,17 @@ namespace KinveyXamarin
 					this.requestPayload.Add(entry.Key, entry.Value);
 				}
 
-            }
-            this.create = create;
+			}
+
+			if (customFieldsAndValues != null)
+			{
+				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
+				{
+					this.requestPayload.Add(entry.Key, entry.Value);
+				}
+			}
+
+			this.create = create;
             this.uriTemplateParameters = new Dictionary<string,string>();
             this.uriTemplateParameters.Add("appKey", appKey);
         }
@@ -256,6 +265,7 @@ namespace KinveyXamarin
 
             private string password;
 
+			private Dictionary<string, JToken> customFieldsAndValues;
 
             private string appKey;
 
@@ -287,7 +297,7 @@ namespace KinveyXamarin
 			/// <param name="username">Username.</param>
 			/// <param name="password">Password.</param>
 			/// <param name="user">User.</param>
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, User user = null)
+			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, User user = null)
                 : this(transport, appKey, appSecret, user)
             {
 				this.client = transport;
@@ -295,6 +305,7 @@ namespace KinveyXamarin
 				this.appKey = appKey;
                 this.username = username;
                 this.password = password;
+				this.customFieldsAndValues = customFieldsAndValues;
 				this.user = user;
             }
 
@@ -312,10 +323,13 @@ namespace KinveyXamarin
 			/// </summary>
             public KinveyAuthRequest build()
             {
-				if (identity == null) {
-					return new KinveyAuthRequest (Client, AppKeyAuthentication, AppKey, Username, Password, KinveyUser, this.create);
-				} else {
-					return new KinveyAuthRequest (Client, AppKeyAuthentication, AppKey, identity, KinveyUser, this.create);
+				if (identity == null)
+				{
+					return new KinveyAuthRequest(Client, AppKeyAuthentication, AppKey, Username, Password, CustomFieldsAndValues, KinveyUser, this.create);
+				}
+				else
+				{
+					return new KinveyAuthRequest(Client, AppKeyAuthentication, AppKey, identity, KinveyUser, this.create);
 				}
             }
 
@@ -348,6 +362,12 @@ namespace KinveyXamarin
                 get { return this.create; }
                 set { this.create = value; }
             }
+
+			public Dictionary<string, JToken> CustomFieldsAndValues
+			{
+				get { return customFieldsAndValues; }
+				set { this.customFieldsAndValues = value; }
+			}
 
 			/// <summary>
 			/// Gets or sets the kinvey user.
