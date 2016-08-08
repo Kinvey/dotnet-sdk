@@ -161,12 +161,6 @@ namespace KinveyXamarin
             {
                 lock (Lock)
                 {
-					if (activeUser == null)
-					{
-						var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
-						var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-						this.ActiveUser = new User(new KinveyAuthRequest.Builder(this, appKey, appSecret, null), this);
-					}
                     return activeUser;
                 }
             }
@@ -180,10 +174,19 @@ namespace KinveyXamarin
         }
 
 		/// <summary>
+		/// Checks if there is currently a logged in user for this client.
+		/// </summary>
+		/// <returns><c>true</c>, if there is a logged in user, <c>false</c> otherwise.</returns>
+		public bool IsUserLoggedIn()
+		{
+			return this.ActiveUser != null;
+		}
+
+		/// <summary>
 		/// Gets the credential store.
 		/// </summary>
 		/// <value>The store.</value>
-        public ICredentialStore Store
+		public ICredentialStore Store
         {
             get { return store; }
         }

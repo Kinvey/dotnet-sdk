@@ -60,6 +60,12 @@ namespace KinveyXamarin
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, false).BuildAuthRequest();
 		}
 
+		internal LoginRequest BuildLoginRequest(Credential cred)
+		{
+			//this.type = EnumLoginType.CREDENTIALSTORE;
+			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.CREDENTIALSTORE, cred).BuildAuthRequest();
+		}
+
 		internal LoginRequest BuildLoginRequest(ThirdPartyIdentity identity)
 		{
 			//this.type = EnumLoginType.THIRDPARTY;

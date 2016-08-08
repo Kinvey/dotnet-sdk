@@ -30,7 +30,7 @@ namespace UnitTestFramework
 		{
 			System.IO.File.Delete(downloadByteArrayFilePath);
 			System.IO.File.Delete(downloadStreamFilePath);
-			kinveyClient.ActiveUser.Logout();
+			kinveyClient.ActiveUser?.Logout();
 		}
 
 		[Test]

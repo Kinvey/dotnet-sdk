@@ -29,7 +29,7 @@ namespace UnitTestFramework
 		[TearDown]
 		public void Tear ()
 		{
-			kinveyClient.ActiveUser.Logout();
+			kinveyClient.ActiveUser?.Logout();
 			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
 			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
@@ -75,7 +75,7 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindAsyncBad()
 		{
 			// Setup
-			await User.LoginAsync (TestSetup.user, TestSetup.pass, kinveyClient);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient> ();
 			RestSharp.IRestResponse resp = new RestSharp.RestResponse ();
@@ -327,7 +327,7 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindByQuery()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -376,7 +376,7 @@ namespace UnitTestFramework
 		public async Task TestSyncStoreFindByQuery()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -425,7 +425,7 @@ namespace UnitTestFramework
 		public async Task TestCacheStoreFindByQuery()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}

@@ -181,7 +181,7 @@ namespace KinveyXamarin
 				Credential currentCredential = this.Store.getActiveUser ();
 				if (currentCredential != null)
 				{
-					c.ActiveUser.LoginAsync(currentCredential);
+					User.LoginAsync(currentCredential, c);
 				}
 
 				SharedClient = c;

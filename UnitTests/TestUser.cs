@@ -29,7 +29,7 @@ namespace UnitTestFramework
 		[TearDown]
 		public void Tear()
 		{
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -56,11 +56,11 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await User.LoginAsync(kinveyClient);
+			User u = await User.LoginAsync(kinveyClient);
 
 			// Assert
 			Assert.NotNull(kinveyClient.ActiveUser);
-			Assert.True(kinveyClient.ActiveUser.isUserLoggedIn());
+			Assert.True(u.IsActive());
 
 			// Teardown
 			kinveyClient.ActiveUser.Logout();
@@ -72,11 +72,11 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await User.LoginAsync(Client.SharedClient);
+			User u = await User.LoginAsync(Client.SharedClient);
 
 			// Assert
 			Assert.NotNull(Client.SharedClient.ActiveUser);
-			Assert.True(Client.SharedClient.ActiveUser.isUserLoggedIn());
+			Assert.True(u.IsActive());
 
 			// Teardown
 			Client.SharedClient.ActiveUser.Logout();
@@ -105,11 +105,11 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+			User u = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Assert
 			Assert.NotNull(kinveyClient.ActiveUser);
-			Assert.True(kinveyClient.ActiveUser.isUserLoggedIn());
+			Assert.True(u.IsActive());
 
 			// Teardown
 			kinveyClient.ActiveUser.Logout();
@@ -310,7 +310,7 @@ namespace UnitTestFramework
 
 			// Act
 			string renderURL = null;
-			kinveyClient.ActiveUser.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
+			User.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
 				onSuccess = (user) => { loggedInUser = user; },
 				onError = (e) => { Console.WriteLine("TEST MIC ERROR"); },
 				onReadyToRender = (url) => { renderURL = url; }
@@ -339,7 +339,7 @@ namespace UnitTestFramework
 			await localClient.ActiveUser.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI);
 
 			// Assert
-			Assert.True(localClient.ActiveUser.isUserLoggedIn());
+			Assert.NotNull(localClient.ActiveUser);
 
 			// Teardown
 			localClient.ActiveUser.Logout();
@@ -364,7 +364,7 @@ namespace UnitTestFramework
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
-			Assert.False(kinveyClient.ActiveUser.isUserLoggedIn());
+			Assert.Null(kinveyClient.ActiveUser);
 			Assert.IsEmpty(kinveyClient.CacheManager.GetSyncQueue(collectionName).GetFirstN(1,0));
 		}
 

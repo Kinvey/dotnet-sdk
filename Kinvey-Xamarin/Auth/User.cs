@@ -176,14 +176,16 @@ namespace KinveyXamarin
 			this.Attributes = new Dictionary<string, JToken>();
 		}
 
-		/// <summary>
-		/// checks if there is currently a logged in user.
-		/// </summary>
-		/// <returns><c>true</c>, if user logged in was ised, <c>false</c> otherwise.</returns>
-        public bool isUserLoggedIn()
-        {
-             return (this.id != null || this.AuthToken != null || this.UserName != null);
-        }
+		public bool IsActive()
+		{
+			if (client.IsUserLoggedIn() &&
+				client.ActiveUser.Id == this.Id)
+			{
+				return true;
+			}
+
+			return false;
+		}
 
 		/// <summary>
 		/// Inits the user from a kinvey auth response.
@@ -454,16 +456,18 @@ namespace KinveyXamarin
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate, CancellationToken ct = default(CancellationToken))
+		static public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			//return URL for login page
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
-			string appkey = ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey;
-			string hostname = KinveyClient.MICHostName;
-			if (KinveyClient.MICApiVersion != null && KinveyClient.MICApiVersion.Length > 0)
+			AbstractClient uc = userClient ?? Client.SharedClient;
+
+			string appkey = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
+			string hostname = uc.MICHostName;
+			if (uc.MICApiVersion != null && uc.MICApiVersion.Length > 0)
 			{
-				hostname += KinveyClient.MICApiVersion + "/";
+				hostname += uc.MICApiVersion + "/";
 			}
 
 			ct.ThrowIfCancellationRequested();
@@ -471,8 +475,8 @@ namespace KinveyXamarin
 			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
 
 			//keep a reference to the redirect uri for later
-			this.KinveyClient.MICRedirectURI = redirectURI;
-			this.KinveyClient.MICDelegate = MICDelegate;
+			uc.MICRedirectURI = redirectURI;
+			uc.MICDelegate = MICDelegate;
 
 			if (MICDelegate != null)
 			{
@@ -736,13 +740,12 @@ namespace KinveyXamarin
 		#region User class internal login methods - internal use only.
 
 		// Logs a user in asynchronously with a credential object.  Internal use only.
-		internal async Task LoginAsync(Credential cred)
+		static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			this.Id = cred.UserId;
-			this.AuthToken = cred.AuthToken;
-
-			LoginRequest loginRequest = buildLoginRequest(cred);
-			await loginRequest.ExecuteAsync();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(cred);
+			ct.ThrowIfCancellationRequested();
+			await loginRequest.VRGExecuteAsync();
 		}
 
 		// Logs a user in asynchronously  with a Kinvey Auth Token directly.  Internal use only.
@@ -757,18 +760,13 @@ namespace KinveyXamarin
 
 		#region User class blocking private classes - used to build up requests
 
-		private LoginRequest buildLoginRequest(Credential cred) 
-		{
-			this.type = EnumLoginType.CREDENTIALSTORE;
-			return new LoginRequest(cred, this).buildAuthRequest();
-		}
-
 		private LoginRequest buildLoginRequestWithKinveyAuthToken(string userID, string authToken) 
 		{
 			this.AuthToken = authToken;
 			this.id = userID;
 
-			return buildLoginRequest(Credential.From(this));
+			//return buildLoginRequest(Credential.From(this)); // TODO VRG fix this
+			return null; // TODO VRG temoprary
 		}
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token

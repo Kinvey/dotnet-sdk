@@ -73,11 +73,19 @@ namespace KinveyXamarin
 			this.type = loginType;
 		}
 
-		internal LoginRequest(Credential credential, User user)
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, Credential credential, User user = null)
 		{
-			this.memberUser = user;
+			this.abstractClient = client;
+			//this.memberUser = user;
+			this.builder = builder;
 			this.credential = credential;
-			this.type = user.type;
+
+			if (user != null)
+			{
+				this.abstractClient.ActiveUser.builder.KinveyUser = user;
+			}
+
+			this.type = loginType;
 		}
 
 		internal LoginRequest BuildAuthRequest()
@@ -94,7 +102,7 @@ namespace KinveyXamarin
 
 		internal async Task<User> ExecuteAsync()
 		{
-			if (memberUser.isUserLoggedIn() &&
+			if (memberUser.IsActive() &&
 			    memberUser.type != EnumLoginType.CREDENTIALSTORE)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
@@ -118,7 +126,6 @@ namespace KinveyXamarin
 		internal async Task<User> VRGExecuteAsync()
 		{
 			if (this.abstractClient.ActiveUser != null &&
-				this.abstractClient.ActiveUser.isUserLoggedIn() &&
 				this.type != EnumLoginType.CREDENTIALSTORE)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");

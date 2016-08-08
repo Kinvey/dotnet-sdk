@@ -61,7 +61,8 @@ namespace testiosapp
 			User user = myClient.ActiveUser;
 			try
 			{
-				if (!myClient.ActiveUser.isUserLoggedIn ()) {
+				if (myClient.IsUserLoggedIn())
+				{
 					user = await User.LoginAsync ("test", "test", myClient);
 
 //					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{

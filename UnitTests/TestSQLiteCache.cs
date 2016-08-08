@@ -58,7 +58,7 @@ namespace UnitTestFramework
 		public async Task TestSaveAsync()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.IsUserLoggedIn())
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -105,7 +105,7 @@ namespace UnitTestFramework
 		public async Task TestSaveListOfItemsAsync()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -192,7 +192,7 @@ namespace UnitTestFramework
 		public async Task TestFindByListOfIDs()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -267,7 +267,7 @@ namespace UnitTestFramework
 		public async Task TestGetByQueryAsyncBad()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -324,7 +324,7 @@ namespace UnitTestFramework
 		public async Task TestRemoveAsync()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -371,7 +371,7 @@ namespace UnitTestFramework
 		public async Task TestDeleteByListOfIDs()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -488,7 +488,7 @@ namespace UnitTestFramework
 		public async Task TestORM_IPersistable()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
@@ -535,7 +535,7 @@ namespace UnitTestFramework
 		public async Task TestORM_Entity()
 		{
 			// Setup
-			if (kinveyClient.ActiveUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
 				kinveyClient.ActiveUser.Logout();
 			}
