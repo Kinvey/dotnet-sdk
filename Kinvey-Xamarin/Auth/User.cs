@@ -249,7 +249,7 @@ namespace KinveyXamarin
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest();
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.VRGExecuteAsync();
+			return await loginRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -265,7 +265,7 @@ namespace KinveyXamarin
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.VRGExecuteAsync();
+			return await loginRequest.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -279,7 +279,7 @@ namespace KinveyXamarin
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.VRGExecuteAsync();
+			return await loginRequest.ExecuteAsync();
 		}
 
 		#region User class login methods - Social Login Convenience APIs
@@ -447,7 +447,7 @@ namespace KinveyXamarin
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			MICLoginRequest loginRequestMIC = uc.UserFactory.BuildMICLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequestMIC.VRGExecuteAsync();
+			return await loginRequestMIC.ExecuteAsync();
 		}
 
 		/// <summary>
@@ -602,7 +602,7 @@ namespace KinveyXamarin
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildCreateRequest(username, password, customFieldsAndValues);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.VRGExecuteAsync();
+			return await loginRequest.ExecuteAsync();
 		}
 
 
@@ -745,7 +745,7 @@ namespace KinveyXamarin
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(cred);
 			ct.ThrowIfCancellationRequested();
-			await loginRequest.VRGExecuteAsync();
+			await loginRequest.ExecuteAsync();
 		}
 
 		// Logs a user in asynchronously  with a Kinvey Auth Token directly.  Internal use only.
@@ -754,7 +754,7 @@ namespace KinveyXamarin
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequestWithKinveyAuthToken(userID, authToken);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.VRGExecuteAsync();
+			return await loginRequest.ExecuteAsync();
 		}
 
 		#endregion

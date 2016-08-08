@@ -102,29 +102,6 @@ namespace KinveyXamarin
 
 		internal async Task<User> ExecuteAsync()
 		{
-			if (memberUser.IsActive() &&
-			    memberUser.type != EnumLoginType.CREDENTIALSTORE)
-			{
-				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
-			}
-
-			string userType = "";
-			if (this.type == EnumLoginType.CREDENTIALSTORE)
-			{
-				return memberUser.InitUser(credential);
-			}
-			else
-			{
-				userType = this.type.ToString();
-			}
-
-			KinveyAuthResponse response = await this.request.ExecuteAsync();
-
-			return memberUser.InitUser(response, userType);
-		}
-
-		internal async Task<User> VRGExecuteAsync()
-		{
 			if (this.abstractClient.ActiveUser != null &&
 				this.type != EnumLoginType.CREDENTIALSTORE)
 			{
@@ -146,14 +123,14 @@ namespace KinveyXamarin
 			return InitUser(response, userType);
 		}
 
-		private User InitUser(Credential credential) // TODO move to UserFactory?
+		private User InitUser(Credential cred) // TODO move to UserFactory?
 		{
 			User u = new User(this.abstractClient);
-			u.Id = credential.UserId;
-			u.AuthToken = credential.AuthToken;
+			u.Id = cred.UserId;
+			u.AuthToken = cred.AuthToken;
 
 			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = credential;
+			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = cred;
 
 			this.abstractClient.ActiveUser = u;
 			return u;
