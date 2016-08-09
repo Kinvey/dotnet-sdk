@@ -109,7 +109,7 @@
     <Compile Include="Push\AbstractPush.cs" />
     <Compile Include="Utils\HelperMethods.cs" />
     <Compile Include="Auth\LoginRequest.cs" />
-    <Compile Include="Auth\UserFactory.cs" />
+    <Compile Include="Auth\UserRequestFactory.cs" />
     <Compile Include="Auth\MICLoginRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
