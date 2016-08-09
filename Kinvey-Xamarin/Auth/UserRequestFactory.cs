@@ -16,57 +16,64 @@ using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
-	public class UserFactory
+	/// <summary>
+	/// User request factory.
+	/// </summary>
+	public class UserRequestFactory
 	{
+		/// <summary>
+		/// Gets the client associated with this user request factory.
+		/// </summary>
+		/// <value>The client.</value>
 		public AbstractClient Client { get; }
 
+		/// <summary>
+		/// Gets the auth request builder associated with this user request factory.
+		/// </summary>
+		/// <value>The auth request builder.</value>
 		public KinveyAuthRequest.Builder AuthRequestBuilder { get; }
 
-		public UserFactory(AbstractClient client)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:KinveyXamarin.UserRequestFactory"/> class.
+		/// </summary>
+		/// <param name="client">The Kinvey client object associated with this user request factory.</param>
+		public UserRequestFactory(AbstractClient client)
 		{
-			this.Client = client;
+			Client = client;
 
 			var appKey = ((KinveyClientRequestInitializer)Client.RequestInitializer).AppKey;
 			var appSecret = ((KinveyClientRequestInitializer)Client.RequestInitializer).AppSecret;
 
-			this.AuthRequestBuilder = new KinveyAuthRequest.Builder(Client, appKey, appSecret);
+			AuthRequestBuilder = new KinveyAuthRequest.Builder(Client, appKey, appSecret);
 		}
 
 		internal LoginRequest BuildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null)
 		{
-			//this.type = EnumLoginType.KINVEY;
-
-			//LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, true).BuildAuthRequest(customFieldsAndValues);
 		}
 
 		internal LoginRequest BuildLoginRequest()
 		{
-			//this.type = EnumLoginType.IMPLICIT;
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.IMPLICIT).BuildAuthRequest();
 		}
 
 		internal LoginRequest BuildLoginRequest(string username, string password)
 		{
-			//this.type = EnumLoginType.KINVEY;
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, false).BuildAuthRequest();
 		}
 
 		internal LoginRequest BuildLoginRequest(ThirdPartyIdentity identity)
 		{
-			//this.type = EnumLoginType.THIRDPARTY;
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.THIRDPARTY, identity).BuildAuthRequest();
 		}
 
 		internal MICLoginRequest BuildMICLoginRequest(ThirdPartyIdentity identity)
 		{
-			//this.type = EnumLoginType.THIRDPARTY;
 			return new MICLoginRequest(Client, AuthRequestBuilder, EnumLoginType.THIRDPARTY, identity).buildAuthRequest();
 		}
 
 		internal LoginRequest BuildLoginRequest(Credential cred)
 		{
-			//this.type = EnumLoginType.CREDENTIALSTORE;
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.CREDENTIALSTORE, cred).BuildAuthRequest();
 		}
 

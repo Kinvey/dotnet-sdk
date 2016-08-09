@@ -22,16 +22,15 @@ using KinveyUtils;
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// This class manages the state of a Kinvey user.  User methods can be accessed through this class, and this class represents the currently logged in user.
+	/// This class manages the state of a Kinvey user.  User methods can be accessed through this
+	/// class, and the active user of an app is an instance of this class.  Login methods are
+	/// implemented as static methods on this class, and will set the active user.
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
     public class User : JObject
     {
-		////////////////////////////////////////
-		// INSTANCE VARIABLES AND GET/SET
-		////////////////////////////////////////
-
 		#region User class member variables
+
 		/// <summary>
 		/// The name of the user collection.
 		/// </summary>
@@ -152,27 +151,6 @@ namespace KinveyXamarin
 		internal User(AbstractClient client)
 		{
 			this.client = client;
-			this.Attributes = new Dictionary<string, JToken>();
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
-		/// </summary>
-		/// <param name="builder">Builder.</param>
-		/// <param name="client">[optional] Client (default is SharedClient).</param>
-		internal User(KinveyAuthRequest.Builder builder, AbstractClient client = null)
-		{
-			if (client != null)
-			{
-				this.client = client;
-			}
-			else
-			{
-				this.client = Client.SharedClient;
-			}
-
-			this.builder = builder;
-			builder.KinveyUser = this;
 			this.Attributes = new Dictionary<string, JToken>();
 		}
 
@@ -571,9 +549,6 @@ namespace KinveyXamarin
 
 		#region User CRUD APIs
 
-		// User Create APIs
-		//
-
 		/// <summary>
 		/// Create a new Kinvey user, with the specified username and password.
 		/// </summary>
@@ -591,10 +566,6 @@ namespace KinveyXamarin
 			return await loginRequest.ExecuteAsync();
 		}
 
-
-		// User Read APIs
-		//
-
 		/// <summary>
 		/// Retrieve the specified User
 		/// </summary>
@@ -609,15 +580,22 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Retrieves the async.
+		/// Refresh this user object with latest data.
 		/// </summary>
-		/// <returns>Task which returns the requested user</returns>
+		/// <returns>The up-to-date user object.</returns>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> RetrieveAsync(CancellationToken ct = default(CancellationToken))
+		public async Task<User> RefreshAsync(CancellationToken ct = default(CancellationToken))
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(this.Id);
 			ct.ThrowIfCancellationRequested();
-			return await retrieveRequest.ExecuteAsync();
+			User u = await retrieveRequest.ExecuteAsync();
+
+			if (this.IsActive())
+			{
+				UpdateActiveUser(u);
+			}
+
+			return u;
 		}
 
 		/// <summary>
@@ -1197,5 +1175,18 @@ namespace KinveyXamarin
 		}
 
 		#endregion
-    }
+
+		#region User class - Private helper methods
+
+		// Update necessary fields of the active user object
+		// Do not update ID or user client.
+		private void UpdateActiveUser(User u)
+		{
+			this.KinveyClient.ActiveUser.Attributes = u.Attributes;
+			this.KinveyClient.ActiveUser.UserName = u.UserName;
+			this.KinveyClient.ActiveUser.Metadata = u.Metadata;
+		}
+
+		#endregion
+	}
 }
