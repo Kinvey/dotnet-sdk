@@ -29,7 +29,7 @@ namespace UnitTestFramework
 		[TearDown]
 		public void Tear ()
 		{
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser?.Logout();
 			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
 			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
@@ -75,7 +75,7 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindAsyncBad()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient> ();
 			RestSharp.IRestResponse resp = new RestSharp.RestResponse ();
@@ -102,14 +102,14 @@ namespace UnitTestFramework
 			Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
 
 			// Teardown
-			c.CurrentUser.Logout ();
+			c.ActiveUser.Logout ();
 		}
 
 		[Test]
 		public async Task TestNetworkStoreFindAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -137,14 +137,14 @@ namespace UnitTestFramework
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
 			await todoStore.RemoveAsync(t2.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestSyncStoreFindAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -172,7 +172,7 @@ namespace UnitTestFramework
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
 			await todoStore.RemoveAsync(t2.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -185,7 +185,7 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindByIDAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -205,14 +205,14 @@ namespace UnitTestFramework
 
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestSyncStoreFindByIDAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -232,7 +232,7 @@ namespace UnitTestFramework
 
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -327,12 +327,12 @@ namespace UnitTestFramework
 		public async Task TestNetworkStoreFindByQuery()
 		{
 			// Setup
-			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
-				kinveyClient.CurrentUser.Logout();
+				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -364,7 +364,7 @@ namespace UnitTestFramework
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
 			await todoStore.RemoveAsync(newItem2.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 
 			// Assert
 			Assert.IsNotNull(listToDo);
@@ -376,12 +376,12 @@ namespace UnitTestFramework
 		public async Task TestSyncStoreFindByQuery()
 		{
 			// Setup
-			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
-				kinveyClient.CurrentUser.Logout();
+				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -413,7 +413,7 @@ namespace UnitTestFramework
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
 			await todoStore.RemoveAsync(newItem2.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 
 			// Assert
 			Assert.IsNotNull(listToDo);
@@ -425,12 +425,12 @@ namespace UnitTestFramework
 		public async Task TestCacheStoreFindByQuery()
 		{
 			// Setup
-			if (kinveyClient.CurrentUser.isUserLoggedIn())
+			if (kinveyClient.ActiveUser != null)
 			{
-				kinveyClient.CurrentUser.Logout();
+				kinveyClient.ActiveUser.Logout();
 			}
 
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem1 = new ToDo();
@@ -469,7 +469,7 @@ namespace UnitTestFramework
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
 			await todoStore.RemoveAsync(newItem2.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 
 			// Assert
 			Assert.IsNotNull(listToDo);
@@ -492,7 +492,7 @@ namespace UnitTestFramework
 		public async Task TestGetCountAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -522,7 +522,7 @@ namespace UnitTestFramework
 			// Teardown
 			await todoStore.RemoveAsync(t1.ID);
 			await todoStore.RemoveAsync(t2.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -540,7 +540,7 @@ namespace UnitTestFramework
 		public async Task TestSaveAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			ToDo newItem = new ToDo();
@@ -558,7 +558,7 @@ namespace UnitTestFramework
 
 			// Teardown
 			await todoStore.RemoveAsync(savedToDo.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -576,7 +576,7 @@ namespace UnitTestFramework
 		public async Task TestDeleteAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
@@ -593,7 +593,7 @@ namespace UnitTestFramework
 			Assert.AreEqual(1, kdr.count);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -611,7 +611,7 @@ namespace UnitTestFramework
 		public async Task TestSyncQueueAdd()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
@@ -632,13 +632,13 @@ namespace UnitTestFramework
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestStoreInvalidOperation () {
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync (TestSetup.user, TestSetup.pass, kinveyClient);
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
@@ -659,7 +659,7 @@ namespace UnitTestFramework
 		public async Task TestSyncQueuePush()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -708,14 +708,14 @@ namespace UnitTestFramework
 			Assert.NotNull(dsrDelete);
 			Assert.IsNotNull(dsrDelete.Errors);
 			Assert.AreEqual(2, dsrDelete.Count);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestSyncQueuePushUpdate()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -750,14 +750,14 @@ namespace UnitTestFramework
 			Assert.NotNull(dsr);
 			Assert.AreEqual(1, dsr.Count);
 //			Assert.AreSame(dsr.Count, kdr.count);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestSyncQueueCount ()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -788,14 +788,14 @@ namespace UnitTestFramework
 			// Teardown
 			await todoStore.RemoveAsync(newItem.ID);
 			await todoStore.RemoveAsync(firstFlashCard.ID);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestSyncQueuePush10Items()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
@@ -867,14 +867,14 @@ namespace UnitTestFramework
 			}
 
 			await todoStore.SyncAsync();
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestSyncStorePullAsync ()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync (TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
@@ -913,7 +913,7 @@ namespace UnitTestFramework
 				await todoStore.RemoveAsync(todo.ID);
 			}
 			await todoStore.PushAsync();
-			kinveyClient.CurrentUser.Logout ();
+			kinveyClient.ActiveUser.Logout ();
 		}
 	}
 }

@@ -30,14 +30,14 @@ namespace UnitTestFramework
 		{
 			System.IO.File.Delete(downloadByteArrayFilePath);
 			System.IO.File.Delete(downloadStreamFilePath);
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser?.Logout();
 		}
 
 		[Test]
 		public async Task TestFileUploadByteAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -58,14 +58,14 @@ namespace UnitTestFramework
 			Assert.AreEqual(publicAccess, fmd._public);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileUploadByteSharedClientAsync()
 		{
 			// Setup
-			await Client.SharedClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -86,14 +86,14 @@ namespace UnitTestFramework
 			Assert.AreEqual(publicAccess, fmd._public);
 
 			// Teardown
-			Client.SharedClient.CurrentUser.Logout();
+			Client.SharedClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileUploadStreamAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -116,14 +116,14 @@ namespace UnitTestFramework
 			Assert.AreEqual(publicAccess, fmd._public);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileUploadAsyncBad()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = null;
@@ -136,14 +136,14 @@ namespace UnitTestFramework
 			});
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileUploadMetadataAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -167,14 +167,14 @@ namespace UnitTestFramework
 			Assert.AreEqual(fmdUpdate._public, fmd._public);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileUploadMetadataAsyncBad()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = new FileMetaData();
@@ -188,14 +188,14 @@ namespace UnitTestFramework
 			});
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileDownloadByteAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData uploadMetaData = new FileMetaData();
@@ -221,14 +221,14 @@ namespace UnitTestFramework
 			Assert.Greater(content.Length, 0);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileDownloadStreamAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData uploadMetaData = new FileMetaData();
@@ -258,14 +258,14 @@ namespace UnitTestFramework
 			Assert.Greater(content.Length, 0);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileDownloadAsyncBad()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData fileMetaData = null;
@@ -278,14 +278,14 @@ namespace UnitTestFramework
 			});
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileDownloadMetadataAsync()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			FileMetaData uploadMetaData = new FileMetaData();
@@ -305,14 +305,14 @@ namespace UnitTestFramework
 			Assert.AreEqual(downloadMetaData._public, uploadFMD._public);
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
 		public async Task TestFileDownloadMetadataAsyncBad()
 		{
 			// Setup
-			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			string fileID = null;
@@ -324,7 +324,7 @@ namespace UnitTestFramework
 			});
 
 			// Teardown
-			kinveyClient.CurrentUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 	}
 }

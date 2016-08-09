@@ -128,24 +128,40 @@ namespace KinveyXamarin
 		/// the auth request builder.
 		/// </summary>
 		[JsonIgnore]
-        private KinveyAuthRequest.Builder builder;
+        internal KinveyAuthRequest.Builder builder; // TODO change back to private, or remove altogether.
 
 		/// <summary>
-		/// The type of user
+		/// The login type of the user
 		/// </summary>
 		[JsonIgnore]
-		private LoginType type { get; set;}
+		internal EnumLoginType type { get; set; } // TODO change back to private, or remove altogether.
 
 		#endregion
 
 		#region User class Constructors and Initializers
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
+		/// </summary>
+		internal User()
+		{
+			// This ctor is necessary for deserailzation of the JSON representation of the User.
+			this.Attributes = new Dictionary<string, JToken>();
+		}
+
+		internal User(AbstractClient client)
+		{
+			this.client = client;
+			this.Attributes = new Dictionary<string, JToken>();
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
 		/// </summary>
 		/// <param name="builder">Builder.</param>
 		/// <param name="client">[optional] Client (default is SharedClient).</param>
-		public User(KinveyAuthRequest.Builder builder, AbstractClient client = null) 
-        {
+		internal User(KinveyAuthRequest.Builder builder, AbstractClient client = null)
+		{
 			if (client != null)
 			{
 				this.client = client;
@@ -156,24 +172,20 @@ namespace KinveyXamarin
 			}
 
 			this.builder = builder;
-            builder.KinveyUser = this;
-			this.Attributes = new Dictionary<string, JToken>();
-        }
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
-		/// </summary>
-        public User() {
+			builder.KinveyUser = this;
 			this.Attributes = new Dictionary<string, JToken>();
 		}
 
-		/// <summary>
-		/// checks if there is currently a logged in user.
-		/// </summary>
-		/// <returns><c>true</c>, if user logged in was ised, <c>false</c> otherwise.</returns>
-        public bool isUserLoggedIn()
-        {
-             return (this.id != null || this.AuthToken != null || this.UserName != null);
-        }
+		public bool IsActive()
+		{
+			if (client.IsUserLoggedIn() &&
+				client.ActiveUser.Id == this.Id)
+			{
+				return true;
+			}
+
+			return false;
+		}
 
 		/// <summary>
 		/// Inits the user from a kinvey auth response.
@@ -181,8 +193,8 @@ namespace KinveyXamarin
 		/// <returns>The user.</returns>
 		/// <param name="response">Response.</param>
 		/// <param name="userType">User type.</param>
-        private User InitUser(KinveyAuthResponse response, string userType) 
-        {
+		private User UpdateUser(KinveyAuthResponse response, string userType) // TODO refactor into LoginRequest.InitUser()
+		{
             this.id = response.UserId;
             // TODO process Unknown keys
             // this.put("_kmd", response.getMetadata());
@@ -194,20 +206,6 @@ namespace KinveyXamarin
 			this.Metadata = response.UserMetaData;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
             ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
-            return this;
-        }
-
-		/// <summary>
-		/// Inits the user from a credential
-		/// </summary>
-		/// <returns>The user.</returns>
-		/// <param name="credential">Credential.</param>
-        private User InitUser(Credential credential)
-        {
-            this.id = credential.UserId;
-            this.AuthToken = credential.AuthToken;
-			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-			((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).KinveyCredential = credential;
             return this;
         }
 
@@ -225,14 +223,17 @@ namespace KinveyXamarin
 		#region User class Public APIs
 
 		#region User class Login APIs
+
 		/// <summary>
-		/// Login (and create) an new kinvey user without any specified details.
+		/// Login a new, anonymous Kinvey user, without any specified details.
 		/// </summary>
-		/// <returns>The async task.</returns>
+		/// <returns>The user that is logged into the app.</returns>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAsync(CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildLoginRequest();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest();
 			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
@@ -243,24 +244,12 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="username">Username.</param>
 		/// <param name="password">Password.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAsync(string username, string password, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginAsync(string username, string password, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildLoginRequest(username, password);
-			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
-		}
-
-		/// <summary>
-		/// Login with a Kinvey Auth Token directly.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="userID">The _id of the current user.</param>
-		/// <param name="authToken">The user's Kinvey Auth Token..</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken, CancellationToken ct = default(CancellationToken))
-		{
-			LoginRequest loginRequest = buildLoginRequestWithKinveyAuthToken(userID, authToken);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
 			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
@@ -271,15 +260,15 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAsync(ThirdPartyIdentity identity, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginAsync(ThirdPartyIdentity identity, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildLoginRequestWithThirdParty(identity);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
 
-		// Social Login Convenence APIs
-		//
+		#region User class login methods - Social Login Convenience APIs
 
 		/// <summary>
 		/// Login with Facebook Credentials
@@ -287,13 +276,30 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">Facebook Access token.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginFacebookAsync(string accessToken, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginFacebookAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.facebook = new FacebookCredential (accessToken);
+			provider.facebook = new FacebookCredential(accessToken);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
+		}
+
+		/// <summary>
+		/// Login with Google Credentials
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="accessToken">Google Access token.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		static public async Task<User> LoginGoogleAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
+			ct.ThrowIfCancellationRequested();
+			provider.google = new GoogleCredential(accessToken);
+			ct.ThrowIfCancellationRequested();
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
 		/// <summary>
@@ -305,28 +311,14 @@ namespace KinveyXamarin
 		/// <param name="consumerkey">Twitter Consumerkey.</param>
 		/// <param name="consumersecret">Twitter Consumersecret.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.twitter = new TwitterCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			provider.twitter = new TwitterCredential(accesstoken, accesstokensecret, consumerkey, consumersecret);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
-		}
-
-		/// <summary>
-		/// Login with Google Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accessToken">Google Access token.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginGoogleAsync(string accessToken, CancellationToken ct = default(CancellationToken))
-		{
-			Provider provider = new Provider ();
-			ct.ThrowIfCancellationRequested();
-			provider.google = new GoogleCredential (accessToken);
-			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
 		/// <summary>
@@ -338,13 +330,14 @@ namespace KinveyXamarin
 		/// <param name="consumerkey">Linkedin Consumerkey.</param>
 		/// <param name="consumersecret">Linkedin Consumersecret.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.linkedin = new LinkedInCredential (accesstoken, accesstokensecret, consumerkey, consumersecret);
+			provider.linkedin = new LinkedInCredential(accesstoken, accesstokensecret, consumerkey, consumersecret);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
 		/// <summary>
@@ -356,14 +349,17 @@ namespace KinveyXamarin
 		/// <param name="clientid">Salesforce Clientid.</param>
 		/// <param name="id">Salesforce Identifier.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			Provider provider = new Provider ();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
-			provider.salesforce = new SalesforceCredential (access, reauth, clientid, id);
+			provider.salesforce = new SalesforceCredential(access, reauth, clientid, id);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Sends a verification email
@@ -392,6 +388,8 @@ namespace KinveyXamarin
 				logoutRequest.Execute();
 			}
 		}
+
+		#region User class login methods - MIC methods
 
 		/// <summary>
 		/// Login with Auth Link Credentials
@@ -430,9 +428,10 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginMICAsync(ThirdPartyIdentity identity, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginMICAsync(ThirdPartyIdentity identity, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			MICLoginRequest loginRequestMIC = buildLoginRequestWithMIC(identity);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			MICLoginRequest loginRequestMIC = uc.UserFactory.BuildMICLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
 			return await loginRequestMIC.ExecuteAsync();
 		}
@@ -443,16 +442,18 @@ namespace KinveyXamarin
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate, CancellationToken ct = default(CancellationToken))
+		static public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			//return URL for login page
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
-			string appkey = ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey;
-			string hostname = KinveyClient.MICHostName;
-			if (KinveyClient.MICApiVersion != null && KinveyClient.MICApiVersion.Length > 0)
+			AbstractClient uc = userClient ?? Client.SharedClient;
+
+			string appkey = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
+			string hostname = uc.MICHostName;
+			if (uc.MICApiVersion != null && uc.MICApiVersion.Length > 0)
 			{
-				hostname += KinveyClient.MICApiVersion + "/";
+				hostname += uc.MICApiVersion + "/";
 			}
 
 			ct.ThrowIfCancellationRequested();
@@ -460,8 +461,8 @@ namespace KinveyXamarin
 			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
 
 			//keep a reference to the redirect uri for later
-			this.KinveyClient.MICRedirectURI = redirectURI;
-			this.KinveyClient.MICDelegate = MICDelegate;
+			uc.MICRedirectURI = redirectURI;
+			uc.MICDelegate = MICDelegate;
 
 			if (MICDelegate != null)
 			{
@@ -563,6 +564,9 @@ namespace KinveyXamarin
 				}
 			}
 		}
+
+		#endregion
+
 		#endregion
 
 		#region User CRUD APIs
@@ -573,14 +577,16 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Create a new Kinvey user, with the specified username and password.
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="username">the username.</param>
-		/// <param name="password">the password.</param>
+		/// <returns>The newly created user.</returns>
+		/// <param name="username">The username of the new user.</param>
+		/// <param name="password">The password of the new user.</param>
 		/// <param name="customFieldsAndValues">[optional] Custom key/value pairs to be added to user at creation.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> CreateAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> SignupAsync(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			LoginRequest loginRequest = buildCreateRequest(username, password, customFieldsAndValues);
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildCreateRequest(username, password, customFieldsAndValues);
 			ct.ThrowIfCancellationRequested();
 			return await loginRequest.ExecuteAsync();
 		}
@@ -717,54 +723,29 @@ namespace KinveyXamarin
 
 		#endregion
 
-		#region User class blocking private classes - used to build up requests
-		// Logs a user in asynchronously with a credential object.  Internal use only.
-		internal async Task LoginAsync(Credential cred)
-		{
-			this.Id = cred.UserId;
-			this.AuthToken = cred.AuthToken;
+		#region User class internal login methods - internal use only.
 
-			LoginRequest loginRequest = buildLoginRequest(cred);
+		// Logs a user in asynchronously with a credential object.  Internal use only.
+		static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(cred);
+			ct.ThrowIfCancellationRequested();
 			await loginRequest.ExecuteAsync();
 		}
 
-		private LoginRequest buildLoginRequest()
+		// Logs a user in asynchronously  with a Kinvey Auth Token directly.  Internal use only.
+		static internal async Task<User> LoginKinveyAuthTokenAsync(string userID, string authToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			this.type = LoginType.IMPLICIT;
-			return new LoginRequest(this).buildAuthRequest();
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequestWithKinveyAuthToken(userID, authToken);
+			ct.ThrowIfCancellationRequested();
+			return await loginRequest.ExecuteAsync();
 		}
 
-		private LoginRequest buildLoginRequest(string username, string password)
-		{
-			this.type = LoginType.KINVEY;
-			return new LoginRequest(username, password, false, this).buildAuthRequest();
-		}
+		#endregion
 
-		private LoginRequest buildLoginRequest(Credential cred) 
-		{
-			this.type = LoginType.CREDENTIALSTORE;
-			return new LoginRequest(cred, this).buildAuthRequest();
-		}
-
-		private LoginRequest buildLoginRequestWithThirdParty(ThirdPartyIdentity identity)
-		{
-			this.type = LoginType.THIRDPARTY;
-			return new LoginRequest(identity, this).buildAuthRequest();
-		}
-
-		private LoginRequest buildLoginRequestWithKinveyAuthToken(string userID, string authToken) 
-		{
-			this.AuthToken = authToken;
-			this.id = userID;
-
-			return buildLoginRequest(Credential.From(this));
-		}
-
-		private MICLoginRequest buildLoginRequestWithMIC(ThirdPartyIdentity identity)
-		{
-			this.type = LoginType.THIRDPARTY;
-			return new MICLoginRequest(identity, this).buildAuthRequest();
-		}
+		#region User class blocking private classes - used to build up requests
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
 		private RetrieveMICAccessTokenRequest getMICToken(String code)
@@ -961,109 +942,11 @@ namespace KinveyXamarin
 			return email;
 		}
 
-		private LoginRequest buildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null) 
-        {
-			this.type = LoginType.KINVEY;
-			if (customFieldsAndValues != null)
-			{
-				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
-				{
-					this.Attributes.Add (entry.Key, entry.Value);
-				}
-			}
-
-			return new LoginRequest(username, password, true, this).buildAuthRequest();
-        }
 		#endregion
 
 		#region User class Request inner classes
 
 		// A login request
-		private class LoginRequest
-		{
-			Credential credential;
-			LoginType type;
-			protected KinveyAuthRequest request;
-			protected User memberUser;
-
-			internal LoginRequest(User user)
-			{
-				memberUser = user;
-				memberUser.builder.Create = true;
-				this.type = user.type;
-			}
-
-			internal LoginRequest(string username, string password, bool setCreate, User user)
-			{
-				this.memberUser = user;
-				memberUser.builder.Username = username;
-				memberUser.builder.Password = password;
-				memberUser.builder.Create = setCreate;
-				memberUser.builder.KinveyUser = user;
-				this.type = user.type;
-			}
-
-			internal LoginRequest(Credential credential, User user)
-			{
-				this.memberUser = user;
-				this.credential = credential;
-				this.type = user.type;
-			}
-
-			internal LoginRequest(ThirdPartyIdentity identity, User user)
-			{
-				this.memberUser = user;
-				this.memberUser.builder.Identity = identity;
-				this.type = user.type;
-				this.memberUser.builder.Create = false;
-			}
-
-			internal LoginRequest buildAuthRequest()
-			{
-				this.request = memberUser.builder.build();
-				return this;
-			}
-
-			internal async Task<User> ExecuteAsync()
-			{
-				if (memberUser.isUserLoggedIn() && 
-					memberUser.type != LoginType.CREDENTIALSTORE)
-				{
-					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, "");
-				}
-
-				string userType = "";
-				if (this.type == LoginType.CREDENTIALSTORE) 
-				{
-					return memberUser.InitUser(credential);
-				}
-				else 
-				{
-					userType = this.type.ToString ();
-				}
-
-				KinveyAuthResponse response = await this.request.ExecuteAsync();
-
-				return memberUser.InitUser(response, userType);
-			}
-        }
-
-		// A login request to MIC
-		private class MICLoginRequest : LoginRequest
-		{
-			internal MICLoginRequest(ThirdPartyIdentity identity, User user) :
-				base(identity, user)
-			{
-				memberUser.builder.Create = false;
-			}
-
-			internal MICLoginRequest buildAuthRequest()
-			{
-				base.buildAuthRequest ();
-				request.buildRequestPayload ();
-				return this;
-			}
-		}
 
 		// Request to retrieve MIC access token
 		internal class RetrieveMICAccessTokenRequest : AbstractKinveyClientRequest<JObject>
@@ -1148,7 +1031,7 @@ namespace KinveyXamarin
 				}
 
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
-				memberUser.KinveyClient.CurrentUser = null;
+				memberUser.KinveyClient.ActiveUser = null;
 			}
 		}
 
@@ -1272,7 +1155,7 @@ namespace KinveyXamarin
 
 					string utype = user.type.ToString();
 				
-					return this.user.InitUser(auth, utype);
+					return this.user.UpdateUser(auth, utype);
 				}
 				else
 				{

@@ -439,7 +439,7 @@ namespace KinveyXamarin
 			if ((int)response.StatusCode == 401 && !hasRetryed){
 
 				//get the refresh token
-				Credential cred = Client.Store.Load(Client.CurrentUser.Id);
+				Credential cred = Client.Store.Load(Client.ActiveUser.Id);
 				String refreshToken = null;
 				string redirectUri = null;
 				if (cred != null){
@@ -450,21 +450,21 @@ namespace KinveyXamarin
 				if (refreshToken != null )
 				{
 					//logout the current user
-					Client.CurrentUser.Logout(); // TODO is this a potential deadlock?
+					Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
 
 					//use the refresh token for a new access token
-					JObject result = await Client.CurrentUser.UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
+					JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
 
 					//login with the access token
 					Provider provider = new Provider ();
 					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
-					User u = await Client.CurrentUser.LoginAsync(new ThirdPartyIdentity(provider));
+					User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
 
 					//store the new refresh token
-					Credential currentCred = Client.Store.Load(Client.CurrentUser.Id);
+					Credential currentCred = Client.Store.Load(Client.ActiveUser.Id);
 					currentCred.RefreshToken = result["refresh_token"].ToString();
 					currentCred.RedirectUri = redirectUri;
-					Client.Store.Store(Client.CurrentUser.Id, currentCred);
+					Client.Store.Store(Client.ActiveUser.Id, currentCred);
 					hasRetryed = true;
 					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
 					var retryResponse = await ExecuteUnparsedAsync ();

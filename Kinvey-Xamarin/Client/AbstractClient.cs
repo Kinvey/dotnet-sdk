@@ -34,6 +34,8 @@ namespace KinveyXamarin
 		/// <value>The network factory</value>
 		public NetworkFactory NetworkFactory { get ; set ;}
 
+		public UserFactory UserFactory { get; set; }
+
 		/// <summary>
 		/// The default base URL.
 		/// </summary>
@@ -99,9 +101,9 @@ namespace KinveyXamarin
         public const string DefaultServicePath = "";
 
 		/// <summary>
-		/// The current user.
+		/// The active user, whose credentials are currently used for authenticating requests.
 		/// </summary>
-        protected User currentUser;
+		protected User activeUser;
 
 		/// <summary>
 		/// The current credential store.
@@ -127,6 +129,7 @@ namespace KinveyXamarin
             this.store = store;
 			this.MICHostName = "https://auth.kinvey.com/";
 			this.NetworkFactory = new NetworkFactory (this);
+			this.UserFactory = new UserFactory(this);
         }
 
 		/// <summary>
@@ -149,38 +152,41 @@ namespace KinveyXamarin
 		}
 			
 		/// <summary>
-		/// Gets or sets the current user.
+		/// Gets or sets the active user.
 		/// </summary>
-		/// <value>The current user.</value>
-        public virtual User CurrentUser
+		/// <value>The active user.</value>
+        public virtual User ActiveUser
         {
             get
             {
                 lock (Lock)
                 {
-					if (currentUser == null)
-					{
-						var appKey = ((KinveyClientRequestInitializer)this.RequestInitializer).AppKey;
-						var appSecret = ((KinveyClientRequestInitializer)this.RequestInitializer).AppSecret;
-						this.CurrentUser = new User(new KinveyAuthRequest.Builder(this, appKey, appSecret, null), this);
-					}
-                    return currentUser;
+                    return activeUser;
                 }
             }
             set
             {
                 lock (Lock)
                 {
-                    currentUser = value;
+                    activeUser = value;
                 }
             }
         }
 
 		/// <summary>
+		/// Checks if there is currently a logged in user for this client.
+		/// </summary>
+		/// <returns><c>true</c>, if there is a logged in user, <c>false</c> otherwise.</returns>
+		public bool IsUserLoggedIn()
+		{
+			return this.ActiveUser != null;
+		}
+
+		/// <summary>
 		/// Gets the credential store.
 		/// </summary>
 		/// <value>The store.</value>
-        public ICredentialStore Store
+		public ICredentialStore Store
         {
             get { return store; }
         }
