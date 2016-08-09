@@ -428,7 +428,7 @@ namespace UnitTestFramework
 			// Arrange
 
 			// Act
-			User me = await kinveyClient.ActiveUser.RefreshMeAsync();
+			User me = await kinveyClient.ActiveUser.RefreshAsync();
 
 			// Assert
 			Assert.NotNull(me);

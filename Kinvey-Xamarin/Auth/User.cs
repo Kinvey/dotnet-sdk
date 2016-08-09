@@ -584,7 +584,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The up-to-date user object.</returns>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> RefreshMeAsync(CancellationToken ct = default(CancellationToken))
+		public async Task<User> RefreshAsync(CancellationToken ct = default(CancellationToken))
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(this.Id);
 			ct.ThrowIfCancellationRequested();
