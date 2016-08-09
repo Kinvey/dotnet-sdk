@@ -22,16 +22,15 @@ using KinveyUtils;
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// This class manages the state of a Kinvey user.  User methods can be accessed through this class, and this class represents the currently logged in user.
+	/// This class manages the state of a Kinvey user.  User methods can be accessed through this
+	/// class, and the active user of an app is an instance of this class.  Login methods are
+	/// implemented as static methods on this class, and will set the active user.
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
     public class User : JObject
     {
-		////////////////////////////////////////
-		// INSTANCE VARIABLES AND GET/SET
-		////////////////////////////////////////
-
 		#region User class member variables
+
 		/// <summary>
 		/// The name of the user collection.
 		/// </summary>
@@ -152,27 +151,6 @@ namespace KinveyXamarin
 		internal User(AbstractClient client)
 		{
 			this.client = client;
-			this.Attributes = new Dictionary<string, JToken>();
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
-		/// </summary>
-		/// <param name="builder">Builder.</param>
-		/// <param name="client">[optional] Client (default is SharedClient).</param>
-		internal User(KinveyAuthRequest.Builder builder, AbstractClient client = null)
-		{
-			if (client != null)
-			{
-				this.client = client;
-			}
-			else
-			{
-				this.client = Client.SharedClient;
-			}
-
-			this.builder = builder;
-			builder.KinveyUser = this;
 			this.Attributes = new Dictionary<string, JToken>();
 		}
 

@@ -110,6 +110,7 @@
     <Compile Include="Utils\HelperMethods.cs" />
     <Compile Include="Auth\LoginRequest.cs" />
     <Compile Include="Auth\UserFactory.cs" />
+    <Compile Include="Auth\MICLoginRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

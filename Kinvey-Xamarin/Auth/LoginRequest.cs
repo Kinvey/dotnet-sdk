@@ -23,70 +23,41 @@ namespace KinveyXamarin
 		EnumLoginType type;
 		protected KinveyAuthRequest.Builder builder;
 		protected KinveyAuthRequest request;
-		protected User memberUser;
 
 		protected AbstractClient abstractClient;
 
-		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, User user = null)
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType)
 		{
 			this.abstractClient = client;
-			//memberUser = user;
 			this.builder = builder;
 			this.builder.Create = true;
-
-			if (user != null)
-			{
-				this.abstractClient.ActiveUser.builder.KinveyUser = user;
-			}
-
 			this.type = loginType;
 		}
 
-		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, string username, string password, bool setCreate, User user = null)
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, string username, string password, bool setCreate)
 		{
 			this.abstractClient = client;
-			//this.memberUser = user;
 			this.builder = builder;
 			this.builder.Username = username;
 			this.builder.Password = password;
 			this.builder.Create = setCreate;
-
-			if (user != null)
-			{
-				this.abstractClient.ActiveUser.builder.KinveyUser = user;
-			}
-
 			this.type = loginType;
 		}
 
-		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, ThirdPartyIdentity identity, User user = null)
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, ThirdPartyIdentity identity)
 		{
 			this.abstractClient = client;
-			//this.memberUser = user;
 			this.builder = builder;
 			this.builder.Identity = identity;
 			this.builder.Create = false;
-
-			if (user != null)
-			{
-				this.abstractClient.ActiveUser.builder.KinveyUser = user;
-			}
-
 			this.type = loginType;
 		}
 
-		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, Credential credential, User user = null)
+		internal LoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, Credential credential)
 		{
 			this.abstractClient = client;
-			//this.memberUser = user;
 			this.builder = builder;
 			this.credential = credential;
-
-			if (user != null)
-			{
-				this.abstractClient.ActiveUser.builder.KinveyUser = user;
-			}
-
 			this.type = loginType;
 		}
 
@@ -94,12 +65,6 @@ namespace KinveyXamarin
 		{
 			this.builder.CustomFieldsAndValues = customFieldsAndValues;
 			this.request = this.builder.build();
-			return this;
-		}
-
-		internal LoginRequest buildAuthRequest()
-		{
-			this.request = memberUser.builder.build();
 			return this;
 		}
 
@@ -158,23 +123,6 @@ namespace KinveyXamarin
 
 			this.abstractClient.ActiveUser = u;
 			return u;
-		}
-	}
-
-	// A login request to MIC
-	internal class MICLoginRequest : LoginRequest
-	{
-		internal MICLoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, ThirdPartyIdentity identity, User user = null) :
-			base(client, builder, loginType, identity, user)
-		{
-			memberUser.builder.Create = false;
-		}
-
-		internal MICLoginRequest buildAuthRequest()
-		{
-			base.buildAuthRequest();
-			request.buildRequestPayload();
-			return this;
 		}
 	}
 }
