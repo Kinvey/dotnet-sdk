@@ -696,6 +696,23 @@ namespace KinveyXamarin
 			return exists;
 		}
 
+		/// <summary>
+		/// Sends an email to the provided email address if a user forgot their username.
+		/// </summary>
+		/// <param name="email">Email address used to send username info.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		static public async Task ForgotUsername(string email, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			ct.ThrowIfCancellationRequested();
+
+			ForgotUsernameRequest forgotUsernameRequest = uc.UserFactory.BuildForgotUsernameRequest(email);
+
+			ct.ThrowIfCancellationRequested();
+			await forgotUsernameRequest.ExecuteAsync();
+		}
+
 		// User Update APIs
 		//
 

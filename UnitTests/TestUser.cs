@@ -514,6 +514,25 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		[Ignore("Placeholder - Cannot run automated unit test for this")]
+		public async Task TestForgotUsername()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			string email = "vinay@kinvey.com";
+
+			// Act
+			await User.ForgotUsername(email);
+
+			// Assert
+
+			// Teardown
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestUpdateUserAsync()
 		{
