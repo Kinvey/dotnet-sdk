@@ -226,6 +226,13 @@ namespace KinveyXamarin
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginAsync(string username, string password, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
+			if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_USER,
+				                          EnumErrorCode.ERROR_REQUIREMENT_MISSING_USERNAME_PASSWORD,
+				                          "Invalid username and/or password");
+			}
+
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
 			ct.ThrowIfCancellationRequested();
