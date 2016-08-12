@@ -488,7 +488,7 @@ namespace UnitTestFramework
 			string username = "testuser";
 
 			// Act
-			bool exists = await User.DoesUsernameExist(username);
+			bool exists = await User.HasUser(username);
 
 			// Assert
 			Assert.True(exists);
@@ -504,7 +504,7 @@ namespace UnitTestFramework
 			string username = "homer_simpson";
 
 			// Act
-			bool exists = await User.DoesUsernameExist(username);
+			bool exists = await User.HasUser(username);
 
 			// Assert
 			Assert.False(exists);
@@ -514,7 +514,6 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - Cannot run automated unit test for this")]
 		public async Task TestForgotUsername()
 		{
 			// Setup
@@ -524,9 +523,10 @@ namespace UnitTestFramework
 			string email = "vinay@kinvey.com";
 
 			// Act
-			await User.ForgotUsername(email);
-
 			// Assert
+			Assert.DoesNotThrowAsync(async delegate () {
+				await User.ForgotUsername(email);
+			});
 
 			// Teardown
 			kinveyClient.ActiveUser.Logout();

@@ -152,6 +152,11 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Error condition for a method not being implemented
 		/// </summary>
+		ERROR_REQUIREMENT_INVALID_PARAMETER,
+
+		/// <summary>
+		/// Error condition for a method not being implemented
+		/// </summary>
 		ERROR_METHOD_NOT_IMPLEMENTED,
 
 		/// <summary>
