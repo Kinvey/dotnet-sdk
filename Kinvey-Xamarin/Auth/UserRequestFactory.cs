@@ -101,6 +101,17 @@ namespace KinveyXamarin
 			return existenceRequest;
 		}
 
+		internal ForgotUsernameRequest BuildForgotUsernameRequest(string email)
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)Client.RequestInitializer).AppKey);
+
+			ForgotUsernameRequest forgotUsernameRequest = new ForgotUsernameRequest(email, Client, urlParameters);
+
+			Client.InitializeRequest(forgotUsernameRequest);
+			return forgotUsernameRequest;
+		}
+
 		#endregion
 	}
 
@@ -118,6 +129,22 @@ namespace KinveyXamarin
 
 			JObject requestPayload = new JObject();
 			requestPayload.Add("username", username);
+			base.HttpContent = requestPayload;
+		}
+	}
+
+	// Build request to send an email with forgotten username information
+	internal class ForgotUsernameRequest : AbstractKinveyClientRequest<JObject>
+	{
+		private const string REST_PATH = "rpc/{appKey}/user-forgot-username";
+
+		internal ForgotUsernameRequest(string email, AbstractClient client, Dictionary<string, string> urlProperties) :
+			base(client, "POST", REST_PATH, default(JObject), urlProperties)
+		{
+			this.RequireAppCredentials = true;
+
+			JObject requestPayload = new JObject();
+			requestPayload.Add("email", email);
 			base.HttpContent = requestPayload;
 		}
 	}
