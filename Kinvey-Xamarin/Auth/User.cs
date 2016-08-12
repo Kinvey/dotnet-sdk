@@ -226,6 +226,13 @@ namespace KinveyXamarin
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginAsync(string username, string password, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
+			if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_USER,
+				                          EnumErrorCode.ERROR_REQUIREMENT_MISSING_USERNAME_PASSWORD,
+				                          "Invalid username and/or password");
+			}
+
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
 			ct.ThrowIfCancellationRequested();
@@ -651,7 +658,7 @@ namespace KinveyXamarin
 		/// <param name="username">Username to check</param>
 		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task<bool> DoesUsernameExist(string username, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		static public async Task<bool> HasUser(string username, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			ct.ThrowIfCancellationRequested();
@@ -704,6 +711,13 @@ namespace KinveyXamarin
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task ForgotUsername(string email, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
+			if (String.IsNullOrEmpty(email))
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_USER,
+										  EnumErrorCode.ERROR_REQUIREMENT_INVALID_PARAMETER,
+										  "Invalid email");
+			}
+
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			ct.ThrowIfCancellationRequested();
 

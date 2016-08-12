@@ -145,6 +145,16 @@ namespace KinveyXamarin
 		ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT,
 
 		/// <summary>
+		/// Requirement Error - Username and/or password missing from login attempt.
+		/// </summary>
+		ERROR_REQUIREMENT_MISSING_USERNAME_PASSWORD,
+
+		/// <summary>
+		/// Error condition for a method not being implemented
+		/// </summary>
+		ERROR_REQUIREMENT_INVALID_PARAMETER,
+
+		/// <summary>
 		/// Error condition for a method not being implemented
 		/// </summary>
 		ERROR_METHOD_NOT_IMPLEMENTED,
