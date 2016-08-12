@@ -237,6 +237,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginAsync(ThirdPartyIdentity identity, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -253,6 +254,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">Facebook Access token.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginFacebookAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -269,6 +271,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">Google Access token.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginGoogleAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -288,6 +291,7 @@ namespace KinveyXamarin
 		/// <param name="accesstokensecret">Twitter Accesstokensecret.</param>
 		/// <param name="consumerkey">Twitter Consumerkey.</param>
 		/// <param name="consumersecret">Twitter Consumersecret.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -307,6 +311,7 @@ namespace KinveyXamarin
 		/// <param name="accesstokensecret">Linkedin Accesstokensecret.</param>
 		/// <param name="consumerkey">Linkedin Consumerkey.</param>
 		/// <param name="consumersecret">Linkedin Consumersecret.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -326,6 +331,7 @@ namespace KinveyXamarin
 		/// <param name="reauth">Salesforce Reauth.</param>
 		/// <param name="clientid">Salesforce Clientid.</param>
 		/// <param name="id">Salesforce Identifier.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -405,6 +411,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The async task.</returns>
 		/// <param name="identity">The Third party identity.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public async Task<User> LoginMICAsync(ThirdPartyIdentity identity, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -419,6 +426,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		static public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
@@ -636,6 +644,57 @@ namespace KinveyXamarin
 			return users;
 		}
 
+		/// <summary>
+		/// Checks to see if the given username already exists.
+		/// </summary>
+		/// <returns>True if the username currently exists, otherwise false.</returns>
+		/// <param name="username">Username to check</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		static public async Task<bool> DoesUsernameExist(string username, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			ct.ThrowIfCancellationRequested();
+
+			UserExistenceRequest existenceCheckRequest = uc.UserFactory.BuildUserExistenceRequest(username);
+
+			ct.ThrowIfCancellationRequested();
+
+			bool exists = false;
+
+			try
+			{
+				JObject existenceResult = await existenceCheckRequest.ExecuteAsync();
+				if (existenceResult != null)
+				{
+					JToken existenceCheck = existenceResult.GetValue("usernameExists");
+
+					if (existenceCheck != null)
+					{
+						exists = existenceCheck.ToObject<bool>();
+					}
+					else
+					{
+						throw new KinveyException(EnumErrorCategory.ERROR_USER,
+												  EnumErrorCode.ERROR_GENERAL,
+												  "Error in DoesUsernameExist().");
+					}
+				}
+			}
+			catch (KinveyException ke)
+			{
+				throw ke;
+			}
+			catch (Exception e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_USER,
+										  EnumErrorCode.ERROR_GENERAL,
+										  "Error in DoesUsernameExist().",
+										  e);
+			}
+
+			return exists;
+		}
 
 		// User Update APIs
 		//

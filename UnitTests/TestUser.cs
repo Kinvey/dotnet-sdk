@@ -482,6 +482,38 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestDoesUsernameExist()
+		{
+			// Arrange
+			string username = "testuser";
+
+			// Act
+			bool exists = await User.DoesUsernameExist(username);
+
+			// Assert
+			Assert.True(exists);
+		}
+
+		[Test]
+		public async Task TestDoesUsernameExistBad()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			string username = "homer_simpson";
+
+			// Act
+			bool exists = await User.DoesUsernameExist(username);
+
+			// Assert
+			Assert.False(exists);
+
+			// Teardown
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestUpdateUserAsync()
 		{

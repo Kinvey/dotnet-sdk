@@ -11,7 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
@@ -47,6 +49,8 @@ namespace KinveyXamarin
 			AuthRequestBuilder = new KinveyAuthRequest.Builder(Client, appKey, appSecret);
 		}
 
+		#region LoginRequest factory methods
+
 		internal LoginRequest BuildCreateRequest(string username, string password, Dictionary<string, JToken> customFieldsAndValues = null)
 		{
 			return new LoginRequest(Client, AuthRequestBuilder, EnumLoginType.KINVEY, username, password, true).BuildAuthRequest(customFieldsAndValues);
@@ -81,5 +85,42 @@ namespace KinveyXamarin
 		{
 			return BuildLoginRequest(new Credential(userID, authToken, null, null, null, null, null));
 		}
+
+		#endregion
+
+		#region User CRUD request factory methods
+
+		internal UserExistenceRequest BuildUserExistenceRequest(string username)
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)Client.RequestInitializer).AppKey);
+
+			UserExistenceRequest existenceRequest = new UserExistenceRequest(username, Client, urlParameters);
+
+			Client.InitializeRequest(existenceRequest);
+			return existenceRequest;
+		}
+
+		#endregion
 	}
+
+	#region User request classes
+
+	// Build request to determine if a username already exists
+	internal class UserExistenceRequest : AbstractKinveyClientRequest<JObject>
+	{
+		private const string REST_PATH = "rpc/{appKey}/check-username-exists";
+
+		internal UserExistenceRequest(string username, AbstractClient client, Dictionary<string, string> urlProperties) :
+			base(client, "POST", REST_PATH, default(JObject), urlProperties)
+		{
+			this.RequireAppCredentials = true;
+
+			JObject requestPayload = new JObject();
+			requestPayload.Add("username", username);
+			base.HttpContent = requestPayload;
+		}
+	}
+
+	#endregion
 }
