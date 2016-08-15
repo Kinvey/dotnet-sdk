@@ -181,7 +181,7 @@ namespace KinveyXamarin
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<List<T>> FindAsync(IQueryable<T> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheResults, query, null);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
 			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync();
 		}
@@ -203,7 +203,7 @@ namespace KinveyXamarin
 				listIDs.Add(entityID);
 			}
 
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheResults, null, listIDs);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, null, listIDs);
 			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync();
 		}
@@ -215,7 +215,7 @@ namespace KinveyXamarin
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<uint> GetCountAsync(IQueryable<T> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
 		{
-			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, cacheCount, query);
+			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
 			ct.ThrowIfCancellationRequested();
 			return await getCountRequest.ExecuteAsync();
 		}
@@ -268,7 +268,7 @@ namespace KinveyXamarin
 			}
 
 			//TODO query
-			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, cache, query);
+			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, cache, DeltaSetFetchingEnabled, query);
 			ct.ThrowIfCancellationRequested();
 			return await pullRequest.ExecuteAsync ();
 		}

@@ -22,8 +22,8 @@ namespace KinveyXamarin
 	{
 		private KinveyDelegate<uint> cacheDelegate;
 
-		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyDelegate<uint> cacheDelegate, IQueryable<T> query)
-			: base (client, collection, cache, query, policy)
+		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<uint> cacheDelegate, IQueryable<T> query)
+			: base (client, collection, cache, query, policy, deltaSetFetchingEnabled)
 		{
 			this.cacheDelegate = cacheDelegate;
 		}

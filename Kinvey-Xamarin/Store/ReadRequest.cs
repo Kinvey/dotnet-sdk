@@ -24,16 +24,17 @@ namespace KinveyXamarin
 		public string Collection { get; }
 		public ReadPolicy Policy { get; }
 		protected IQueryable<T> Query { get; }
+		protected bool DeltaSetFetchingEnabled { get; }
 
-		public ReadRequest (AbstractClient client, string collection, ICache<T> cache, IQueryable<T> query, ReadPolicy policy)
+		public ReadRequest (AbstractClient client, string collection, ICache<T> cache, IQueryable<T> query, ReadPolicy policy, bool deltaSetFetchingEnabled)
 			: base(client)
 		{
 			this.Cache = cache;
 			this.Collection = collection;
 			this.Query = query;
 			this.Policy = policy;
+			this.DeltaSetFetchingEnabled = deltaSetFetchingEnabled;
 		}
-
 
 		protected string BuildMongoQuery ()
 		{

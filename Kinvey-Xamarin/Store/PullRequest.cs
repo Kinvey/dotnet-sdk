@@ -24,8 +24,8 @@ namespace KinveyXamarin
 	/// </summary>
 	public class PullRequest<T> : ReadRequest<T, List<T>>
 	{
-		public PullRequest(AbstractClient client, string collection, ICache<T> cache, IQueryable<T> query)
-			: base(client, collection, cache, query, ReadPolicy.FORCE_NETWORK)
+		public PullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<T> query)
+			: base(client, collection, cache, query, ReadPolicy.FORCE_NETWORK, deltaSetFetchingEnabled)
 		{
 		}
 
@@ -34,6 +34,7 @@ namespace KinveyXamarin
 			List<T> listResults = default(List<T>);
 
 			string mongoQuery = this.BuildMongoQuery ();
+
 			listResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
 
 			Cache.RefreshCache(listResults);

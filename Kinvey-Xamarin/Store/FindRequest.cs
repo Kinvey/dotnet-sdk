@@ -18,13 +18,27 @@ using System.Threading.Tasks;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Find request built for use by a <see cref="KinveyXamarin.DataStore{T}"/>
+	/// </summary>
 	public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
 		private List<string> EntityIDs { get; }
 		private KinveyDelegate<List<T>> cacheDelegate;
 
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, KinveyDelegate<List<T>> cacheDelegate, IQueryable<T> query, List<string> listIDs)
-			: base(client, collection, cache, query, policy)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:KinveyXamarin.FindRequest`1"/> class.
+		/// </summary>
+		/// <param name="client">Client.</param>
+		/// <param name="collection">Collection.</param>
+		/// <param name="cache">Cache.</param>
+		/// <param name="policy">Policy.</param>
+		/// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
+		/// <param name="cacheDelegate">Cache delegate.</param>
+		/// <param name="query">Query.</param>
+		/// <param name="listIDs">List identifier.</param>
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<List<T>> cacheDelegate, IQueryable<T> query, List<string> listIDs)
+			: base(client, collection, cache, query, policy, deltaSetFetchingEnabled)
 		{
 			EntityIDs = listIDs;
 			this.cacheDelegate = cacheDelegate;
