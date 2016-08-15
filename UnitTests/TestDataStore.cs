@@ -72,6 +72,19 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public void TestDeltaSetFetchEnable()
+		{
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			// Act
+			todoStore.DeltaSetFetchingEnabled = true;
+
+			// Assert
+			Assert.True(todoStore.DeltaSetFetchingEnabled);
+		}
+
+		[Test]
 		public async Task TestNetworkStoreFindAsyncBad()
 		{
 			// Setup

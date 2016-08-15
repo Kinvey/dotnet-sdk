@@ -47,6 +47,12 @@ namespace KinveyXamarin
 		private NetworkFactory networkFactory;
 
 		/// <summary>
+		/// Indicates whether delta set fetching is enabled on this datastore, defaulted to false.
+		/// </summary>
+		/// <value><c>true</c> if delta set fetching enabled; otherwise, <c>false</c>.</value>
+		public bool DeltaSetFetchingEnabled { get; set; }
+
+		/// <summary>
 		/// Represents the name of the collection.
 		/// </summary>
 		/// <value>The name of the collection.</value>
@@ -117,6 +123,7 @@ namespace KinveyXamarin
 			this.storeType = type;
 			this.customRequestProperties = this.client.GetCustomRequestProperties();
 			this.networkFactory = new NetworkFactory(this.client);
+			this.DeltaSetFetchingEnabled = false;
 		}
 
 		#region Public interface
