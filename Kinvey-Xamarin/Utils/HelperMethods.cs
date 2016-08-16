@@ -55,15 +55,29 @@ namespace KinveyXamarin
 
 		internal static bool IsDateMoreRecent(string checkDate, string origDate)
 		{
-			DateTime dateToCheck = DateTime.Parse(checkDate);
-			DateTime dateOfOrig = DateTime.Parse(origDate);
-			int val = dateToCheck.CompareTo(dateOfOrig);
-			if (val > 0)
+			// First check if strings are equal, to potentially avoid
+			// expensive date object parsing and comparison
+			if (String.Compare(checkDate, origDate) == 0)
+			{
+				return false;
+			}
+
+			if (CompareDates(checkDate, origDate) > 0)
 			{
 				return true;
 			}
 
 			return false;
+		}
+
+		internal static int CompareDates(string date1, string date2)
+		{
+			// Returns 1 if date1 is more recent than date2
+			// Returns 0 if both dates are equal
+			// Returns -1 if date1 is less recent than date2
+			DateTime dateToCheck = DateTime.Parse(date1);
+			DateTime dateOfOrig = DateTime.Parse(date2);
+			return dateToCheck.CompareTo(dateOfOrig);
 		}
 	}
 }
