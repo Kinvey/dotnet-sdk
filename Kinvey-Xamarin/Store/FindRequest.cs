@@ -125,23 +125,31 @@ namespace KinveyXamarin
 
 			try
 			{
-				if (Query != null)
+				if (DeltaSetFetchingEnabled)
 				{
-					string mongoQuery = this.BuildMongoQuery();
-					networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
-				}
-				else if (EntityIDs?.Count > 0)
-				{
-					networkResults = new List<T>();
-					foreach (string entityID in EntityIDs)
-					{
-						T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
-						networkResults.Add(item);
-					}
+					// TODO implement DSF
+					// Client.NetworkFactory.BuildDeltaFetchRequest();
 				}
 				else
 				{
-					networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
+					if (Query != null)
+					{
+						string mongoQuery = this.BuildMongoQuery();
+						networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
+					}
+					else if (EntityIDs?.Count > 0)
+					{
+						networkResults = new List<T>();
+						foreach (string entityID in EntityIDs)
+						{
+							T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
+							networkResults.Add(item);
+						}
+					}
+					else
+					{
+						networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
+					}
 				}
 			}
 			catch (KinveyException ke)

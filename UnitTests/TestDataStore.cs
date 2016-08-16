@@ -85,6 +85,41 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestDeltaSetPullAsync()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+			todoStore.DeltaSetFetchingEnabled = true;
+
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			ToDo anotherNewItem = new ToDo();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:18.876Z";
+			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+
+			// Act
+			List<ToDo> results = await todoStore.PullAsync();
+
+			// Assert
+			Assert.NotNull(results);
+			Assert.IsEmpty(results);
+
+			// Teardown
+			await todoStore.RemoveAsync(t.ID);
+			await todoStore.RemoveAsync(t2.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestNetworkStoreFindAsyncBad()
 		{
 			// Setup

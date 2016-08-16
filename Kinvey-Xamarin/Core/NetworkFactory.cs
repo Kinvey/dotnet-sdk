@@ -53,15 +53,22 @@ namespace KinveyXamarin
 
 		public NetworkRequest<List<T>> buildGetRequest <T> (string collectionName, string queryString = null)
 		{
-			var urlParameters = new Dictionary<string, string> ();
-			urlParameters.Add ("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add ("collectionName", collectionName);
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", collectionName);
 
 			string REST_PATH = "appdata/{appKey}/{collectionName}";
 
-			if (!string.IsNullOrEmpty (queryString)) {
+			if (!String.IsNullOrEmpty(queryString))
+			{
 				REST_PATH = "appdata/{appKey}/{collectionName}?query={querystring}";
-				urlParameters.Add ("querystring", queryString);
+
+				Dictionary<string, string> modifiers = ParseQueryForModifiers(queryString);
+
+				foreach (KeyValuePair<string, string> kvp in modifiers)
+				{
+					urlParameters.Add(kvp.Key, kvp.Value);
+				}
 			}
 
 			NetworkRequest<List<T>> getQuery = new NetworkRequest<List<T>> (client, "GET", REST_PATH, null, urlParameters);
@@ -146,33 +153,43 @@ namespace KinveyXamarin
 		#endregion
 
 		#region Query processing
-		private Dictionary<string, string> decodeQuery(string queryString){
+
+		private Dictionary<string, string> ParseQueryForModifiers(string queryString)
+		{
 			string queryBuilder = "query=" + queryString;
 			string uriTemplate = "";
 			Dictionary<string, string> uriResourceParameters = new Dictionary<string, string>();
 
-			Dictionary<string, string> decodedQueryMap = queryBuilder.Split('&')
-				.ToDictionary(c => c.Split('=')[0],
-					c => Uri.UnescapeDataString(c.Split('=')[1]));
+			Dictionary<string, string> decodedQueryMap =
+				queryBuilder.Split('&').ToDictionary(c => c.Split('=')[0], c => Uri.UnescapeDataString(c.Split('=')[1]));
 
-			if (decodedQueryMap.ContainsKey("skip")){
+			if (decodedQueryMap.ContainsKey("skip"))
+			{
 				uriTemplate += "&skip={skip}";
 				uriResourceParameters.Add("skip", decodedQueryMap["skip"]);
 			}
-			if (decodedQueryMap.ContainsKey("limit")){
+
+			if (decodedQueryMap.ContainsKey("limit"))
+			{
 				uriTemplate += "&limit={limit}";
 				uriResourceParameters.Add("limit", decodedQueryMap["limit"]);
 			}
 
-			if (decodedQueryMap.ContainsKey("sort")) {
+			if (decodedQueryMap.ContainsKey("sort"))
+			{
 				uriTemplate += "&sort={sort}";
 				uriResourceParameters.Add("sort", decodedQueryMap["sort"]);
+			}
+
+			if (decodedQueryMap.ContainsKey("fields"))
+			{
+				uriTemplate += "&fields={fields}";
+				uriResourceParameters.Add("fields", decodedQueryMap["fields"]);
 			}
 
 			uriResourceParameters["querystring"] = decodedQueryMap["query"];
 
 			return uriResourceParameters;
-
 		}
 	
 		#endregion

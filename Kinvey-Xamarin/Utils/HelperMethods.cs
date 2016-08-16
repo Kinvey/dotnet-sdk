@@ -52,5 +52,18 @@ namespace KinveyXamarin
 
 			return string.Empty;
 		}
+
+		internal static bool IsDateMoreRecent(string checkDate, string origDate)
+		{
+			DateTime dateToCheck = DateTime.Parse(checkDate);
+			DateTime dateOfOrig = DateTime.Parse(origDate);
+			int val = dateToCheck.CompareTo(dateOfOrig);
+			if (val > 0)
+			{
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
