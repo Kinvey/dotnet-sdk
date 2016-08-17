@@ -68,7 +68,6 @@ namespace KinveyXamarin
 
 			mongoQuery += "&fields=_id,_kmd.lmt";
 
-			// TODO Modify DeltaSetFetchInfo to just store LMT, instead of the entire KMD
 			List<DeltaSetFetchInfo> listNetworkEntities = new List<DeltaSetFetchInfo>();
 			listNetworkEntities = await Client.NetworkFactory.buildGetRequest<DeltaSetFetchInfo>(Collection, mongoQuery).ExecuteAsync();
 
@@ -137,9 +136,6 @@ namespace KinveyXamarin
 
 			#region DSF Step 4: Remove items from local storage that are no longer in the backend
 
-			// Remove any IDs that need to be kept in the cache from the cache dictionary.
-			// This will leave only the items that have to be removed from local storage.
-
 			Cache.DeleteByIDs(listCachedEntitiesToRemove);
 
 			#endregion
@@ -150,7 +146,7 @@ namespace KinveyXamarin
 			// backend, to get full records for each ID that has changed since last fetch.
 			int count = listIDsToFetch.Count();
 			int start = 0;
-			int batchSize = 1; // TODO set to 200 after testing
+			int batchSize = 200;
 
 			while (start < count)
 			{
