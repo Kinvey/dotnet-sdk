@@ -66,7 +66,7 @@ namespace KinveyXamarin
 				mongoQuery = "{}";
 			}
 
-			mongoQuery += "&fields=_id, _kmd";
+			mongoQuery += "&fields=_id,_kmd.lmt";
 
 			// TODO Modify DeltaSetFetchInfo to just store LMT, instead of the entire KMD
 			List<DeltaSetFetchInfo> listNetworkEntities = new List<DeltaSetFetchInfo>();

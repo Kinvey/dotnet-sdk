@@ -63,12 +63,7 @@ namespace KinveyXamarin
 			{
 				REST_PATH = "appdata/{appKey}/{collectionName}?query={querystring}";
 
-				Dictionary<string, string> modifiers = ParseQueryForModifiers(queryString);
-
-				foreach (KeyValuePair<string, string> kvp in modifiers)
-				{
-					urlParameters.Add(kvp.Key, kvp.Value);
-				}
+				Dictionary<string, string> modifiers = ParseQueryForModifiers(queryString, ref REST_PATH, ref urlParameters);
 			}
 
 			NetworkRequest<List<T>> getQuery = new NetworkRequest<List<T>> (client, "GET", REST_PATH, null, urlParameters);
@@ -154,11 +149,9 @@ namespace KinveyXamarin
 
 		#region Query processing
 
-		private Dictionary<string, string> ParseQueryForModifiers(string queryString)
+		private Dictionary<string, string> ParseQueryForModifiers(string queryString, ref string uriTemplate, ref Dictionary<string, string> uriResourceParameters)
 		{
 			string queryBuilder = "query=" + queryString;
-			string uriTemplate = "";
-			Dictionary<string, string> uriResourceParameters = new Dictionary<string, string>();
 
 			Dictionary<string, string> decodedQueryMap =
 				queryBuilder.Split('&').ToDictionary(c => c.Split('=')[0], c => Uri.UnescapeDataString(c.Split('=')[1]));
