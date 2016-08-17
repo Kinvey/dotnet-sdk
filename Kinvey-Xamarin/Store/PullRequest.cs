@@ -144,14 +144,14 @@ namespace KinveyXamarin
 
 			// Then, with this set of IDs from the previous step, make a query to the
 			// backend, to get full records for each ID that has changed since last fetch.
-			int count = listIDsToFetch.Count();
+			int numIDs = listIDsToFetch.Count();
 			int start = 0;
 			int batchSize = 200;
 
-			while (start < count)
+			while (start < numIDs)
 			{
-				// TODO verify that the last batch (which may not be full) is properly handled
-				string queryIDs = BuildIDsQuery(listIDsToFetch.GetRange(start, batchSize));
+				int count = Math.Min((numIDs - start), batchSize);
+				string queryIDs = BuildIDsQuery(listIDsToFetch.GetRange(start, count));
 				List<T> listBatchResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, queryIDs).ExecuteAsync();
 
 				start += listBatchResults.Count();
