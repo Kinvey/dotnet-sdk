@@ -91,6 +91,9 @@
     <Compile Include="..\UnitTests\TestFiles\PersonEntity.cs">
       <Link>UnitTests\TestFiles\PersonEntity.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTests\TestFiles\LongData.cs">
+      <Link>UnitTests\TestFiles\LongData.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

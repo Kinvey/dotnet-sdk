@@ -120,6 +120,52 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestDeltaSetPullTwiceAsync()
+		{
+			// Setup
+			Client deltaSetClient = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
+				.build();
+			try
+			{
+				await User.LoginAsync("test", "test", deltaSetClient);
+			}
+			catch (KinveyException ke)
+			{
+				string error = ke.Error;
+			}
+
+			// Arrange
+			DataStore<LongData> longdataStore = DataStore<LongData>.Collection("longdata", DataStoreType.CACHE, deltaSetClient);
+			longdataStore.DeltaSetFetchingEnabled = true;
+
+			// Act
+			System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+			stopwatch.Start();
+			List<LongData> listResultsFirst = await longdataStore.PullAsync();
+			stopwatch.Stop();
+			TimeSpan timeForFirstFetch = stopwatch.Elapsed;
+
+			stopwatch.Reset();
+
+			stopwatch.Start();
+			List<LongData> listResultsSecond = await longdataStore.PullAsync();
+			stopwatch.Stop();
+			TimeSpan timeForSecondFetch = stopwatch.Elapsed;
+
+			// Assert
+			Assert.NotNull(listResultsFirst);
+			Assert.IsNotEmpty(listResultsFirst);
+
+			Assert.NotNull(listResultsSecond);
+			Assert.IsEmpty(listResultsSecond);
+
+			// Teardown
+			deltaSetClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestNetworkStoreFindAsyncBad()
 		{
 			// Setup
