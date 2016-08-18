@@ -24,6 +24,12 @@ namespace KinveyXamarin
 	public interface ICache <T>
 	{
 		/// <summary>
+		/// Checks if the cache is empty.
+		/// </summary>
+		/// <returns><c>true</c>, if cache is empty, <c>false</c> otherwise.</returns>
+		bool IsCacheEmpty();
+
+		/// <summary>
 		/// Finds all items in the cache.
 		/// </summary>
 		/// <returns>All cache items.</returns>

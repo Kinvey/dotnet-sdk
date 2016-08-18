@@ -35,7 +35,7 @@ namespace KinveyXamarin
 
 			string mongoQuery = this.BuildMongoQuery();
 
-			if (DeltaSetFetchingEnabled)
+			if (DeltaSetFetchingEnabled && !Cache.IsCacheEmpty())
 			{
 				listResults = await PerformDeltaSetFetch(mongoQuery);
 			}
