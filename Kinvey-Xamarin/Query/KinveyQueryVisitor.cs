@@ -27,13 +27,13 @@ namespace KinveyXamarin
 {
 	public class KinveyQueryVisitor : QueryModelVisitorBase
 	{
-		private IQueryBuilder writer;
+		private IQueryBuilder builderMongoQuery;
 		private Dictionary<string, string> mapPropertyToName;
 		public Expression cacheExpr { get; set; }
 
 		public KinveyQueryVisitor(IQueryBuilder builder, Type type)
 		{
-			writer = builder;
+			builderMongoQuery = builder;
 
 			//			Type.GetTypeInfo (type).GetCustomAttributes(
 
@@ -88,7 +88,7 @@ namespace KinveyXamarin
 				var member = ordering.Expression as MemberExpression;
 
 				string sort = "&sort={\"" + mapPropertyToName[member.Member.Name] + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
-				writer.AddModifier (sort);
+				builderMongoQuery.AddModifier (sort);
 
 				//				Logger.Log (ordering.OrderingDirection);
 			}
@@ -113,12 +113,12 @@ namespace KinveyXamarin
 				SkipResultOperator skip = resultOperator as SkipResultOperator;
 				//				Logger.Log (skip.Count);
 				//				Logger.Log(skip.
-				writer.AddModifier("&skip=" + skip.Count);
+				builderMongoQuery.AddModifier("&skip=" + skip.Count);
 			}
 			else if (resultOperator.ToString().Contains("Take"))
 			{
 				TakeResultOperator take = resultOperator as TakeResultOperator;
-				writer.AddModifier("&limit=" + take.Count);
+				builderMongoQuery.AddModifier("&limit=" + take.Count);
 			}
 			else
 			{
@@ -137,9 +137,9 @@ namespace KinveyXamarin
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
 
-				writer.Write ("\"" + mapPropertyToName[member.Member.Name] + "\"");
-				writer.Write (":");
-				writer.Write (equality.Right);
+				builderMongoQuery.Write ("\"" + mapPropertyToName[member.Member.Name] + "\"");
+				builderMongoQuery.Write (":");
+				builderMongoQuery.Write (equality.Right);
 			}
 			else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso"))
 			{
@@ -150,7 +150,7 @@ namespace KinveyXamarin
 				//					
 				//				}
 				VisitWhereClause(new WhereClause(and.Right), queryModel, index);
-				writer.Write (",");
+				builderMongoQuery.Write (",");
 				VisitWhereClause(new WhereClause(and.Left), queryModel, index);
 
 
@@ -164,15 +164,15 @@ namespace KinveyXamarin
 			{
 				BinaryExpression or = whereClause.Predicate as BinaryExpression;
 
-				writer.Write ("$or:");
-				writer.Write("[");
-				writer.Write ("{");
+				builderMongoQuery.Write ("$or:");
+				builderMongoQuery.Write("[");
+				builderMongoQuery.Write ("{");
 				VisitWhereClause (new WhereClause(or.Left), queryModel, index);
-				writer.Write ("},");
-				writer.Write ("{");
+				builderMongoQuery.Write ("},");
+				builderMongoQuery.Write ("{");
 				VisitWhereClause (new WhereClause(or.Right), queryModel, index);
-				writer.Write ("}");
-				writer.Write ("]");
+				builderMongoQuery.Write ("}");
+				builderMongoQuery.Write ("]");
 
 
 				//				Logger.Log (or.Right.ToString());
@@ -192,16 +192,16 @@ namespace KinveyXamarin
 
 				if (b.Method.Name.ToString().Equals("StartsWith"))
 				{
-					writer.Write("\"" + propertyName + "\"");
-					writer.Write(":{\"$regex\":\"^");
-					writer.Write(argument);
-					writer.Write("\"}");
+					builderMongoQuery.Write("\"" + propertyName + "\"");
+					builderMongoQuery.Write(":{\"$regex\":\"^");
+					builderMongoQuery.Write(argument);
+					builderMongoQuery.Write("\"}");
 				}
 				else if (b.Method.Name.ToString().Equals("Equals"))
 				{
-					writer.Write("\"" + propertyName + "\"");
-					writer.Write(":");
-					writer.Write("\"" + argument + "\"");
+					builderMongoQuery.Write("\"" + propertyName + "\"");
+					builderMongoQuery.Write(":");
+					builderMongoQuery.Write("\"" + argument + "\"");
 				}
 				else
 				{
