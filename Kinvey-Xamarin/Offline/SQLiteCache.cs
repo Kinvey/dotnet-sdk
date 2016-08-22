@@ -99,6 +99,11 @@ namespace KinveyXamarin
 			return dbConnectionSync.DropTable<T>();
 		}
 
+		public bool IsCacheEmpty()
+		{
+			return dbConnectionSync.Table<T>().Count() == 0;
+		}
+
 		#region SQLite Cache CRUD APIs
 
 		// CREATE APIs
