@@ -165,7 +165,7 @@ namespace KinveyXamarin
 				{
 					foreach (var collection in collections)
 					{
-						string dropQuery = $"DROP TABLE {collection.TableName}";
+						string dropQuery = $"DROP TABLE IF EXISTS {collection.TableName}";
 						dbConnectionSync.Execute(dropQuery);
 						GetSyncQueue(collection.CollectionName).RemoveAll();
 					}

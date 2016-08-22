@@ -368,6 +368,35 @@ namespace UnitTestFramework
 			Assert.IsEmpty(kinveyClient.CacheManager.GetSyncQueue(collectionName).GetFirstN(1,0));
 		}
 
+		[Test]
+		public async Task TestLogoutWithNoDatabaseTables()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Act
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.Null(kinveyClient.ActiveUser);
+			Assert.IsEmpty(kinveyClient.CacheManager.GetSyncQueue(collectionName).GetFirstN(1, 0));
+		}
+
+		[Test]
+		public async Task TestLogoutWithDatabaseTablesButNoAPICalls()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+
+			// Act
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.Null(kinveyClient.ActiveUser);
+			Assert.IsEmpty(kinveyClient.CacheManager.GetSyncQueue(collectionName).GetFirstN(1, 0));
+		}
+
 		#endregion
 
 		#region CRUD Tests
