@@ -28,7 +28,7 @@ namespace KinveyXamarin
 	public class KinveyQueryVisitor : QueryModelVisitorBase
 	{
 		private IQueryBuilder writer;
-		private Dictionary<string, string> keyMap;
+		private Dictionary<string, string> mapPropertyToName;
 		public Expression cacheExpr { get; set; }
 
 		public KinveyQueryVisitor(IQueryBuilder builder, Type type)
@@ -37,30 +37,31 @@ namespace KinveyXamarin
 
 			//			Type.GetTypeInfo (type).GetCustomAttributes(
 
-			var scratch = Activator.CreateInstance (type);
-			loadKeyMap (type);
+			//var scratch = Activator.CreateInstance (type);
+
+			LoadMapOfKeysForType(type);
 		}
 
-		private void loadKeyMap(Type type)
+		private void LoadMapOfKeysForType(Type type)
 		{
-			keyMap = new Dictionary<string, string> ();
-			var properties = type.GetRuntimeProperties ();
+			mapPropertyToName = new Dictionary<string, string>();
+			var properties = type.GetRuntimeProperties();
 
-			foreach (PropertyInfo prop in properties)
+			foreach (PropertyInfo propertyInfo in properties)
 			{
-				var attrs = prop.GetCustomAttributes(true);
-				foreach (var attr in attrs)
+				var propertyAttributes = propertyInfo.GetCustomAttributes(true);
+				foreach (var attribute in propertyAttributes)
 				{
-					JsonPropertyAttribute jprop = attr as JsonPropertyAttribute;
-					if (jprop != null)
+					JsonPropertyAttribute jsonPropertyAttribute = attribute as JsonPropertyAttribute;
+					if (jsonPropertyAttribute != null)
 					{
-						if (jprop.PropertyName == null)
+						if (jsonPropertyAttribute.PropertyName == null)
 						{
-							keyMap.Add (prop.Name, prop.Name);
+							mapPropertyToName.Add (propertyInfo.Name, propertyInfo.Name);
 						}
 						else
 						{
-							keyMap.Add (prop.Name, jprop.PropertyName);
+							mapPropertyToName.Add (propertyInfo.Name, jsonPropertyAttribute.PropertyName);
 						}
 					}
 				}
@@ -86,7 +87,7 @@ namespace KinveyXamarin
 			foreach (var ordering in orderings) {
 				var member = ordering.Expression as MemberExpression;
 
-				string sort = "&sort={\"" + keyMap[member.Member.Name] + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
+				string sort = "&sort={\"" + mapPropertyToName[member.Member.Name] + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
 				writer.AddModifier (sort);
 
 				//				Logger.Log (ordering.OrderingDirection);
@@ -136,7 +137,7 @@ namespace KinveyXamarin
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
 
-				writer.Write ("\"" + keyMap[member.Member.Name] + "\"");
+				writer.Write ("\"" + mapPropertyToName[member.Member.Name] + "\"");
 				writer.Write (":");
 				writer.Write (equality.Right);
 			}
@@ -183,7 +184,7 @@ namespace KinveyXamarin
 				MethodCallExpression b = whereClause.Predicate as MethodCallExpression;
 
 				string name = (b.Object as MemberExpression).Member.Name.ToString();
-				string propertyName = keyMap[name];
+				string propertyName = mapPropertyToName[name];
 //				name = name.Replace("\"", "\\\"");
 
 				string argument = b.Arguments[0].ToString().Trim('"');
