@@ -164,7 +164,7 @@ namespace KinveyXamarin
 			{
 				BinaryExpression or = whereClause.Predicate as BinaryExpression;
 
-				builderMongoQuery.Write ("$or:");
+				builderMongoQuery.Write ("\"$or\":");
 				builderMongoQuery.Write("[");
 				builderMongoQuery.Write ("{");
 				VisitWhereClause (new WhereClause(or.Left), queryModel, index);
@@ -192,6 +192,12 @@ namespace KinveyXamarin
 
 				if (b.Method.Name.ToString().Equals("StartsWith"))
 				{
+					if (index > 0)
+					{
+						// multiple where clauses present, so separate with comma
+						builderMongoQuery.Write(",");
+					}
+
 					builderMongoQuery.Write("\"" + propertyName + "\"");
 					builderMongoQuery.Write(":{\"$regex\":\"^");
 					builderMongoQuery.Write(argument);
@@ -199,6 +205,12 @@ namespace KinveyXamarin
 				}
 				else if (b.Method.Name.ToString().Equals("Equals"))
 				{
+					if (index > 0)
+					{
+						// multiple where clauses present, so separate with comma
+						builderMongoQuery.Write(",");
+					}
+
 					builderMongoQuery.Write("\"" + propertyName + "\"");
 					builderMongoQuery.Write(":");
 					builderMongoQuery.Write("\"" + argument + "\"");

@@ -476,12 +476,115 @@ namespace UnitTestFramework
 			newItem2 = await todoStore.SaveAsync(newItem2);
 
 			// Act
-			//			var query = from todo in todoStore
-			//						where todo.Details.StartsWith("details for 2")
-			//						select todo;
+			//var query = from todo in todoStore
+			//			where todo.Details.StartsWith("deta")
+			//	                      where todo.Name.StartsWith("todo a")
+			//			select todo;
+
+			//var query = from todo in todoStore
+			//			where todo.Details.StartsWith("deta") && todo.Name.StartsWith("todo a")
+			//			select todo;
+
+			//var query = todoStore.Where(x => x.Details.StartsWith("det")).Where(y => y.Name.StartsWith("anoth"));
+
+			var query = todoStore.Where(x => x.Details.StartsWith("det"));
 
 			List<ToDo> listToDo = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det"));
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByQueryLogicalAnd()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "todo again";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			var query = from todo in todoStore
+						where todo.Details.StartsWith("deta") && todo.Name.Equals("todo")
+						select todo;
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByQueryLogicalOr()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "a todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "b todo again";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			var query = from todo in todoStore
+						where todo.Name.StartsWith("a to") || todo.Details.Equals("details for 2")
+						select todo;
+
+			List<ToDo> listToDo = new List<ToDo>();
 
 			listToDo = await todoStore.FindAsync(query);
 
@@ -495,6 +598,52 @@ namespace UnitTestFramework
 			Assert.IsNotNull(listToDo);
 			Assert.IsNotEmpty(listToDo);
 			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByQueryMultipleWhereClauses()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "todo again";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).Where(y => y.Name.StartsWith("todo a"));
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
 		}
 
 		[Test]
