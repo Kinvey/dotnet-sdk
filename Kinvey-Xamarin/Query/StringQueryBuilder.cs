@@ -11,28 +11,27 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Text;
 
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// Builds a Kinvey-style query.
+	/// Builds a mongo-style query to be run against the backend.
 	/// </summary>
 	public class StringQueryBuilder : IQueryBuilder
 	{
+		/// <summary>
+		/// The StringBuilder object used for building up the query string.
+		/// </summary>
+		StringBuilder queryBuilder;
 
 		/// <summary>
-		/// The StringBuilder used for building up the query string.
+		/// The StringBuilder object used for building up the modifiers on the query string (such as skip, limit, etc.)
 		/// </summary>
-		private StringBuilder builder;
-		/// <summary>
-		/// The StringBuilder used for building up the modifiers on the query string (such as skip, limit
-		/// </summary>
-		private StringBuilder dangler;
+		StringBuilder modifierBuilder;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.StringQueryBuilder"/> class.
+		/// Initializes a new instance of the <see cref="StringQueryBuilder"/> class.
 		/// </summary>
 		public StringQueryBuilder()
 		{
@@ -42,9 +41,10 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Reset this instance by creating new StringBuilders.
 		/// </summary>
-		public void Reset(){
-			this.builder = new StringBuilder ();
-			this.dangler = new StringBuilder ();
+		public void Reset()
+		{
+			queryBuilder = new StringBuilder();
+			modifierBuilder = new StringBuilder();
 		}
 
 		/// <summary>
@@ -53,25 +53,25 @@ namespace KinveyXamarin
 		/// <param name="value">Value.</param>
 		public void Write(object value)
 		{
-			builder.Append(value);
-		}
-
-		/// <summary>
-		/// Gets the full string by combining the two StringBuilders.
-		/// </summary>
-		/// <returns>The full string.</returns>
-		public String GetFullString(){
-			return builder.ToString () + dangler.ToString ();
+			queryBuilder.Append(value);
 		}
 
 		/// <summary>
 		/// Writes the specified value as a query modifier.
 		/// </summary>
 		/// <param name="value">Value.</param>
-		public void Dangle(object value){
-			dangler.Append (value);
+		public void AddModifier(object value)
+		{
+			modifierBuilder.Append(value);
+		}
 
+		/// <summary>
+		/// Gets the full string by combining the two StringBuilders.
+		/// </summary>
+		/// <returns>The full string.</returns>
+		public string BuildQueryString()
+		{
+			return queryBuilder + modifierBuilder.ToString();
 		}
 	}
-
 }

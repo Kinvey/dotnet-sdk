@@ -87,7 +87,7 @@ namespace KinveyXamarin
 				var member = ordering.Expression as MemberExpression;
 
 				string sort = "&sort={\"" + keyMap[member.Member.Name] + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
-				writer.Dangle (sort);
+				writer.AddModifier (sort);
 
 				//				Logger.Log (ordering.OrderingDirection);
 			}
@@ -112,12 +112,12 @@ namespace KinveyXamarin
 				SkipResultOperator skip = resultOperator as SkipResultOperator;
 				//				Logger.Log (skip.Count);
 				//				Logger.Log(skip.
-				writer.Dangle("&skip=" + skip.Count);
+				writer.AddModifier("&skip=" + skip.Count);
 			}
 			else if (resultOperator.ToString().Contains("Take"))
 			{
 				TakeResultOperator take = resultOperator as TakeResultOperator;
-				writer.Dangle("&limit=" + take.Count);
+				writer.AddModifier("&limit=" + take.Count);
 			}
 			else
 			{

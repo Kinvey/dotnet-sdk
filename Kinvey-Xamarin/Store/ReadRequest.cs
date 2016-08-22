@@ -36,21 +36,29 @@ namespace KinveyXamarin
 			this.DeltaSetFetchingEnabled = deltaSetFetchingEnabled;
 		}
 
-		protected string BuildMongoQuery ()
+		/// <summary>
+		/// Builds the mongo-style query string to be run against the backend.
+		/// </summary>
+		/// <returns>The mongo-style query string.</returns>
+		protected string BuildMongoQuery()
 		{
-			if (Query != null) {
-				StringQueryBuilder Writer = new StringQueryBuilder ();
-				Writer.Reset ();
+			if (Query != null)
+			{
+				StringQueryBuilder queryBuilder = new StringQueryBuilder();
 
-				KinveyQueryVisitor visitor = new KinveyQueryVisitor (Writer, typeof (T));
+				queryBuilder.Reset();
+
+				KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
 
 				QueryModel queryModel = (Query.Provider as KinveyQueryProvider).qm;
 
-				Writer.Write ("{");
-				queryModel.Accept (visitor);
-				Writer.Write ("}");
+				queryBuilder.Write("{");
 
-				string mongoQuery = Writer.GetFullString ();
+				queryModel.Accept(visitor);
+
+				queryBuilder.Write("}");
+
+				string mongoQuery = queryBuilder.BuildQueryString();
 
 				return mongoQuery;
 			}
