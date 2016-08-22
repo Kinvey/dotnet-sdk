@@ -123,46 +123,77 @@ namespace UnitTestFramework
 		public async Task TestDeltaSetPullTwiceAsync()
 		{
 			// Setup
-			Client deltaSetClient = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.build();
-			try
-			{
-				await User.LoginAsync("test", "test", deltaSetClient);
-			}
-			catch (KinveyException ke)
-			{
-				string error = ke.Error;
-			}
+			await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
-			DataStore<LongData> longdataStore = DataStore<LongData>.Collection("longdata", DataStoreType.CACHE, deltaSetClient);
-			longdataStore.DeltaSetFetchingEnabled = true;
+			DataStore<LongData> longdataStore = DataStore<LongData>.Collection("longdata", DataStoreType.CACHE);
+			//for (int i = 1; i <= 10000; i++)
+			//{
+			//	LongData ld = new LongData();
+			//	ld.FirstName = "Abe";
+			//	ld.LastName = "Lincoln";
+			//	ld.Age = 50;
+			//	ld.City = "Washington D.C.";
+			//	ld.Dollar = "$0.01";
+			//	ld.Paragraph = "Four score and seven years ago...";
+			//	ld.Pick = "UNION";
+			//	ld.State = "IL";
+			//	ld.Zip = "12345";
+			//	ld.Sequence = i;
+			//	ld.Street = "1600 Pennsylvania Avenue";
+			//	await longdataStore.SaveAsync(ld);
+			//}
 
 			// Act
-			System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-			stopwatch.Start();
-			List<LongData> listResultsFirst = await longdataStore.PullAsync();
-			stopwatch.Stop();
-			TimeSpan timeForFirstFetch = stopwatch.Elapsed;
 
-			stopwatch.Reset();
+			//System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+			//stopwatch.Start();
 
-			stopwatch.Start();
+			List<LongData> listResultsCache = new List<LongData>();
+			await longdataStore.FindAsync();
+
+			//stopwatch.Stop();
+			//TimeSpan timeForFirstFetch = stopwatch.Elapsed;
+			//stopwatch.Reset();
+
+			//int count = 0;
+			//int limit = 5000;
+			//DataStore<LongData> longdataNetworkStore = DataStore<LongData>.Collection("longdata", DataStoreType.NETWORK);
+			//List<LongData> networkhits = await longdataNetworkStore.FindAsync();
+			//foreach (var longdata in networkhits)
+			//{
+			//	if (count >= limit)
+			//	{
+			//		break;
+			//	}
+			//
+			//	if (longdata.State.Count() == 3)
+			//	{
+			//		//longdata.State += "Z";
+			//		longdata.State = longdata.State.Substring(0,2);
+			//	}
+			//
+			//	await longdataNetworkStore.SaveAsync(longdata);
+			//	count++;
+			//}
+
+			//stopwatch.Start();
+
+			longdataStore.DeltaSetFetchingEnabled = true;
 			List<LongData> listResultsSecond = await longdataStore.PullAsync();
-			stopwatch.Stop();
-			TimeSpan timeForSecondFetch = stopwatch.Elapsed;
+
+			//stopwatch.Stop();
+			//TimeSpan timeForSecondFetch = stopwatch.Elapsed;
 
 			// Assert
-			Assert.NotNull(listResultsFirst);
-			Assert.IsNotEmpty(listResultsFirst);
+			Assert.NotNull(listResultsCache);
+			Assert.IsEmpty(listResultsCache);
 
 			Assert.NotNull(listResultsSecond);
 			Assert.IsEmpty(listResultsSecond);
 
 			// Teardown
-			deltaSetClient.ActiveUser.Logout();
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
