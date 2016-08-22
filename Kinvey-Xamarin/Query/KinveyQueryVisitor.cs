@@ -27,17 +27,12 @@ namespace KinveyXamarin
 {
 	public class KinveyQueryVisitor : QueryModelVisitorBase
 	{
-		private IQueryBuilder builderMongoQuery;
-		private Dictionary<string, string> mapPropertyToName;
-		public Expression cacheExpr { get; set; }
+		IQueryBuilder builderMongoQuery;
+		Dictionary<string, string> mapPropertyToName;
 
 		public KinveyQueryVisitor(IQueryBuilder builder, Type type)
 		{
 			builderMongoQuery = builder;
-
-			//			Type.GetTypeInfo (type).GetCustomAttributes(
-
-			//var scratch = Activator.CreateInstance (type);
 
 			LoadMapOfKeysForType(type);
 		}
@@ -45,6 +40,7 @@ namespace KinveyXamarin
 		private void LoadMapOfKeysForType(Type type)
 		{
 			mapPropertyToName = new Dictionary<string, string>();
+
 			var properties = type.GetRuntimeProperties();
 
 			foreach (PropertyInfo propertyInfo in properties)
@@ -68,29 +64,25 @@ namespace KinveyXamarin
 			}
 		}
 
-		public override void VisitQueryModel (QueryModel queryModel)
+		public override void VisitQueryModel(QueryModel queryModel)
 		{
-			base.VisitQueryModel (queryModel);
+			base.VisitQueryModel(queryModel);
 		}
 
-		protected override void VisitBodyClauses (ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
+		protected override void VisitBodyClauses(ObservableCollection<IBodyClause> bodyClauses, QueryModel queryModel)
 		{
-			base.VisitBodyClauses (bodyClauses, queryModel);
-			//Logger.Log ("visiting body clause");
+			base.VisitBodyClauses(bodyClauses, queryModel);
 		}
 
-		protected override void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause)
+		protected override void VisitOrderings(ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause)
 		{
-			base.VisitOrderings (orderings, queryModel, orderByClause);
+			base.VisitOrderings(orderings, queryModel, orderByClause);
 
-			//Logger.Log ("visiting ordering clause");
-			foreach (var ordering in orderings) {
+			foreach (var ordering in orderings)
+			{
 				var member = ordering.Expression as MemberExpression;
-
 				string sort = "&sort={\"" + mapPropertyToName[member.Member.Name] + "\":" + (ordering.OrderingDirection.ToString().Equals("Asc") ? "1" : "-1") + "}";
-				builderMongoQuery.AddModifier (sort);
-
-				//				Logger.Log (ordering.OrderingDirection);
+				builderMongoQuery.AddModifier(sort);
 			}
 		}
 
@@ -103,16 +95,13 @@ namespace KinveyXamarin
 		//			}
 		//		}
 
-		public override void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index)
+		public override void VisitResultOperator(ResultOperatorBase resultOperator, QueryModel queryModel, int index)
 		{
-			base.VisitResultOperator (resultOperator, queryModel, index);
+			base.VisitResultOperator(resultOperator, queryModel, index);
 
-			//Logger.Log ("visiting result clause:" + resultOperator.ToString ());
 			if (resultOperator.ToString().Contains("Skip"))
 			{
 				SkipResultOperator skip = resultOperator as SkipResultOperator;
-				//				Logger.Log (skip.Count);
-				//				Logger.Log(skip.
 				builderMongoQuery.AddModifier("&skip=" + skip.Count);
 			}
 			else if (resultOperator.ToString().Contains("Take"))
@@ -128,11 +117,9 @@ namespace KinveyXamarin
 
 		public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index)
 		{
-			base.VisitWhereClause (whereClause, queryModel, index);
-			cacheExpr = whereClause.Predicate;
+			base.VisitWhereClause(whereClause, queryModel, index);
 
-			//Logger.Log ("visiting where clause: " + whereClause.Predicate.ToString());
-			if (whereClause.Predicate.NodeType.ToString ().Equals ("Equal"))
+			if (whereClause.Predicate.NodeType.ToString().Equals("Equal"))
 			{
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
@@ -144,21 +131,9 @@ namespace KinveyXamarin
 			else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso"))
 			{
 				BinaryExpression and = whereClause.Predicate as BinaryExpression;
-				//recursively traverse tree
-				//				var rightSide = and.Right as BinaryExpression;
-				//				if (rightSide != null){
-				//					
-				//				}
 				VisitWhereClause(new WhereClause(and.Right), queryModel, index);
 				builderMongoQuery.Write (",");
 				VisitWhereClause(new WhereClause(and.Left), queryModel, index);
-
-
-
-				//				Logger.Log (and.Right.ToString());
-				//				Logger.Log (and.Left.ToString());
-
-
 			}
 			else if (whereClause.Predicate.NodeType.ToString().Equals("OrElse"))
 			{
@@ -173,11 +148,6 @@ namespace KinveyXamarin
 				VisitWhereClause (new WhereClause(or.Right), queryModel, index);
 				builderMongoQuery.Write ("}");
 				builderMongoQuery.Write ("]");
-
-
-				//				Logger.Log (or.Right.ToString());
-				//				Logger.Log (or.Left.ToString());
-
 			}
 			else if (whereClause.Predicate.NodeType == ExpressionType.Call)
 			{
@@ -223,8 +193,6 @@ namespace KinveyXamarin
 			else
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
-				//				Logger.Log (whereClause.Predicate);
-				//				Logger.Log (whereClause.Predicate.NodeType.ToString());
 			}
 		}
 
@@ -255,6 +223,5 @@ namespace KinveyXamarin
 //		protected virtual void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel);
 //
 //		public virtual void VisitSelectClause (SelectClause selectClause, QueryModel queryModel);
-
 	}
 }
