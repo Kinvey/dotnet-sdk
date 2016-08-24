@@ -179,7 +179,7 @@ namespace KinveyXamarin
 		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
 		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<T>> FindAsync(IQueryable<T> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
+		public async Task<List<T>> FindAsync(IQueryable<object> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
 			ct.ThrowIfCancellationRequested();

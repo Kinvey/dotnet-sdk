@@ -23,10 +23,10 @@ namespace KinveyXamarin
 		public ICache<T> Cache { get; }
 		public string Collection { get; }
 		public ReadPolicy Policy { get; }
-		protected IQueryable<T> Query { get; }
+		protected IQueryable<object> Query { get; }
 		protected bool DeltaSetFetchingEnabled { get; }
 
-		public ReadRequest (AbstractClient client, string collection, ICache<T> cache, IQueryable<T> query, ReadPolicy policy, bool deltaSetFetchingEnabled)
+		public ReadRequest (AbstractClient client, string collection, ICache<T> cache, IQueryable<object> query, ReadPolicy policy, bool deltaSetFetchingEnabled)
 			: base(client)
 		{
 			this.Cache = cache;

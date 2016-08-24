@@ -24,7 +24,7 @@ namespace KinveyXamarin
 	/// </summary>
 	public class PullRequest<T> : ReadRequest<T, List<T>>
 	{
-		public PullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<T> query)
+		public PullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<object> query)
 			: base(client, collection, cache, query, ReadPolicy.FORCE_NETWORK, deltaSetFetchingEnabled)
 		{
 		}

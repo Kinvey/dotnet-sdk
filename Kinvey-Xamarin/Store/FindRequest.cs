@@ -37,7 +37,7 @@ namespace KinveyXamarin
 		/// <param name="cacheDelegate">Cache delegate.</param>
 		/// <param name="query">Query.</param>
 		/// <param name="listIDs">List identifier.</param>
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<List<T>> cacheDelegate, IQueryable<T> query, List<string> listIDs)
+		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<List<T>> cacheDelegate, IQueryable<object> query, List<string> listIDs)
 			: base(client, collection, cache, query, policy, deltaSetFetchingEnabled)
 		{
 			EntityIDs = listIDs;
@@ -90,7 +90,7 @@ namespace KinveyXamarin
 			{
 				if (Query != null)
 				{
-					IQueryable<T> query = Query;
+					IQueryable<object> query = Query;
 					cacheHits = Cache.FindByQuery(query.Expression);
 				}
 				else if (EntityIDs?.Count > 0)
