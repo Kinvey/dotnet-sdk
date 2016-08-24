@@ -20,8 +20,6 @@ using Newtonsoft.Json;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
-//using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-//using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -86,15 +84,6 @@ namespace KinveyXamarin
 			}
 		}
 
-		//		protected override void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel)
-		//		{
-		//			base.VisitResultOperators (resultOperators, queryModel);
-		//			Logger.Log ("visiting result clauses:");
-		//			foreach (var res in resultOperators) {
-		//				Logger.Log (res.ToString ());
-		//			}
-		//		}
-
 		public override void VisitResultOperator(ResultOperatorBase resultOperator, QueryModel queryModel, int index)
 		{
 			base.VisitResultOperator(resultOperator, queryModel, index);
@@ -153,14 +142,14 @@ namespace KinveyXamarin
 			{
 				MethodCallExpression b = whereClause.Predicate as MethodCallExpression;
 
-				string name = (b.Object as MemberExpression).Member.Name.ToString();
+				string name = (b.Object as MemberExpression).Member.Name;
 				string propertyName = mapPropertyToName[name];
-//				name = name.Replace("\"", "\\\"");
+				//name = name.Replace("\"", "\\\"");
 
 				string argument = b.Arguments[0].ToString().Trim('"');
 				argument = argument.Replace("\"", "\\\"");
 
-				if (b.Method.Name.ToString().Equals("StartsWith"))
+				if (b.Method.Name.Equals("StartsWith"))
 				{
 					if (index > 0)
 					{
@@ -173,7 +162,7 @@ namespace KinveyXamarin
 					builderMongoQuery.Write(argument);
 					builderMongoQuery.Write("\"}");
 				}
-				else if (b.Method.Name.ToString().Equals("Equals"))
+				else if (b.Method.Name.Equals("Equals"))
 				{
 					if (index > 0)
 					{
@@ -196,32 +185,26 @@ namespace KinveyXamarin
 			}
 		}
 
-		public override void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index)
-		{
-			base.VisitOrderByClause (orderByClause, queryModel, index);
-			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ OrderBy clause not supported.");
-			//Logger.Log ("visiting orderby clause");
-			//			foreach (var ordering in orderByClause.Orderings) {
-			//				Logger.Log (ordering.Expression);
-			//			}
-		}
-
-//		public virtual void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index);
-//
-//		public virtual void VisitGroupJoinClause (GroupJoinClause groupJoinClause, QueryModel queryModel, int index);
-//
-//		public virtual void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, GroupJoinClause groupJoinClause);
-//
-//		public virtual void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, int index);
-//
-//		public virtual void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel);
-//
-//		protected virtual void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause);
-//
-//		public virtual void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index);
-//
-//		protected virtual void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel);
-//
-//		public virtual void VisitSelectClause (SelectClause selectClause, QueryModel queryModel);
+		//	Methods available for override from Remotion:
+		//
+		//	public virtual void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index);
+		//
+		//	public virtual void VisitGroupJoinClause (GroupJoinClause groupJoinClause, QueryModel queryModel, int index);
+		//
+		//	public virtual void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, GroupJoinClause groupJoinClause);
+		//
+		//	public virtual void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, int index);
+		//
+		//	public virtual void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel);
+		//
+		//	protected virtual void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause);
+		//
+		//	public virtual void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index);
+		//
+		//	public virtual void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index);
+		//
+		//	protected virtual void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel);
+		//
+		//	public virtual void VisitSelectClause (SelectClause selectClause, QueryModel queryModel);
 	}
 }
