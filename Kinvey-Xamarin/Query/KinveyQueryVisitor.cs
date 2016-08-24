@@ -185,6 +185,45 @@ namespace KinveyXamarin
 			}
 		}
 
+		public override void VisitSelectClause(SelectClause selectClause, QueryModel queryModel)
+		{
+			base.VisitSelectClause(selectClause, queryModel);
+
+			// possible building of fields modifiers
+			if (selectClause.Selector.NodeType == ExpressionType.MemberAccess)
+			{
+				// single field
+				var selectFields = selectClause.Selector as MemberExpression;
+				string field = selectFields.Member.Name;
+				builderMongoQuery.AddModifier("&fields=" + this.mapPropertyToName[field]);
+			}
+			else if (selectClause.Selector.NodeType == ExpressionType.New)
+			{
+				// anonymous type - multiple fields
+				var selectFields = selectClause.Selector as NewExpression;
+				var members = selectFields.Members;
+				int? count = members?.Count;
+
+				if (members != null &&
+					count > 0)
+				{
+					string fieldsQuery = "&fields=";
+					for (int i = 0; i < count; i++)
+					{
+						if (i > 0)
+						{
+							fieldsQuery += ",";
+						}
+
+						string field = members[i].Name;
+						fieldsQuery += this.mapPropertyToName[field];
+					}
+
+					builderMongoQuery.AddModifier(fieldsQuery);
+				}
+			}
+		}
+
 		//	Methods available for override from Remotion:
 		//
 		//	public virtual void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index);
