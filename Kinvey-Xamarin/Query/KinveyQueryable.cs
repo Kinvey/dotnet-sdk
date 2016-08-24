@@ -15,7 +15,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq;
-using KinveyUtils;
 
 namespace KinveyXamarin
 {
@@ -30,9 +29,9 @@ namespace KinveyXamarin
 		public StringQueryBuilder writer;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable<T>"/> class.
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable{T}"/> class.
 		/// </summary>
-		/// <param name="myQueryProvider">My query provider.</param>
+		/// <param name="queryProvider">My query provider.</param>
 		/// <param name="myClass">My class.</param>
 		public KinveyQueryable(KinveyQueryProvider queryProvider, Type myClass)
 			: base(queryProvider)
@@ -48,7 +47,7 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable`1"/> class.
+		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable{T}"/> class.
 		/// </summary>
 		/// <param name="provider">Provider.</param>
 		/// <param name="expression">Expression.</param>
@@ -57,25 +56,25 @@ namespace KinveyXamarin
 		{
 		}
 
-		/// <summary>
-		/// Executes the query.
-		/// </summary>
-		/// <returns>The query.</returns>
-		/// <param name="query">Mongo-style query to be executed on backend.</param>
-		public virtual object executeQuery(string query)
-		{
-			Logger.Log ("can't execute a query without overriding this method!");
-			return default(object);
-		}
+		///// <summary>
+		///// Executes the query.
+		///// </summary>
+		///// <returns>The query.</returns>
+		///// <param name="query">Mongo-style query to be executed on backend.</param>
+		//public virtual object executeQuery(string query)
+		//{
+		//	Logger.Log ("can't execute a query without overriding this method!");
+		//	return default(object);
+		//}
 
-		/// <summary>
-		/// Executes the query on cache.
-		/// </summary>
-		/// <returns>The query on cache.</returns>
-		public virtual object executeQueryOnCache()
-		{
-			Logger.Log ("can't execute a query on cache without overriding this method!");
-			return default(object);
-		}
+		///// <summary>
+		///// Executes the query on cache.
+		///// </summary>
+		///// <returns>The query on cache.</returns>
+		//public virtual object executeQueryOnCache()
+		//{
+		//	Logger.Log ("can't execute a query on cache without overriding this method!");
+		//	return default(object);
+		//}
 	}
 }

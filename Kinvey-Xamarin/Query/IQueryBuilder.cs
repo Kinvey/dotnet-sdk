@@ -11,8 +11,6 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-
 namespace KinveyXamarin
 {
 	/// <summary>
@@ -21,27 +19,26 @@ namespace KinveyXamarin
 	public interface IQueryBuilder
 	{
 		/// <summary>
-		/// Write the specified value to the query
+		/// Reset this query builder instance.
 		/// </summary>
-		/// <param name="value">Value.</param>
+		void Reset();
+
+		/// <summary>
+		/// Write the specified value to the mongo-style query
+		/// </summary>
+		/// <param name="value">Value to be appended to the query.</param>
 		void Write(object value);
 
 		/// <summary>
-		/// Gets the full string.
+		/// Write the specified value as a query modifier.
 		/// </summary>
-		/// <returns>The full string.</returns>
-		string GetFullString();
+		/// <param name="value">Value to be appended to the modifier portion of the mongo-style query string.</param>
+		void AddModifier(object value);
 
 		/// <summary>
-		///Write the specified value as a query modifier.
+		/// Gets the full mongo-style query string.
 		/// </summary>
-		/// <param name="value">Value.</param>
-		void Dangle(object value);
-
-		/// <summary>
-		/// Reset this instance.
-		/// </summary>
-		void Reset();
+		/// <returns>The full mongo query, complete with modifiers.</returns>
+		string BuildQueryString();
 	}
 }
-
