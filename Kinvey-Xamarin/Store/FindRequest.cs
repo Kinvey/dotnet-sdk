@@ -68,6 +68,7 @@ namespace KinveyXamarin
 
 					// once local query finishes, perform network query
 					listResult = await PerformNetworkFind();
+					Cache.RefreshCache(listResult);
 					break;
 
 				default:
