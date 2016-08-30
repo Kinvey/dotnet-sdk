@@ -93,12 +93,82 @@ namespace KinveyXamarin
 			return getCountQuery;
 		}
 
-//		public NetworkRequest<T> buildGetCountQueryRequest <T> (string collectionName, string queryString){
-//			const string REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
-//		
-//		
-//		}
+		public NetworkRequest<T> BuildGetAggregateRequest<T>(string collectionName, EnumReduceFunction reduceFunction, string query = null, string propertyName = null)
+		{
+			string REST_PATH = "appdata/{appKey}/{collectionName}/_group";
 
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", collectionName);
+
+			JObject keyval = new JObject();
+
+			JObject initialval = new JObject();
+
+			JObject httpBodyContent = new JObject();
+			httpBodyContent.Add("key", keyval);
+
+			string reduce = String.Empty;
+
+			switch (reduceFunction)
+			{
+				case EnumReduceFunction.REDUCE_FUNCTION_SUM:
+					initialval.Add("result", 0);
+					reduce = $"function(doc,out){{ out.result += doc.{propertyName}; }}";
+					break;
+
+				case EnumReduceFunction.REDUCE_FUNCTION_MIN:
+					initialval.Add("result", Int32.MaxValue);
+					reduce = $"function(doc,out){{ out.result = Math.min(out.result, doc.{propertyName}); }}";
+					break;
+
+				case EnumReduceFunction.REDUCE_FUNCTION_MAX:
+					initialval.Add("result", Int32.MinValue);
+					reduce = $"function(doc,out){{ out.result = Math.max(out.result, doc.{propertyName}); }}";
+					break;
+
+				case EnumReduceFunction.REDUCE_FUNCTION_AVERAGE:
+					initialval.Add("result", 0);
+					initialval.Add("count", 0);
+					reduce = $"function(doc,out){{ out.result = (((out.result * out.count) + doc.{propertyName}) / (out.count += 1)); }}";
+					break;
+
+				//case EnumReduceFunction.REDUCE_FUNCTION_COUNT:
+				//	initialval.Add("result", 0);
+				//	reduce = "";
+				//	break;
+
+				default:
+					// TODO throw new KinveyException()
+					break;
+			}
+
+			httpBodyContent.Add("initial", initialval);
+			httpBodyContent.Add("reduce", reduce);
+
+			if (!String.IsNullOrEmpty(query))
+			{
+				const char CHAR_CURLY_BRACE_OPENING = '{';
+				const char CHAR_CURLY_BRACE_CLOSING = '}';
+				const char CHAR_COLON = ':';
+				const char CHAR_DOUBLE_QUOTATION_MARK = '"';
+
+				JObject condition = new JObject();
+				query = query.TrimStart(CHAR_CURLY_BRACE_OPENING).TrimEnd(CHAR_CURLY_BRACE_CLOSING);
+				string[] cond = query.Split(CHAR_COLON);
+				cond[0] = cond[0].TrimStart(CHAR_DOUBLE_QUOTATION_MARK).TrimEnd(CHAR_DOUBLE_QUOTATION_MARK);
+				cond[1] = cond[1].TrimStart(CHAR_DOUBLE_QUOTATION_MARK).TrimEnd(CHAR_DOUBLE_QUOTATION_MARK);
+				condition.Add(cond[0], cond[1]);
+
+				httpBodyContent.Add("condition", condition);
+			}
+
+			NetworkRequest<T> findAggregateQuery = new NetworkRequest<T>(client, "POST", REST_PATH, httpBodyContent, urlParameters);
+
+			client.InitializeRequest(findAggregateQuery);
+
+			return findAggregateQuery;
+		}
 
 		public NetworkRequest<T> buildCreateRequest <T> (string collectionName, T entity)
 		{

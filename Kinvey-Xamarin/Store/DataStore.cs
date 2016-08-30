@@ -208,6 +208,8 @@ namespace KinveyXamarin
 			return await findByQueryRequest.ExecuteAsync();
 		}
 
+		#region Grouping/Aggregate Functions
+
 		/// <summary>
 		/// Gets a count of all the entities in a collection
 		/// </summary>
@@ -219,6 +221,68 @@ namespace KinveyXamarin
 			ct.ThrowIfCancellationRequested();
 			return await getCountRequest.ExecuteAsync();
 		}
+
+		/// <summary>
+		/// Gets the sum of the values of the given entity field asynchronously.
+		/// </summary>
+		/// <returns>The sum of the values of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
+		/// <param name="propName">Property name of field to be used in aggregation.</param>
+		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
+		/// <param name="cacheSum">Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<int> GetSumAsync(string propName, IQueryable<T> query = null, KinveyDelegate<int> cacheSum = null, CancellationToken ct = default(CancellationToken))
+		{
+			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, EnumReduceFunction.REDUCE_FUNCTION_SUM, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheSum, query, propName);
+			ct.ThrowIfCancellationRequested();
+			return await findByAggregateQueryRequest.ExecuteAsync();
+		}
+
+		/// <summary>
+		/// Gets the minimum value of the given entity field asynchronously.
+		/// </summary>
+		/// <returns>The min value of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
+		/// <param name="propName">Property name of field to be used in aggregation.</param>
+		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
+		/// <param name="cacheMin">Delegate used to return the min aggregate value based on what is available in offline cache.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<int> GetMinAsync(string propName, IQueryable<T> query = null, KinveyDelegate<int> cacheMin = null, CancellationToken ct = default(CancellationToken))
+		{
+			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, EnumReduceFunction.REDUCE_FUNCTION_MIN, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheMin, query, propName);
+			ct.ThrowIfCancellationRequested();
+			return await findByAggregateQueryRequest.ExecuteAsync();
+		}
+
+		/// <summary>
+		/// Gets the maximum value of the given entity field asynchronously.
+		/// </summary>
+		/// <returns>The max value of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
+		/// <param name="propName">Property name of field to be used in aggregation.</param>
+		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
+		/// <param name="cacheMax">Delegate used to return the max aggregate value based on what is available in offline cache.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<int> GetMaxAsync(string propName, IQueryable<T> query = null, KinveyDelegate<int> cacheMax = null, CancellationToken ct = default(CancellationToken))
+		{
+			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, EnumReduceFunction.REDUCE_FUNCTION_MAX, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheMax, query, propName);
+			ct.ThrowIfCancellationRequested();
+			return await findByAggregateQueryRequest.ExecuteAsync();
+		}
+
+		/// <summary>
+		/// Gets the average value of the given entity field asynchronously.
+		/// </summary>
+		/// <returns>The average value of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
+		/// <param name="propName">Property name of field to be used in aggregation.</param>
+		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
+		/// <param name="cacheAvg">Delegate used to return the average aggregate value based on what is available in offline cache.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<int> GetAverageAsync(string propName, IQueryable<T> query = null, KinveyDelegate<int> cacheAvg = null, CancellationToken ct = default(CancellationToken))
+		{
+			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheAvg, query, propName);
+			ct.ThrowIfCancellationRequested();
+			return await findByAggregateQueryRequest.ExecuteAsync();
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Save the specified entity to a Kinvey collection.
