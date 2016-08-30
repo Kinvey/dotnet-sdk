@@ -31,6 +31,9 @@ namespace UnitTestFramework
 		[JsonProperty]
 		public Address MailAddress { get; set; }
 
+		[JsonProperty]
+		public int Age { get; set; }
+
 		public string Serialize()
 		{
 			return JsonConvert.SerializeObject(this);
