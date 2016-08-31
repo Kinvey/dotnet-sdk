@@ -1676,6 +1676,207 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestCacheStoreGetSumAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+
+			// Act
+			int cacheSum = 0;
+			int sum = 0;
+			sum = await personStore.GetSumAsync("Age", query, new KinveyDelegate<int>
+			{
+				onSuccess = (result) => cacheSum = result,
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, sum);
+			Assert.AreEqual(55, sum);
+			Assert.AreNotEqual(0, cacheSum);
+			Assert.AreEqual(55, cacheSum);
+			Assert.AreEqual(sum, cacheSum);
+		}
+
+		[Test]
+		public async Task TestCacheStoreGetMinAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			// Act
+			int cacheMin = 0;
+			int min = 0;
+			min = await personStore.GetMinAsync("Age", null, new KinveyDelegate<int>
+			{
+				onSuccess = (result) => cacheMin = result,
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, min);
+			Assert.AreEqual(15, min);
+			Assert.AreNotEqual(0, cacheMin);
+			Assert.AreEqual(15, cacheMin);
+			Assert.AreEqual(min, cacheMin);
+		}
+
+		[Test]
+		public async Task TestCacheStoreGetMaxAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			// Act
+			int cacheMax = 0;
+			int max = 0;
+			max = await personStore.GetMaxAsync("Age", null, new KinveyDelegate<int>
+			{
+				onSuccess = (result) => cacheMax = result,
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, max);
+			Assert.AreEqual(46, max);
+			Assert.AreNotEqual(0, cacheMax);
+			Assert.AreEqual(46, cacheMax);
+			Assert.AreEqual(max, cacheMax);
+		}
+
+		[Test]
+		public async Task TestCacheStoreGetAverageAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			Person p4 = new Person();
+			p4.FirstName = "Buster";
+			p4.LastName = "Bluth";
+			p4.Age = 19;
+			p4 = await personStore.SaveAsync(p4);
+
+			// Act
+			int cacheAvg = 0;
+			int avg = 0;
+			avg = await personStore.GetAverageAsync("Age", null, new KinveyDelegate<int>
+			{
+				onSuccess = (result) => cacheAvg = result,
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			// Teardown
+			await personStore.RemoveAsync(p4.ID);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, avg);
+			Assert.AreEqual(30, avg);
+			Assert.AreNotEqual(0, cacheAvg);
+			Assert.AreEqual(30, cacheAvg);
+			Assert.AreEqual(avg, cacheAvg);
+		}
+
+		[Test]
 		public async Task TestSaveAsync()
 		{
 			// Setup
