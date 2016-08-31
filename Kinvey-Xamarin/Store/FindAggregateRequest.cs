@@ -104,15 +104,7 @@ namespace KinveyXamarin
 
 			try
 			{
-				if (Query != null)
-				{
-					IQueryable<object> query = Query;
-					localResult = (int)Cache.FindByQuery(query.Expression).Count;
-				}
-				else
-				{
-					localResult = (int)Cache.FindAll().Count;
-				}
+				localResult = Cache.GetAggregateResult(reduceFunction, propertyName, Query?.Expression);
 
 				localDelegate?.onSuccess(localResult);
 			}
