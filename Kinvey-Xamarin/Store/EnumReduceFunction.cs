@@ -23,10 +23,10 @@ namespace KinveyXamarin
 		/// </summary>
 		REDUCE_FUNCTION_SUM,
 
-		///// <summary>
-		///// Count reduce function.
-		///// </summary>
-		//REDUCE_FUNCTION_COUNT,
+		/// <summary>
+		/// Count reduce function.
+		/// </summary>
+		REDUCE_FUNCTION_COUNT,
 
 		/// <summary>
 		/// Min reduce function.

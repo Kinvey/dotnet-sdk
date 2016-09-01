@@ -23,9 +23,10 @@ namespace KinveyXamarin
 	/// </summary>
 	public class FindAggregateRequest<T> : ReadRequest<T, int>
 	{
-		private KinveyDelegate<int> cacheDelegate;
-		private EnumReduceFunction reduceFunction;
-		private string propertyName;
+		KinveyDelegate<int> cacheDelegate;
+		EnumReduceFunction reduceFunction;
+		string groupField;
+		string aggregateField;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:KinveyXamarin.FindAggregateRequest`1"/> class.
@@ -47,12 +48,14 @@ namespace KinveyXamarin
 		                            bool deltaSetFetchingEnabled,
 		                            KinveyDelegate<int> cacheDelegate,
 		                            IQueryable<object> query,
-		                            string propertyName)
+									string groupField,
+									string aggregateField)
 			: base(client, collection, cache, query, policy, deltaSetFetchingEnabled)
 		{
 			this.cacheDelegate = cacheDelegate;
 			this.reduceFunction = reduceFunction;
-			this.propertyName = propertyName;
+			this.groupField = groupField;
+			this.aggregateField = aggregateField;
 		}
 
 		/// <summary>
@@ -104,7 +107,7 @@ namespace KinveyXamarin
 
 			try
 			{
-				localResult = Cache.GetAggregateResult(reduceFunction, propertyName, Query?.Expression);
+				localResult = Cache.GetAggregateResult(reduceFunction, aggregateField, Query?.Expression);
 
 				localDelegate?.onSuccess(localResult);
 			}
@@ -130,7 +133,7 @@ namespace KinveyXamarin
 			try
 			{
 				string mongoQuery = this.BuildMongoQuery();
-				NetworkRequest<JArray> request = Client.NetworkFactory.BuildGetAggregateRequest<JArray>(Collection, reduceFunction, mongoQuery, propertyName);
+				NetworkRequest<JArray> request = Client.NetworkFactory.BuildGetAggregateRequest<JArray>(Collection, reduceFunction, mongoQuery, aggregateField);
 				JArray networkResults = await request.ExecuteAsync();
 
 				if (networkResults != null)

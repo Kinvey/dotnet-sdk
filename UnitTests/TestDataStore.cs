@@ -1367,7 +1367,7 @@ namespace UnitTestFramework
 
 			// Act
 			int sum = 0;
-			sum = await personStore.GetSumAsync("Age", query);
+			sum = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1407,7 +1407,7 @@ namespace UnitTestFramework
 
 			// Act
 			int min = 0;
-			min = await personStore.GetMinAsync("Age");
+			min = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1447,7 +1447,7 @@ namespace UnitTestFramework
 
 			// Act
 			int max = 0;
-			max = await personStore.GetMaxAsync("Age");
+			max = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1493,7 +1493,7 @@ namespace UnitTestFramework
 
 			// Act
 			int avg = 0;
-			avg = await personStore.GetAverageAsync("Age");
+			avg = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
 
 			// Teardown
 			await personStore.RemoveAsync(p4.ID);
@@ -1536,7 +1536,7 @@ namespace UnitTestFramework
 
 			// Act
 			int sum = 0;
-			sum = await personStore.GetSumAsync("Age", query);
+			sum = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1576,7 +1576,7 @@ namespace UnitTestFramework
 
 			// Act
 			int min = 0;
-			min = await personStore.GetMinAsync("Age");
+			min = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1616,7 +1616,7 @@ namespace UnitTestFramework
 
 			// Act
 			int max = 0;
-			max = await personStore.GetMaxAsync("Age");
+			max = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1662,7 +1662,7 @@ namespace UnitTestFramework
 
 			// Act
 			int avg = 0;
-			avg = await personStore.GetAverageAsync("Age");
+			avg = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
 
 			// Teardown
 			await personStore.RemoveAsync(p4.ID);
@@ -1706,7 +1706,7 @@ namespace UnitTestFramework
 			// Act
 			int cacheSum = 0;
 			int sum = 0;
-			sum = await personStore.GetSumAsync("Age", query, new KinveyDelegate<int>
+			sum = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query, new KinveyDelegate<int>
 			{
 				onSuccess = (result) => cacheSum = result,
 				onError = (e) => Console.WriteLine(e.Message)
@@ -1754,7 +1754,7 @@ namespace UnitTestFramework
 			// Act
 			int cacheMin = 0;
 			int min = 0;
-			min = await personStore.GetMinAsync("Age", null, new KinveyDelegate<int>
+			min = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null, new KinveyDelegate<int>
 			{
 				onSuccess = (result) => cacheMin = result,
 				onError = (e) => Console.WriteLine(e.Message)
@@ -1802,7 +1802,7 @@ namespace UnitTestFramework
 			// Act
 			int cacheMax = 0;
 			int max = 0;
-			max = await personStore.GetMaxAsync("Age", null, new KinveyDelegate<int>
+			max = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null, new KinveyDelegate<int>
 			{
 				onSuccess = (result) => cacheMax = result,
 				onError = (e) => Console.WriteLine(e.Message)
@@ -1856,7 +1856,7 @@ namespace UnitTestFramework
 			// Act
 			int cacheAvg = 0;
 			int avg = 0;
-			avg = await personStore.GetAverageAsync("Age", null, new KinveyDelegate<int>
+			avg = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null, new KinveyDelegate<int>
 			{
 				onSuccess = (result) => cacheAvg = result,
 				onError = (e) => Console.WriteLine(e.Message)
