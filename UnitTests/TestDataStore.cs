@@ -1367,7 +1367,15 @@ namespace UnitTestFramework
 
 			// Act
 			int sum = 0;
-			sum = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
+			foreach (var gar in arrGAR)
+			{
+				if (gar.GroupField.Equals("Bluth"))
+				{
+					sum = gar.Result;
+					break;
+				}
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1377,6 +1385,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, sum);
 			Assert.AreEqual(55, sum);
+			Assert.AreEqual(2, arrGAR.Count());
 		}
 
 		[Test]
@@ -1407,7 +1416,11 @@ namespace UnitTestFramework
 
 			// Act
 			int min = 0;
-			min = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				min = gar.Result;
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1417,6 +1430,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, min);
 			Assert.AreEqual(15, min);
+			Assert.AreEqual(1, arrGAR.Count());
 		}
 
 		[Test]
@@ -1447,7 +1461,11 @@ namespace UnitTestFramework
 
 			// Act
 			int max = 0;
-			max = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				max = gar.Result;
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1457,6 +1475,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, max);
 			Assert.AreEqual(46, max);
+			Assert.AreEqual(1, arrGAR.Count());
 		}
 
 		[Test]
@@ -1493,7 +1512,11 @@ namespace UnitTestFramework
 
 			// Act
 			int avg = 0;
-			avg = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				avg = gar.Result;
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p4.ID);
@@ -1504,6 +1527,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, avg);
 			Assert.AreEqual(30, avg);
+			Assert.AreEqual(1, arrGAR.Count());
 		}
 
 		[Test]
@@ -1536,7 +1560,15 @@ namespace UnitTestFramework
 
 			// Act
 			int sum = 0;
-			sum = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "LastName", "Age", query);
+			foreach (var gar in arrGAR)
+			{
+				if (gar.GroupField.Equals("Bluth"))
+				{
+					sum = gar.Result;
+					break;
+				}
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1546,6 +1578,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, sum);
 			Assert.AreEqual(55, sum);
+			Assert.AreEqual(1, arrGAR.Count());
 		}
 
 		[Test]
@@ -1576,7 +1609,12 @@ namespace UnitTestFramework
 
 			// Act
 			int min = 0;
-			min = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				min = gar.Result;
+				break;
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1586,6 +1624,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, min);
 			Assert.AreEqual(15, min);
+			Assert.AreEqual(1, arrGAR.Count());
 		}
 
 		[Test]
@@ -1616,7 +1655,12 @@ namespace UnitTestFramework
 
 			// Act
 			int max = 0;
-			max = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				max = gar.Result;
+				break;
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p3.ID);
@@ -1626,6 +1670,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, max);
 			Assert.AreEqual(46, max);
+			Assert.AreEqual(1, arrGAR.Count());
 		}
 
 		[Test]
@@ -1662,7 +1707,12 @@ namespace UnitTestFramework
 
 			// Act
 			int avg = 0;
-			avg = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				avg = gar.Result;
+				break;
+			}
 
 			// Teardown
 			await personStore.RemoveAsync(p4.ID);
@@ -1673,6 +1723,7 @@ namespace UnitTestFramework
 			// Assert
 			Assert.AreNotEqual(0, avg);
 			Assert.AreEqual(30, avg);
+			Assert.AreEqual(1, arrGAR.Count());
 		}
 
 		[Test]
@@ -1706,9 +1757,9 @@ namespace UnitTestFramework
 			// Act
 			int cacheSum = 0;
 			int sum = 0;
-			sum = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query, new KinveyDelegate<int>
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query, new KinveyDelegate<int>
 			{
-				onSuccess = (result) => cacheSum = result,
+				onSuccess = (result) => Console.WriteLine("success"),
 				onError = (e) => Console.WriteLine(e.Message)
 			});
 
@@ -1754,9 +1805,9 @@ namespace UnitTestFramework
 			// Act
 			int cacheMin = 0;
 			int min = 0;
-			min = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null, new KinveyDelegate<int>
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null, new KinveyDelegate<int>
 			{
-				onSuccess = (result) => cacheMin = result,
+				onSuccess = (result) => Console.WriteLine("success"),
 				onError = (e) => Console.WriteLine(e.Message)
 			});
 
@@ -1802,9 +1853,9 @@ namespace UnitTestFramework
 			// Act
 			int cacheMax = 0;
 			int max = 0;
-			max = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null, new KinveyDelegate<int>
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null, new KinveyDelegate<int>
 			{
-				onSuccess = (result) => cacheMax = result,
+				onSuccess = (result) => Console.WriteLine("success"),
 				onError = (e) => Console.WriteLine(e.Message)
 			});
 
@@ -1856,9 +1907,9 @@ namespace UnitTestFramework
 			// Act
 			int cacheAvg = 0;
 			int avg = 0;
-			avg = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null, new KinveyDelegate<int>
+			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null, new KinveyDelegate<int>
 			{
-				onSuccess = (result) => cacheAvg = result,
+				onSuccess = (result) => Console.WriteLine("success"),
 				onError = (e) => Console.WriteLine(e.Message)
 			});
 

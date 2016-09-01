@@ -114,6 +114,7 @@
     <Compile Include="Model\DeltaSetFetchInfo.cs" />
     <Compile Include="Store\FindAggregateRequest.cs" />
     <Compile Include="Store\EnumReduceFunction.cs" />
+    <Compile Include="Model\GroupAggregationResults.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

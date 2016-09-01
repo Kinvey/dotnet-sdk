@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -21,7 +22,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Find request built in order to apply grouping/aggregation functions to entities within a <see cref="KinveyXamarin.DataStore{T}"/>
 	/// </summary>
-	public class FindAggregateRequest<T> : ReadRequest<T, int>
+	public class FindAggregateRequest<T> : ReadRequest<T, List<GroupAggregationResults>>
 	{
 		KinveyDelegate<int> cacheDelegate;
 		EnumReduceFunction reduceFunction;
@@ -39,7 +40,8 @@ namespace KinveyXamarin
 		/// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
 		/// <param name="cacheDelegate">Cache delegate.</param>
 		/// <param name="query">[optional] Query used to filter the results that are to be aggregated.</param>
-		/// <param name="propertyName">Property name to be used for aggregation.</param>
+		/// <param name="groupField">Property name to be used for grouping.</param>
+		/// <param name="aggregateField">Property name to be used for aggregation.</param>
 		public FindAggregateRequest(AbstractClient client,
 		                            string collection,
 		                            EnumReduceFunction reduceFunction,
@@ -62,9 +64,9 @@ namespace KinveyXamarin
 		/// Executes the request asynchronously.
 		/// </summary>
 		/// <returns>The async.</returns>
-		public override async Task<int> ExecuteAsync()
+		public override async Task<List<GroupAggregationResults>> ExecuteAsync()
 		{
-			int aggregateResult = default(int);
+			List<GroupAggregationResults> aggregateResult = new List<GroupAggregationResults>();
 
 			switch (Policy)
 			{
@@ -100,11 +102,11 @@ namespace KinveyXamarin
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
 		}
 
-		private int PerformLocalAggregateFind(KinveyDelegate<int> localDelegate = null)
+		private List<GroupAggregationResults> PerformLocalAggregateFind(KinveyDelegate<int> localDelegate = null)
 		{
 			// TODO implement
 			int localResult = default(int);
-
+			List<GroupAggregationResults> localResults = new List<GroupAggregationResults>();
 			try
 			{
 				localResult = Cache.GetAggregateResult(reduceFunction, aggregateField, Query?.Expression);
@@ -123,35 +125,27 @@ namespace KinveyXamarin
 				}
 			}
 
-			return localResult;
+			return localResults;
 		}
 
-		private async Task<int> PerformNetworkAggregateFind()
+		private async Task<List<GroupAggregationResults>> PerformNetworkAggregateFind()
 		{
-			int networkResult = default(int);
+			List<GroupAggregationResults> networkResults = new List<GroupAggregationResults>();
 
 			try
 			{
 				string mongoQuery = this.BuildMongoQuery();
-				NetworkRequest<JArray> request = Client.NetworkFactory.BuildGetAggregateRequest<JArray>(Collection, reduceFunction, mongoQuery, aggregateField);
-				JArray networkResults = await request.ExecuteAsync();
+				NetworkRequest<JArray> request = Client.NetworkFactory.BuildGetAggregateRequest<JArray>(Collection, reduceFunction, mongoQuery, groupField, aggregateField);
+				JArray results = await request.ExecuteAsync();
 
-				if (networkResults != null)
+				if (results != null)
 				{
-					foreach (JToken obj in networkResults)
+					foreach (JToken obj in results)
 					{
-						JToken result = (obj as JObject).GetValue("result");
-
-						if (result != null)
-						{
-							networkResult = result.ToObject<int>();
-						}
-						else
-						{
-							throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
-													  EnumErrorCode.ERROR_GENERAL,
-													  "Error in FindAggregateAsync() for network results.");
-						}
+						GroupAggregationResults gar = new GroupAggregationResults();
+						gar.GroupField = (obj as JObject).GetValue(groupField)?.ToString();
+						gar.Result = (obj as JObject).GetValue("result").ToObject<int>();
+						networkResults.Add(gar);
 					}
 				}
 			}
@@ -167,7 +161,7 @@ namespace KinveyXamarin
 										  e);
 			}
 
-			return networkResult;
+			return networkResults;
 		}
 	}
 }

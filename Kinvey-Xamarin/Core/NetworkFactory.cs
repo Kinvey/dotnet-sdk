@@ -93,7 +93,7 @@ namespace KinveyXamarin
 			return getCountQuery;
 		}
 
-		public NetworkRequest<T> BuildGetAggregateRequest<T>(string collectionName, EnumReduceFunction reduceFunction, string query = null, string propertyName = null)
+		public NetworkRequest<T> BuildGetAggregateRequest<T>(string collectionName, EnumReduceFunction reduceFunction, string query, string groupField, string aggregateField)
 		{
 			string REST_PATH = "appdata/{appKey}/{collectionName}/_group";
 
@@ -102,6 +102,10 @@ namespace KinveyXamarin
 			urlParameters.Add("collectionName", collectionName);
 
 			JObject keyval = new JObject();
+			if (!String.IsNullOrEmpty(groupField))
+			{
+				keyval.Add(groupField, true);
+			}
 
 			JObject initialval = new JObject();
 
@@ -114,23 +118,23 @@ namespace KinveyXamarin
 			{
 				case EnumReduceFunction.REDUCE_FUNCTION_SUM:
 					initialval.Add("result", 0);
-					reduce = $"function(doc,out){{ out.result += doc.{propertyName}; }}";
+					reduce = $"function(doc,out){{ out.result += doc.{aggregateField}; }}";
 					break;
 
 				case EnumReduceFunction.REDUCE_FUNCTION_MIN:
 					initialval.Add("result", Int32.MaxValue);
-					reduce = $"function(doc,out){{ out.result = Math.min(out.result, doc.{propertyName}); }}";
+					reduce = $"function(doc,out){{ out.result = Math.min(out.result, doc.{aggregateField}); }}";
 					break;
 
 				case EnumReduceFunction.REDUCE_FUNCTION_MAX:
 					initialval.Add("result", Int32.MinValue);
-					reduce = $"function(doc,out){{ out.result = Math.max(out.result, doc.{propertyName}); }}";
+					reduce = $"function(doc,out){{ out.result = Math.max(out.result, doc.{aggregateField}); }}";
 					break;
 
 				case EnumReduceFunction.REDUCE_FUNCTION_AVERAGE:
 					initialval.Add("result", 0);
 					initialval.Add("count", 0);
-					reduce = $"function(doc,out){{ out.result = (((out.result * out.count) + doc.{propertyName}) / (out.count += 1)); }}";
+					reduce = $"function(doc,out){{ out.result = (((out.result * out.count) + doc.{aggregateField}) / (out.count += 1)); }}";
 					break;
 
 				//case EnumReduceFunction.REDUCE_FUNCTION_COUNT:
