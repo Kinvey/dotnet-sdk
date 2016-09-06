@@ -122,33 +122,6 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Executes the custom endpoint, expecting a single result
-		/// </summary>
-		/// <param name="endpoint">Endpoint name.</param>
-		/// <param name="input">Input object.</param>
-		/// <param name="client">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
-		public async Task<O[]> ExecuteCustomEndpointArray(string endpoint, I input, AbstractClient client = null)
-		{
-			this.client = client;
-			if (this.client == null)
-			{
-				this.client = Client.SharedClient;
-			}
-
-			O[] result = default(O[]);
-			try
-			{
-				result = await BuildCustomEnpointArrayRequest(endpoint, input).ExecuteAsync();
-			}
-			catch (Exception e)
-			{
-				throw new KinveyException(EnumErrorCategory.ERROR_CUSTOM_ENDPOINT, EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR, "", e);
-			}
-
-			return result;
-		}
-
-		/// <summary>
 		/// Executes the custom endpoint blocking.
 		/// </summary>
 		/// <returns>The custom endpoint blocking.</returns>
@@ -161,26 +134,6 @@ namespace KinveyXamarin
 			urlParameters.Add("endpoint", endpoint);
 
 			CustomEndpointRequest<I, O> custom = new CustomEndpointRequest<I, O>(client, endpoint, input, urlParameters);
-
-			client.InitializeRequest(custom);
-			//custom.clientAppVersion = this.GetClientAppVersion ();
-			custom.customRequestHeaders = GetCustomRequestProperties();
-			return custom;
-		}
-
-		/// <summary>
-		/// Executes the custom endpoint array blocking.
-		/// </summary>
-		/// <returns>The custom endpoint array blocking.</returns>
-		/// <param name="endpoint">Endpoint.</param>
-		/// <param name="input">Input.</param>
-		internal CustomEndpointArrayRequest<I, O> BuildCustomEnpointArrayRequest(string endpoint, I input)
-		{
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			urlParameters.Add("endpoint", endpoint);
-
-			CustomEndpointArrayRequest<I, O> custom = new CustomEndpointArrayRequest<I, O>(client, endpoint, input, urlParameters);
 
 			client.InitializeRequest(custom);
 			//custom.clientAppVersion = this.GetClientAppVersion ();

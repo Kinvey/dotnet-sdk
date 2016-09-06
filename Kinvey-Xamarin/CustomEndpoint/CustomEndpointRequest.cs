@@ -42,31 +42,4 @@ namespace KinveyXamarin
 			this.endpoint = endpoint;
 		}
 	}
-
-	/// <summary>
-	/// Executes a custom endpoint expecting an array of results
-	/// </summary>
-	public class CustomEndpointArrayRequest<I, O> : AbstractKinveyClientRequest<O[]>
-	{
-		private const string REST_PATH = "rpc/{appKey}/custom/{endpoint}";
-
-		/// <summary>
-		/// The endpoint.
-		/// </summary>
-		[JsonProperty]
-		public string endpoint;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:KinveyXamarin.CustomCommandArray`2"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="endpoint">Endpoint.</param>
-		/// <param name="input">Input.</param>
-		/// <param name="urlProperties">URL properties.</param>
-		public CustomEndpointArrayRequest(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
-			base(client, "POST", REST_PATH, input, urlProperties)
-		{
-			this.endpoint = endpoint;
-		}
-	}
 }

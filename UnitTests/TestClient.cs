@@ -147,13 +147,14 @@ namespace UnitTestFramework
 			JObject obj = new JObject();
 			obj.Add("input", 1);
 
-			CustomEndpoint<JObject, ToDo> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo>();
+			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
 			var result = await ce.ExecuteCustomEndpoint("test", obj);
-			string outputstr= result.DueDate;
+			string outputstr= result[1].DueDate;
 			int output = int.Parse(outputstr);
 
 			// Assert
-			Assert.AreEqual(2, output);
+			Assert.AreEqual(3, output);
+			Assert.AreEqual(2, result.Length);
 
 			// Teardown
 			Client.SharedClient.ActiveUser.Logout();
