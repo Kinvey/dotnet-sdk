@@ -160,6 +160,11 @@ namespace KinveyXamarin
 		ERROR_METHOD_NOT_IMPLEMENTED,
 
 		/// <summary>
+		/// Error code for a backend custom endpoint problem.
+		/// </summary>
+		ERROR_CUSTOM_ENDPOINT_ERROR,
+
+		/// <summary>
 		/// General error condition
 		/// </summary>
 		ERROR_GENERAL

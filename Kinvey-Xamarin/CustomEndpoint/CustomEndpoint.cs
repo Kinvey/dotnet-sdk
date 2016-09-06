@@ -115,7 +115,7 @@ namespace KinveyXamarin
 			}
 			catch (Exception e)
 			{
-				//throw new KinveyException(EnumErrorCategory, EnumErrorCode, "", e);
+				throw new KinveyException(EnumErrorCategory.ERROR_CUSTOM_ENDPOINT, EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR, "", e);
 			}
 
 			return result;
@@ -142,7 +142,7 @@ namespace KinveyXamarin
 			}
 			catch (Exception e)
 			{
-				//throw new KinveyException(EnumErrorCategory, EnumErrorCode, "", e);
+				throw new KinveyException(EnumErrorCategory.ERROR_CUSTOM_ENDPOINT, EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR, "", e);
 			}
 
 			return result;
