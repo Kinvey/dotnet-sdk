@@ -26,21 +26,7 @@ namespace KinveyXamarin
 
 		private AbstractClient client;
 
-//		private string clientAppVersion = null;
-
 		private JObject customRequestProperties = new JObject();
-
-//		public void SetClientAppVersion(string appVersion){
-//			this.clientAppVersion = appVersion;	
-//		}
-//
-//		public void SetClientAppVersion(int major, int minor, int revision){
-//			SetClientAppVersion(major + "." + minor + "." + revision);
-//		}
-//
-//		public string GetClientAppVersion(){
-//			return this.clientAppVersion;
-//		}
 
 		/// <summary>
 		/// Sets the custom request properties.
@@ -136,8 +122,9 @@ namespace KinveyXamarin
 			CustomEndpointRequest<I, O> custom = new CustomEndpointRequest<I, O>(client, endpoint, input, urlParameters);
 
 			client.InitializeRequest(custom);
-			//custom.clientAppVersion = this.GetClientAppVersion ();
+
 			custom.customRequestHeaders = GetCustomRequestProperties();
+
 			return custom;
 		}
 	}
