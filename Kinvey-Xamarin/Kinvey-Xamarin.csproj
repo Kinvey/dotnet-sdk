@@ -54,7 +54,6 @@
     <Compile Include="Model\KinveyReference.cs" />
     <Compile Include="Model\PingResponse.cs" />
     <Compile Include="Model\ThirdPartyIdentity.cs" />
-    <Compile Include="CustomEndpoint\AsyncCustomEndpoint.cs" />
     <Compile Include="Model\KinveyFile.cs" />
     <Compile Include="Model\AccessControlList.cs" />
     <Compile Include="Query\KinveyQueryExecutor.cs" />
@@ -115,6 +114,7 @@
     <Compile Include="Store\FindAggregateRequest.cs" />
     <Compile Include="Store\EnumReduceFunction.cs" />
     <Compile Include="Model\GroupAggregationResults.cs" />
+    <Compile Include="CustomEndpoint\CustomEndpointRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
