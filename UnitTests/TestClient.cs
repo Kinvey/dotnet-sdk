@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 using KinveyXamarin;
+using Newtonsoft.Json.Linq;
 
 namespace UnitTestFramework
 {
@@ -126,6 +127,36 @@ namespace UnitTestFramework
 			Assert.IsNotNull(pr);
 			Assert.IsNull(pr.kinvey);
 			Assert.IsNull(pr.version);
+		}
+
+		[Test]
+		public async Task TestCustomEndpoint()
+		{
+			// Arrange
+			new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
+				.build();
+
+			if (!Client.SharedClient.IsUserLoggedIn())
+			{
+				await User.LoginAsync(TestSetup.user, TestSetup.pass);
+			}
+
+			// Act
+			JObject obj = new JObject();
+			obj.Add("input", 1);
+
+			CustomEndpoint<JObject, ToDo> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo>();
+			var result = await ce.ExecuteCustomEndpoint("test", obj);
+			string outputstr= result.DueDate;
+			int output = int.Parse(outputstr);
+
+			// Assert
+			Assert.AreEqual(2, output);
+
+			// Teardown
+			Client.SharedClient.ActiveUser.Logout();
 		}
 	}
 }

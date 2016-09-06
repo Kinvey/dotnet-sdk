@@ -19,7 +19,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Executes a custom endpoint expecting a single result
 	/// </summary>
-	public class CustomCommand<I, O> : AbstractKinveyClientRequest<O>
+	public class CustomEndpointRequest<I, O> : AbstractKinveyClientRequest<O>
 	{
 		private const string REST_PATH = "rpc/{appKey}/custom/{endpoint}";
 
@@ -36,7 +36,7 @@ namespace KinveyXamarin
 		/// <param name="endpoint">Endpoint.</param>
 		/// <param name="input">Input.</param>
 		/// <param name="urlProperties">URL properties.</param>
-		public CustomCommand(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
+		public CustomEndpointRequest(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties)
 		{
 			this.endpoint = endpoint;
@@ -46,7 +46,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Executes a custom endpoint expecting an array of results
 	/// </summary>
-	public class CustomCommandArray<I, O> : AbstractKinveyClientRequest<O[]>
+	public class CustomEndpointArrayRequest<I, O> : AbstractKinveyClientRequest<O[]>
 	{
 		private const string REST_PATH = "rpc/{appKey}/custom/{endpoint}";
 
@@ -63,7 +63,7 @@ namespace KinveyXamarin
 		/// <param name="endpoint">Endpoint.</param>
 		/// <param name="input">Input.</param>
 		/// <param name="urlProperties">URL properties.</param>
-		public CustomCommandArray(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
+		public CustomEndpointArrayRequest(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties)
 		{
 			this.endpoint = endpoint;

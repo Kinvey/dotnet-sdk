@@ -154,13 +154,13 @@ namespace KinveyXamarin
 		/// <returns>The custom endpoint blocking.</returns>
 		/// <param name="endpoint">Endpoint.</param>
 		/// <param name="input">Input.</param>
-		internal CustomCommand<I, O> BuildCustomEnpointRequest(string endpoint, I input)
+		internal CustomEndpointRequest<I, O> BuildCustomEnpointRequest(string endpoint, I input)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("endpoint", endpoint);
 
-			CustomCommand<I, O> custom = new CustomCommand<I, O>(client, endpoint, input, urlParameters);
+			CustomEndpointRequest<I, O> custom = new CustomEndpointRequest<I, O>(client, endpoint, input, urlParameters);
 
 			client.InitializeRequest(custom);
 			//custom.clientAppVersion = this.GetClientAppVersion ();
@@ -174,13 +174,13 @@ namespace KinveyXamarin
 		/// <returns>The custom endpoint array blocking.</returns>
 		/// <param name="endpoint">Endpoint.</param>
 		/// <param name="input">Input.</param>
-		internal CustomCommandArray<I,O> BuildCustomEnpointArrayRequest(string endpoint, I input)
+		internal CustomEndpointArrayRequest<I, O> BuildCustomEnpointArrayRequest(string endpoint, I input)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("endpoint", endpoint);
 
-			CustomCommandArray<I, O> custom = new CustomCommandArray<I, O>(client, endpoint, input, urlParameters);
+			CustomEndpointArrayRequest<I, O> custom = new CustomEndpointArrayRequest<I, O>(client, endpoint, input, urlParameters);
 
 			client.InitializeRequest(custom);
 			//custom.clientAppVersion = this.GetClientAppVersion ();
