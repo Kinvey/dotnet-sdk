@@ -1367,7 +1367,7 @@ namespace UnitTestFramework
 
 			// Act
 			int sum = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
 			foreach (var gar in arrGAR)
 			{
 				sum = gar.Result;
@@ -1415,7 +1415,7 @@ namespace UnitTestFramework
 
 			// Act
 			int min = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", query);
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", query);
 			foreach (var gar in arrGAR)
 			{
 				min = gar.Result;
@@ -1460,7 +1460,7 @@ namespace UnitTestFramework
 
 			// Act
 			int max = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "LastName", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "LastName", "Age");
 			foreach (var gar in arrGAR)
 			{
 				if (gar.GroupField.Equals("Funke"))
@@ -1514,7 +1514,7 @@ namespace UnitTestFramework
 
 			// Act
 			int avg = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
 			foreach (var gar in arrGAR)
 			{
 				avg = gar.Result;
@@ -1562,7 +1562,7 @@ namespace UnitTestFramework
 
 			// Act
 			int sum = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "LastName", "Age", query);
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "LastName", "Age", query);
 			foreach (var gar in arrGAR)
 			{
 				if (gar.GroupField.Equals("Bluth"))
@@ -1611,7 +1611,7 @@ namespace UnitTestFramework
 
 			// Act
 			int min = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
 			foreach (var gar in arrGAR)
 			{
 				min = gar.Result;
@@ -1657,7 +1657,7 @@ namespace UnitTestFramework
 
 			// Act
 			int max = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
 			foreach (var gar in arrGAR)
 			{
 				max = gar.Result;
@@ -1709,7 +1709,7 @@ namespace UnitTestFramework
 
 			// Act
 			int avg = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
 			foreach (var gar in arrGAR)
 			{
 				avg = gar.Result;
@@ -1760,7 +1760,7 @@ namespace UnitTestFramework
 			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
 			int cacheSum = 0;
 			int sum = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query, new KinveyDelegate<List<GroupAggregationResults>>
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query, new KinveyDelegate<List<GroupAggregationResults>>
 			{
 				onSuccess = (result) => cacheResults.AddRange(result),
 				onError = (e) => Console.WriteLine(e.Message)
@@ -1819,7 +1819,7 @@ namespace UnitTestFramework
 			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
 			int cacheMin = 0;
 			int min = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
 			{
 				onSuccess = (result) => cacheResults.AddRange(result),
 				onError = (e) => Console.WriteLine(e.Message)
@@ -1878,7 +1878,7 @@ namespace UnitTestFramework
 			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
 			int cacheMax = 0;
 			int max = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
 			{
 				onSuccess = (result) => cacheResults.AddRange(result),
 				onError = (e) => Console.WriteLine(e.Message)
@@ -1943,7 +1943,7 @@ namespace UnitTestFramework
 			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
 			int cacheAvg = 0;
 			int avg = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.FindGroupAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
 			{
 				onSuccess = (result) => cacheResults.AddRange(result),
 				onError = (e) => Console.WriteLine(e.Message)
