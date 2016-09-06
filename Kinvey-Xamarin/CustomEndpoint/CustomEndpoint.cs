@@ -11,7 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
@@ -93,12 +95,66 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Executes the custom endpoint, expecting a single result
+		/// </summary>
+		/// <param name="endpoint">Endpoint name.</param>
+		/// <param name="input">Input object.</param>
+		/// <param name="client">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+		public async Task<O> ExecuteCustomEndpoint(string endpoint, I input, AbstractClient client = null)
+		{
+			this.client = client;
+			if (this.client == null)
+			{
+				this.client = Client.SharedClient;
+			}
+
+			O result = default(O);
+			try
+			{
+				result = await BuildCustomEnpointRequest(endpoint, input).ExecuteAsync();
+			}
+			catch (Exception e)
+			{
+				//throw new KinveyException(EnumErrorCategory, EnumErrorCode, "", e);
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Executes the custom endpoint, expecting a single result
+		/// </summary>
+		/// <param name="endpoint">Endpoint name.</param>
+		/// <param name="input">Input object.</param>
+		/// <param name="client">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+		public async Task<O[]> ExecuteCustomEndpointArray(string endpoint, I input, AbstractClient client = null)
+		{
+			this.client = client;
+			if (this.client == null)
+			{
+				this.client = Client.SharedClient;
+			}
+
+			O[] result = default(O[]);
+			try
+			{
+				result = await BuildCustomEnpointArrayRequest(endpoint, input).ExecuteAsync();
+			}
+			catch (Exception e)
+			{
+				//throw new KinveyException(EnumErrorCategory, EnumErrorCode, "", e);
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Executes the custom endpoint blocking.
 		/// </summary>
 		/// <returns>The custom endpoint blocking.</returns>
 		/// <param name="endpoint">Endpoint.</param>
 		/// <param name="input">Input.</param>
-		public CustomCommand<I, O> executeCustomEndpointBlocking(string endpoint, I input)
+		internal CustomCommand<I, O> BuildCustomEnpointRequest(string endpoint, I input)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -118,7 +174,7 @@ namespace KinveyXamarin
 		/// <returns>The custom endpoint array blocking.</returns>
 		/// <param name="endpoint">Endpoint.</param>
 		/// <param name="input">Input.</param>
-		public CustomCommandArray<I,O> executeCustomEndpointArrayBlocking(string endpoint, I input)
+		internal CustomCommandArray<I,O> BuildCustomEnpointArrayRequest(string endpoint, I input)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
