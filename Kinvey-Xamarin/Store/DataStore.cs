@@ -229,11 +229,11 @@ namespace KinveyXamarin
 		/// <param name="groupField">Property name of field to be used in grouping.</param>
 		/// <param name="aggregateField">Property name of field to be used in aggregation.  This is not necessary when using the <see cref="KinveyXamarin.EnumReduceFunction.REDUCE_FUNCTION_COUNT"/> method.</param>
 		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
-		/// <param name="cacheSum">Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
+		/// <param name="cacheDelegate">Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<GroupAggregationResults>> FindGroupAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<T> query = null, KinveyDelegate<int> cacheSum = null, CancellationToken ct = default(CancellationToken))
+		public async Task<List<GroupAggregationResults>> FindGroupAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<T> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
 		{
-			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheSum, query, groupField, aggregateField);
+			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
 			ct.ThrowIfCancellationRequested();
 			return await findByAggregateQueryRequest.ExecuteAsync();
 		}

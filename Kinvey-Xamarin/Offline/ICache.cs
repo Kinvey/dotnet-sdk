@@ -110,7 +110,7 @@ namespace KinveyXamarin
 
 		Task<KinveyDeleteResponse> DeleteAsync (string query);
 
-		int GetAggregateResult(EnumReduceFunction reduceFunction, string propertyName, Expression query);
+		List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query);
 
 		//Task<int> InsertEntityAsync (T entity);
 

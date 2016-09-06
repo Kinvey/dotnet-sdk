@@ -24,7 +24,7 @@ namespace KinveyXamarin
 	/// </summary>
 	public class FindAggregateRequest<T> : ReadRequest<T, List<GroupAggregationResults>>
 	{
-		KinveyDelegate<int> cacheDelegate;
+		KinveyDelegate<List<GroupAggregationResults>> cacheDelegate;
 		EnumReduceFunction reduceFunction;
 		string groupField;
 		string aggregateField;
@@ -48,7 +48,7 @@ namespace KinveyXamarin
 		                            ICache<T> cache,
 		                            ReadPolicy policy,
 		                            bool deltaSetFetchingEnabled,
-		                            KinveyDelegate<int> cacheDelegate,
+		                            KinveyDelegate<List<GroupAggregationResults>> cacheDelegate,
 		                            IQueryable<object> query,
 									string groupField,
 									string aggregateField)
@@ -102,16 +102,14 @@ namespace KinveyXamarin
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
 		}
 
-		private List<GroupAggregationResults> PerformLocalAggregateFind(KinveyDelegate<int> localDelegate = null)
+		private List<GroupAggregationResults> PerformLocalAggregateFind(KinveyDelegate<List<GroupAggregationResults>> localDelegate = null)
 		{
-			// TODO implement
-			int localResult = default(int);
 			List<GroupAggregationResults> localResults = new List<GroupAggregationResults>();
 			try
 			{
-				localResult = Cache.GetAggregateResult(reduceFunction, aggregateField, Query?.Expression);
+				localResults = Cache.GetAggregateResult(reduceFunction, groupField, aggregateField, Query?.Expression);
 
-				localDelegate?.onSuccess(localResult);
+				localDelegate?.onSuccess(localResults);
 			}
 			catch (Exception e)
 			{
