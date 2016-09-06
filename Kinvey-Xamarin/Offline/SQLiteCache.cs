@@ -215,37 +215,15 @@ namespace KinveyXamarin
 
 			try
 			{
+				Func<T, bool> func = ConvertQueryExpressionToFunction(expr);
 
-				if (expr.NodeType == ExpressionType.Call)
+				if (func != null)
 				{
-					MethodCallExpression mcb = expr as MethodCallExpression;
-
-					var args = mcb?.Arguments;
-					if (args.Count >= 2)
-					{
-						var nodeType = args[1]?.NodeType;
-						if (nodeType == ExpressionType.Quote)
-						{
-							UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
-
-							if (quote.Operand.NodeType == ExpressionType.Lambda)
-							{
-								LambdaExpression le = quote.Operand as LambdaExpression;
-								var comp = le.Compile();
-								MethodInfo mi = comp.GetMethodInfo();
-								if (mi.ReturnType == typeof(bool))
-								{
-									Func<T, bool> func = (Func<T, bool>)comp;
-									results = (from t in dbConnectionSync.Table<T>().Where(func)
-											   select t).ToList();
-								}
-								else
-								{
-									results = (from t in dbConnectionSync.Table<T>() select t).ToList();
-								}
-							}
-						}
-					}
+					results = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+				}
+				else
+				{
+					results = (from t in dbConnectionSync.Table<T>() select t).ToList();
 				}
 			}
 			catch (Exception e)
@@ -254,6 +232,201 @@ namespace KinveyXamarin
 			}
 
 			return results;
+		}
+
+		private Func<T, bool> ConvertQueryExpressionToFunction(Expression expr)
+		{
+			Func<T, bool> func = null;
+			if (expr?.NodeType == ExpressionType.Call)
+			{
+				MethodCallExpression mcb = expr as MethodCallExpression;
+
+				var args = mcb?.Arguments;
+				if (args.Count >= 2)
+				{
+					var nodeType = args[1]?.NodeType;
+					if (nodeType == ExpressionType.Quote)
+					{
+						UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+
+						if (quote.Operand.NodeType == ExpressionType.Lambda)
+						{
+							LambdaExpression le = quote.Operand as LambdaExpression;
+							var comp = le.Compile();
+							MethodInfo mi = comp.GetMethodInfo();
+							if (mi.ReturnType == typeof(bool))
+							{
+								func = (Func<T, bool>)comp;
+							}
+						}
+					}
+				}
+			}
+
+			return func;
+		}
+
+		private bool IsTypeNumber(Type type)
+		{
+			if (type == typeof(short) ||
+				type == typeof(int) ||
+				type == typeof(long) ||
+				type == typeof(Int16) ||
+				type == typeof(Int32) ||
+				type == typeof(Int64) ||
+				type == typeof(UInt16) ||
+				type == typeof(UInt32) ||
+				type == typeof(UInt64))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		public List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query)
+		{
+			List<GroupAggregationResults> localAggregateResults = new List<GroupAggregationResults>();
+			List<object> listValues = new List<object>();
+
+			PropertyInfo propInfo = typeof(T).GetRuntimeProperty(aggregateField);
+
+			if (propInfo != null &&
+				IsTypeNumber(propInfo.PropertyType))
+			{
+				Func<T, bool> func = ConvertQueryExpressionToFunction(query);
+
+				if (String.IsNullOrEmpty(groupField))
+				{
+					// Not grouping results be a specified field, so just aggregate over all entities
+					// that pass through the query filter, if provided.
+					GroupAggregationResults gar = new GroupAggregationResults();
+					gar.GroupField = null;
+
+					if (func != null)
+					{
+						listValues = (from t in dbConnectionSync.Table<T>().Where(func) select t.GetType().GetRuntimeProperty(aggregateField).GetValue(t, null)).ToList();
+					}
+					else
+					{
+						listValues = (from t in dbConnectionSync.Table<T>() select t.GetType().GetRuntimeProperty(aggregateField).GetValue(t, null)).ToList();
+					}
+
+					switch (reduceFunction)
+					{
+						case EnumReduceFunction.REDUCE_FUNCTION_SUM:
+							foreach (int val in listValues)
+							{
+								gar.Result += val;
+							}
+							break;
+
+						case EnumReduceFunction.REDUCE_FUNCTION_MIN:
+							gar.Result = int.MaxValue;
+							foreach (int val in listValues)
+							{
+								gar.Result = Math.Min(gar.Result, val);
+							}
+							break;
+
+						case EnumReduceFunction.REDUCE_FUNCTION_MAX:
+							gar.Result = int.MinValue;
+							foreach (int val in listValues)
+							{
+								gar.Result = Math.Max(gar.Result, val);
+							}
+							break;
+
+						case EnumReduceFunction.REDUCE_FUNCTION_AVERAGE:
+							int count = 0;
+							int total = 0;
+							foreach (int val in listValues)
+							{
+								total += val;
+								count++;
+							}
+							gar.Result = total / count;
+							break;
+
+						default:
+							// TODO throw new KinveyException
+							break;
+					}
+
+					localAggregateResults.Add(gar);
+				}
+				else
+				{
+					// A grouping field was supplied, so aggregate
+					// result per group created on the group field
+					IEnumerable<IGrouping<object, T>> grouplist;
+					if (func != null)
+					{
+						grouplist = from t in dbConnectionSync.Table<T>().Where(func)
+									group t by t.GetType().GetRuntimeProperty(groupField).GetValue(t, null);
+					}
+					else
+					{
+						grouplist = from t in dbConnectionSync.Table<T>()
+									group t by t.GetType().GetRuntimeProperty(groupField).GetValue(t, null);
+					}
+
+					foreach (var grouping in grouplist)
+					{
+						int result = 0;
+						listValues = (from x in grouping select x.GetType().GetRuntimeProperty(aggregateField).GetValue(x, null)).ToList();
+
+						GroupAggregationResults gar = new GroupAggregationResults();
+						gar.GroupField = grouping.Key.ToString();
+
+						switch (reduceFunction)
+						{
+							case EnumReduceFunction.REDUCE_FUNCTION_SUM:
+								foreach (int val in listValues)
+								{
+									result += val;
+								}
+								break;
+
+							case EnumReduceFunction.REDUCE_FUNCTION_MIN:
+								result = int.MaxValue;
+								foreach (int val in listValues)
+								{
+									result = Math.Min(result, val);
+								}
+								break;
+
+							case EnumReduceFunction.REDUCE_FUNCTION_MAX:
+								result = int.MinValue;
+								foreach (int val in listValues)
+								{
+									result = Math.Max(result, val);
+								}
+								break;
+
+							case EnumReduceFunction.REDUCE_FUNCTION_AVERAGE:
+								int count = 0;
+								int total = 0;
+								foreach (int val in listValues)
+								{
+									total += val;
+									count++;
+								}
+								result = total / count;
+								break;
+
+							default:
+								// TODO throw new KinveyException
+								break;
+						}
+
+						gar.Result = result;
+						localAggregateResults.Add(gar);
+					}
+				}
+			}
+
+			return localAggregateResults;
 		}
 
 		public async Task<List<T>> GetAsync(string query)

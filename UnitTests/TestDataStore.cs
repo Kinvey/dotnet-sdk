@@ -18,7 +18,7 @@ namespace UnitTestFramework
 		private const string collectionName = "ToDos";
 
 		[SetUp]
-		public void Setup ()
+		public void Setup()
 		{
 			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
@@ -27,7 +27,7 @@ namespace UnitTestFramework
 		}
 
 		[TearDown]
-		public void Tear ()
+		public void Tear()
 		{
 			kinveyClient.ActiveUser?.Logout();
 			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
@@ -56,8 +56,8 @@ namespace UnitTestFramework
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 
 			// Assert
-			Assert.NotNull (todoStore);
-			Assert.True (string.Equals (todoStore.CollectionName, collectionName));
+			Assert.NotNull(todoStore);
+			Assert.True(string.Equals(todoStore.CollectionName, collectionName));
 		}
 
 		[Test]
@@ -202,23 +202,24 @@ namespace UnitTestFramework
 			// Setup
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient> ();
-			RestSharp.IRestResponse resp = new RestSharp.RestResponse ();
+			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient>();
+			RestSharp.IRestResponse resp = new RestSharp.RestResponse();
 			resp.Content = "MOCK RESPONSE";
 			moqRC.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(resp);
 
-			Client c = new Client.Builder (TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath (TestSetup.db_dir)
-				.setOfflinePlatform (new SQLite.Net.Platform.Generic.SQLitePlatformGeneric ())
+			Client c = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
 				.SetRestClient(moqRC.Object)
-				.build ();
+				.build();
 
 			// Arrange
 			DataStore<ToDo> store = DataStore<ToDo>.Collection("todos", DataStoreType.NETWORK, c);
 
 			// Act
 			// Assert
-			Exception er = Assert.CatchAsync(async delegate () {
+			Exception er = Assert.CatchAsync(async delegate ()
+			{
 				await store.FindAsync();
 			});
 
@@ -227,7 +228,7 @@ namespace UnitTestFramework
 			Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
 
 			// Teardown
-			c.ActiveUser.Logout ();
+			c.ActiveUser.Logout();
 		}
 
 		[Test]
@@ -370,76 +371,76 @@ namespace UnitTestFramework
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestNetworkStoreFindByIDsAsync()
 		{
-//			// Setup
-//			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
-//
-//			// Arrange
-//			ToDo newItem = new ToDo();
-//			newItem.Name = "Next Task";
-//			newItem.Details = "A test";
-//			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-//			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
-//			ToDo t = await todoStore.SaveAsync(newItem);
-//
-//			ToDo anotherNewItem = new ToDo();
-//			anotherNewItem.Name = "Another Next Task";
-//			anotherNewItem.Details = "Another test";
-//			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
-//			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
-//
-//			List<string> listFind = new List<string>();
-//			listFind.Add(t.ID);
-//			listFind.Add(t2.ID);
-//
-//			// Act
-//			List<ToDo> todoList = await todoStore.FindByIDsAsync(listFind);
-//
-//			// Assert
-//			Assert.NotNull(todoList);
-//			Assert.AreEqual(2, todoList.Count);
-//
-//			// Teardown
-//			await todoStore.RemoveAsync(t.ID);
-//			await todoStore.RemoveAsync(t2.ID);
-//			kinveyClient.CurrentUser.Logout();
+			//			// Setup
+			//			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			//
+			//			// Arrange
+			//			ToDo newItem = new ToDo();
+			//			newItem.Name = "Next Task";
+			//			newItem.Details = "A test";
+			//			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			//			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.NETWORK);
+			//			ToDo t = await todoStore.SaveAsync(newItem);
+			//
+			//			ToDo anotherNewItem = new ToDo();
+			//			anotherNewItem.Name = "Another Next Task";
+			//			anotherNewItem.Details = "Another test";
+			//			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			//			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+			//
+			//			List<string> listFind = new List<string>();
+			//			listFind.Add(t.ID);
+			//			listFind.Add(t2.ID);
+			//
+			//			// Act
+			//			List<ToDo> todoList = await todoStore.FindByIDsAsync(listFind);
+			//
+			//			// Assert
+			//			Assert.NotNull(todoList);
+			//			Assert.AreEqual(2, todoList.Count);
+			//
+			//			// Teardown
+			//			await todoStore.RemoveAsync(t.ID);
+			//			await todoStore.RemoveAsync(t2.ID);
+			//			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestSyncStoreFindByIDsAsync()
 		{
-//			// Setup
-//			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
-//
-//			// Arrange
-//			ToDo newItem = new ToDo();
-//			newItem.Name = "Next Task";
-//			newItem.Details = "A test";
-//			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-//			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
-//			ToDo t = await todoStore.SaveAsync(newItem);
-//
-//			ToDo anotherNewItem = new ToDo();
-//			anotherNewItem.Name = "Another Next Task";
-//			anotherNewItem.Details = "Another test";
-//			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
-//			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
-//
-//			List<string> listFind = new List<string>();
-//			listFind.Add(t.ID);
-//			listFind.Add(t2.ID);
-//
-//			// Act
-//			List<ToDo> todoList = await todoStore.FindByIDsAsync(listFind);
-//
-//			// Assert
-//			Assert.NotNull(todoList);
-//			Assert.AreEqual(2, todoList.Count);
-//
-//			// Teardown
-//			await todoStore.RemoveAsync(t.ID);
-//			await todoStore.RemoveAsync(t2.ID);
-//			kinveyClient.CurrentUser.Logout();
+			//			// Setup
+			//			await kinveyClient.CurrentUser.LoginAsync(TestSetup.user, TestSetup.pass);
+			//
+			//			// Arrange
+			//			ToDo newItem = new ToDo();
+			//			newItem.Name = "Next Task";
+			//			newItem.Details = "A test";
+			//			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			//			DataStore<ToDo> todoStore = kinveyClient.AppData<ToDo>(collectionName, DataStoreType.SYNC);
+			//			ToDo t = await todoStore.SaveAsync(newItem);
+			//
+			//			ToDo anotherNewItem = new ToDo();
+			//			anotherNewItem.Name = "Another Next Task";
+			//			anotherNewItem.Details = "Another test";
+			//			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			//			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+			//
+			//			List<string> listFind = new List<string>();
+			//			listFind.Add(t.ID);
+			//			listFind.Add(t2.ID);
+			//
+			//			// Act
+			//			List<ToDo> todoList = await todoStore.FindByIDsAsync(listFind);
+			//
+			//			// Assert
+			//			Assert.NotNull(todoList);
+			//			Assert.AreEqual(2, todoList.Count);
+			//
+			//			// Teardown
+			//			await todoStore.RemoveAsync(t.ID);
+			//			await todoStore.RemoveAsync(t2.ID);
+			//			kinveyClient.CurrentUser.Logout();
 		}
 
 		[Test]
@@ -1014,7 +1015,7 @@ namespace UnitTestFramework
 
 			// Act
 			var query = from todo in todoStore
-					where todo.DueDate.Equals("2016-04-22T19:56:00.963Z") && (todo.Name.StartsWith("a to") || todo.Details.Equals("details for 2"))
+						where todo.DueDate.Equals("2016-04-22T19:56:00.963Z") && (todo.Name.StartsWith("a to") || todo.Details.Equals("details for 2"))
 						select todo;
 
 			List<ToDo> listToDo = new List<ToDo>();
@@ -1301,7 +1302,7 @@ namespace UnitTestFramework
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
 
-			ToDo newItem2 = new ToDo ();
+			ToDo newItem2 = new ToDo();
 			newItem2.Name = "another todo";
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
@@ -1309,11 +1310,10 @@ namespace UnitTestFramework
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 			ToDo t1 = await todoStore.SaveAsync(newItem);
-			ToDo t2 = await todoStore.SaveAsync (newItem2);
-
-			uint count = 0;
+			ToDo t2 = await todoStore.SaveAsync(newItem2);
 
 			// Act
+			uint count = 0;
 			count = await todoStore.GetCountAsync();
 
 			// Assert
@@ -1335,6 +1335,642 @@ namespace UnitTestFramework
 			// Act
 
 			// Assert
+		}
+
+		[Test]
+		public async Task TestSyncStoreGetSumAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+
+			// Act
+			int sum = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
+			foreach (var gar in arrGAR)
+			{
+				sum = gar.Result;
+				break;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, sum);
+			Assert.AreEqual(55, sum);
+			Assert.AreEqual(1, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestSyncStoreGetMinAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+
+			// Act
+			int min = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", query);
+			foreach (var gar in arrGAR)
+			{
+				min = gar.Result;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, min);
+			Assert.AreEqual(15, min);
+			Assert.AreEqual(1, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestSyncStoreGetMaxAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			// Act
+			int max = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "LastName", "Age");
+			foreach (var gar in arrGAR)
+			{
+				if (gar.GroupField.Equals("Funke"))
+				{
+					max = gar.Result;
+				}
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, max);
+			Assert.AreEqual(46, max);
+			Assert.AreEqual(2, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestSyncStoreGetAverageAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			Person p4 = new Person();
+			p4.FirstName = "Buster";
+			p4.LastName = "Bluth";
+			p4.Age = 19;
+			p4 = await personStore.SaveAsync(p4);
+
+			// Act
+			int avg = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				avg = gar.Result;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p4.ID);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, avg);
+			Assert.AreEqual(30, avg);
+			Assert.AreEqual(1, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestNetworkStoreGetSumAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+
+			// Act
+			int sum = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "LastName", "Age", query);
+			foreach (var gar in arrGAR)
+			{
+				if (gar.GroupField.Equals("Bluth"))
+				{
+					sum = gar.Result;
+					break;
+				}
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, sum);
+			Assert.AreEqual(55, sum);
+			Assert.AreEqual(1, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestNetworkStoreGetMinAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			// Act
+			int min = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				min = gar.Result;
+				break;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, min);
+			Assert.AreEqual(15, min);
+			Assert.AreEqual(1, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestNetworkStoreGetMaxAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			// Act
+			int max = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				max = gar.Result;
+				break;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, max);
+			Assert.AreEqual(46, max);
+			Assert.AreEqual(1, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestNetworkStoreGetAverageAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			Person p4 = new Person();
+			p4.FirstName = "Buster";
+			p4.LastName = "Bluth";
+			p4.Age = 19;
+			p4 = await personStore.SaveAsync(p4);
+
+			// Act
+			int avg = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+			foreach (var gar in arrGAR)
+			{
+				avg = gar.Result;
+				break;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p4.ID);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, avg);
+			Assert.AreEqual(30, avg);
+			Assert.AreEqual(1, arrGAR.Count());
+		}
+
+		[Test]
+		public async Task TestCacheStoreGetSumAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+
+			// Act
+			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
+			int cacheSum = 0;
+			int sum = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query, new KinveyDelegate<List<GroupAggregationResults>>
+			{
+				onSuccess = (result) => cacheResults.AddRange(result),
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			foreach (var result in cacheResults)
+			{
+				cacheSum += result.Result;
+			}
+
+			foreach (var result in arrGAR)
+			{
+				sum += result.Result;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, sum);
+			Assert.AreEqual(55, sum);
+			Assert.AreNotEqual(0, cacheSum);
+			Assert.AreEqual(55, cacheSum);
+			Assert.AreEqual(sum, cacheSum);
+		}
+
+		[Test]
+		public async Task TestCacheStoreGetMinAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			// Act
+			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
+			int cacheMin = 0;
+			int min = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
+			{
+				onSuccess = (result) => cacheResults.AddRange(result),
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			foreach (var result in cacheResults)
+			{
+				cacheMin += result.Result;
+			}
+
+			foreach (var result in arrGAR)
+			{
+				min += result.Result;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, min);
+			Assert.AreEqual(15, min);
+			Assert.AreNotEqual(0, cacheMin);
+			Assert.AreEqual(15, cacheMin);
+			Assert.AreEqual(min, cacheMin);
+		}
+
+		[Test]
+		public async Task TestCacheStoreGetMaxAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			// Act
+			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
+			int cacheMax = 0;
+			int max = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
+			{
+				onSuccess = (result) => cacheResults.AddRange(result),
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			foreach (var result in cacheResults)
+			{
+				cacheMax += result.Result;
+			}
+
+			foreach (var result in arrGAR)
+			{
+				max += result.Result;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, max);
+			Assert.AreEqual(46, max);
+			Assert.AreNotEqual(0, cacheMax);
+			Assert.AreEqual(46, cacheMax);
+			Assert.AreEqual(max, cacheMax);
+		}
+
+		[Test]
+		public async Task TestCacheStoreGetAverageAsync()
+		{
+			// Arrange
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.CACHE);
+
+			Person p1 = new Person();
+			p1.FirstName = "Michael";
+			p1.LastName = "Bluth";
+			p1.Age = 40;
+			p1 = await personStore.SaveAsync(p1);
+
+			Person p2 = new Person();
+			p2.FirstName = "George Michael";
+			p2.LastName = "Bluth";
+			p2.Age = 15;
+			p2 = await personStore.SaveAsync(p2);
+
+			Person p3 = new Person();
+			p3.FirstName = "Tobias";
+			p3.LastName = "Funke";
+			p3.Age = 46;
+			p3 = await personStore.SaveAsync(p3);
+
+			Person p4 = new Person();
+			p4.FirstName = "Buster";
+			p4.LastName = "Bluth";
+			p4.Age = 19;
+			p4 = await personStore.SaveAsync(p4);
+
+			// Act
+			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
+			int cacheAvg = 0;
+			int avg = 0;
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null, new KinveyDelegate<List<GroupAggregationResults>>
+			{
+				onSuccess = (result) => cacheResults.AddRange(result),
+				onError = (e) => Console.WriteLine(e.Message)
+			});
+
+			foreach (var result in cacheResults)
+			{
+				cacheAvg += result.Result;
+			}
+
+			foreach (var result in arrGAR)
+			{
+				avg += result.Result;
+			}
+
+			// Teardown
+			await personStore.RemoveAsync(p4.ID);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
+
+			// Assert
+			Assert.AreNotEqual(0, avg);
+			Assert.AreEqual(30, avg);
+			Assert.AreNotEqual(0, cacheAvg);
+			Assert.AreEqual(30, cacheAvg);
+			Assert.AreEqual(avg, cacheAvg);
 		}
 
 		[Test]

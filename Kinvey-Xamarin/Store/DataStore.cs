@@ -208,6 +208,8 @@ namespace KinveyXamarin
 			return await findByQueryRequest.ExecuteAsync();
 		}
 
+		#region Grouping/Aggregate Functions
+
 		/// <summary>
 		/// Gets a count of all the entities in a collection
 		/// </summary>
@@ -219,6 +221,24 @@ namespace KinveyXamarin
 			ct.ThrowIfCancellationRequested();
 			return await getCountRequest.ExecuteAsync();
 		}
+
+		/// <summary>
+		/// Gets the aggregate value, by grouping, of the values in the given entity field.
+		/// </summary>
+		/// <returns>The sum of the values of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
+		/// <param name="groupField">Property name of field to be used in grouping.</param>
+		/// <param name="aggregateField">Property name of field to be used in aggregation.  This is not necessary when using the <see cref="KinveyXamarin.EnumReduceFunction.REDUCE_FUNCTION_COUNT"/> method.</param>
+		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
+		/// <param name="cacheDelegate">Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<T> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
+		{
+			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
+			ct.ThrowIfCancellationRequested();
+			return await findByAggregateQueryRequest.ExecuteAsync();
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Save the specified entity to a Kinvey collection.
