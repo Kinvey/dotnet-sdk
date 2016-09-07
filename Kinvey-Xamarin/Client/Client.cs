@@ -82,8 +82,9 @@ namespace KinveyXamarin
 		/// <returns>A configured instance of the Custom Endpoint object.</returns>
 		/// <typeparam name="I">The Type of the input.</typeparam>
 		/// <typeparam name="O">The Type of the output.</typeparam>
-		public new AsyncCustomEndpoint<I, O> CustomEndpoint<I, O>(){
-			return new AsyncCustomEndpoint<I, O> (this);
+		public new CustomEndpoint<I, O> CustomEndpoint<I, O>()
+		{
+			return new CustomEndpoint<I, O>(this);
 		}
 
 		/// <summary>

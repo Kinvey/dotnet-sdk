@@ -54,6 +54,12 @@ namespace KinveyXamarin
 		ERROR_BACKEND,
 
 		/// <summary>
+		/// The error code associated with this category has to do with an error
+		/// received from thebackend because of an issue with a custom endpoint.
+		/// </summary>
+		ERROR_CUSTOM_ENDPOINT,
+
+		/// <summary>
 		/// General error category
 		/// </summary>
 		ERROR_GENERAL
