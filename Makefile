@@ -57,12 +57,12 @@ nuget-pack:
 	nuget pack Kinvey-Xamarin.nuspec
 	nuget pack Kinvey-Xamarin-iOS.nuspec
 	nuget pack Kinvey-Xamarin-Android.nuspec
-	
+
 nuget-push:
 	nuget setApiKey fd40b430-eb17-443f-b41a-b12391b86eca
-	nuget push Kinvey.$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin.nuspec).nupkg
-	nuget push Kinvey-ios.$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin-iOS.nuspec).nupkg
-	nuget push Kinvey-Android.$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin-Android.nuspec).nupkg
+	nuget push Kinvey.$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin.nuspec).nupkg fd40b430-eb17-443f-b41a-b12391b86eca -Source https://www.nuget.org/api/v2/package
+	nuget push Kinvey-ios.$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin-iOS.nuspec).nupkg fd40b430-eb17-443f-b41a-b12391b86eca -Source https://www.nuget.org/api/v2/package
+	nuget push Kinvey-Android.$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin-Android.nuspec).nupkg fd40b430-eb17-443f-b41a-b12391b86eca -Source https://www.nuget.org/api/v2/package
 	
 show-version:
 	@cat Kinvey-Xamarin/Core/KinveyHeaders.cs | grep 'public static string VERSION = "\d.\d.\d";' | awk '{$$1=$$1;print}' | awk {'print $$6'} | sed s/[\"\;]//g | xargs echo 'KinveyHeaders.cs      '
