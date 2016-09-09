@@ -29,7 +29,7 @@ namespace KinveyXamarin
 		public class TableItem{
 			public string name { get; set;}
 		}
-			
+
 		/// <summary>
 		/// This maintains the entities themselves.
 		/// </summary>
@@ -56,7 +56,7 @@ namespace KinveyXamarin
 		/// This maintains a query and it's responses.
 		/// </summary>
 		public class QueryItem{
-			[PrimaryKey, AutoIncrement] 
+			[PrimaryKey, AutoIncrement] 	
 			public int key { get; set; } 
 			public string query { get; set; }
 			public string commaDelimitedIds { get; set; }
@@ -70,12 +70,14 @@ namespace KinveyXamarin
 		public class OfflineMetaData{
 			public string id;
 			public JObject customHeaders;
-			public string clientVersion;
+			//public string clientVersion;
 
-			public OfflineMetaData(string id, JObject customHeaders, string clientVersion){
+			//public OfflineMetaData(string id, JObject customHeaders, string clientVersion){
+			public OfflineMetaData(string id, JObject customHeaders)
+			{
 				this.id = id;
 				this.customHeaders = customHeaders;
-				this.clientVersion = clientVersion;
+				//this.clientVersion = clientVersion;
 			}
 
 			public OfflineMetaData(){}

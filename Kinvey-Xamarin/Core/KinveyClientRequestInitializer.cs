@@ -110,28 +110,11 @@ namespace KinveyXamarin
 			
 			if (!request.RequireAppCredentials)
 			{
-				if (credential == null)
+				if (credential == null ||
+					credential.UserId == null ||
+					credential.AuthToken == null)
 				{
-					string reason = "No Active User";
-					string fix = "Please login a user by calling myClient.User().Login( ... ) before retrying this request.";
-					string explanation = "credential is null";
-					throw new KinveyException(reason, fix, explanation);
-				}
-
-				if (credential.UserId == null)
-				{
-					string reason = "No Active User";
-					string fix = "Please login a user by calling myClient.User().Login( ... ) before retrying this request.";
-					string explanation = "credential user ID is null";
-					throw new KinveyException(reason, fix, explanation);
-				}
-
-				if (credential.AuthToken == null)
-				{
-					string reason = "No Active User";
-					string fix = "Please login a user by calling myClient.User().Login( ... ) before retrying this request.";
-					string explanation = "credential auth token is null";
-					throw new KinveyException(reason, fix, explanation);
+					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_NO_ACTIVE, "");
 				}
 			}
 

@@ -3,11 +3,14 @@ VERSION=$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin.nuspec)
 all: clean build doc
 	
 build:
-	xbuild /p:Configuration=Release Android-Libtester/Android-Libtester.csproj
 	xbuild /p:Configuration=Release Kinvey-Xamarin/Kinvey-Xamarin.csproj
 	xbuild /p:Configuration=Release Kinvey-Xamarin-iOS/Kinvey-Xamarin-iOS.csproj
 	xbuild /p:Configuration=Release Kinvey-Xamarin-Android/Kinvey-Xamarin-Android.csproj
-	
+
+test:
+	xbuild /p:Configuration=Release UnitTestFramework/UnitTestFramework.csproj
+	mono packages/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe UnitTestFramework/bin/Release/UnitTestFramework.dll
+
 doc:
 	mdoc update \
 		-L packages/Microsoft.Bcl.1.1.10/lib/net40 \
@@ -44,6 +47,8 @@ pack:
 	cp Kinvey-Utils/bin/Release/Kinvey-Utils.dll release/kinvey-xamarin-$(VERSION)
 	cp Kinvey-Xamarin/bin/Release/Kinvey-Xamarin.dll release/kinvey-xamarin-$(VERSION)
 	cp Kinvey-Xamarin/bin/Release/RestSharp.Portable.dll release/kinvey-xamarin-$(VERSION)
+	cp Kinvey-Xamarin-Android/bin/Release/Kinvey-Xamarin-Android.dll release/kinvey-xamarin-$(VERSION)
+	cp Kinvey-Xamarin-iOS/bin/Release/Kinvey-Xamarin-iOS.dll release/kinvey-xamarin-$(VERSION)
 	cp LICENSE.txt release/kinvey-xamarin-$(VERSION)
 	cp README.txt release/kinvey-xamarin-$(VERSION)
 	cd release; zip -r kinvey-xamarin-$(VERSION).zip kinvey-xamarin-$(VERSION)
@@ -52,7 +57,7 @@ nuget-pack:
 	nuget pack Kinvey-Xamarin.nuspec
 	nuget pack Kinvey-Xamarin-iOS.nuspec
 	nuget pack Kinvey-Xamarin-Android.nuspec
-	
+
 nuget-push:
 	nuget setApiKey fd40b430-eb17-443f-b41a-b12391b86eca
 	nuget push Kinvey.$(shell xml sel -t -v package/metadata/version Kinvey-Xamarin.nuspec).nupkg fd40b430-eb17-443f-b41a-b12391b86eca -Source https://www.nuget.org/api/v2/package
@@ -112,7 +117,7 @@ deploy-reference:
 
 clean:
 	rm -Rf api
-	rm -Rf Android-Libtester/bin
 	rm -Rf Kinvey-Xamarin/bin
 	rm -Rf Kinvey-Xamarin-iOS/bin
 	rm -Rf Kinvey-Xamarin-Android/bin
+	rm -Rf UnitTestFramework/bin

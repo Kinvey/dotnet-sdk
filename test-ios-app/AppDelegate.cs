@@ -2,6 +2,7 @@
 using UIKit;
 
 using KinveyXamarin;
+using KinveyXamariniOS;
 using SQLite.Net.Platform.XamarinIOS;
 using System.Threading.Tasks;
 using System;
@@ -30,10 +31,8 @@ namespace testiosapp
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
 
-			//myClient = new Client.Builder ("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8") // tejas-test
-			//myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // mic-saml-test
-//			myClient = new Client.Builder ("kid_Wy35WH6X9e", "d85f81cad5a649baaa6fdcd99a108ab1") // new-mic-saml-test
-			myClient = new Client.Builder ("kid_bJJ16IVBXl", "26cf0a1101a24a8ead00636485b15c1a") // mic-headless-test
+			myClient = new Client.Builder ("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
+//			myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
 				.setFilePath(NSFileManager.DefaultManager.GetUrls (NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User) [0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setLogger(delegate(string msg) { Console.WriteLine(msg);})
@@ -44,7 +43,7 @@ namespace testiosapp
 		}
 
 		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation){
-			return KinveyXamariniOS.UserExtension.OnOAuthCallbackRecieved (myClient.User(), url);
+			return myClient.ActiveUser.OnOAuthCallbackRecieved (url);
 		}
 
 		private async Task<User> DoStuff()
@@ -59,55 +58,26 @@ namespace testiosapp
 //			await myClient.CurrentUser.CreateAsync ("Lindsay Bluth", "me", last_name);
 //			await myClient.CurrentUser.CreateAsync ("Maeby Bluth", "Surely", last_name);
 
-//			User user = myClient.CurrentUser;
+			User user = myClient.ActiveUser;
 			try
 			{
-//				if (!myClient.User().isUserLoggedIn ()) {
-//					//user = await myClient.CurrentUser.LoginAsync ("test", "test");
-////					string redirectURI = "http://localhost:9000/callback"; // tejas-test
-//					string redirectURI = "kinveyAuthDemo://"; // mic-saml-test
-////					myClient.User().setMICApiVersion("v2");
-//					myClient.User().LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>{
-//						onSuccess = (user) => {
-//							Console.WriteLine("logged in as: " + myClient.User().Id);
-//						},
-//						onError = (error) => {
-//							Console.WriteLine("Error with MIC Login");
-//						},
-//						OnReadyToRender = (url) => {
-//							UIApplication.SharedApplication.OpenUrl(new NSUrl(url));
-//						}
+				if (myClient.IsUserLoggedIn())
+				{
+					user = await User.LoginAsync ("test", "test", myClient);
+
+//					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
+//						onSuccess = (loggedInUser) => { user = loggedInUser; },
+//						onError = (e) => { Console.WriteLine("Error with MIC Login"); },
+//						onReadyToRender = (url) => { UIApplication.SharedApplication.OpenUrl(new NSUrl(url)); }
 //					});
-//				}
-
-
-				if (!myClient.User().isUserLoggedIn ()) {
-				// headless MIC
-				string usernameHeadless = "custom";
-				string passwordHeadless = "1234";
-				string redirectURIHeadless = "kinveyAuthDemo://";
-
-//				myClient.User().setMICApiVersion("v2");
-
-				myClient.User().LoginWithAuthorizationCodeAPI(usernameHeadless, passwordHeadless, redirectURIHeadless, new KinveyMICDelegate<User>{
-					onSuccess = (user) => {
-						Console.WriteLine("[headless] logged in as: " + myClient.User().Id);
-					},
-					onError = (error) => {
-						Console.WriteLine("[headless] Error with MIC Login");
-					},
-					OnReadyToRender = (url) => {
-						UIApplication.SharedApplication.OpenUrl(new NSUrl(url));
-					}
-				});
 				}
 
 
 				string str = "Finished Launching.";
 				Console.WriteLine("VRG : " + str);
-				Console.WriteLine("VRG: Logged in as: " + myClient.CurrentUser.Id);
+				Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
 
-//				ManipulateData();
+				ManipulateData();
 
 //			// test GetCount(query)
 //			Console.WriteLine("VRG: Start GetCount(query) test.");
@@ -331,34 +301,28 @@ namespace testiosapp
 //			Console.WriteLine ("VRG: After DeleteAsync");
 
 			}
-			catch (KinveyJsonResponseException e)
-			{
-				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.Details.RequestID);
-				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Details.Description);
-				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Details.Error);
-				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Details.Debug);
-			}
 			catch (KinveyException e)
 			{
 				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
-				Console.WriteLine("VRG (exception caught) Exception Reason -> " + e.Reason);
-				Console.WriteLine("VRG (exception caught) Exception Explanation -> " + e.Explanation);
-				Console.WriteLine("VRG (exception caught) Exception Fix -> " + e.Fix);
+				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
+				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
+				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
 			}
-			return myClient.User();
+			return user;
 		}
 
-//		private async Task<DataStore<Book>> ManipulateData(){
-//			DataStore<Book> store = myClient.AppData<Book>("Book", DataStoreType.NETWORK);
-//			try{
-//				
-//				List<Book> books = await store.FindAsync();
-//
-//			} catch (Exception e){
-//				Console.Write (e);
-//			}
-//			return store;	
-//		}
+		private async Task<DataStore<Book>> ManipulateData(){
+			DataStore<Book> store = DataStore<Book>.Collection("Book", DataStoreType.NETWORK);
+			try{
+				
+				List<Book> listBooks = new List<Book>();
+				listBooks = await store.FindAsync();
+
+			} catch (Exception e){
+				Console.Write (e);
+			}
+			return store;	
+		}
 
 		public override void OnResignActivation (UIApplication application)
 		{
@@ -384,8 +348,6 @@ namespace testiosapp
 		{
 			// Restart any tasks that were paused (or not yet started) while the application was inactive. 
 			// If the application was previously in the background, optionally refresh the user interface.
-			AsyncAppData<Book> books = myClient.AppData<Book>("Book", typeof(Book));
-			books.GetAsync();
 		}
 
 		public override void WillTerminate (UIApplication application)

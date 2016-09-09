@@ -31,16 +31,6 @@ namespace KinveyXamarin
 	public class KinveyAuthRequest
     {
 		/// <summary>
-		/// Login type.
-		/// </summary>
-        public enum LoginType
-        {
-            IMPLICIT,
-            KINVEY,
-            THIRDPARTY
-        }
-
-		/// <summary>
 		/// Auth request payload
 		/// </summary>
         private class AuthRequestPayload
@@ -96,7 +86,7 @@ namespace KinveyXamarin
 		/// <param name="password">Password.</param>
 		/// <param name="user">User.</param>
 		/// <param name="create">If set to <c>true</c> create.</param>
-		public KinveyAuthRequest(AbstractKinveyClient client, HttpBasicAuthenticator auth, string appKey, string username, string password, User user, bool create)
+		public KinveyAuthRequest(AbstractKinveyClient client, HttpBasicAuthenticator auth, string appKey, string username, string password, Dictionary<string, JToken> customFieldsAndValues, User user, bool create)
 			
 		{
             this.client = client;
@@ -120,8 +110,17 @@ namespace KinveyXamarin
 					this.requestPayload.Add(entry.Key, entry.Value);
 				}
 
-            }
-            this.create = create;
+			}
+
+			if (customFieldsAndValues != null)
+			{
+				foreach (KeyValuePair<string, JToken> entry in customFieldsAndValues)
+				{
+					this.requestPayload.Add(entry.Key, entry.Value);
+				}
+			}
+
+			this.create = create;
             this.uriTemplateParameters = new Dictionary<string,string>();
             this.uriTemplateParameters.Add("appKey", appKey);
         }
@@ -200,9 +199,9 @@ namespace KinveyXamarin
 		/// Initializes the rest client.
 		/// </summary>
 		/// <returns>The rest client.</returns>
-        private RestClient InitializeRestClient()
+        private IRestClient InitializeRestClient()
         {
-			RestClient restClient = this.client.RestClient;
+			IRestClient restClient = this.client.RestClient;
 			restClient.BaseUrl = client.BaseUrl;
 			return restClient;
         }
@@ -213,7 +212,7 @@ namespace KinveyXamarin
 		/// <returns>The unparsed async.</returns>
 		public async Task<RestResponse> ExecuteUnparsedAsync()
 		{
-			RestClient client = InitializeRestClient();
+			IRestClient client = InitializeRestClient();
 			RestRequest request = BuildRestRequest();
 
 			var response = await client.ExecuteAsync(request);
@@ -223,61 +222,30 @@ namespace KinveyXamarin
 				return await ExecuteUnparsedAsync ();
 			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode >= 300 )
 			{
-				throw NewExceptionOnError(response);
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
 			}
 
 			return (RestResponse)response;
 		}
-
-
-		/// <summary>
-		/// Executes the request without parsing it.
-		/// </summary>
-		/// <returns>The unparsed.</returns>
-        public RestResponse ExecuteUnparsed()
-        {
-            RestClient client = InitializeRestClient();
-            RestRequest request = BuildRestRequest();
-
-			var req = client.ExecuteAsync(request);
-			var response = req.Result;
-
-			if ((int) response.StatusCode == 404 && this.create == false) {	//if user is not found, create a new user
-				this.create = true; 
-				return ExecuteUnparsed ();
-			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode >= 300 )
-			{
-				throw NewExceptionOnError(response);
-			}
-
-            return (RestResponse)response;
-        }
-
-		/// <summary>
-		/// Executes this request and parses the result.
-		/// </summary>
-		public KinveyAuthResponse Execute()
-        {
-			return JsonConvert.DeserializeObject<KinveyAuthResponse>( ExecuteUnparsed().Content);
-        }
-
 		/// <summary>
 		/// Executes this request async and parses the result.
 		/// </summary>
 		/// <returns>The async request.</returns>
 		public async Task<KinveyAuthResponse> ExecuteAsync()
 		{
-			return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
+			try
+			{
+				return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
+			}
+			catch (KinveyException JSONException)
+			{
+				throw JSONException;
+			}
+			catch (Exception e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_USER,	EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT, "Error deserializing response content.");
+			}
 		}
-		/// <summary>
-		/// Throw an expection when an error occurs.
-		/// </summary>
-		/// <returns>The exception.</returns>
-		/// <param name="response">Response.</param>
-        protected KinveyJsonResponseException NewExceptionOnError(IRestResponse response)
-        {
-            return KinveyJsonResponseException.From(response);
-        }
 
 		/// <summary>
 		/// Builder for an auth request.
@@ -297,6 +265,7 @@ namespace KinveyXamarin
 
             private string password;
 
+			private Dictionary<string, JToken> customFieldsAndValues;
 
             private string appKey;
 
@@ -310,7 +279,7 @@ namespace KinveyXamarin
 			/// <param name="appKey">App key.</param>
 			/// <param name="appSecret">App secret.</param>
 			/// <param name="user">User.</param>
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, User user)
+			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, User user = null)
             {
                 this.client = transport;
                 this.appKeyAuthentication = new HttpBasicAuthenticator(appKey, appSecret);
@@ -328,7 +297,7 @@ namespace KinveyXamarin
 			/// <param name="username">Username.</param>
 			/// <param name="password">Password.</param>
 			/// <param name="user">User.</param>
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, User user)
+			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, User user = null)
                 : this(transport, appKey, appSecret, user)
             {
 				this.client = transport;
@@ -336,11 +305,12 @@ namespace KinveyXamarin
 				this.appKey = appKey;
                 this.username = username;
                 this.password = password;
+				this.customFieldsAndValues = customFieldsAndValues;
 				this.user = user;
             }
 
 
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, ThirdPartyIdentity identity, User user)
+			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, ThirdPartyIdentity identity, User user = null)
 				: this(transport, appKey, appSecret, user)
 			{
 				this.identity = identity;
@@ -353,10 +323,13 @@ namespace KinveyXamarin
 			/// </summary>
             public KinveyAuthRequest build()
             {
-				if (identity == null) {
-					return new KinveyAuthRequest (Client, AppKeyAuthentication, AppKey, Username, Password, KinveyUser, this.create);
-				} else {
-					return new KinveyAuthRequest (Client, AppKeyAuthentication, AppKey, identity, KinveyUser, this.create);
+				if (identity == null)
+				{
+					return new KinveyAuthRequest(Client, AppKeyAuthentication, AppKey, Username, Password, CustomFieldsAndValues, KinveyUser, this.create);
+				}
+				else
+				{
+					return new KinveyAuthRequest(Client, AppKeyAuthentication, AppKey, identity, KinveyUser, this.create);
 				}
             }
 
@@ -389,6 +362,12 @@ namespace KinveyXamarin
                 get { return this.create; }
                 set { this.create = value; }
             }
+
+			public Dictionary<string, JToken> CustomFieldsAndValues
+			{
+				get { return customFieldsAndValues; }
+				set { this.customFieldsAndValues = value; }
+			}
 
 			/// <summary>
 			/// Gets or sets the kinvey user.

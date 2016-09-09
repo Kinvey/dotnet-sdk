@@ -12,8 +12,9 @@
 // contents is a violation of applicable laws.
 
 using System;
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using SQLite.Net;
 
 namespace KinveyXamarin
 {
@@ -22,7 +23,7 @@ namespace KinveyXamarin
 	/// JSON represention of the _acl fied present on every stored in Kinvey
 	/// </summary>
 	[JsonObject]
-	public class AccessControlList
+	public class AccessControlList : ISerializable<string>
 	{
 
 		/// <summary>
@@ -64,6 +65,10 @@ namespace KinveyXamarin
 
 		}
 
+		public string Serialize()
+		{
+			return JsonConvert.SerializeObject(this);
+		}
 	}
 
 }

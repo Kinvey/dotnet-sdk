@@ -14,7 +14,7 @@ namespace AndroidLibtester
 		string appkey = "123";
 		string appsecret = "123";
 		Client testClient;
-		AppData<MyEntity> testData;
+		DataStore<MyEntity> testData;
 		string myCollection = "myCollection";
 
 		[SetUp]
@@ -36,7 +36,7 @@ namespace AndroidLibtester
 		{
 
 			string someID = "some id";
-			AppData<MyEntity>.GetEntityRequest req = testData.GetEntityBlocking (someID);
+			DataStore<MyEntity>.GetEntityRequest req = testData.GetEntityBlocking (someID);
 
 			RestRequest restReq = req.BuildRestRequest ();
 			Assert.True (restReq.Method == Method.GET);
@@ -53,7 +53,7 @@ namespace AndroidLibtester
 		[Test()]
 		public void TestGetAll()
 		{
-			AppData<MyEntity>.GetRequest req = testData.GetBlocking ();
+			DataStore<MyEntity>.GetRequest req = testData.GetBlocking ();
 
 			RestRequest restReq = req.BuildRestRequest ();
 			Assert.True (restReq.Method == Method.GET);
@@ -71,7 +71,7 @@ namespace AndroidLibtester
 		public void TestSaveEntity()
 		{
 
-			AppData<MyEntity>.SaveRequest req = testData.SaveBlocking (new MyEntity());
+			DataStore<MyEntity>.SaveRequest req = testData.SaveBlocking (new MyEntity());
 
 			RestRequest restReq = req.BuildRestRequest ();
 			Assert.True (restReq.Method == Method.POST);
@@ -89,7 +89,7 @@ namespace AndroidLibtester
 		public void TestDeleteEntity()
 		{
 			string someID = "some id";
-			AppData<MyEntity>.DeleteRequest req = testData.DeleteBlocking (someID);
+			DataStore<MyEntity>.DeleteRequest req = testData.DeleteBlocking (someID);
 
 			RestRequest restReq = req.BuildRestRequest ();
 			Assert.True (restReq.Method == Method.DELETE);

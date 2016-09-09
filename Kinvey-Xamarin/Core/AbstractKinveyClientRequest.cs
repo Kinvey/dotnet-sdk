@@ -31,8 +31,9 @@ namespace KinveyXamarin
 	/// This is a client request to be sent to Kinvey
 	/// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class AbstractKinveyClientRequest<T>
+    public abstract class AbstractKinveyClientRequest<T>
     {
+		#region Properties and constructors
 		/// <summary>
 		/// the Kinvey Client which created this request.
 		/// </summary>
@@ -78,7 +79,9 @@ namespace KinveyXamarin
 		/// </summary>
         private IAuthenticator auth;
 
-		public String clientAppVersion { get; set;}
+		//TODO: this needs to be removed and instead the client should be passed around
+		//public String clientAppVersion { get; set;}
+
 		public JObject customRequestHeaders {get; set;}
 
 		/// <summary>
@@ -132,7 +135,7 @@ namespace KinveyXamarin
             this.uriResourceParameters = uriParameters;
             this.RequireAppCredentials = false;
 			this.customRequestHeaders = client.GetCustomRequestProperties();
-			this.clientAppVersion = client.GetClientAppVersion ();
+			//this.clientAppVersion = client.GetClientAppVersion ();
 			this.baseURL = baseURL;
 			this.PayloadType = new JSONPayload();
 			this.OverrideRedirect = false;
@@ -235,8 +238,10 @@ namespace KinveyXamarin
             get;
             set;
         }
-			
 
+		#endregion
+
+		#region Request building
 		/// <summary>
 		/// Builds the rest request.
 		/// </summary>
@@ -287,14 +292,14 @@ namespace KinveyXamarin
 			}
 
 			if (client.GetClientAppVersion () != null && client.GetClientAppVersion ().Length > 0) {
-				restRequest.AddHeader ("X-Kinvey-Client-App-Version", this.clientAppVersion);
+				restRequest.AddHeader ("X-Kinvey-Client-App-Version", client.GetClientAppVersion ());
 			}
 			if (client.GetCustomRequestProperties () != null && client.GetCustomRequestProperties ().Count > 0) {
 				string jsonHeaders = JsonConvert.SerializeObject (this.customRequestHeaders);
 				if (Encoding.UTF8.GetByteCount(jsonHeaders) < 2000){
 					restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", jsonHeaders);
 				}else{
-					throw new KinveyException("Cannot attach more than 2k of Custom Request Properties");
+					throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT, "");
 				}
 
 			}
@@ -314,9 +319,9 @@ namespace KinveyXamarin
 		/// Initializes the rest client.
 		/// </summary>
 		/// <returns>The rest client.</returns>
-        private RestClient InitializeRestClient()
+        private IRestClient InitializeRestClient()
         {
-            RestClient restClient = this.client.RestClient;
+            IRestClient restClient = this.client.RestClient;
 			restClient.BaseUrl = this.baseURL;
 
 			if (OverrideRedirect) {
@@ -326,23 +331,16 @@ namespace KinveyXamarin
             return restClient;
         }
 
-		/// <summary>
-		/// returns an Exception if Kinvey returns an error.
-		/// </summary>
-		/// <returns>The exception on error.</returns>
-		/// <param name="response">Response.</param>
-        protected KinveyJsonResponseException NewExceptionOnError(IRestResponse response)
-        {
-            return KinveyJsonResponseException.From(response);
-        }
+		#endregion
 
+		#region Request execution
 		/// <summary>
 		/// Executes the request without any parsing.
 		/// </summary>
 		/// <returns>The unparsed.</returns>
         public RestResponse ExecuteUnparsed()
         {
-            RestClient client = InitializeRestClient();
+            IRestClient client = InitializeRestClient();
             RestRequest request = BuildRestRequest();
 
             client.Authenticator = RequestAuth;
@@ -351,7 +349,7 @@ namespace KinveyXamarin
 			var response = req.Result;
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				KinveyException kinveyException = new KinveyException("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
+				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
@@ -364,48 +362,49 @@ namespace KinveyXamarin
                 lastResponseHeaders.Add(header);
             }
 
-			//process refresh token needed
-			if ((int)response.StatusCode == 401 && !hasRetryed){
-
-				//get the refresh token
-				Credential cred = Client.Store.Load(Client.User().Id);
-				String refreshToken = null;
-				string redirectUri = null;
-				if (cred != null){
-					refreshToken = cred.RefreshToken;
-					redirectUri = cred.RedirectUri;
-				}
-
-				if (refreshToken != null ){
-					//logout the current user
-
-					Client.User().logoutBlocking().Execute();
-
-					//use the refresh token for a new access token
-					JObject result = Client.User().UseRefreshToken(refreshToken, redirectUri).Execute();
-
-					//login with the access token
-					Provider provider = new Provider ();
-					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
-					User u = Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
-
-
-					//store the new refresh token
-					Credential currentCred = Client.Store.Load(Client.User().Id);
-					currentCred.RefreshToken = result["refresh_token"].ToString();
-					currentCred.RedirectUri = redirectUri;
-					Client.Store.Store(Client.User().Id, currentCred);
-					hasRetryed = true;
-					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
-					return ExecuteUnparsed();
-				}
-			}
+//			//process refresh token needed
+//			if ((int)response.StatusCode == 401 && !hasRetryed){
+//
+//				//get the refresh token
+//				Credential cred = Client.Store.Load(Client.User().Id);
+//				String refreshToken = null;
+//				string redirectUri = null;
+//				if (cred != null){
+//					refreshToken = cred.RefreshToken;
+//					redirectUri = cred.RedirectUri;
+//				}
+//
+//				if (refreshToken != null )
+//				{
+//					//logout the current user
+//					Client.User().Logout(); // TODO is this a potential deadlock?
+//
+//					//use the refresh token for a new access token
+//					// TODO this method must be deleted once everything is async
+//					JObject result = Client.User().UseRefreshToken(refreshToken, redirectUri).Execute();
+//
+//					//login with the access token
+//					Provider provider = new Provider ();
+//					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
+//					User u = Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
+//
+//
+//					//store the new refresh token
+//					Credential currentCred = Client.Store.Load(Client.User().Id);
+//					currentCred.RefreshToken = result["refresh_token"].ToString();
+//					currentCred.RedirectUri = redirectUri;
+//					Client.Store.Store(Client.User().Id, currentCred);
+//					hasRetryed = true;
+//					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
+//					return ExecuteUnparsed();
+//				}
+//			}
 
 
 			if (response.ErrorException != null || ((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302)
             {
-                throw NewExceptionOnError(response);
-            }
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
+			}
 
 
             return (RestResponse) response;
@@ -414,7 +413,7 @@ namespace KinveyXamarin
 
 		public async Task<RestResponse> ExecuteUnparsedAsync()
 		{
-			RestClient client = InitializeRestClient();
+			IRestClient client = InitializeRestClient();
 			RestRequest request = BuildRestRequest();
 
 			client.Authenticator = RequestAuth;
@@ -422,7 +421,7 @@ namespace KinveyXamarin
 			var response = await client.ExecuteAsync(request);
 
 			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				KinveyException kinveyException = new KinveyException("The response contained the `Content-Type` header with value: "+ response.ContentType.ToString() + ".   “application/json” expected.");
+				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
@@ -440,7 +439,7 @@ namespace KinveyXamarin
 			if ((int)response.StatusCode == 401 && !hasRetryed){
 
 				//get the refresh token
-				Credential cred = Client.Store.Load(Client.User().Id);
+				Credential cred = Client.Store.Load(Client.ActiveUser.Id);
 				String refreshToken = null;
 				string redirectUri = null;
 				if (cred != null){
@@ -448,24 +447,24 @@ namespace KinveyXamarin
 					redirectUri = cred.RedirectUri;
 				}
 
-				if (refreshToken != null ){
+				if (refreshToken != null )
+				{
 					//logout the current user
-
-					Client.User().logoutBlocking().Execute();
+					Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
 
 					//use the refresh token for a new access token
-					JObject result = await Client.User().UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
+					JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
 
 					//login with the access token
 					Provider provider = new Provider ();
 					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
-					User u = await Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).ExecuteAsync();
+					User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
 
 					//store the new refresh token
-					Credential currentCred = Client.Store.Load(Client.User().Id);
+					Credential currentCred = Client.Store.Load(Client.ActiveUser.Id);
 					currentCred.RefreshToken = result["refresh_token"].ToString();
 					currentCred.RedirectUri = redirectUri;
-					Client.Store.Store(Client.User().Id, currentCred);
+					Client.Store.Store(Client.ActiveUser.Id, currentCred);
 					hasRetryed = true;
 					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
 					var retryResponse = await ExecuteUnparsedAsync ();
@@ -475,7 +474,7 @@ namespace KinveyXamarin
 
 			if (response.ErrorException != null)
 			{
-				throw NewExceptionOnError(response);
+				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
 			}
 
 
@@ -490,10 +489,11 @@ namespace KinveyXamarin
         {
             var response = ExecuteUnparsed();
 
-			if (OverrideRedirect){
-				var locList = response.Headers.FirstOrDefault(HeaderToCheck => HeaderToCheck.Name.Equals("Location")).Value;
-				return onRedirect((locList as List<string>)[0]);
-			}
+			// TODO this method must be deleted once everything is async
+//			if (OverrideRedirect){
+//				var locList = response.Headers.FirstOrDefault(HeaderToCheck => HeaderToCheck.Name.Equals("Location")).Value;
+//				return onRedirect((locList as List<string>)[0]);
+//			}
 
             // special case to handle void or empty responses
 			if (response.Content == null) 
@@ -505,7 +505,7 @@ namespace KinveyXamarin
 				return JsonConvert.DeserializeObject<T>(response.Content);
             }
 			catch(JsonException ex){
-				KinveyException kinveyException = new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
+				KinveyException kinveyException = new KinveyException (EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
@@ -526,7 +526,7 @@ namespace KinveyXamarin
 			var response = await ExecuteUnparsedAsync();
 
 			if (OverrideRedirect){
-				return onRedirect(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.Equals("Location")).ToString());
+				return await onRedirectAsync(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.ToString().ToLower().Equals("location")).ToString());
 			}
 			// special case to handle void or empty responses
 			if (response.Content == null) 
@@ -538,7 +538,7 @@ namespace KinveyXamarin
 				return JsonConvert.DeserializeObject<T>(response.Content);
 			}
 			catch(JsonException ex){
-				KinveyException kinveyException = new KinveyException ("Unable to parse the json in the repsonse","examine BL or DLC to ensure data format is correct. If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)", ex.Message);
+				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
@@ -554,10 +554,14 @@ namespace KinveyXamarin
 			}
 		}
 
-		public virtual T onRedirect(String newLocation){
+		public virtual async Task<T> onRedirectAsync(String newLocation)
+		{
 			Logger.Log ("Override Redirect in response is expected, but not implemented!");  
 			return default(T);
 		}
+
+		#endregion
+
 
 		public abstract class RequestPayloadType{
 

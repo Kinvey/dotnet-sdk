@@ -11,13 +11,13 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.IO;
 using SQLite.Net.Interop;
 using SQLite.Net;
 using SQLite.Net.Attributes;
 using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace KinveyXamarin
 {
@@ -39,7 +39,8 @@ namespace KinveyXamarin
 		public SQLiteCredentialStore (ISQLitePlatform platform, string filepath)
 		{
 			string dbPath = Path.Combine (filepath, "kinvey_tokens.sqlite");
-			if (_dbConnection == null) {
+			if (_dbConnection == null)
+			{
 				_dbConnection = new SQLiteConnection (platform, dbPath);
 				_dbConnection.CreateTable<SQLCredential>();
 			}
@@ -53,10 +54,13 @@ namespace KinveyXamarin
 		/// <param name="userId">User identifier.</param>
 		public Credential Load (string userId)
 		{
-			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.userID == userId).FirstOrDefault ();
+			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.UserID == userId).FirstOrDefault ();
 			Credential cred = null;
-			if (sqlcred != null) {
-				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken, sqlcred.RedirectUri);
+			if (sqlcred != null)
+			{
+				Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
+				KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
 		}
@@ -70,8 +74,11 @@ namespace KinveyXamarin
 		{
 			Delete (userId);
 			SQLCredential cred = new SQLCredential();
-			cred.userID = credential.UserId;
+			cred.UserID = credential.UserId;
 			cred.AuthToken = credential.AuthToken;
+			cred.UserName = credential.UserName;
+			cred.Attributes = JsonConvert.SerializeObject(credential.Attributes);
+			cred.UserKMD = JsonConvert.SerializeObject(credential.UserKMD);
 			cred.RefreshToken = credential.RefreshToken;
 			cred.RedirectUri = credential.RedirectUri;
 			_dbConnection.Insert(cred);
@@ -86,11 +93,24 @@ namespace KinveyXamarin
 			_dbConnection.Delete<SQLCredential> (userId);
 		}
 
-		public Credential getActiveUser (){
+		public Credential getActiveUser ()
+		{
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
 			Credential cred = null;
-			if (sqlcred != null) {
-				cred =  new Credential (sqlcred.userID, sqlcred.AuthToken, sqlcred.RefreshToken, sqlcred.RedirectUri);
+			if (sqlcred != null)
+			{
+				Dictionary<string, JToken> attributes = null;
+				if (sqlcred.Attributes != null)
+				{
+					attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
+				}
+
+				KinveyUserMetaData kmd = null;
+				if (sqlcred.UserKMD != null)
+				{
+					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
+				}
+				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
 			return cred;
 		}
@@ -101,7 +121,8 @@ namespace KinveyXamarin
 	/// <summary>
 	/// SQL credential.
 	/// </summary>
-	public class SQLCredential{
+	public class SQLCredential
+	{
 		/// <summary>
 		/// Gets or sets the auth token.
 		/// </summary>
@@ -109,11 +130,17 @@ namespace KinveyXamarin
 		public string AuthToken { get; set;}
 
 		/// <summary>
-		/// Gets or sets the user I.
+		/// Gets or sets the user ID.
 		/// </summary>
 		/// <value>The user Id.</value>
 		[PrimaryKey]
-		public string userID {get; set;}
+		public string UserID { get; set; }
+
+		/// <summary>
+		/// Gets or sets the user name.
+		/// </summary>
+		/// <value>The redirect uri.</value>
+		public string UserName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the refresh token.
@@ -127,6 +154,12 @@ namespace KinveyXamarin
 		/// <value>The redirect uri.</value>
 		public string RedirectUri {get; set;}
 
+		public string UserKMD { get; set; }
+
+		/// <summary>
+		/// Gets or sets the custom attributes for the user.
+		/// </summary>
+		/// <value>The attributes dictionary</value>
+		public string Attributes { get; set; }
 	}
 }
-

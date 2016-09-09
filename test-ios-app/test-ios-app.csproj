@@ -94,21 +94,6 @@
     <Reference Include="SQLite.Net.Async">
       <HintPath>..\packages\SQLite.Net.Async-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.Async.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Primitives">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Extensions">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\Xamarin.iOS10\System.Net.Http.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="ModernHttpClient">
-      <HintPath>..\packages\modernhttpclient.2.4.2\lib\Xamarin.iOS10\ModernHttpClient.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
@@ -134,12 +119,7 @@
     <Compile Include="Book.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <ItemGroup>
-    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
-      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
-      <Name>Kinvey-Utils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">
       <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
       <Name>Kinvey-Xamarin</Name>
@@ -148,9 +128,9 @@
       <Project>{77548067-6F95-461C-A4D1-A051E20D30C5}</Project>
       <Name>Kinvey-Xamarin-iOS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
-      <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
-      <Name>RestSharp.Portable</Name>
+    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
+      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
+      <Name>Kinvey-Utils</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

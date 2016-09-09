@@ -6,11 +6,11 @@ namespace KinveyXamarinAndroid
 {
 	public static class UserExtension
 	{
-		public static void OnOAuthCallbackRecieved(this AsyncUser user, Intent intent){
+		public static void OnOAuthCallbackRecieved(this User user, Intent intent){
 
 			global::Android.Net.Uri uri = intent.Data;
 			string accessToken = uri.GetQueryParameter("code");
-			user.GetMICAccessToken(accessToken);
+			user.GetMICAccessTokenAsync(accessToken);
 		}
 
 	}

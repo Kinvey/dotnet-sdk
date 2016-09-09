@@ -11,12 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
@@ -31,11 +28,18 @@ namespace KinveyXamarin
 		/// </summary>
 		[DataMember]
 		private string userId;
+
 		/// <summary>
 		/// The auth token.
 		/// </summary>
 		[DataMember]
 		private string authToken;
+
+		/// <summary>
+		/// The user name.
+		/// </summary>
+		[DataMember]
+		private string userName;
 
 		/// <summary>
 		/// The refresh token.
@@ -50,6 +54,15 @@ namespace KinveyXamarin
 		public string RedirectUri { get; set; }
 
 		/// <summary>
+		/// The custom attributes for a user.
+		/// </summary>
+		[DataMember]
+		private Dictionary<string, JToken> attributes;
+
+		[DataMember]
+		private KinveyUserMetaData userKMD;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
 		[Preserve]
@@ -60,10 +73,19 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <param name="userId">User _id.</param>
 		/// <param name="authToken">Auth token.</param>
-		public Credential(string userId, string authToken, string refresh, string redirectUri)
+		public Credential(string userId,
+		                  string authToken,
+		                  string userName,
+		                  Dictionary<string, JToken> attributes,
+		                  KinveyUserMetaData kmd,
+		                  string refresh,
+		                  string redirectUri)
 		{
 			this.userId = userId;
 			this.authToken = authToken;
+			this.userName = userName;
+			this.attributes = attributes;
+			this.userKMD = kmd;
 			this.RefreshToken = refresh;
 			this.RedirectUri = redirectUri;
 		}
@@ -90,6 +112,31 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
+		/// Gets or sets the auth token.
+		/// </summary>
+		/// <value>The auth token.</value>
+		public string UserName
+		{
+			get { return this.userName; }
+			[Preserve]
+			internal set { this.userName = value; }
+		}
+
+		public Dictionary<string, JToken> Attributes
+		{
+			get { return this.attributes; }
+			[Preserve]
+			internal set { this.attributes = value; }
+		}
+
+		public KinveyUserMetaData UserKMD
+		{
+			get { return this.userKMD; }
+			[Preserve]
+			internal set { this.userKMD = value; }
+		}
+
+		/// <summary>
 		/// Initialize the specified clientRequest with this credential.
 		/// </summary>
 		/// <param name="clientRequest">Client Request.</param>
@@ -108,7 +155,7 @@ namespace KinveyXamarin
 		/// <param name="response">The response of a Kinvey login/create request.</param>
 		public static Credential From(KinveyAuthResponse response)
 		{
-			return new Credential(response.UserId, response.AuthToken, null, null);
+			return new Credential(response.UserId, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null);
 		}
 
 		/// <summary>
@@ -117,8 +164,7 @@ namespace KinveyXamarin
 		/// <param name="user">User.</param>
 		public static Credential From(User user)
 		{
-			return new Credential(user.Id, user.AuthToken, null, null);
+			return new Credential(user.Id, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null);
 		}
 	}
 }
-
