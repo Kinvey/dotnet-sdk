@@ -73,7 +73,7 @@ namespace KinveyXamarin
             }
         }
 
-		public Credential getActiveUser (){
+		public Credential GetActiveUser (){
 			return store.FirstOrDefault ().Value;
 		}
 
