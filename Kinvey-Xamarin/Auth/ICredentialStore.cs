@@ -11,12 +11,6 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace KinveyXamarin
 {
 	/// <summary>
@@ -44,9 +38,9 @@ namespace KinveyXamarin
         void Delete(string userId);
 
 		/// <summary>
-		/// Gets the active user.
+		/// Gets the active user from the credential store.
 		/// </summary>
-		/// <returns>The active user.</returns>
-		Credential getActiveUser ();
+		/// <returns>The active user represented as a <see cref="Credential"/> object.</returns>
+		Credential GetActiveUser();
     }
 }

@@ -179,7 +179,7 @@ namespace KinveyXamarin
 				c.senderID = this.senderID;
 
 				Logger.initialize (c.logger);
-				Credential currentCredential = this.Store.getActiveUser ();
+				Credential currentCredential = this.Store.GetActiveUser();
 				if (currentCredential != null)
 				{
 					User.LoginAsync(currentCredential, c);

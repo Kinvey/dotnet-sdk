@@ -14,7 +14,6 @@
 using System.IO;
 using SQLite.Net.Interop;
 using SQLite.Net;
-using SQLite.Net.Attributes;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -93,7 +92,7 @@ namespace KinveyXamarin
 			_dbConnection.Delete<SQLCredential> (userId);
 		}
 
-		public Credential getActiveUser ()
+		public Credential GetActiveUser()
 		{
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
 			Credential cred = null;
@@ -116,50 +115,5 @@ namespace KinveyXamarin
 		}
 
 		#endregion
-	}
-
-	/// <summary>
-	/// SQL credential.
-	/// </summary>
-	public class SQLCredential
-	{
-		/// <summary>
-		/// Gets or sets the auth token.
-		/// </summary>
-		/// <value>The auth token.</value>
-		public string AuthToken { get; set;}
-
-		/// <summary>
-		/// Gets or sets the user ID.
-		/// </summary>
-		/// <value>The user Id.</value>
-		[PrimaryKey]
-		public string UserID { get; set; }
-
-		/// <summary>
-		/// Gets or sets the user name.
-		/// </summary>
-		/// <value>The redirect uri.</value>
-		public string UserName { get; set; }
-
-		/// <summary>
-		/// Gets or sets the refresh token.
-		/// </summary>
-		/// <value>The refresh token.</value>
-		public string RefreshToken {get; set;}
-
-		/// <summary>
-		/// Gets or sets the redirect uri.
-		/// </summary>
-		/// <value>The redirect uri.</value>
-		public string RedirectUri {get; set;}
-
-		public string UserKMD { get; set; }
-
-		/// <summary>
-		/// Gets or sets the custom attributes for the user.
-		/// </summary>
-		/// <value>The attributes dictionary</value>
-		public string Attributes { get; set; }
 	}
 }
