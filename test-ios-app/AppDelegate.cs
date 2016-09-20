@@ -25,27 +25,80 @@ namespace testiosapp
 		}
 
 		Client myClient;
+		UIViewController controller;
 
 		public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
 		{
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
 
-			myClient = new Client.Builder ("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
-//			myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
-				.setFilePath(NSFileManager.DefaultManager.GetUrls (NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User) [0].ToString())
-				.setOfflinePlatform(new SQLitePlatformIOS())
-				.setLogger(delegate(string msg) { Console.WriteLine(msg);})
-				.build ();
-			DoStuff ();
+			BuildClient();
+
+			//myClient.Push().RegisterForToken();
+
+			// create a new window instance based on the screen size
+			Window = new UIWindow(UIScreen.MainScreen.Bounds);
+
+			controller = new UIViewController();
+			controller.View.BackgroundColor = UIColor.LightGray;
+			controller.Title = "Test App 1";
+
+			var navController = new UINavigationController(controller);
+			//cvc = new testiosapp2.MyViewController();
+			//var navController = new UINavigationController(cvc);
+			Window.RootViewController = navController;
+
+			// make the window visible
+			Window.MakeKeyAndVisible();
+
 
 			return true;
+		}
+
+		public async Task BuildClient()
+		{
+			Client.Builder cb = new Client.Builder("kid_BkhLB0R3", "75e0ba5a9f61454ca4bfdfcb61a1d1d1") // SSO-TEST
+	   		//myClient = new Client.Builder ("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
+			//myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
+				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
+				.setOfflinePlatform(new SQLitePlatformIOS())
+				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
+
+			myClient = await cb.build();
+
+			myClient.MICApiVersion = "v3"; // SSO-TEST
+		
+			DoStuff();
 		}
 
 		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation){
 			return myClient.ActiveUser.OnOAuthCallbackRecieved (url);
 		}
 
+		public string myDeviceToken { get; set; }
+
+		public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+		{
+			myDeviceToken = deviceToken.ToString();
+			if (myClient.IsUserLoggedIn())
+			{
+				myClient.Push().Initialize(myDeviceToken);
+			}
+		}
+		public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+		{
+			new UIAlertView("Error registering push notifications", error.LocalizedDescription, null, "OK", null).Show();
+		}
+		public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
+		{
+			UIApplication app = application;
+			//new UIAlertView(notification.AlertAction, notification.AlertBody, null, "OK", null).Show();
+			//UIRemoteNotificationType notificationType = userInfo
+		}
+		public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+		{
+			base.DidReceiveRemoteNotification(application, userInfo, completionHandler);
+		}
 		private async Task<User> DoStuff()
 		{
 //			Dictionary<string, JToken> attr = new Dictionary<string, JToken> ();
@@ -61,21 +114,32 @@ namespace testiosapp
 			User user = myClient.ActiveUser;
 			try
 			{
-				if (myClient.IsUserLoggedIn())
+				if (!myClient.IsUserLoggedIn())
 				{
-					user = await User.LoginAsync ("test", "test", myClient);
+					//user = await User.LoginAsync("test", "test", myClient);
+					string username = "test";
+					string password = "test";
+					string redirectURI = "kinveyAuthDemo://";
 
-//					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
-//						onSuccess = (loggedInUser) => { user = loggedInUser; },
-//						onError = (e) => { Console.WriteLine("Error with MIC Login"); },
-//						onReadyToRender = (url) => { UIApplication.SharedApplication.OpenUrl(new NSUrl(url)); }
-//					});
+					await User.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI, myClient);
 				}
 
+				//string token = ((AppDelegate)UIApplication.SharedApplication.Delegate).myDeviceToken;
+				//if (token != null)
+				//{
+				//	myClient.Push().Initialize(token);
+				//}
 
 				string str = "Finished Launching.";
 				Console.WriteLine("VRG : " + str);
 				Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
+
+				var alert = UIAlertController.Create("UserID: " + myClient.ActiveUser.Id, "AccessToken: " + myClient.ActiveUser.AccessToken, UIAlertControllerStyle.Alert);
+				alert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel, null));
+				controller.PresentViewController(alert, true, null);
+				//if (alert.PopoverPresentationController != null)
+				//	alert.PopoverPresentationController.BarButtonItem = myItem;
+				//PresentViewController(alert, animated: true, completionHandler: null);
 
 				ManipulateData();
 
@@ -353,6 +417,7 @@ namespace testiosapp
 		public override void WillTerminate (UIApplication application)
 		{
 			// Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
+			myClient.Push().DisablePush();
 		}
 	}
 }
