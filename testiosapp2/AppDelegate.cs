@@ -63,7 +63,7 @@ namespace testiosapp
 				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
-			myClient = await cb.build();
+			myClient = await cb.Build();
 			myClient.MICApiVersion = "v3"; // SSO-TEST
 			DoStuff();
 		}

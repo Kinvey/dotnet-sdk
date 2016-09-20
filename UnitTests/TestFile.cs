@@ -19,9 +19,10 @@ namespace UnitTestFramework
 		private static string downloadStreamFilePath = image_dir + "downloadStreamTest.png";
 
 		[SetUp]
-		public void Setup ()
+		public async Task Setup ()
 		{
-			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret).build();
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+			kinveyClient = await builder.Build();
 		}
 
 
