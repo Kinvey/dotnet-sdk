@@ -19,6 +19,12 @@ using SQLite.Net.Attributes;
 public class SQLCredential
 {
 	/// <summary>
+	/// Gets or sets the access token.
+	/// </summary>
+	/// <value>The access token.</value>
+	public string AccessToken { get; set; }
+
+	/// <summary>
 	/// Gets or sets the auth token.
 	/// </summary>
 	/// <value>The auth token.</value>
@@ -49,6 +55,10 @@ public class SQLCredential
 	/// <value>The redirect uri.</value>
 	public string RedirectUri { get; set; }
 
+	/// <summary>
+	/// Gets or sets the Kinvey metadata for this credential.
+	/// </summary>
+	/// <value>The credential Kinvey metadata.</value>
 	public string UserKMD { get; set; }
 
 	/// <summary>

@@ -83,7 +83,7 @@ namespace KinveyXamarin
 
 		internal LoginRequest BuildLoginRequestWithKinveyAuthToken(string userID, string authToken)
 		{
-			return BuildLoginRequest(new Credential(userID, authToken, null, null, null, null, null));
+			return BuildLoginRequest(new Credential(userID, null, authToken, null, null, null, null, null));
 		}
 
 		#endregion
