@@ -47,7 +47,7 @@ namespace KinveyXamarin
 		public List<string> write {get; set;}
 
 		[JsonProperty("groups")]
-		public List<AclGroups> groups { get; set;}
+		public AclGroups groups { get; set;}
 
 		public AccessControlList(){}
 
@@ -55,10 +55,10 @@ namespace KinveyXamarin
 		public class AclGroups  {
 
 			[JsonProperty("r")]
-			public string read {get; set;}
+			public List<string> read {get; set;}
 
 			[JsonProperty("w")]
-			public string write {get; set;}
+			public List<string> write {get; set;}
 
 			public AclGroups(){}
 
