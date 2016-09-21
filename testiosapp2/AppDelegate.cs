@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 
-namespace testiosapp
+namespace testiosapp2
 {
 	// The UIApplicationDelegate for the application. This class is responsible for launching the
 	// User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
@@ -32,6 +32,7 @@ namespace testiosapp
 		{
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
+
 			BuildClient();
 
 			// create a new window instance based on the screen size
@@ -65,7 +66,6 @@ namespace testiosapp
 
 			myClient = await cb.Build();
 			myClient.MICApiVersion = "v3"; // SSO-TEST
-			DoStuff();
 		}
 
 		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
@@ -73,7 +73,7 @@ namespace testiosapp
 			return myClient.ActiveUser.OnOAuthCallbackRecieved(url);
 		}
 
-		private async Task<User> DoStuff()
+		public async Task<User> Login(string user, string pass)
 		{
 			//			Dictionary<string, JToken> attr = new Dictionary<string, JToken> ();
 			//			email.Add ("email", "gob@bluth.com");
@@ -85,17 +85,16 @@ namespace testiosapp
 			//			await myClient.CurrentUser.CreateAsync ("Lindsay Bluth", "me", last_name);
 			//			await myClient.CurrentUser.CreateAsync ("Maeby Bluth", "Surely", last_name);
 
-			User user = myClient.ActiveUser;
 			try
 			{
 				if (!myClient.IsUserLoggedIn())
 				{
 					//user = await User.LoginAsync("test", "test", myClient);
-					string username = "test";
-					string password = "test";
+					//string username = "test";
+					//string password = "test";
 					string redirectURI = "kinveyAuthDemo://";
 
-					await User.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI, myClient);
+					await User.LoginWithAuthorizationCodeAPIAsync(user, pass, redirectURI, myClient);
 
 					//					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
 					//						onSuccess = (loggedInUser) => { user = loggedInUser; },
@@ -108,6 +107,7 @@ namespace testiosapp
 				string str = "Finished Launching.";
 				Console.WriteLine("VRG : " + str);
 				Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
+
 				var alert = UIAlertController.Create("UserID: " + myClient.ActiveUser.Id, "AccessToken: " + myClient.ActiveUser.AccessToken, UIAlertControllerStyle.Alert);
 				//if (alert.PopoverPresentationController != null)
 				//	alert.PopoverPresentationController.but.BarButtonItem = cvc.button;
@@ -115,7 +115,7 @@ namespace testiosapp
 				alert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel, null));
 				cvc.PresentViewController(alert, true, null);
 
-				ManipulateData();
+				await ManipulateData();
 
 			}
 			catch (KinveyException e)
@@ -125,7 +125,8 @@ namespace testiosapp
 				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
 				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
 			}
-			return user;
+
+			return myClient.ActiveUser;
 		}
 
 		private async Task<DataStore<Book>> ManipulateData()

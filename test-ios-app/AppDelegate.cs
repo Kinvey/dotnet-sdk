@@ -19,16 +19,21 @@ namespace testiosapp
 	{
 		// class-level declarations
 
-		public override UIWindow Window {
+		public override UIWindow Window
+		{
 			get;
 			set;
 		}
 
+		//public static AppDelegate MySelf { get; private set; }
+
 		Client myClient;
-		UIViewController controller;
+		testiosapp.MyViewController vc;
 
 		public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
 		{
+			//AppDelegate.MySelf = this;
+
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
 
@@ -39,13 +44,8 @@ namespace testiosapp
 			// create a new window instance based on the screen size
 			Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
-			controller = new UIViewController();
-			controller.View.BackgroundColor = UIColor.LightGray;
-			controller.Title = "Test App 1";
-
-			var navController = new UINavigationController(controller);
-			//cvc = new testiosapp2.MyViewController();
-			//var navController = new UINavigationController(cvc);
+			vc = new testiosapp.MyViewController();
+			var navController = new UINavigationController(vc);
 			Window.RootViewController = navController;
 
 			// make the window visible
@@ -67,8 +67,6 @@ namespace testiosapp
 			myClient = await cb.Build();
 
 			myClient.MICApiVersion = "v3"; // SSO-TEST
-		
-			DoStuff();
 		}
 
 		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation){
@@ -98,6 +96,51 @@ namespace testiosapp
 		public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
 		{
 			base.DidReceiveRemoteNotification(application, userInfo, completionHandler);
+		}
+
+		public async Task<User> Login(string user, string pass)
+		{
+			try
+			{
+				if (!myClient.IsUserLoggedIn())
+				{
+					//user = await User.LoginAsync("test", "test", myClient);
+					//string username = "test";
+					//string password = "test";
+					string redirectURI = "kinveyAuthDemo://";
+
+					await User.LoginWithAuthorizationCodeAPIAsync(user, pass, redirectURI, myClient);
+				}
+
+				//string token = ((AppDelegate)UIApplication.SharedApplication.Delegate).myDeviceToken;
+				//if (token != null)
+				//{
+				//	myClient.Push().Initialize(token);
+				//}
+
+				string str = "Finished Launching.";
+				Console.WriteLine("VRG : " + str);
+				Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
+
+				var alert = UIAlertController.Create("UserID: " + myClient.ActiveUser.Id, "AccessToken: " + myClient.ActiveUser.AccessToken, UIAlertControllerStyle.Alert);
+				//if (alert.PopoverPresentationController != null)
+				//	alert.PopoverPresentationController.BarButtonItem = myItem;
+				//PresentViewController(alert, animated: true, completionHandler: null);
+				alert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel, null));
+				vc.PresentViewController(alert, true, null);
+
+				await ManipulateData();
+			}
+			catch (KinveyException e)
+			{
+				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
+				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
+				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
+				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
+			}
+
+			return myClient.ActiveUser;
+
 		}
 		private async Task<User> DoStuff()
 		{
@@ -133,13 +176,6 @@ namespace testiosapp
 				string str = "Finished Launching.";
 				Console.WriteLine("VRG : " + str);
 				Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
-
-				var alert = UIAlertController.Create("UserID: " + myClient.ActiveUser.Id, "AccessToken: " + myClient.ActiveUser.AccessToken, UIAlertControllerStyle.Alert);
-				alert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel, null));
-				controller.PresentViewController(alert, true, null);
-				//if (alert.PopoverPresentationController != null)
-				//	alert.PopoverPresentationController.BarButtonItem = myItem;
-				//PresentViewController(alert, animated: true, completionHandler: null);
 
 				ManipulateData();
 

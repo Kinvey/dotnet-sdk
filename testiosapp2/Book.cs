@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using KinveyXamarin;
 
-namespace testiosapp
+namespace testiosapp2
 {
 	[JsonObject(MemberSerialization.OptIn)]
 	public class Book
