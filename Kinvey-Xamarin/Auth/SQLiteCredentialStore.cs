@@ -59,8 +59,19 @@ namespace KinveyXamarin
 			{
 				Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 				KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
-				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
+
+			// VRG try Xamarin.Auth
+			Credential ssocred = LoadAccount(userId);
+			if (cred != null)
+			{
+				if (ssocred != null && !string.IsNullOrEmpty(ssocred.AccessToken))
+				{
+					cred.AccessToken = ssocred.AccessToken;
+				}
+			}
+
 			return cred;
 		}
 
@@ -81,6 +92,9 @@ namespace KinveyXamarin
 			cred.RefreshToken = credential.RefreshToken;
 			cred.RedirectUri = credential.RedirectUri;
 			_dbConnection.Insert(cred);
+
+			// VRG try Xamarin.Auth
+			StoreAccount(credential);
 		}
 
 		/// <summary>
@@ -94,10 +108,18 @@ namespace KinveyXamarin
 
 		public Credential GetActiveUser()
 		{
-			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
 			Credential cred = null;
+
+			// VRG try Xamarin.Auth
+			Credential ssocred = GetActiveUserAccount();
+
+			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
+
 			if (sqlcred != null)
 			{
+				// VRG try Xamarin.Auth
+				LoadAccount(sqlcred.UserID);
+
 				Dictionary<string, JToken> attributes = null;
 				if (sqlcred.Attributes != null)
 				{
@@ -109,11 +131,97 @@ namespace KinveyXamarin
 				{
 					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				}
-				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
+
+			if (cred != null)
+			{
+				if (ssocred != null && !string.IsNullOrEmpty(ssocred.AccessToken))
+				{
+					cred.AccessToken = ssocred.AccessToken;
+				}
+			}
+			else
+			{
+				cred = ssocred;
+			}
+
 			return cred;
 		}
 
 		#endregion
+
+		public void StoreAccount(Credential cred)
+		{
+			Dictionary<string, string> properties = new Dictionary<string, string>();
+			//foreach (KeyValuePair<string, JToken> kvp in cred.Attributes)
+			//{
+			//	JTokenType mytype = kvp.Value.Type;
+			//	if (mytype.Equals(JTokenType.Object))
+			//	{
+			//		properties.Add(kvp.Key, JsonConvert.SerializeObject(kvp.Value));
+			//	}
+			//	else
+			//	{
+			//		properties.Add(kvp.Key, kvp.Value.ToString());
+			//	}
+			//}
+			properties.Add("AccessToken", cred.AccessToken);
+			//properties.Add("RedirectUri", cred.RedirectUri);
+			//properties.Add("RefreshToken", cred.RefreshToken);
+			//properties.Add("UserName", cred.UserName);
+			//properties.Add("UserKMD", JsonConvert.SerializeObject(cred.UserKMD));
+			Xamarin.Auth.Account account = new Xamarin.Auth.Account(cred.UserId, properties);
+			string app_key = ((KinveyClientRequestInitializer)Client.SharedClient.RequestInitializer).AppKey;
+			try
+			{
+				//Settings.GeneralSettings = cred.UserId;
+				Xamarin.Auth.AccountStore store = Xamarin.Auth.AccountStore.Create();
+				store.Save(account, "SSOtest");
+			}
+			catch (System.Exception e)
+			{
+				string msg = e.Message;
+			}
+		}
+
+		public virtual Credential LoadAccount(string userID)
+		{
+			Credential cred = null;
+
+			try
+			{
+				Xamarin.Auth.Account account = null;
+				Xamarin.Auth.AccountStore store = Xamarin.Auth.AccountStore.Create();
+				IEnumerable<Xamarin.Auth.Account> allAccounts = store.FindAccountsForService("SSOtest");
+				foreach (var acc in allAccounts)
+				{
+					// should only be one
+					if (userID.Equals(string.Empty) || acc.Username.Equals(userID))
+					{
+						account = acc;
+						break;
+					}
+				}
+
+				if (account != null)
+				{
+					cred = new Credential();
+					cred.AccessToken = account.Properties["AccessToken"];
+					cred.UserId = account.Username;
+				}
+			}
+			catch (System.Exception e)
+			{
+				string msg = e.Message;
+			}
+
+			return cred;
+		}
+
+		public Credential GetActiveUserAccount()
+		{
+			return LoadAccount(string.Empty);
+		}
 	}
 }
