@@ -26,7 +26,9 @@ namespace testiosapp2
 		}
 
 		Client myClient;
-		testiosapp2.MyViewController cvc;
+		testiosapp2.LoginViewController vc;
+		public string UserID { get { return myClient.ActiveUser.Id; } }
+		public string AccessToken { get { return myClient.ActiveUser.AccessToken; } }
 
 		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
@@ -35,37 +37,43 @@ namespace testiosapp2
 
 			BuildClient();
 
-			// create a new window instance based on the screen size
-			Window = new UIWindow(UIScreen.MainScreen.Bounds);
-
-			//var controller = new UIViewController();
-			//controller.View.BackgroundColor = UIColor.LightGray;
-			//controller.Title = "My Controller";
-
-			//var navController = new UINavigationController(controller);
-			cvc = new testiosapp2.MyViewController();
-			var navController = new UINavigationController(cvc);
-			Window.RootViewController = navController;
-
-			// make the window visible
-			Window.MakeKeyAndVisible();
-
-
 			return true;
 		}
 
 		public async Task BuildClient()
 		{
-
+			//myClient = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
+			//myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
 			Client.Builder cb = new Client.Builder("kid_BkAIHRRh", "7772b17762e44c87a9b5783c35ea5930") // SSO-TEST
-																									   //myClient = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
-																									   //			myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
+				.setBaseURL("https://alm-kcs.ngrok.io")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
 			myClient = await cb.Build();
+
+			myClient.MICHostName = "https://alm-auth.ngrok.io"; // SSO-TEST
 			myClient.MICApiVersion = "v3"; // SSO-TEST
+
+			// create a new window instance based on the screen size
+			Window = new UIWindow(UIScreen.MainScreen.Bounds);
+
+			//if (true)
+			if (myClient.IsUserLoggedIn())
+			{
+				var alreadyLoggedInController = new testiosapp2.DataViewController();
+				var navController = new UINavigationController(alreadyLoggedInController);
+				Window.RootViewController = navController;
+			}
+			else
+			{
+				vc = new testiosapp2.LoginViewController();
+				var navController = new UINavigationController(vc);
+				Window.RootViewController = navController;
+			}
+
+			// make the window visible
+			Window.MakeKeyAndVisible();
 		}
 
 		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
@@ -87,33 +95,33 @@ namespace testiosapp2
 
 			try
 			{
-				if (!myClient.IsUserLoggedIn())
-				{
-					//user = await User.LoginAsync("test", "test", myClient);
-					//string username = "test";
-					//string password = "test";
-					string redirectURI = "kinveyAuthDemo://";
+				//user = await User.LoginAsync("test", "test", myClient);
+				//string username = "test";
+				//string password = "test";
+				string redirectURI = "kinveyAuthDemo://";
 
-					await User.LoginWithAuthorizationCodeAPIAsync(user, pass, redirectURI, myClient);
+				await User.LoginWithAuthorizationCodeAPIAsync(user, pass, redirectURI, myClient);
 
-					//					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
-					//						onSuccess = (loggedInUser) => { user = loggedInUser; },
-					//						onError = (e) => { Console.WriteLine("Error with MIC Login"); },
-					//						onReadyToRender = (url) => { UIApplication.SharedApplication.OpenUrl(new NSUrl(url)); }
-					//					});
-				}
+				//					myClient.CurrentUser.LoginWithAuthorizationCodeLoginPage("kinveyAuthDemo://", new KinveyMICDelegate<User>{
+				//						onSuccess = (loggedInUser) => { user = loggedInUser; },
+				//						onError = (e) => { Console.WriteLine("Error with MIC Login"); },
+				//						onReadyToRender = (url) => { UIApplication.SharedApplication.OpenUrl(new NSUrl(url)); }
+				//					});
 
 
-				string str = "Finished Launching.";
-				Console.WriteLine("VRG : " + str);
-				Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
+				//string str = "Finished Launching.";
+				//Console.WriteLine("VRG : " + str);
+				//Console.WriteLine("VRG: Logged in as: " + myClient.ActiveUser.Id);
 
-				var alert = UIAlertController.Create("UserID: " + myClient.ActiveUser.Id, "AccessToken: " + myClient.ActiveUser.AccessToken, UIAlertControllerStyle.Alert);
+				//var alert = UIAlertController.Create("UserID: " + myClient.ActiveUser.Id, "AccessToken: " + myClient.ActiveUser.AccessToken, UIAlertControllerStyle.Alert);
 				//if (alert.PopoverPresentationController != null)
 				//	alert.PopoverPresentationController.but.BarButtonItem = cvc.button;
 				//alert.PresentViewController(alert, animated: true, completionHandler: null);
-				alert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel, null));
-				cvc.PresentViewController(alert, true, null);
+				//alert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel, null));
+				//vc.PresentViewController(alert, true, null);
+				var alreadyLoggedInController = new testiosapp2.DataViewController();
+				var navController = new UINavigationController(alreadyLoggedInController);
+				Window.RootViewController = navController;
 
 				await ManipulateData();
 
