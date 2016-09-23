@@ -106,6 +106,27 @@ namespace testiosapp
 				BackgroundColor = UIColor.White
 			};
 			View.AddSubview(AccessTokenView);
+
+			UIButton button;
+			button = UIButton.FromType(UIButtonType.System);
+			button.Frame = new CGRect(10, 162, w - 20, 44);
+			button.SetTitle("Logout", UIControlState.Normal);
+			button.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			button.BackgroundColor = UIColor.LightGray;
+
+			var user = new UIViewController();
+			user.View.BackgroundColor = UIColor.Blue;
+
+			button.TouchUpInside += (sender, e) => {
+
+				//AppDelegate myAppDel = (UIApplication.SharedApplication.Delegate as testiosapp.AppDelegate);
+
+				myAppDel.Logout();
+
+				//this.NavigationController.PushViewController(user, true);
+			};
+			View.AddSubview(button);
+
 		}
 
 		public override void DidReceiveMemoryWarning()

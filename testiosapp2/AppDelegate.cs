@@ -44,7 +44,7 @@ namespace testiosapp2
 		{
 			//myClient = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
 			//myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
-			Client.Builder cb = new Client.Builder("kid_BkAIHRRh", "7772b17762e44c87a9b5783c35ea5930") // SSO-TEST
+			Client.Builder cb = new Client.Builder("kid_r12RGpW6", "b1b7768429344a2085e75e2d48b39d19") // SSO-TEST
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setBaseURL("https://alm-kcs.ngrok.io")
@@ -135,6 +135,14 @@ namespace testiosapp2
 			}
 
 			return myClient.ActiveUser;
+		}
+
+		public void Logout()
+		{
+			myClient?.ActiveUser?.Logout();
+			var logInController = new testiosapp2.LoginViewController();
+			var navController = new UINavigationController(logInController);
+			Window.RootViewController = navController;
 		}
 
 		private async Task<DataStore<Book>> ManipulateData()
