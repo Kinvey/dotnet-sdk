@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey-Android</id>
-    <version>1.6.12</version>
+    <version>1.6.13</version>
     <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
     <title>Kinvey-Xamarin-Android</title>
     <authors>Kinvey</authors>
@@ -22,7 +22,7 @@
       <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
       <dependency id="Xamarin.GooglePlayServices.Gcm" version="27.0.0.0"/>
-      <dependency id="Kinvey" version="1.6.12"/>
+      <dependency id="Kinvey" version="1.6.13"/>
     </dependencies>
   </metadata>
   <files>
