@@ -193,7 +193,11 @@ namespace KinveyXamarin
 				}
 			}
 
-			kickOffSync ();
+			if (policy == OfflinePolicy.LOCAL_FIRST ||
+			    policy == OfflinePolicy.ONLINE_FIRST)
+			{
+				kickOffSync();
+			}
 
 			return ret;
 
