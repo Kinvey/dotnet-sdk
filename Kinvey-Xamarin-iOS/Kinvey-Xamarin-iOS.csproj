@@ -70,6 +70,7 @@
     <Folder Include="Resources\" />
     <Folder Include="Push\" />
     <Folder Include="User\" />
+    <Folder Include="Auth\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyClass.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Push\PushExtension.cs" />
     <Compile Include="Push\Push.cs" />
     <Compile Include="User\UserExtension.cs" />
+    <Compile Include="Auth\IOSNativeCredentialStore.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

@@ -184,7 +184,7 @@ namespace testiosapp
 					string password = "test";
 					string redirectURI = "kinveyAuthDemo://";
 
-					await User.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI, null, myClient);
+					await User.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI, myClient);
 				}
 
 				//string token = ((AppDelegate)UIApplication.SharedApplication.Delegate).myDeviceToken;

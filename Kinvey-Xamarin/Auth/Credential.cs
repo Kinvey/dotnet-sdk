@@ -13,6 +13,7 @@
 
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
@@ -72,7 +73,9 @@ namespace KinveyXamarin
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
 		[Preserve]
-		internal Credential() { }
+		public Credential()
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
@@ -179,6 +182,18 @@ namespace KinveyXamarin
 		public static Credential From(User user)
 		{
 			return new Credential(user.Id, user.AccessToken, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null);
+		}
+
+		public static Credential From(NativeCredential nc)
+		{
+			return new Credential(nc.Username,
+			                      nc.Properties["AccessToken"],
+			                      nc.Properties["AuthToken"],
+			                      nc.Properties["UserName"],
+			                      JsonConvert.DeserializeObject<Dictionary<string, JToken>>(nc.Properties["Attributes"]),
+			                      JsonConvert.DeserializeObject<KinveyUserMetaData>(nc.Properties["UserKMD"]),
+			                      nc.Properties["RefreshToken"],
+			                      nc.Properties["RedirectUri"]);
 		}
 	}
 }
