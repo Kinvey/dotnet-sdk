@@ -15,102 +15,108 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-/// <summary>
-/// Native credential.
-/// </summary>
-public class NativeCredential
+namespace KinveyXamarin
 {
 	/// <summary>
-	/// Gets or sets the username.
+	/// Native credential.
 	/// </summary>
-	/// <value>The username.</value>
-	public virtual string Username { get; set; }
-
-	/// <summary>
-	/// Gets the properties.
-	/// </summary>
-	/// <value>The properties.</value>
-	public virtual Dictionary<string, string> Properties { get; private set; }
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="T:NativeCredential"/> class.
-	/// </summary>
-	public NativeCredential()
-		: this(string.Empty, null)
+	public class NativeCredential
 	{
-	}
+		private const string USERID = "__userID__";
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="T:NativeCredential"/> class.
-	/// </summary>
-	/// <param name="username">Username.</param>
-	/// <param name="properties">Properties.</param>
-	public NativeCredential(string username, Dictionary<string, string> properties)
-	{
-		Username = username;
-		Properties = (properties == null) ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
-	}
+		/// <summary>
+		/// Gets or sets the credential user ID, corresponding to the userID of the user object this credential represents.
+		/// </summary>
+		/// <value>The user ID associated with this credential.</value>
+		public virtual string UserID { get; set; }
 
-	/// <summary>
-	/// Serialize this instance.
-	/// </summary>
-	public string Serialize()
-	{
-		var sb = new StringBuilder();
+		/// <summary>
+		/// Gets the properties.
+		/// </summary>
+		/// <value>The properties.</value>
+		public virtual Dictionary<string, string> Properties { get; private set; }
 
-		sb.Append("__username__=");
-		sb.Append(Uri.EscapeDataString(Username));
-
-		foreach (var p in Properties)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:NativeCredential"/> class.
+		/// </summary>
+		public NativeCredential()
+			: this(string.Empty, null)
 		{
-			sb.Append("&");
-			sb.Append(Uri.EscapeDataString(p.Key));
-			sb.Append("=");
-			sb.Append(Uri.EscapeDataString(p.Value));
 		}
 
-		return sb.ToString();
-	}
-
-	/// <summary>
-	/// Deserialize the specified serializedNativeCredential.
-	/// </summary>
-	/// <param name="serializedNativeCredential">Serialized native credential.</param>
-	static public NativeCredential Deserialize(string serializedNativeCredential)
-	{
-		var nativeCredential = new NativeCredential();
-
-		foreach (var p in serializedNativeCredential.Split('&'))
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:NativeCredential"/> class.
+		/// </summary>
+		/// <param name="username">Username.</param>
+		/// <param name="properties">Properties.</param>
+		public NativeCredential(string username, Dictionary<string, string> properties)
 		{
-			var keyval = p.Split('=');
+			UserID = username;
+			Properties = (properties == null) ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
+		}
 
-			var key = Uri.UnescapeDataString(keyval[0]);
-			var val = keyval.Length > 1 ? Uri.UnescapeDataString(keyval[1]) : String.Empty;
+		/// <summary>
+		/// Serialize this instance.
+		/// </summary>
+		public string Serialize()
+		{
+			var sb = new StringBuilder();
 
-			if (key == "__username__")
+			sb.Append(NativeCredential.USERID);
+			sb.Append(Constants.STR_EQUAL);
+			sb.Append(Uri.EscapeDataString(UserID));
+
+			foreach (var p in Properties)
 			{
-				nativeCredential.Username = val;
+				sb.Append(Constants.STR_AMPERSAND);
+				sb.Append(Uri.EscapeDataString(p.Key));
+				sb.Append(Constants.STR_EQUAL);
+				sb.Append(Uri.EscapeDataString(p.Value));
 			}
-			else
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Deserialize the specified serializedNativeCredential.
+		/// </summary>
+		/// <param name="serializedNativeCredential">Serialized native credential.</param>
+		static public NativeCredential Deserialize(string serializedNativeCredential)
+		{
+			var nativeCredential = new NativeCredential();
+
+			foreach (var p in serializedNativeCredential.Split(Constants.CHAR_AMPERSAND))
 			{
-				if (val.Equals(String.Empty))
+				var keyval = p.Split(Constants.CHAR_EQUAL);
+
+				var key = Uri.UnescapeDataString(keyval[0]);
+				var val = keyval.Length > 1 ? Uri.UnescapeDataString(keyval[1]) : String.Empty;
+
+				if (key == NativeCredential.USERID)
 				{
-					val = null;
+					nativeCredential.UserID = val;
 				}
+				else
+				{
+					if (val.Equals(String.Empty))
+					{
+						val = null;
+					}
 
-				nativeCredential.Properties[key] = val;
+					nativeCredential.Properties[key] = val;
+				}
 			}
+
+			return nativeCredential;
 		}
 
-		return nativeCredential;
-	}
-
-	/// <summary>
-	/// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:NativeCredential"/>.
-	/// </summary>
-	/// <returns>A <see cref="T:System.String"/> that represents the current <see cref="T:NativeCredential"/>.</returns>
-	public override string ToString()
-	{
-		return Serialize();
+		/// <summary>
+		/// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:NativeCredential"/>.
+		/// </summary>
+		/// <returns>A <see cref="T:System.String"/> that represents the current <see cref="T:NativeCredential"/>.</returns>
+		public override string ToString()
+		{
+			return Serialize();
+		}
 	}
 }

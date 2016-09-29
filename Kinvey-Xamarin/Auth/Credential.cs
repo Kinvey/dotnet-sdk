@@ -186,7 +186,7 @@ namespace KinveyXamarin
 
 		public static Credential From(NativeCredential nc)
 		{
-			return new Credential(nc.Username,
+			return new Credential(nc.UserID,
 			                      nc.Properties["AccessToken"],
 			                      nc.Properties["AuthToken"],
 			                      nc.Properties["UserName"],

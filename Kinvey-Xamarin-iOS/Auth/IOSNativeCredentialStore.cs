@@ -44,7 +44,7 @@ namespace KinveyXamarin
 				foreach (var c in credentials)
 				{
 					if (userID.Equals(string.Empty) ||
-					    userID.Equals(c.Username))
+					    userID.Equals(c.UserID))
 					{
 						nc = c;
 						break;
@@ -110,9 +110,9 @@ namespace KinveyXamarin
 			var nativeCredEnumeration = FindCredentialsForOrg(SSO_ORG_TEST);
 			foreach (var nc in nativeCredEnumeration)
 			{
-				if (nc.Username.Equals(userID))
+				if (nc.UserID.Equals(userID))
 				{
-					query.Account = nc.Username;
+					query.Account = nc.UserID;
 					break;
 				}
 			}
@@ -167,12 +167,12 @@ namespace KinveyXamarin
 			var data = NSData.FromString(serializedCredential, NSStringEncoding.UTF8);
 
 			// If there exists a credential, delete before writing new credential
-			var existingCredential = FindCredential(nativeCredential.Username, orgID);
+			var existingCredential = FindCredential(nativeCredential.UserID, orgID);
 			if (existingCredential != null)
 			{
 				var query = new SecRecord(SecKind.GenericPassword);
 				query.Service = orgID;
-				query.Account = nativeCredential.Username;
+				query.Account = nativeCredential.UserID;
 
 				statusCode = SecKeyChain.Remove(query);
 				if (statusCode != SecStatusCode.Success)
@@ -184,7 +184,7 @@ namespace KinveyXamarin
 			// Add new credential
 			var record = new SecRecord(SecKind.GenericPassword);
 			record.Service = orgID;
-			record.Account = nativeCredential.Username;
+			record.Account = nativeCredential.UserID;
 			record.Generic = data;
 			record.Accessible = SecAccessible.WhenUnlocked;
 
