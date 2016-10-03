@@ -130,6 +130,16 @@ namespace KinveyXamarin
 		ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS,
 
 		/// <summary>
+		/// MIC Error - Credential could not be saved from the credential store.
+		/// </summary>
+		ERROR_MIC_CREDENTIAL_SAVE,
+
+		/// <summary>
+		/// MIC Error - Credential could not be deleted from the credential store.
+		/// </summary>
+		ERROR_MIC_CREDENTIAL_DELETE,
+
+		/// <summary>
 		/// Requirement Error - Base URL missing 'HTTPS' protocol.
 		/// </summary>
 		ERROR_REQUIREMENT_HTTPS,

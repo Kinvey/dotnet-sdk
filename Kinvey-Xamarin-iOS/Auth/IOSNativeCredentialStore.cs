@@ -28,9 +28,9 @@ namespace KinveyXamarin
 		#region NativeStoreCredential implementation
 
 		/// <summary>
-		/// Load the specified userID.
+		/// Load the credential associted with the specified user ID.
 		/// </summary>
-		/// <param name="userID">User identifier.</param>
+		/// <param name="userID">User identifier used to access appropriate credential.</param>
 		override public Credential Load(string userID)
 		{
 			Credential credential = null;
@@ -65,24 +65,24 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Store the specified userID and credential.
+		/// Store the credential specified by the user ID.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
 		/// <param name="credential">Credential.</param>
 		override public void Store(string userID, Credential credential)
 		{
 			Dictionary<string, string> properties = new Dictionary<string, string>();
-			properties.Add("AccessToken", (credential.AccessToken ?? string.Empty));
-			properties.Add("AuthToken", (credential.AuthToken ?? string.Empty));
-			properties.Add("RefreshToken", (credential.RefreshToken ?? string.Empty));
-			properties.Add("RedirectUri", (credential.RedirectUri ?? string.Empty));
-			properties.Add("UserName", (credential.UserName ?? string.Empty));
+			properties.Add(Constants.STR_ACCESS_TOKEN, (credential.AccessToken ?? string.Empty));
+			properties.Add(Constants.STR_AUTH_TOKEN, (credential.AuthToken ?? string.Empty));
+			properties.Add(Constants.STR_REFRESH_TOKEN, (credential.RefreshToken ?? string.Empty));
+			properties.Add(Constants.STR_REDIRECT_URI, (credential.RedirectUri ?? string.Empty));
+			properties.Add(Constants.STR_USERNAME, (credential.UserName ?? string.Empty));
 
-			properties.Add("Attributes", (credential.Attributes != null ?
+			properties.Add(Constants.STR_ATTRIBUTES, (credential.Attributes != null ?
 			                              JsonConvert.SerializeObject(credential.Attributes) :
 			                              string.Empty));
 
-			properties.Add("UserKMD", (credential.UserKMD != null ?
+			properties.Add(Constants.STR_USER_KMD, (credential.UserKMD != null ?
 			                           JsonConvert.SerializeObject(credential.UserKMD) :
 			                           string.Empty));
 
@@ -122,7 +122,7 @@ namespace KinveyXamarin
 			if (statusCode != SecStatusCode.Success &&
 			    statusCode != SecStatusCode.ItemNotFound)
 			{
-				throw new System.Exception("Could not delete account from KeyChain: " + statusCode);
+				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_CREDENTIAL_DELETE, statusCode.ToString());
 			}
 		}
 
@@ -177,7 +177,7 @@ namespace KinveyXamarin
 				statusCode = SecKeyChain.Remove(query);
 				if (statusCode != SecStatusCode.Success)
 				{
-					throw new System.Exception("Could not save account from KeyChain: " + statusCode);
+					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_CREDENTIAL_SAVE, statusCode.ToString());
 				}
 			}
 
@@ -192,7 +192,7 @@ namespace KinveyXamarin
 
 			if (statusCode != SecStatusCode.Success)
 			{
-				throw new System.Exception("Could not save account from KeyChain: " + statusCode);
+				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_CREDENTIAL_SAVE, statusCode.ToString());
 			}
 		}
 

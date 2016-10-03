@@ -13,7 +13,7 @@
 
 namespace KinveyXamarin
 {
-	static class Constants
+	public static class Constants
 	{
 		// Const Characters
 		public const char CHAR_AMPERSAND = '&';
@@ -23,5 +23,13 @@ namespace KinveyXamarin
 		public const string STR_AMPERSAND = "&";
 		public const string STR_EQUAL = "=";
 
+		// Authentication Strings
+		public const string STR_ACCESS_TOKEN = "AccessToken";
+		public const string STR_AUTH_TOKEN = "AuthToken";
+		public const string STR_REFRESH_TOKEN = "RefreshToken";
+		public const string STR_REDIRECT_URI = "RedirectUri";
+		public const string STR_USERNAME = "UserName";
+		public const string STR_ATTRIBUTES = "Attributes";
+		public const string STR_USER_KMD = "UserKMD";
 	}
 }

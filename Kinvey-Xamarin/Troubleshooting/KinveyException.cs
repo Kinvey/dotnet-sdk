@@ -173,6 +173,18 @@ namespace KinveyXamarin
 					description = "";
 					break;
 
+				case EnumErrorCode.ERROR_MIC_CREDENTIAL_SAVE:
+					error = "Could not save account to KeyChain.";
+					debug = "";
+					description = "";
+					break;
+
+				case EnumErrorCode.ERROR_MIC_CREDENTIAL_DELETE:
+					error = "Could not delete account from KeyChain.";
+					debug = "";
+					description = "";
+					break;
+
 				case EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER:
 					error = "The response expects `Content-Type` header to be \"application/json\", but was instead: ";
 					debug = "";

@@ -187,13 +187,13 @@ namespace KinveyXamarin
 		public static Credential From(NativeCredential nc)
 		{
 			return new Credential(nc.UserID,
-			                      nc.Properties["AccessToken"],
-			                      nc.Properties["AuthToken"],
-			                      nc.Properties["UserName"],
-			                      JsonConvert.DeserializeObject<Dictionary<string, JToken>>(nc.Properties["Attributes"]),
-			                      JsonConvert.DeserializeObject<KinveyUserMetaData>(nc.Properties["UserKMD"]),
-			                      nc.Properties["RefreshToken"],
-			                      nc.Properties["RedirectUri"]);
+			                      nc.Properties[Constants.STR_ACCESS_TOKEN],
+			                      nc.Properties[Constants.STR_AUTH_TOKEN],
+			                      nc.Properties[Constants.STR_USERNAME],
+			                      JsonConvert.DeserializeObject<Dictionary<string, JToken>>(nc.Properties[Constants.STR_ATTRIBUTES]),
+			                      JsonConvert.DeserializeObject<KinveyUserMetaData>(nc.Properties[Constants.STR_USER_KMD]),
+			                      nc.Properties[Constants.STR_REFRESH_TOKEN],
+			                      nc.Properties[Constants.STR_REDIRECT_URI]);
 		}
 	}
 }
