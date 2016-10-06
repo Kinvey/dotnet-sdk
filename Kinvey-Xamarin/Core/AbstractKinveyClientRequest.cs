@@ -534,7 +534,7 @@ namespace KinveyXamarin
 					{
 						int i = response.Headers.IndexOf(param);
 						Parameter p = response.Headers[i];
-						List<string> obj = p.Value as List<string>;
+						var obj = p.Value as string[];
 						//foreach (var val in param.Value)
 						//{response.Headers.
 						//}
