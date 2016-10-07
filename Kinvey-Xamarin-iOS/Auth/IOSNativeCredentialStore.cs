@@ -104,25 +104,27 @@ namespace KinveyXamarin
 		/// <param name="userID">User identifier.</param>
 		override public void Delete(string userID)
 		{
-			SecRecord query = new SecRecord(SecKind.GenericPassword);
-			query.Service = SSO_ORG_TEST;
-
 			var nativeCredEnumeration = FindCredentialsForOrg(SSO_ORG_TEST);
+
 			foreach (var nc in nativeCredEnumeration)
 			{
-				if (nc.UserID.Equals(userID))
+				//if (nc.UserID.Equals(userID))
+				//{
+					//query.Account = nc.UserID;
+					//break;
+				//}
+
+				SecRecord query = new SecRecord(SecKind.GenericPassword);
+				query.Service = SSO_ORG_TEST;
+				query.Account = nc.UserID;
+
+				var statusCode = SecKeyChain.Remove(query);
+
+				if (statusCode != SecStatusCode.Success &&
+					statusCode != SecStatusCode.ItemNotFound)
 				{
-					query.Account = nc.UserID;
-					break;
+					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_CREDENTIAL_DELETE, statusCode.ToString());
 				}
-			}
-
-			var statusCode = SecKeyChain.Remove(query);
-
-			if (statusCode != SecStatusCode.Success &&
-			    statusCode != SecStatusCode.ItemNotFound)
-			{
-				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_CREDENTIAL_DELETE, statusCode.ToString());
 			}
 		}
 
