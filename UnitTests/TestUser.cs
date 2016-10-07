@@ -18,12 +18,13 @@ namespace UnitTestFramework
 		private const string collectionName = "ToDos";
 
 		[SetUp]
-		public void Setup()
+		public async Task Setup()
 		{
-			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.build();
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+
+			kinveyClient = await builder.Build();
 		}
 
 		[TearDown]
@@ -86,7 +87,8 @@ namespace UnitTestFramework
 		public async Task TestLoginAsyncBad()
 		{
 			// Arrange
-			Client fakeClient = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake).build();
+			Client.Builder builder = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake);
+			Client fakeClient = await builder.Build();
 
 			// Act
 			// Assert
@@ -332,11 +334,12 @@ namespace UnitTestFramework
 			string redirectURI = "kinveyAuthDemo://";
 			string saml_app_key = "kid_ZkPDb_34T";
 			string saml_app_secret = "c3752d5079f34353ab89d07229efaf63";
-			Client localClient = new Client.Builder(saml_app_key, saml_app_secret).build();
+			Client.Builder localBuilder = new Client.Builder(saml_app_key, saml_app_secret);
+			Client localClient = await localBuilder.Build();
 			localClient.MICApiVersion = "v2";
 
 			// Act
-			await localClient.ActiveUser.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI);
+			await User.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI);
 
 			// Assert
 			Assert.NotNull(localClient.ActiveUser);
@@ -423,30 +426,30 @@ namespace UnitTestFramework
 			Assert.True(String.Compare((newUser.Attributes["email"]).ToString(), email) == 0);
 		}
 
-		[Test]
-		public async Task TestCreateUserAsyncBad()
-		{
-			// Setup
-			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+		//[Test]
+		//public async Task TestCreateUserAsyncBad()
+		//{
+		//	// Setup
+		//	await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			// Arrange
-			string email = "newuser@test.com";
-			Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
-			customFields.Add("email", email);
+		//	// Arrange
+		//	string email = "newuser@test.com";
+		//	Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
+		//	customFields.Add("email", email);
 
-			// Act
-			Exception er = Assert.CatchAsync(async delegate () {
-				await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
-			});
+		//	// Act
+		//	Exception er = Assert.CatchAsync(async delegate () {
+		//		await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+		//	});
 
-			// Assert
-			Assert.NotNull(er);
-			KinveyException ke = er as KinveyException;
-			Assert.AreEqual(EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, ke.ErrorCode);
+		//	// Assert
+		//	Assert.NotNull(er);
+		//	KinveyException ke = er as KinveyException;
+		//	Assert.AreEqual(EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN, ke.ErrorCode);
 
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
-		}
+		//	// Teardown
+		//	kinveyClient.ActiveUser.Logout();
+		//}
 
 		[Test]
 		public async Task TestFindUserAsync()

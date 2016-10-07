@@ -43,11 +43,13 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Push\" />
     <Folder Include="User\" />
+    <Folder Include="Auth\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyClass.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="Push\PushExtension.cs" />
     <Compile Include="Push\Push.cs" />
     <Compile Include="User\UserExtension.cs" />
+    <Compile Include="Auth\IOSNativeCredentialStore.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

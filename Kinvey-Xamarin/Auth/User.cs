@@ -43,9 +43,14 @@ namespace KinveyXamarin
         private String id;
 
 		/// <summary>
+		/// The access token.
+		/// </summary>
+		private String accessToken;
+
+		/// <summary>
 		/// The auth token.
 		/// </summary>
-        private String authToken;
+		private String authToken;
 
 		/// <summary>
 		/// The username.
@@ -87,10 +92,20 @@ namespace KinveyXamarin
 		/// Gets or sets the auth token.
 		/// </summary>
 		/// <value>The auth token.</value>
-        public string AuthToken
+		public string AuthToken
+		{
+			get { return this.authToken; }
+			set { this.authToken = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets the access token.
+		/// </summary>
+		/// <value>The access token.</value>
+		public string AccessToken
         {
-            get { return this.authToken; }
-            set { this.authToken = value; }
+			get { return this.accessToken; }
+			set { this.accessToken = value; }
         }
 
 		/// <summary>
@@ -156,8 +171,8 @@ namespace KinveyXamarin
 
 		public bool IsActive()
 		{
-			if (client.IsUserLoggedIn() &&
-				client.ActiveUser.Id == this.Id)
+			if (KinveyClient.IsUserLoggedIn() &&
+			    KinveyClient.ActiveUser.Id == this.Id)
 			{
 				return true;
 			}
@@ -180,6 +195,7 @@ namespace KinveyXamarin
 
             //this.username = response
             this.AuthToken = response.AuthToken;
+			this.AccessToken = response.AccessToken;
 			this.Attributes = response.Attributes;
 			this.Metadata = response.UserMetaData;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
@@ -404,13 +420,14 @@ namespace KinveyXamarin
 		/// <returns>The async task.</returns>
 		/// <param name="accessToken">MIC Access token.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginMICWithAccessTokenAsync(string accessToken, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> LoginMICWithAccessTokenAsync(string accessToken, CancellationToken ct = default(CancellationToken))
 		{
 			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
 			provider.kinveyAuth = new MICCredential(accessToken);
 			ct.ThrowIfCancellationRequested();
-			return await LoginMICAsync(new ThirdPartyIdentity(provider));
+			User u = await LoginMICAsync(new ThirdPartyIdentity(provider));
+			return u;
 		}
 
 		/// <summary>
@@ -471,21 +488,22 @@ namespace KinveyXamarin
 		/// <param name="password">Password for authentication</param>
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI, CancellationToken ct = default(CancellationToken))
+		static public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			this.KinveyClient.MICRedirectURI = redirectURI;
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			uc.MICRedirectURI = redirectURI;
 
 			try
 			{
 				ct.ThrowIfCancellationRequested();
 
-				GetMICTempURLRequest  MICTempURLRequest = buildMICTempURLRequest();
+				GetMICTempURLRequest  MICTempURLRequest = User.BuildMICTempURLRequest(uc);
 				ct.ThrowIfCancellationRequested();
 				JObject tempResult = await MICTempURLRequest.ExecuteAsync();
 
 				string tempURL = tempResult["temp_login_uri"].ToString();
 
-				LoginToTempURLRequest MICLoginToTempURL = buildMICLoginToTempURL(username, password, tempURL);
+				LoginToTempURLRequest MICLoginToTempURL = User.BuildMICLoginToTempURL(uc, username, password, tempURL);
 				ct.ThrowIfCancellationRequested();
 				JObject accessResult = await MICLoginToTempURL.ExecuteAsync();
 
@@ -494,15 +512,15 @@ namespace KinveyXamarin
 				string accessToken = accessResult["access_token"].ToString();
 
 				ct.ThrowIfCancellationRequested();
-				User u = await LoginMICWithAccessTokenAsync(accessToken);
+				User u = await User.LoginMICWithAccessTokenAsync(accessToken);
 
 				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
-				Credential currentCred = KinveyClient.Store.Load(u.Id);
+				Credential currentCred = uc.Store.Load(u.Id);
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
-				currentCred.RedirectUri = this.KinveyClient.MICRedirectURI;
-				KinveyClient.Store.Store(u.Id, currentCred);
+				currentCred.RedirectUri = uc.MICRedirectURI;
+				uc.Store.Store(u.Id, currentCred);
 			}
 			catch(Exception e)
 			{
@@ -520,11 +538,11 @@ namespace KinveyXamarin
 			try
 			{
 				ct.ThrowIfCancellationRequested();
-				JObject result = await getMICToken(token).ExecuteAsync();
+				JObject result = await User.GetMICToken(this.KinveyClient, token).ExecuteAsync();
 				string accessToken = result["access_token"].ToString();
 
 				ct.ThrowIfCancellationRequested();
-				User u = await LoginMICWithAccessTokenAsync(accessToken);
+				User u = await User.LoginMICWithAccessTokenAsync(accessToken);
 
 				ct.ThrowIfCancellationRequested();
 
@@ -797,9 +815,17 @@ namespace KinveyXamarin
 		static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
-			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(cred);
-			ct.ThrowIfCancellationRequested();
-			await loginRequest.ExecuteAsync();
+			if (!String.IsNullOrEmpty(cred.AccessToken))
+			{
+				User u = await User.LoginMICWithAccessTokenAsync(cred.AccessToken);
+				uc.ActiveUser = u;
+			}
+			else
+			{
+				LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(cred);
+				ct.ThrowIfCancellationRequested();
+				await loginRequest.ExecuteAsync();
+			}
 		}
 
 		// Logs a user in asynchronously  with a Kinvey Auth Token directly.  Internal use only.
@@ -816,25 +842,27 @@ namespace KinveyXamarin
 		#region User class blocking private classes - used to build up requests
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
-		private RetrieveMICAccessTokenRequest getMICToken(String code)
+		static private RetrieveMICAccessTokenRequest GetMICToken(AbstractClient cli, String code)
 		{
 			//        grant_type: "authorization_code" - this is always set to this value
 			//        code: use the ‘code’ returned in the callback 
 			//        redirect_uri: The same redirect uri used when obtaining the auth grant.
 			//        client_id:  The appKey (kid) of the app
 
+			string app_id = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppKey;
+
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("grant_type", "authorization_code");
 			data.Add("code", code);
-			data.Add("redirect_uri",this.KinveyClient.MICRedirectURI);
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+			data.Add("redirect_uri", cli.MICRedirectURI);
+			data.Add("client_id", app_id);
 
 			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("appKey", app_id);
 
-			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(client, client.MICHostName, data, urlParameters);
+			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(cli, cli.MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials =  true;
-			client.InitializeRequest(getToken);
+			cli.InitializeRequest(getToken);
 			return getToken;
 		}
 
@@ -862,7 +890,7 @@ namespace KinveyXamarin
 		}
 
 		// Generates a request to get a temporary MIC URL (automated authorization grant flow)
-		private GetMICTempURLRequest buildMICTempURLRequest()
+		static private GetMICTempURLRequest BuildMICTempURLRequest(AbstractClient cli)
 		{
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
@@ -870,25 +898,29 @@ namespace KinveyXamarin
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
 			data.Add("response_type", "code");
-			data.Add("redirect_uri", this.KinveyClient.MICRedirectURI);
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+			data.Add("redirect_uri", Client.SharedClient.MICRedirectURI);//this.KinveyClient.MICRedirectURI);
+			data.Add("scope", "openid");
+
+			string app_id = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppKey;
+			data.Add("client_id", app_id);
 
 			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
-			if (client.MICApiVersion != null && client.MICApiVersion.Length > 0)
+			urlParameters.Add("appKey", app_id);
+
+			if (cli.MICApiVersion != null && cli.MICApiVersion.Length > 0)
 			{
-				urlParameters.Add ("MICApiVersion", client.MICApiVersion);
+				urlParameters.Add ("MICApiVersion", cli.MICApiVersion);
 			}
 
-			GetMICTempURLRequest getTemp = new GetMICTempURLRequest(client, client.MICHostName, data, urlParameters);
+			GetMICTempURLRequest getTemp = new GetMICTempURLRequest(cli, cli.MICHostName, data, urlParameters);
 			getTemp.RequireAppCredentials = true;
-			client.InitializeRequest(getTemp);
+			cli.InitializeRequest(getTemp);
 
 			return getTemp;
 		}
 
 		// Generates a request to login a user to the temporary MIC URL (automated authorization grant flow)
-		private LoginToTempURLRequest buildMICLoginToTempURL(String username, String password, String tempURL)
+		static private LoginToTempURLRequest BuildMICLoginToTempURL(AbstractClient cli, String username, String password, String tempURL)
 		{
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
@@ -896,19 +928,21 @@ namespace KinveyXamarin
 			//    	username
 			//    	password
 
+			string app_id = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppKey;
+
 			Dictionary<string, string> data = new Dictionary<string, string>();
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
-			data.Add("redirect_uri", this.KinveyClient.MICRedirectURI);
+			data.Add("client_id", app_id);
+			data.Add("redirect_uri", cli.MICRedirectURI);
 			data.Add("response_type", "code");
 			data.Add("username", username);
 			data.Add("password", password);
 
 			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("appKey", app_id);
 
-			LoginToTempURLRequest loginTemp = new LoginToTempURLRequest(client, this, tempURL, data, urlParameters);
+			LoginToTempURLRequest loginTemp = new LoginToTempURLRequest(cli, tempURL, data, urlParameters);
 			loginTemp.RequireAppCredentials = true;
-			client.InitializeRequest(loginTemp);
+			cli.InitializeRequest(loginTemp);
 			return loginTemp;
 		}
 
@@ -1050,14 +1084,14 @@ namespace KinveyXamarin
 		// Request to login to temp URL (automated autorization grant flow)
 		private class LoginToTempURLRequest : AbstractKinveyClientRequest<JObject>
 		{
-			private User user;
+			AbstractClient cli;
 
-			internal LoginToTempURLRequest(AbstractClient client, User user, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
+			internal LoginToTempURLRequest(AbstractClient client, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
 				base(client, tempURL, "POST", "", httpContent, urlProperties)
 			{
 				this.PayloadType = new URLEncodedPayload();
 				this.OverrideRedirect = true;
-				this.user = user;
+				this.cli = client;
 			}
 
 			public override async Task<JObject> onRedirectAsync (string newLocation)
@@ -1069,7 +1103,7 @@ namespace KinveyXamarin
 				}
 
 				String accesstoken = newLocation.Substring (codeIndex + 5); // TODO change "String" to "string" - use alias everywhere
-				return await user.getMICToken (accesstoken).ExecuteAsync();
+				return await User.GetMICToken(cli, accesstoken).ExecuteAsync();
 			}
 		}
 

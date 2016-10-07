@@ -15,12 +15,13 @@ namespace UnitTestFramework
 		private const string collectionName = "ToDos";
 
 		[SetUp]
-		public void Setup ()
+		public async Task Setup ()
 		{
-			kinveyClient = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.build();
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+
+			kinveyClient = await builder.Build();
 		}
 
 		[TearDown]

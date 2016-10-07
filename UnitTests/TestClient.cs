@@ -20,14 +20,14 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public void TestClientBuilderBasic()
+		public async Task TestClientBuilderBasic()
 		{
 			// Arrange
 			const string url = "https://baas.kinvey.com/";
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
-			Client client = builder.build();
+			Client client = await builder.Build();
 
 			// Assert
 			Assert.False(client == null);
@@ -48,7 +48,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public void TestClientBuilderSetValues()
+		public async Task TestClientBuilderSetValues()
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
@@ -58,7 +58,7 @@ namespace UnitTestFramework
 				.setLogger(delegate(string msg) { Console.WriteLine(msg); });
 
 			// Assert
-			Client client = builder.build();
+			Client client = await builder.Build();
 
 			Assert.False(client == null);
 			Assert.False(string.IsNullOrEmpty(client.BaseUrl));
@@ -100,7 +100,7 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
-			Client client = builder.build();
+			Client client = await builder.Build();
 
 			// Act
 			PingResponse pr = await client.PingAsync();
@@ -118,7 +118,7 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake);
-			Client client = builder.build();
+			Client client = await builder.Build();
 
 			// Act
 			PingResponse pr = await client.PingAsync();
@@ -136,7 +136,7 @@ namespace UnitTestFramework
 			new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.build();
+				.Build();
 
 			if (!Client.SharedClient.IsUserLoggedIn())
 			{

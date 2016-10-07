@@ -59,8 +59,9 @@ namespace KinveyXamarin
 			{
 				Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 				KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
-				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
+
 			return cred;
 		}
 
@@ -94,8 +95,10 @@ namespace KinveyXamarin
 
 		public Credential GetActiveUser()
 		{
-			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
 			Credential cred = null;
+
+			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
+
 			if (sqlcred != null)
 			{
 				Dictionary<string, JToken> attributes = null;
@@ -109,11 +112,13 @@ namespace KinveyXamarin
 				{
 					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				}
-				cred =  new Credential (sqlcred.UserID, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
 			}
+
 			return cred;
 		}
 
 		#endregion
+
 	}
 }

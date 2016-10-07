@@ -525,8 +525,27 @@ namespace KinveyXamarin
 		public virtual async Task<T> ExecuteAsync(){
 			var response = await ExecuteUnparsedAsync();
 
-			if (OverrideRedirect){
-				return await onRedirectAsync(response.Headers.FirstOrDefault(stringToCheck => stringToCheck.ToString().ToLower().Equals("location")).ToString());
+			if (OverrideRedirect)
+			{
+				string newLoc = String.Empty;
+				foreach (Parameter param in response.Headers)
+				{
+					if (param.Name.Equals("Location"))
+					{
+						int i = response.Headers.IndexOf(param);
+						Parameter p = response.Headers[i];
+						var obj = p.Value as string[];
+						//foreach (var val in param.Value)
+						//{response.Headers.
+						//}
+						//newLoc = response.Headers.["Location"].ToString();
+						newLoc = obj.FirstOrDefault();
+						break;
+					}
+				}
+				//string newlocation = response.Headers.FirstOrDefault(stringToCheck => stringToCheck.ToString().Equals("Location")).ToString();
+				//return await onRedirectAsync(newlocation);
+				return await onRedirectAsync(newLoc);
 			}
 			// special case to handle void or empty responses
 			if (response.Content == null) 

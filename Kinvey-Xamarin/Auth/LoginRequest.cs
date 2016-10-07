@@ -95,6 +95,7 @@ namespace KinveyXamarin
 		{
 			User u = new User(this.abstractClient);
 			u.Id = cred.UserId;
+			u.AccessToken = cred.AccessToken;
 			u.AuthToken = cred.AuthToken;
 
 			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
@@ -114,6 +115,7 @@ namespace KinveyXamarin
 			// this.putAll(response.getUnknownKeys());
 
 			//this.username = response
+			u.AccessToken = response.AccessToken;
 			u.AuthToken = response.AuthToken;
 			u.Attributes = response.Attributes;
 			u.Metadata = response.UserMetaData;

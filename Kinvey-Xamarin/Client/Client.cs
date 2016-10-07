@@ -149,24 +149,30 @@ namespace KinveyXamarin
 			/// <param name="appKey">App key from Kinvey</param>
 			/// <param name="appSecret">App secret from Kinvey</param>
 			public Builder(string appKey, string appSecret)
-				: base(new RestClient (), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders()))
+				: base(new RestClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders()))
 			{
 			}
 
 			/// <summary>
 			/// This method creates and initializes a client for use with Kinvey.
 			/// </summary>
-			public virtual Client build(){
-				if (this.filePath != null && offlinePlatform != null){
-					if (this.Store == null) {
+			public virtual async Task<Client> Build()
+			{
+				if (this.filePath != null && offlinePlatform != null)
+				{
+					if (this.Store == null)
+					{
 						this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
 					}
-					if (this.CacheManager == null) {
+
+					if (this.CacheManager == null)
+					{
 						this.CacheManager = new SQLiteCacheManager (offlinePlatform, filePath);
 					}
 				}
 
-				if (this.Store == null){
+				if (this.Store == null)
+				{
 					this.Store = new InMemoryCredentialStore();
 				}
 
@@ -179,13 +185,15 @@ namespace KinveyXamarin
 				c.senderID = this.senderID;
 
 				Logger.initialize (c.logger);
+
+				SharedClient = c;
+
 				Credential currentCredential = this.Store.GetActiveUser();
 				if (currentCredential != null)
 				{
-					User.LoginAsync(currentCredential, c);
+					await User.LoginAsync(currentCredential, c);
 				}
 
-				SharedClient = c;
 				return c;
 			}
 

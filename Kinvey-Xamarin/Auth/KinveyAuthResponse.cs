@@ -44,12 +44,23 @@ namespace KinveyXamarin
         public KinveyUserMetaData UserMetaData { get; set; }
 
 		/// <summary>
+		/// Gets or sets the auth social identity.
+		/// </summary>
+		/// <value>The auth social identity.</value>
+		[JsonProperty("_socialIdentity")]
+		public KinveyAuthSocialID AuthSocialIdentity { get; set; }
+
+		/// <summary>
 		/// Gets or sets the username.
 		/// </summary>
 		/// <value>The username.</value>
 		[JsonProperty("username")]
 		public string username { get; set; }
 
+		/// <summary>
+		/// Gets or sets the attributes.
+		/// </summary>
+		/// <value>The attributes.</value>
 		[JsonExtensionData]
 		public Dictionary<string, JToken> Attributes { get; set; }
 
@@ -61,5 +72,14 @@ namespace KinveyXamarin
         {
             get { return (UserMetaData != null ? UserMetaData.AuthToken : null); }
         }
+
+		/// <summary>
+		/// Gets the access token.
+		/// </summary>
+		/// <value>The access token.</value>
+		public string AccessToken
+		{
+			get { return AuthSocialIdentity?.AuthMetaData?.AccessToken; }
+		}
     }
 }

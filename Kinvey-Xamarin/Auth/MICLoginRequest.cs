@@ -15,25 +15,24 @@ namespace KinveyXamarin
 {
 	internal class MICLoginRequest : LoginRequest
 	{
-		protected User memberUser;
-
 		internal MICLoginRequest(AbstractClient client, KinveyAuthRequest.Builder builder, EnumLoginType loginType, ThirdPartyIdentity identity, User user = null) :
 			base(client, builder, loginType, identity)
 		{
-			memberUser = user;
-			memberUser.builder.Create = false;
 		}
 
 		internal MICLoginRequest buildAuthRequest()
 		{
 			baseBuildAuthRequest();
+
 			request.buildRequestPayload();
+
 			return this;
 		}
 
 		internal LoginRequest baseBuildAuthRequest()
 		{
-			this.request = memberUser.builder.build();
+			this.request = base.builder.build();
+
 			return this;
 		}
 	}
