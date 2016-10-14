@@ -534,17 +534,12 @@ namespace KinveyXamarin
 					{
 						int i = response.Headers.IndexOf(param);
 						Parameter p = response.Headers[i];
-						var obj = p.Value as string[];
-						//foreach (var val in param.Value)
-						//{response.Headers.
-						//}
-						//newLoc = response.Headers.["Location"].ToString();
+						var obj = p.Value as List<string>;
 						newLoc = obj.FirstOrDefault();
 						break;
 					}
 				}
 				//string newlocation = response.Headers.FirstOrDefault(stringToCheck => stringToCheck.ToString().Equals("Location")).ToString();
-				//return await onRedirectAsync(newlocation);
 				return await onRedirectAsync(newLoc);
 			}
 			// special case to handle void or empty responses
