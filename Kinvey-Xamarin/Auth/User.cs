@@ -199,19 +199,19 @@ namespace KinveyXamarin
 			this.Attributes = response.Attributes;
 			this.Metadata = response.UserMetaData;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-            ((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id);
+			((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id, KinveyClient.OrganizationID);
             return this;
         }
 
-		/// <summary>
-		/// Removes the user from the store..
-		/// </summary>
-		/// <param name="userID">User _id.</param>
-        private void removeFromStore(string userID)
-        {
-            CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-            credentialManager.RemoveCredential(userID);
-        }
+		///// <summary>
+		///// Removes the user from the store..
+		///// </summary>
+		///// <param name="userID">User _id.</param>
+  //      private void removeFromStore(string userID)
+  //      {
+  //          CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
+  //          credentialManager.RemoveCredential(userID);
+  //      }
 		#endregion
 
 		#region User class Public APIs
@@ -517,10 +517,10 @@ namespace KinveyXamarin
 				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
-				Credential currentCred = uc.Store.Load(u.Id);
+				Credential currentCred = uc.Store.Load(u.Id, uc.OrganizationID);
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
-				uc.Store.Store(u.Id, currentCred);
+				uc.Store.Store(u.Id, uc.OrganizationID, currentCred);
 			}
 			catch(Exception e)
 			{
@@ -547,10 +547,10 @@ namespace KinveyXamarin
 				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
-				Credential currentCred = KinveyClient.Store.Load(u.Id);
+				Credential currentCred = KinveyClient.Store.Load(u.Id, KinveyClient.OrganizationID);
 				currentCred.RefreshToken = result["refresh_token"].ToString();
 				currentCred.RedirectUri = this.KinveyClient.MICRedirectURI;
-				KinveyClient.Store.Store(u.Id, currentCred);
+				KinveyClient.Store.Store(u.Id, KinveyClient.OrganizationID, currentCred);
 
 				if (KinveyClient.MICDelegate != null)
 				{
@@ -1129,7 +1129,7 @@ namespace KinveyXamarin
 				var userId = memberUser.id;
 				if (userId != null)
 				{
-					manager.RemoveCredential (userId);
+					manager.RemoveCredential (userId, memberUser.KinveyClient.OrganizationID);
 				}
 
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;

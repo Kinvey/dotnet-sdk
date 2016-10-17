@@ -439,7 +439,7 @@ namespace KinveyXamarin
 			if ((int)response.StatusCode == 401 && !hasRetryed){
 
 				//get the refresh token
-				Credential cred = Client.Store.Load(Client.ActiveUser.Id);
+				Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.OrganizationID);
 				String refreshToken = null;
 				string redirectUri = null;
 				if (cred != null){
@@ -461,10 +461,10 @@ namespace KinveyXamarin
 					User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
 
 					//store the new refresh token
-					Credential currentCred = Client.Store.Load(Client.ActiveUser.Id);
+					Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.OrganizationID);
 					currentCred.RefreshToken = result["refresh_token"].ToString();
 					currentCred.RedirectUri = redirectUri;
-					Client.Store.Store(Client.ActiveUser.Id, currentCred);
+					Client.Store.Store(Client.ActiveUser.Id, Client.OrganizationID, currentCred);
 					hasRetryed = true;
 					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
 					var retryResponse = await ExecuteUnparsedAsync ();

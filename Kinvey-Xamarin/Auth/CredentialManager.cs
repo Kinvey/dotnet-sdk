@@ -56,7 +56,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The credential.</returns>
 		/// <param name="userId">User _id.</param>
-        public Credential LoadCredential(string userId)
+		/// <param name="orgID">Organization identifier.</param>
+		public Credential LoadCredential(string userId, string orgID)
         {
             if (credentialStore == null)
             {
@@ -64,26 +65,26 @@ namespace KinveyXamarin
             }
             else
             {
-                return credentialStore.Load(userId);
+                return credentialStore.Load(userId, orgID);
             }
         }
 
-		/// <summary>
-		/// Saves the credential associated with the user._id.
-		/// </summary>
-		/// <param name="userId">User _id.</param>
-		/// <param name="credential">Credential.</param>
-        public void MakePersistant(string userId, Credential credential)
-        {
-            if (credentialStore == null)
-            {
-                return;
-            }
-            else
-            {
-                credentialStore.Store(userId, credential);
-            }
-        }
+		///// <summary>
+		///// Saves the credential associated with the user._id.
+		///// </summary>
+		///// <param name="userId">User _id.</param>
+		///// <param name="credential">Credential.</param>
+  //      public void MakePersistant(string userId, Credential credential)
+  //      {
+  //          if (credentialStore == null)
+  //          {
+  //              return;
+  //          }
+  //          else
+  //          {
+  //              credentialStore.Store(userId, credential);
+  //          }
+  //      }
 
 		/// <summary>
 		/// Creates a new Credential object from a Kinvey user login/create request, and saves the it in the Credential Store.
@@ -91,12 +92,12 @@ namespace KinveyXamarin
 		/// <returns>The and store credential.</returns>
 		/// <param name="response">Response.</param>
 		/// <param name="userId">User _id.</param>
-        public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId)
+        public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId, string orgID)
         {
             Credential newCredential = Credential.From(response);
             if (userId != null && credentialStore != null)
             {
-                credentialStore.Store(userId, newCredential);
+                credentialStore.Store(userId, orgID, newCredential);
             }
             return newCredential;
         }
@@ -105,11 +106,12 @@ namespace KinveyXamarin
 		/// Removes the user._id's credential from the Credential Store.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-        public void RemoveCredential(string userId)
+		/// <param name="orgID">Organization identifier.</param>
+		public void RemoveCredential(string userId, string orgID)
         {
             if (credentialStore != null)
             {
-                credentialStore.Delete(userId);
+                credentialStore.Delete(userId, orgID);
             }
         }
     }

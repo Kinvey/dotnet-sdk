@@ -17,9 +17,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-/// <summary>
-/// In memory credential store.
-/// </summary>
 namespace KinveyXamarin
 {
 	/// <summary>
@@ -42,7 +39,8 @@ namespace KinveyXamarin
 		/// Load the specified userId.
 		/// </summary>
 		/// <param name="userId">User._id.</param>
-        public Credential Load(string userId)
+		/// <param name="orgID">Organization identifier.</param>
+		public Credential Load(string userId, string orgID)
         {
             return store[userId];
         }
@@ -51,8 +49,9 @@ namespace KinveyXamarin
 		/// Store the specified userId and credential.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
+		/// <param name="orgID">Organization identifier.</param>
 		/// <param name="credential">Credential.</param>
-        public void Store(string userId, Credential credential)
+        public void Store(string userId, string orgID, Credential credential)
         {
             if (userId != null)
             {
@@ -65,7 +64,8 @@ namespace KinveyXamarin
 		/// Delete the specified userId.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-        public void Delete(string userId)
+		/// <param name="orgID">Organization identifier.</param>
+		public void Delete(string userId, string orgID)
         {
             if (userId != null)
             {
@@ -73,7 +73,7 @@ namespace KinveyXamarin
             }
         }
 
-		public Credential GetActiveUser (){
+		public Credential GetActiveUser (string orgID){
 			return store.FirstOrDefault ().Value;
 		}
 

@@ -23,15 +23,14 @@ namespace KinveyXamarin
 	/// </summary>
 	public class IOSNativeCredentialStore : NativeCredentialStore
 	{
-		private const string SSO_ORG_TEST = "SSO_ORG_TEST";
-
 		#region NativeStoreCredential implementation
 
 		/// <summary>
 		/// Load the credential associted with the specified user ID.
 		/// </summary>
 		/// <param name="userID">User identifier used to access appropriate credential.</param>
-		override public Credential Load(string userID)
+		/// <param name="orgID">Organization identifier.</param>
+		override public Credential Load(string userID, string orgID)
 		{
 			Credential credential = null;
 
@@ -39,7 +38,7 @@ namespace KinveyXamarin
 			{
 				NativeCredential nc = null;
 
-				var credentials = FindCredentialsForOrg(SSO_ORG_TEST);
+				var credentials = FindCredentialsForOrg(orgID);
 
 				foreach (var c in credentials)
 				{
@@ -68,8 +67,9 @@ namespace KinveyXamarin
 		/// Store the credential specified by the user ID.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
+		/// <param name="orgID">Organization identifier.</param>
 		/// <param name="credential">Credential.</param>
-		override public void Store(string userID, Credential credential)
+		override public void Store(string userID, string orgID, Credential credential)
 		{
 			Dictionary<string, string> properties = new Dictionary<string, string>();
 			properties.Add(Constants.STR_ACCESS_TOKEN, (credential.AccessToken ?? string.Empty));
@@ -90,7 +90,7 @@ namespace KinveyXamarin
 
 			try
 			{
-				SaveNativeCredential(nc, SSO_ORG_TEST);
+				SaveNativeCredential(nc, orgID);
 			}
 			catch (System.Exception e)
 			{
@@ -102,9 +102,10 @@ namespace KinveyXamarin
 		/// Delete the specified userID and orgID.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
-		override public void Delete(string userID)
+		/// <param name="orgID">Organization identifier.</param>
+		override public void Delete(string userID, string orgID)
 		{
-			var nativeCredEnumeration = FindCredentialsForOrg(SSO_ORG_TEST);
+			var nativeCredEnumeration = FindCredentialsForOrg(orgID);
 
 			foreach (var nc in nativeCredEnumeration)
 			{
@@ -115,7 +116,7 @@ namespace KinveyXamarin
 				//}
 
 				SecRecord query = new SecRecord(SecKind.GenericPassword);
-				query.Service = SSO_ORG_TEST;
+				query.Service = orgID;
 				query.Account = nc.UserID;
 
 				var statusCode = SecKeyChain.Remove(query);
@@ -132,9 +133,10 @@ namespace KinveyXamarin
 		/// Gets the active user.
 		/// </summary>
 		/// <returns>The active user.</returns>
-		override public Credential GetActiveUser()
+		/// <param name="orgID">Organization identifier.</param>
+		override public Credential GetActiveUser(string orgID)
 		{
-			return Load(string.Empty);
+			return Load(string.Empty, orgID);
 		}
 
 		#endregion

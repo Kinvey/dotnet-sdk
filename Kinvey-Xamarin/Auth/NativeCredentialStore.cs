@@ -22,25 +22,29 @@ namespace KinveyXamarin
 		/// Load the credential object from the native credential store based on the specified user ID.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
-		abstract public Credential Load(string userID);
+		/// <param name="orgID">Organization identifier.</param>
+		abstract public Credential Load(string userID, string orgID);
 
 		/// <summary>
 		/// Store the specified userID and credential.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
+		/// <param name="orgID">Organization identifier.</param>
 		/// <param name="credential">Credential.</param>
-		abstract public void Store(string userID, Credential credential);
+		abstract public void Store(string userID, string orgID, Credential credential);
 
 		/// <summary>
 		/// Delete the specified user ID into the native credential store.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
-		abstract public void Delete(string userID);
+		/// <param name="orgID">Organization identifier.</param>
+		abstract public void Delete(string userID, string orgID);
 
 		/// <summary>
 		/// Gets the active user from the native credential store.
 		/// </summary>
 		/// <returns>The credential object representing the active user.</returns>
-		abstract public Credential GetActiveUser();
+		/// <param name="orgID">Organization identifier.</param>
+		abstract public Credential GetActiveUser(string orgID);
 	}
 }

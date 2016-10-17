@@ -37,6 +37,14 @@ namespace KinveyXamarin
 		public UserRequestFactory UserFactory { get; set; }
 
 		/// <summary>
+		/// Gets the organization identifier, used to determine if single sign-on(SSO) is enabled for this app.
+		/// If an organization is set when the client is built, then SSO is enabled for that org.
+		/// If not, then the app key is used as the org ID, and SSO is disabled.
+		/// </summary>
+		/// <value>The organization identifier.</value>
+		public string OrganizationID { get; protected set; }
+
+		/// <summary>
 		/// The default base URL.
 		/// </summary>
         public const string DefaultBaseUrl = "https://baas.kinvey.com/";
@@ -239,27 +247,27 @@ namespace KinveyXamarin
                 set { this.store = value; }
             }
 
-			/// <summary>
-			/// Gets the credential for a specified user ID
-			/// </summary>
-			/// <returns><c>true</c>, if credential was loaded, <c>false</c> otherwise.</returns>
-			/// <param name="userId">User identifier @see cref="KinveyXamarin.User.id"/>.</param>
-			protected bool GetCredential(String userId) 
-			{
-				CredentialManager credentialManager = new CredentialManager(store);
-				Credential storedCredential = credentialManager.LoadCredential(userId);
+			///// <summary>
+			///// Gets the credential for a specified user ID
+			///// </summary>
+			///// <returns><c>true</c>, if credential was loaded, <c>false</c> otherwise.</returns>
+			///// <param name="userId">User identifier @see cref="KinveyXamarin.User.id"/>.</param>
+			//protected bool GetCredential(String userId) 
+			//{
+			//	CredentialManager credentialManager = new CredentialManager(store);
+			//	Credential storedCredential = credentialManager.LoadCredential(userId);
 
-				if (storedCredential != null) 
-				{
-					var kinveyRequestInitializer = ((KinveyClientRequestInitializer) this.RequestInitializer);
-					kinveyRequestInitializer.KinveyCredential = new Credential(userId, storedCredential.AccessToken, storedCredential.AuthToken, storedCredential.UserName, storedCredential.Attributes, storedCredential.UserKMD, null, null);
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
+			//	if (storedCredential != null) 
+			//	{
+			//		var kinveyRequestInitializer = ((KinveyClientRequestInitializer) this.RequestInitializer);
+			//		kinveyRequestInitializer.KinveyCredential = new Credential(userId, storedCredential.AccessToken, storedCredential.AuthToken, storedCredential.UserName, storedCredential.Attributes, storedCredential.UserKMD, null, null);
+			//		return true;
+			//	}
+			//	else
+			//	{
+			//		return false;
+			//	}
+			//}
 		}
 	}
 }

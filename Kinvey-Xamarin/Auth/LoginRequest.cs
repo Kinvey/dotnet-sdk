@@ -121,7 +121,7 @@ namespace KinveyXamarin
 			u.Metadata = response.UserMetaData;
 
 			CredentialManager credentialManager = new CredentialManager(this.abstractClient.Store);
-			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, u.Id);
+			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, u.Id, this.abstractClient.OrganizationID);
 
 			this.abstractClient.ActiveUser = u;
 			return u;
