@@ -35,7 +35,11 @@ namespace testiosapp
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
 
-			BuildClient();
+			var task = BuildClient();
+			if (task.Status != TaskStatus.RanToCompletion)
+			{
+				task.RunSynchronously();
+			}
 			//myClient.Push().RegisterForToken();
 
 			return true;
@@ -43,20 +47,23 @@ namespace testiosapp
 
 		public async Task BuildClient()
 		{
-			//Client.Builder cb = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
-			//Client.Builder cb = new Client.Builder("kid_B15RMaba", "0c0c30097a6d4811a267b70a024540e2") // SSO-TEST
-			//Client.Builder cb = new Client.Builder("kid_Zy0JOYPKkZ", "d83de70e64d540e49acd6cfce31415df") // UNITTESTFRAMEWORK
-			Client.Builder cb = new Client.Builder("kid_byWWRXzJCe", "4a58018febe945fea5ba76c08ce1e870") // VINAY 1ST APP
+			//string appKey = "kid_B15RMaba", appSecret = "0c0c30097a6d4811a267b70a024540e2"; // SSO-TEST
+			//string appKey = "kid_ZkPDb_34T", appSecret = "c3752d5079f34353ab89d07229efaf63"; // MIC-SAML-TEST
+			//string appKey = "kid_Zy0JOYPKkZ", appSecret = "d83de70e64d540e49acd6cfce31415df"; // UNITTESTFRAMEWORK
+			string appKey = "kid_byWWRXzJCe", appSecret = "4a58018febe945fea5ba76c08ce1e870"; // VINAY 1ST APP
+
+			Client.Builder cb = new Client.Builder(appKey, appSecret)
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setCredentialStore(new IOSNativeCredentialStore())
+				.SetOrganizationID("KinveyOrg")
 				//.setBaseURL("https://alm-kcs.ngrok.io")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
 			myClient = await cb.Build();
 
 			//myClient.MICHostName = "https://alm-auth.ngrok.io"; // SSO-TEST
-			myClient.MICApiVersion = "v3"; // SSO-TEST
+			//myClient.MICApiVersion = "v3"; // SSO-TEST
 
 			// create a new window instance based on the screen size
 			Window = new UIWindow(UIScreen.MainScreen.Bounds);
@@ -115,9 +122,6 @@ namespace testiosapp
 				//string redirectURI = "kinveyAuthDemo://";
 				//await User.LoginWithAuthorizationCodeAPIAsync(user, pass, redirectURI, myClient);
 
-				//user = await User.LoginAsync("test", "test", myClient);
-				//string username = "test";
-				//string password = "test";
 				await User.LoginAsync(user, pass);
 
 				//string token = ((AppDelegate)UIApplication.SharedApplication.Delegate).myDeviceToken;
