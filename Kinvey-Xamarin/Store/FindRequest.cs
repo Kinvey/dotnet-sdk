@@ -151,6 +151,8 @@ namespace KinveyXamarin
 					{
 						networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
 					}
+
+					Cache.Clear();
 				}
 
 				Cache.RefreshCache(networkResults);

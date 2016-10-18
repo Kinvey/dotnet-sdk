@@ -49,6 +49,11 @@ namespace KinveyXamarin
 		ERROR_DATASTORE_CACHE_REFRESH,
 
 		/// <summary>
+		/// Error removing all entities in the local cache table.
+		/// </summary>
+		ERROR_DATASTORE_CACHE_CLEAR,
+
+		/// <summary>
 		/// Error removing an entity by ID in the local cache.
 		/// </summary>
 		ERROR_DATASTORE_CACHE_REMOVE_ENTITY,

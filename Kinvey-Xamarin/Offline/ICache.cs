@@ -95,6 +95,12 @@ namespace KinveyXamarin
 		List<T> FindByQuery (Expression expr);
 
 		/// <summary>
+		/// Deletes all the cached items.
+		/// </summary>
+		/// <returns>A KinveyDeleteResponse object.</returns>
+		KinveyDeleteResponse Clear();
+
+		/// <summary>
 		/// Deletes the cached item by ID.
 		/// </summary>
 		/// <returns>A KinveyDeleteResponse object.</returns>

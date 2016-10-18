@@ -452,9 +452,27 @@ namespace KinveyXamarin
 			return items;
 		}
 
-
 		// DELETE APIs
 		//
+
+		/// <summary>
+		/// Clear this local cache table of all its content.
+		/// </summary>
+		public KinveyDeleteResponse Clear()
+		{
+			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
+
+			try
+			{
+				kdr.count = dbConnectionSync.DeleteAll<T>();
+			}
+			catch (SQLiteException e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR, "", e);
+			}
+
+			return kdr;
+		}
 
 		public KinveyDeleteResponse DeleteByID(string id)
 		{

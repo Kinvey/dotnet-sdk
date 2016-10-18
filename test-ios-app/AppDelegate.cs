@@ -431,16 +431,30 @@ namespace testiosapp
 			return user;
 		}
 
-		private async Task<DataStore<Book>> ManipulateData(){
-			DataStore<Book> store = DataStore<Book>.Collection("Book", DataStoreType.NETWORK);
-			try{
-				
-				List<Book> listBooks = new List<Book>();
-				listBooks = await store.FindAsync();
+		private async Task<DataStore<Book>> ManipulateData()
+		{
+			DataStore<Book> store = DataStore<Book>.Collection("books", DataStoreType.SYNC);
+			try
+			{
+				Book mybook = new Book();
+				mybook.title = "Catch-22";
+				mybook.Author = "Joseph Conrad";
+				await store.SaveAsync(mybook);
+				var dsr = await store.SyncAsync();
 
-			} catch (Exception e){
-				Console.Write (e);
+				//var query = store.Select(x => x);
+
+				//List<Book> listBooks = new List<Book>();
+				//listBooks = await store.FindAsync();
+
+				List<Book> pullFirst = await store.PullAsync();
+				List<Book> pullSecond = await store.PullAsync();
 			}
+			catch (Exception e)
+			{
+				Console.Write(e);
+			}
+
 			return store;	
 		}
 

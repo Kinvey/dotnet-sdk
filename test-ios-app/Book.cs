@@ -5,9 +5,9 @@ using KinveyXamarin;
 namespace testiosapp
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class Book
+	public class Book : Entity
 	{
-		[JsonProperty("_id")]
+		[JsonProperty("BookID")]
 		public string BookID {get; set;}
 
 		[JsonProperty("title")]
@@ -18,10 +18,6 @@ namespace testiosapp
 
 		[JsonProperty("date")]
 		public string createdDate {get; set;}
-
-		[JsonProperty("_kmd")]
-		public KinveyMetaData metadata { get; set; }
-
 	}
 }
 
