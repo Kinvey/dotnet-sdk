@@ -847,6 +847,54 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestNetworkStoreFindByMongoQuery()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			string mongoQuery = "{\"details\":\"details for 2\"}";
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindWithMongoQueryAsync(mongoQuery);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+			Assert.NotNull(listToDo[0].Name);
+			Assert.NotNull(listToDo[0].Details);
+			Assert.True(listToDo[0].Details.Equals("details for 2"));
+		}
+
+
+		[Test]
 		public async Task TestNetworkStoreFindByQueryLogicalAnd()
 		{
 			// Setup

@@ -166,8 +166,14 @@ namespace KinveyXamarin
 //			return await findByIDsRequest.ExecuteAsync();
 //		}
 
-		internal async Task<List<T>> FindWithMongoQueryAsync(string queryString)
+		/// <summary>
+		/// Performs a find operation on the network the with mongo query async.
+		/// </summary>
+		/// <returns>The list of entities that match the query.> </returns>
+		/// <param name="queryString">Query string in MongoDB syntax.</param>
+		public async Task<List<T>> FindWithMongoQueryAsync(string queryString)
 		{
+			// TODO throw exception when used with sync store?
 			return await networkFactory.buildGetRequest<T>(this.CollectionName, queryString).ExecuteAsync();
 		}
 
