@@ -22,9 +22,8 @@ using Remotion.Linq.Parsing.Structure;
 namespace KinveyXamarin
 {
 	/// <summary>
-	/// Each DataStore in your application represents a collection on your backend. The <code>DataStore</code> class manages the access of data between the Kinvey backend and the app.
-	/// The <code>DataStore</code> provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
-	/// 
+	/// Each DataStore in your application represents a collection on your backend. The DataStore class manages the access of data between the Kinvey backend and the app.
+	/// The DataStore provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
 	/// </summary>
 	public class DataStore<T> : KinveyQueryable<T>  where T:class
 	{
@@ -134,7 +133,7 @@ namespace KinveyXamarin
 		/// <returns>The DataStore instance.</returns>
 		/// <param name="type">The <see cref="KinveyXamarin.DataStoreType"/> of this DataStore instance</param>
 		/// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
-		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <code>Client.sharedClient</code> is used.</param>
+		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <see cref="KinveyXamarin.Client.SharedClient"/> is used.</param>
 		public static DataStore<T> Collection(string collectionName, DataStoreType type, AbstractClient client = null)
 		{
 			// TODO do we need to make this a singleton based on collection, store type and store ID?
@@ -276,7 +275,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Pulls data from the backend to local storage
 		///
-		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
+		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
 		/// </summary>
 		/// <returns>Entities that were pulled from the backend.</returns>
 		/// <param name="query">Optional Query parameter.</param>
@@ -301,7 +300,7 @@ namespace KinveyXamarin
 
 		/// <summary>
 		/// Push local data in the datastore to the backend.
-		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
+		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
 		/// </summary>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
@@ -322,7 +321,7 @@ namespace KinveyXamarin
 		/// First, the library calls push to send local changes to the backend. Subsequently, the library calls pull to fetch data in the collection from the backend and stores it on the device.
 		/// You can provide a query as a parameter to the sync API, to restrict the data that is pulled from the backend. The query does not affect what data gets pushed to the backend.
 		///
-		/// This API is not supported on a DataStore of type <code>DataStoreType.Network</code>. Calling <code>sync()</code> on a <code>Network</code> store will throw an exception.
+		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
 		/// </summary>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>

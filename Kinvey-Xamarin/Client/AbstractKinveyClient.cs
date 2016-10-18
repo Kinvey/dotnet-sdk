@@ -48,7 +48,7 @@ namespace KinveyXamarin
 
 		/// <summary>
 		/// Sets the client app version. We strongly recommend (but do not require) using version strings that conform to the pattern:
-		/// <code>major.minor.patch</code>, where all values are integers and minor and patch are optional. 
+		/// "major.minor.patch", where all values are integers and minor and patch are optional.
 		/// Here are some examples for version strings specified in this format - “1.1.5”, “2.6”, “3”
 		/// </summary>
 		/// <returns>The client app version.</returns>

@@ -69,7 +69,7 @@ namespace KinveyXamarin
 		ERROR_DATASTORE_INVALID_SYNC_OPERATION,
 
 		/// <summary>
-		/// Error due to attempting to pull when the sync queue has not been cleared.  Try to perform a <code>push</code> operation first.
+		/// Error due to attempting to pull when the sync queue has not been cleared.  Try to perform a <see cref="KinveyXamarin.DataStore{T}.PushAsync"/> operation first.
 		/// </summary>
 		ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
 
