@@ -458,13 +458,30 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Clear this local cache table of all its content.
 		/// </summary>
-		public KinveyDeleteResponse Clear()
+		public KinveyDeleteResponse Clear(Expression expr)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
 			try
 			{
-				kdr.count = dbConnectionSync.DeleteAll<T>();
+				Func<T, bool> func = ConvertQueryExpressionToFunction(expr);
+
+				if (func != null)
+				{
+					List<T> matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+					List<string> matchIDs = new List<string>();
+					foreach (var match in matches)
+					{
+						Entity entity = match as Entity;
+						matchIDs.Add(entity.ID);
+					}
+
+					kdr = this.DeleteByIDs(matchIDs);
+				}
+				else
+				{
+					kdr.count = dbConnectionSync.DeleteAll<T>();
+				}
 			}
 			catch (SQLiteException e)
 			{

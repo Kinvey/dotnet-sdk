@@ -152,7 +152,7 @@ namespace KinveyXamarin
 						networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
 					}
 
-					Cache.Clear();
+					Cache.Clear(Query?.Expression);
 				}
 
 				Cache.RefreshCache(networkResults);
