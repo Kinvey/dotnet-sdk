@@ -27,6 +27,7 @@ namespace KinveyXamarin
 		{
 			this.EmailVerification = new KMDEmailVerification();
 			this.PasswordReset = new KMDPasswordReset();
+			this.UserStatus = new KMDStatus();
 		}
 
 		[Preserve]
@@ -57,5 +58,13 @@ namespace KinveyXamarin
 		[Preserve]
 		[JsonProperty("passwordReset")]
 		public KMDPasswordReset PasswordReset { get; set; }
+
+		/// <summary>
+		/// Gets or sets the status of the user, including whether or
+		/// not the user is diabled.
+		/// </summary>
+		[Preserve]
+		[JsonProperty("status")]
+		public KMDStatus UserStatus { get; set; }
 	}
 }
