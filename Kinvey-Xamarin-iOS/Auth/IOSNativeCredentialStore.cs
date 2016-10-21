@@ -23,15 +23,14 @@ namespace KinveyXamarin
 	/// </summary>
 	public class IOSNativeCredentialStore : NativeCredentialStore
 	{
-		private const string SSO_ORG_TEST = "SSO_ORG_TEST";
-
 		#region NativeStoreCredential implementation
 
 		/// <summary>
 		/// Load the credential associted with the specified user ID.
 		/// </summary>
 		/// <param name="userID">User identifier used to access appropriate credential.</param>
-		override public Credential Load(string userID)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		override public Credential Load(string userID, string ssoGroupKey)
 		{
 			Credential credential = null;
 
@@ -39,7 +38,7 @@ namespace KinveyXamarin
 			{
 				NativeCredential nc = null;
 
-				var credentials = FindCredentialsForOrg(SSO_ORG_TEST);
+				var credentials = FindCredentialsForOrg(ssoGroupKey);
 
 				foreach (var c in credentials)
 				{
@@ -68,8 +67,9 @@ namespace KinveyXamarin
 		/// Store the credential specified by the user ID.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		/// <param name="credential">Credential.</param>
-		override public void Store(string userID, Credential credential)
+		override public void Store(string userID, string ssoGroupKey, Credential credential)
 		{
 			Dictionary<string, string> properties = new Dictionary<string, string>();
 			properties.Add(Constants.STR_ACCESS_TOKEN, (credential.AccessToken ?? string.Empty));
@@ -90,7 +90,7 @@ namespace KinveyXamarin
 
 			try
 			{
-				SaveNativeCredential(nc, SSO_ORG_TEST);
+				SaveNativeCredential(nc, ssoGroupKey);
 			}
 			catch (System.Exception e)
 			{
@@ -99,12 +99,13 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Delete the specified userID and orgID.
+		/// Delete the specified credential based on user ID and SSO group key.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
-		override public void Delete(string userID)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		override public void Delete(string userID, string ssoGroupKey)
 		{
-			var nativeCredEnumeration = FindCredentialsForOrg(SSO_ORG_TEST);
+			var nativeCredEnumeration = FindCredentialsForOrg(ssoGroupKey);
 
 			foreach (var nc in nativeCredEnumeration)
 			{
@@ -115,7 +116,7 @@ namespace KinveyXamarin
 				//}
 
 				SecRecord query = new SecRecord(SecKind.GenericPassword);
-				query.Service = SSO_ORG_TEST;
+				query.Service = ssoGroupKey;
 				query.Account = nc.UserID;
 
 				var statusCode = SecKeyChain.Remove(query);
@@ -129,24 +130,26 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Gets the active user.
+		/// Gets the stored credential based on the SSO group key given.
+		/// If found, this credential represents the active user.
 		/// </summary>
-		/// <returns>The active user.</returns>
-		override public Credential GetActiveUser()
+		/// <returns>The stored credential for this SSO group key, if it exists.</returns>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		override public Credential GetStoredCredential(string ssoGroupKey)
 		{
-			return Load(string.Empty);
+			return Load(string.Empty, ssoGroupKey);
 		}
 
 		#endregion
 
 		#region Helper methods
 
-		private IEnumerable<NativeCredential> FindCredentialsForOrg(string orgID)
+		private IEnumerable<NativeCredential> FindCredentialsForOrg(string ssoGroupKey)
 		{
 			List<NativeCredential> credentials = new List<NativeCredential>();
 
 			var query = new SecRecord(SecKind.GenericPassword);
-			query.Service = orgID;
+			query.Service = ssoGroupKey;
 
 			SecStatusCode result;
 			var records = SecKeyChain.QueryAsRecord(query, 10, out result);
@@ -162,18 +165,18 @@ namespace KinveyXamarin
 			return credentials;
 		}
 
-		private void SaveNativeCredential(NativeCredential nativeCredential, string orgID)
+		private void SaveNativeCredential(NativeCredential nativeCredential, string ssoGroupKey)
 		{
 			var statusCode = SecStatusCode.Success;
 			var serializedCredential = nativeCredential.Serialize();
 			var data = NSData.FromString(serializedCredential, NSStringEncoding.UTF8);
 
 			// If there exists a credential, delete before writing new credential
-			var existingCredential = FindCredential(nativeCredential.UserID, orgID);
+			var existingCredential = FindCredential(nativeCredential.UserID, ssoGroupKey);
 			if (existingCredential != null)
 			{
 				var query = new SecRecord(SecKind.GenericPassword);
-				query.Service = orgID;
+				query.Service = ssoGroupKey;
 				query.Account = nativeCredential.UserID;
 
 				statusCode = SecKeyChain.Remove(query);
@@ -185,7 +188,7 @@ namespace KinveyXamarin
 
 			// Add new credential
 			var record = new SecRecord(SecKind.GenericPassword);
-			record.Service = orgID;
+			record.Service = ssoGroupKey;
 			record.Account = nativeCredential.UserID;
 			record.Generic = data;
 			record.Accessible = SecAccessible.WhenUnlocked;
@@ -198,12 +201,12 @@ namespace KinveyXamarin
 			}
 		}
 
-		private NativeCredential FindCredential(string username, string orgID)
+		private NativeCredential FindCredential(string username, string ssoGroupKey)
 		{
 			NativeCredential nc = null;
 
 			var query = new SecRecord(SecKind.GenericPassword);
-			query.Service = orgID;
+			query.Service = ssoGroupKey;
 			query.Account = username;
 
 			SecStatusCode result;

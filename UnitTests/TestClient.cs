@@ -68,6 +68,36 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestClientBuilderSetOrgID()
+		{
+			// Arrange
+			const string TEST_ORG = "testOrg";
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+
+			// Act
+			builder.SetSSOGroupKey(TEST_ORG);
+			Client c = await builder.Build();
+
+			// Assert
+			Assert.True(c.SSOGroupKey.Equals(TEST_ORG));
+		}
+
+		[Test]
+		public async Task TestClientBuilderDoNotSetOrgID()
+		{
+			// Arrange
+			const string TEST_ORG = "testOrg";
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+
+			// Act
+			Client c = await builder.Build();
+
+			// Assert
+			Assert.False(c.SSOGroupKey.Equals(TEST_ORG));
+			Assert.True(c.SSOGroupKey.Equals(TestSetup.app_key));
+		}
+
+		[Test]
 		public void ClientBuilderSetBaseURL()
 		{
 			// Arrange

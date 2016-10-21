@@ -143,6 +143,8 @@ namespace KinveyXamarin
 
 			private string senderID { get ; set;}
 
+			private string ssoGroupKey;
+
 			/// <summary>
 			/// Initializes a new instance of the <see cref="T:KinveyXamarin.Client.Builder"/> class.
 			/// </summary>
@@ -151,6 +153,7 @@ namespace KinveyXamarin
 			public Builder(string appKey, string appSecret)
 				: base(new RestClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders()))
 			{
+				ssoGroupKey = appKey;
 			}
 
 			/// <summary>
@@ -176,19 +179,19 @@ namespace KinveyXamarin
 					this.Store = new InMemoryCredentialStore();
 				}
 
-
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 //				c.offline_platform = this.offlinePlatform;
 //				c.filePath = this.filePath;
 				c.CacheManager = this.CacheManager;
 				c.logger = this.log;
 				c.senderID = this.senderID;
+				c.SSOGroupKey = this.ssoGroupKey;
 
 				Logger.initialize (c.logger);
 
 				SharedClient = c;
 
-				Credential currentCredential = this.Store.GetActiveUser();
+				Credential currentCredential = this.Store.GetStoredCredential(this.ssoGroupKey);
 				if (currentCredential != null)
 				{
 					await User.LoginAsync(currentCredential, c);
@@ -273,6 +276,12 @@ namespace KinveyXamarin
 			public Builder SetRestClient(IRestClient client)
 			{
 				this.HttpRestClient = client;
+				return this;
+			}
+
+			public Builder SetSSOGroupKey(string ssoGroupKey)
+			{
+				this.ssoGroupKey = ssoGroupKey;
 				return this;
 			}
 		}

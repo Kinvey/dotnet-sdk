@@ -22,25 +22,30 @@ namespace KinveyXamarin
 		/// Load the specified userId.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-        Credential Load(string userId);
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		Credential Load(string userId, string ssoGroupKey);
 
 		/// <summary>
 		/// Store the specified userId and credential.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		/// <param name="credential">Credential.</param>
-        void Store(string userId, Credential credential);
+		void Store(string userId, string ssoGroupKey, Credential credential);
 
 		/// <summary>
 		/// Delete the specified userId.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-        void Delete(string userId);
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		void Delete(string userId, string ssoGroupKey);
 
 		/// <summary>
-		/// Gets the active user from the credential store.
+		/// Gets the stored credential from the credential store, based on the given SSO group key.
+		/// If found, this credential represents the active user.
 		/// </summary>
-		/// <returns>The active user represented as a <see cref="Credential"/> object.</returns>
-		Credential GetActiveUser();
+		/// <returns>The <see cref="Credential"/> object if it exists, otherwise null.</returns>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		Credential GetStoredCredential(string ssoGroupKey);
     }
 }

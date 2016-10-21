@@ -51,7 +51,8 @@ namespace KinveyXamarin
 		/// Load the specified userId.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-		public Credential Load (string userId)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		public Credential Load (string userId, string ssoGroupKey)
 		{
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.UserID == userId).FirstOrDefault ();
 			Credential cred = null;
@@ -69,10 +70,11 @@ namespace KinveyXamarin
 		/// Store the specified userId and credential.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		/// <param name="credential">Credential.</param>
-		public void Store (string userId, Credential credential)
+		public void Store (string userId, string ssoGroupKey, Credential credential)
 		{
-			Delete (userId);
+			Delete (userId, ssoGroupKey);
 			SQLCredential cred = new SQLCredential();
 			cred.UserID = credential.UserId;
 			cred.AuthToken = credential.AuthToken;
@@ -88,12 +90,13 @@ namespace KinveyXamarin
 		/// Delete the specified userId.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-		public void Delete (string userId)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		public void Delete (string userId, string ssoGroupKey)
 		{
 			_dbConnection.Delete<SQLCredential> (userId);
 		}
 
-		public Credential GetActiveUser()
+		public Credential GetStoredCredential(string ssoGroupKey)
 		{
 			Credential cred = null;
 
