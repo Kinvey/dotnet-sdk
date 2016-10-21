@@ -41,10 +41,11 @@ namespace KinveyXamarin
 		void Delete(string userId, string ssoGroupKey);
 
 		/// <summary>
-		/// Gets the active user from the credential store.
+		/// Gets the stored credential from the credential store, based on the given SSO group key.
+		/// If found, this credential represents the active user.
 		/// </summary>
-		/// <returns>The active user represented as a <see cref="Credential"/> object.</returns>
+		/// <returns>The <see cref="Credential"/> object if it exists, otherwise null.</returns>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		Credential GetActiveUser(string ssoGroupKey);
+		Credential GetStoredCredential(string ssoGroupKey);
     }
 }

@@ -45,6 +45,6 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The credential object representing the active user.</returns>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		abstract public Credential GetActiveUser(string ssoGroupKey);
+		abstract public Credential GetStoredCredential(string ssoGroupKey);
 	}
 }

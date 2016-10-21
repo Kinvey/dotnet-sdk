@@ -191,7 +191,7 @@ namespace KinveyXamarin
 
 				SharedClient = c;
 
-				Credential currentCredential = this.Store.GetActiveUser(this.ssoGroupKey);
+				Credential currentCredential = this.Store.GetStoredCredential(this.ssoGroupKey);
 				if (currentCredential != null)
 				{
 					await User.LoginAsync(currentCredential, c);

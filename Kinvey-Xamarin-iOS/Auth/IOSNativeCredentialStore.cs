@@ -130,11 +130,12 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Gets the active user.
+		/// Gets the stored credential based on the SSO group key given.
+		/// If found, this credential represents the active user.
 		/// </summary>
-		/// <returns>The active user.</returns>
+		/// <returns>The stored credential for this SSO group key, if it exists.</returns>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		override public Credential GetActiveUser(string ssoGroupKey)
+		override public Credential GetStoredCredential(string ssoGroupKey)
 		{
 			return Load(string.Empty, ssoGroupKey);
 		}

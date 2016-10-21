@@ -96,7 +96,7 @@ namespace KinveyXamarin
 			_dbConnection.Delete<SQLCredential> (userId);
 		}
 
-		public Credential GetActiveUser(string ssoGroupKey)
+		public Credential GetStoredCredential(string ssoGroupKey)
 		{
 			Credential cred = null;
 

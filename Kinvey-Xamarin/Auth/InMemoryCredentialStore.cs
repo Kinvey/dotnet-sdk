@@ -73,7 +73,7 @@ namespace KinveyXamarin
             }
         }
 
-		public Credential GetActiveUser (string ssoGroupKey){
+		public Credential GetStoredCredential (string ssoGroupKey){
 			return store.FirstOrDefault ().Value;
 		}
 
