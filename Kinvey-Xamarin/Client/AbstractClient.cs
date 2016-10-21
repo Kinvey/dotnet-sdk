@@ -37,12 +37,12 @@ namespace KinveyXamarin
 		public UserRequestFactory UserFactory { get; set; }
 
 		/// <summary>
-		/// Gets the organization identifier, used to determine if single sign-on(SSO) is enabled for this app.
-		/// If an organization is set when the client is built, then SSO is enabled for that org.
-		/// If not, then the app key is used as the org ID, and SSO is disabled.
+		/// Gets the SSO Group key, used to determine if single sign-on(SSO) is enabled for this app.
+		/// If a SSO group key is set when the client is built, then SSO is enabled for that org.
+		/// If not, then the app key is used as the group key, and SSO is disabled.
 		/// </summary>
-		/// <value>The organization identifier.</value>
-		public string OrganizationID { get; protected set; }
+		/// <value>The SSO group key (defaulted to app key).</value>
+		public string SSOGroupKey { get; protected set; }
 
 		/// <summary>
 		/// The default base URL.

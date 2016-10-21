@@ -143,7 +143,7 @@ namespace KinveyXamarin
 
 			private string senderID { get ; set;}
 
-			private string orgID;
+			private string ssoGroupKey;
 
 			/// <summary>
 			/// Initializes a new instance of the <see cref="T:KinveyXamarin.Client.Builder"/> class.
@@ -153,7 +153,7 @@ namespace KinveyXamarin
 			public Builder(string appKey, string appSecret)
 				: base(new RestClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders()))
 			{
-				orgID = appKey;
+				ssoGroupKey = appKey;
 			}
 
 			/// <summary>
@@ -185,13 +185,13 @@ namespace KinveyXamarin
 				c.CacheManager = this.CacheManager;
 				c.logger = this.log;
 				c.senderID = this.senderID;
-				c.OrganizationID = this.orgID;
+				c.SSOGroupKey = this.ssoGroupKey;
 
 				Logger.initialize (c.logger);
 
 				SharedClient = c;
 
-				Credential currentCredential = this.Store.GetActiveUser(this.orgID);
+				Credential currentCredential = this.Store.GetActiveUser(this.ssoGroupKey);
 				if (currentCredential != null)
 				{
 					await User.LoginAsync(currentCredential, c);
@@ -279,9 +279,9 @@ namespace KinveyXamarin
 				return this;
 			}
 
-			public Builder SetOrganizationID(string orgID)
+			public Builder SetSSOGroupKey(string ssoGroupKey)
 			{
-				this.orgID = orgID;
+				this.ssoGroupKey = ssoGroupKey;
 				return this;
 			}
 		}

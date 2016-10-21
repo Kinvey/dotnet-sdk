@@ -56,7 +56,7 @@ namespace testiosapp
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setCredentialStore(new IOSNativeCredentialStore())
-				.SetOrganizationID("KinveyOrg")
+				.SetSSOGroupKey("KinveyOrg")
 				//.setBaseURL("https://alm-kcs.ngrok.io")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 

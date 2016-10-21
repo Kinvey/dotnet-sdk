@@ -56,8 +56,8 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>The credential.</returns>
 		/// <param name="userId">User _id.</param>
-		/// <param name="orgID">Organization identifier.</param>
-		public Credential LoadCredential(string userId, string orgID)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		public Credential LoadCredential(string userId, string ssoGroupKey)
         {
             if (credentialStore == null)
             {
@@ -65,7 +65,7 @@ namespace KinveyXamarin
             }
             else
             {
-                return credentialStore.Load(userId, orgID);
+				return credentialStore.Load(userId, ssoGroupKey);
             }
         }
 
@@ -74,17 +74,17 @@ namespace KinveyXamarin
 		///// </summary>
 		///// <param name="userId">User _id.</param>
 		///// <param name="credential">Credential.</param>
-  //      public void MakePersistant(string userId, Credential credential)
-  //      {
-  //          if (credentialStore == null)
-  //          {
-  //              return;
-  //          }
-  //          else
-  //          {
-  //              credentialStore.Store(userId, credential);
-  //          }
-  //      }
+		//      public void MakePersistant(string userId, Credential credential)
+		//      {
+		//          if (credentialStore == null)
+		//          {
+		//              return;
+		//          }
+		//          else
+		//          {
+		//              credentialStore.Store(userId, credential);
+		//          }
+		//      }
 
 		/// <summary>
 		/// Creates a new Credential object from a Kinvey user login/create request, and saves the it in the Credential Store.
@@ -92,12 +92,13 @@ namespace KinveyXamarin
 		/// <returns>The and store credential.</returns>
 		/// <param name="response">Response.</param>
 		/// <param name="userId">User _id.</param>
-        public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId, string orgID)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId, string ssoGroupKey)
         {
             Credential newCredential = Credential.From(response);
             if (userId != null && credentialStore != null)
             {
-                credentialStore.Store(userId, orgID, newCredential);
+				credentialStore.Store(userId, ssoGroupKey, newCredential);
             }
             return newCredential;
         }
@@ -106,12 +107,12 @@ namespace KinveyXamarin
 		/// Removes the user._id's credential from the Credential Store.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-		/// <param name="orgID">Organization identifier.</param>
-		public void RemoveCredential(string userId, string orgID)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		public void RemoveCredential(string userId, string ssoGroupKey)
         {
             if (credentialStore != null)
             {
-                credentialStore.Delete(userId, orgID);
+				credentialStore.Delete(userId, ssoGroupKey);
             }
         }
     }

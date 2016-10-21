@@ -39,8 +39,8 @@ namespace KinveyXamarin
 		/// Load the specified userId.
 		/// </summary>
 		/// <param name="userId">User._id.</param>
-		/// <param name="orgID">Organization identifier.</param>
-		public Credential Load(string userId, string orgID)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		public Credential Load(string userId, string ssoGroupKey)
         {
             return store[userId];
         }
@@ -49,9 +49,9 @@ namespace KinveyXamarin
 		/// Store the specified userId and credential.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-		/// <param name="orgID">Organization identifier.</param>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		/// <param name="credential">Credential.</param>
-        public void Store(string userId, string orgID, Credential credential)
+		public void Store(string userId, string ssoGroupKey, Credential credential)
         {
             if (userId != null)
             {
@@ -64,8 +64,8 @@ namespace KinveyXamarin
 		/// Delete the specified userId.
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
-		/// <param name="orgID">Organization identifier.</param>
-		public void Delete(string userId, string orgID)
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
+		public void Delete(string userId, string ssoGroupKey)
         {
             if (userId != null)
             {
@@ -73,7 +73,7 @@ namespace KinveyXamarin
             }
         }
 
-		public Credential GetActiveUser (string orgID){
+		public Credential GetActiveUser (string ssoGroupKey){
 			return store.FirstOrDefault ().Value;
 		}
 

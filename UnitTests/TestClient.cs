@@ -75,11 +75,11 @@ namespace UnitTestFramework
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
-			builder.SetOrganizationID(TEST_ORG);
+			builder.SetSSOGroupKey(TEST_ORG);
 			Client c = await builder.Build();
 
 			// Assert
-			Assert.True(c.OrganizationID.Equals(TEST_ORG));
+			Assert.True(c.SSOGroupKey.Equals(TEST_ORG));
 		}
 
 		[Test]
@@ -93,8 +93,8 @@ namespace UnitTestFramework
 			Client c = await builder.Build();
 
 			// Assert
-			Assert.False(c.OrganizationID.Equals(TEST_ORG));
-			Assert.True(c.OrganizationID.Equals(TestSetup.app_key));
+			Assert.False(c.SSOGroupKey.Equals(TEST_ORG));
+			Assert.True(c.SSOGroupKey.Equals(TestSetup.app_key));
 		}
 
 		[Test]

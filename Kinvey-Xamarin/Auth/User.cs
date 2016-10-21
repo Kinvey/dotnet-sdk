@@ -199,7 +199,7 @@ namespace KinveyXamarin
 			this.Attributes = response.Attributes;
 			this.Metadata = response.UserMetaData;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-			((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id, KinveyClient.OrganizationID);
+			((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id, KinveyClient.SSOGroupKey);
             return this;
         }
 
@@ -517,10 +517,10 @@ namespace KinveyXamarin
 				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
-				Credential currentCred = uc.Store.Load(u.Id, uc.OrganizationID);
+				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
-				uc.Store.Store(u.Id, uc.OrganizationID, currentCred);
+				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
 			}
 			catch(Exception e)
 			{
@@ -547,10 +547,10 @@ namespace KinveyXamarin
 				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
-				Credential currentCred = KinveyClient.Store.Load(u.Id, KinveyClient.OrganizationID);
+				Credential currentCred = KinveyClient.Store.Load(u.Id, KinveyClient.SSOGroupKey);
 				currentCred.RefreshToken = result["refresh_token"].ToString();
 				currentCred.RedirectUri = this.KinveyClient.MICRedirectURI;
-				KinveyClient.Store.Store(u.Id, KinveyClient.OrganizationID, currentCred);
+				KinveyClient.Store.Store(u.Id, KinveyClient.SSOGroupKey, currentCred);
 
 				if (KinveyClient.MICDelegate != null)
 				{
@@ -1129,7 +1129,7 @@ namespace KinveyXamarin
 				var userId = memberUser.id;
 				if (userId != null)
 				{
-					manager.RemoveCredential (userId, memberUser.KinveyClient.OrganizationID);
+					manager.RemoveCredential (userId, memberUser.KinveyClient.SSOGroupKey);
 				}
 
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
