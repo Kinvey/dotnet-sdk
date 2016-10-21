@@ -452,9 +452,51 @@ namespace KinveyXamarin
 			return items;
 		}
 
-
 		// DELETE APIs
 		//
+
+		/// <summary>
+		/// Clear this local cache table of all its content.
+		/// </summary>
+		public KinveyDeleteResponse Clear(Expression expr)
+		{
+			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
+
+			try
+			{
+				Func<T, bool> func = ConvertQueryExpressionToFunction(expr);
+
+				if (func != null)
+				{
+					try
+					{
+						List<T> matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+						List<string> matchIDs = new List<string>();
+						foreach (var match in matches)
+						{
+							IPersistable entity = match as IPersistable;
+							matchIDs.Add(entity.ID);
+						}
+
+						kdr = this.DeleteByIDs(matchIDs);
+					}
+					catch (Exception e)
+					{
+						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY, "", e);
+					}
+				}
+				else
+				{
+					kdr.count = dbConnectionSync.DeleteAll<T>();
+				}
+			}
+			catch (SQLiteException e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR, "", e);
+			}
+
+			return kdr;
+		}
 
 		public KinveyDeleteResponse DeleteByID(string id)
 		{

@@ -293,6 +293,18 @@ namespace KinveyXamarin
 					description = "Error in trying to delete an entity from the cache based on the given entity ID.";
 					break;
 
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR:
+					error = "An exception was thrown while trying clear all the entities from the cache.";
+					debug = "";
+					description = "Error while trying to clear all the data in the cache.  No data was deleted from the cache.";
+					break;
+
+				case EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY:
+					error = "An exception was thrown while trying clear entities from the cache based on a query.";
+					debug = "Call Clear() to clear the entire cache";
+					description = "Error while trying to clear data in the cache based on a query.  No data was deleted from the cache.";
+					break;
+
 				default:
 					error = "Unknown error";
 					debug = "Unknown error";

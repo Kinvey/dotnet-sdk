@@ -91,8 +91,15 @@ namespace KinveyXamarin
 		/// Finds entities by query.
 		/// </summary>
 		/// <returns>List of entities matching the given query</returns>
-		/// <param name="query">QueryModel object.</param>
-		List<T> FindByQuery (Expression expr);
+		/// <param name="expr">Expression derived from QueryModel object.</param>
+		List<T> FindByQuery(Expression expr);
+
+		/// <summary>
+		/// Deletes all the cached items.
+		/// </summary>
+		/// <returns>A KinveyDeleteResponse object.</returns>
+		/// <param name="expr">Expression derived from QueryModel object.</param>
+		KinveyDeleteResponse Clear(Expression expr);
 
 		/// <summary>
 		/// Deletes the cached item by ID.

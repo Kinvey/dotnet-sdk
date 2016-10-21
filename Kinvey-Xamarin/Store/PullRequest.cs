@@ -42,6 +42,7 @@ namespace KinveyXamarin
 			else
 			{
 				listResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
+				Cache.Clear(Query?.Expression);
 			}
 
 			Cache.RefreshCache(listResults);
