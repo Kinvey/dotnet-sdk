@@ -150,6 +150,15 @@ namespace KinveyXamarin
 		[JsonIgnore]
 		internal EnumLoginType type { get; set; } // TODO change back to private, or remove altogether.
 
+		[JsonIgnore]
+		public bool Disabled
+		{
+			get
+			{
+				return (Metadata?.UserStatus?.UserEnabledState == EnumUserStatus.USER_STATUS_DISABLED);
+			}
+		}
+
 		#endregion
 
 		#region User class Constructors and Initializers

@@ -633,6 +633,40 @@ namespace UnitTestFramework
 		#endregion
 
 		[Test]
+		public async Task TestUserDisabledAsync()
+		{
+			// Setup
+			User myUser = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			User deletedSoftUser = await myUser.RetrieveAsync("5808de04e87d27107142f686");
+
+			// Act
+			// Assert
+			Assert.True(deletedSoftUser.Disabled);
+
+			// Teardown
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestUserDisabledFalseAsync()
+		{
+			// Setup
+			User myUser = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+
+			// Act
+
+			// Assert
+			Assert.False(myUser.Disabled);
+
+			// Teardown
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestUserKMDEmailVerification()
 		{
 			// Setup
