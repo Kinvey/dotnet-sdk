@@ -155,13 +155,7 @@ namespace KinveyXamarin
 		{
 			get
 			{
-				bool? check = Metadata?.UserStatus?.Value?.Equals("disabled");
-				if (check.HasValue)
-				{
-					return check.Value;
-				}
-
-				return false;
+				return (Metadata?.UserStatus?.UserEnabledState == EnumUserStatus.USER_STATUS_DISABLED);
 			}
 		}
 

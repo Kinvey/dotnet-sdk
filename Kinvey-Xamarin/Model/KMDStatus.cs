@@ -32,6 +32,20 @@ namespace KinveyXamarin
 		{
 		}
 
+		public EnumUserStatus UserEnabledState
+		{
+			get
+			{
+				if (Value != null &&
+				    Value.Equals("disabled"))
+				{
+					return EnumUserStatus.USER_STATUS_DISABLED;
+				}
+
+				return EnumUserStatus.USER_STATUS_ENABLED;
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the status of the password reset request for the user.  This field is set 
 		/// to "InProgress" during the fulfillment of the request, and is empty when the request is complete.
@@ -56,5 +70,12 @@ namespace KinveyXamarin
 		{
 			return JsonConvert.SerializeObject(this);
 		}
+	}
+
+	public enum EnumUserStatus
+	{
+		USER_STATUS_ENABLED,
+
+		USER_STATUS_DISABLED
 	}
 }
