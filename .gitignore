@@ -3,4 +3,6 @@
 */obj/*
 Kinvey-Xamarin.userprefs
 api
+Makefile
+release/*
 *.nupkg
