@@ -468,15 +468,22 @@ namespace KinveyXamarin
 
 				if (func != null)
 				{
-					List<T> matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
-					List<string> matchIDs = new List<string>();
-					foreach (var match in matches)
+					try
 					{
-						Entity entity = match as Entity;
-						matchIDs.Add(entity.ID);
-					}
+						List<T> matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+						List<string> matchIDs = new List<string>();
+						foreach (var match in matches)
+						{
+							IPersistable entity = match as IPersistable;
+							matchIDs.Add(entity.ID);
+						}
 
-					kdr = this.DeleteByIDs(matchIDs);
+						kdr = this.DeleteByIDs(matchIDs);
+					}
+					catch (Exception e)
+					{
+						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY, "", e);
+					}
 				}
 				else
 				{
