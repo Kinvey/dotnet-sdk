@@ -176,12 +176,12 @@ namespace KinveyXamarin
 				}
 				else
 				{
-					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
+					throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED, "LINQ where clause method not supported.");
 				}
 			}
 			else
 			{
-				throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "LINQ where clause method not supported.");
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED, "LINQ where clause method not supported.");
 			}
 		}
 

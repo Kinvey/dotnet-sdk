@@ -180,6 +180,11 @@ namespace KinveyXamarin
 		ERROR_METHOD_NOT_IMPLEMENTED,
 
 		/// <summary>
+		/// Error condition for a LINQ where clause not supported.
+		/// </summary>
+		ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED,
+
+		/// <summary>
 		/// Error code for a backend custom endpoint problem.
 		/// </summary>
 		ERROR_CUSTOM_ENDPOINT_ERROR,
