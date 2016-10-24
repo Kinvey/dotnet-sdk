@@ -192,14 +192,14 @@ namespace KinveyXamarin
 		}
 
 		/// <summary>
-		/// Perfoms a find operation, with an optional query filter.
+		/// Perfoms a find operation, based on a given Kinvey ID.
 		/// </summary>
 		/// <param name="entityID">The ID of the entity to be retrieved</param>
 		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
 		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
 		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<T>> FindAsync(string entityID, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
+		public async Task<List<T>> FindByIDAsync(string entityID, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
 			List<string> listIDs = new List<string>();
 

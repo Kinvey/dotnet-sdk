@@ -325,7 +325,7 @@ namespace UnitTestFramework
 
 			// Act
 			ToDo entity = null;
-			entity = (await todoStore.FindAsync(t.ID)).First();
+			entity = (await todoStore.FindByIDAsync(t.ID)).First();
 
 			// Assert
 			Assert.NotNull(entity);
@@ -352,7 +352,7 @@ namespace UnitTestFramework
 
 			// Act
 			ToDo entity = null;
-			entity = (await todoStore.FindAsync(t.ID)).First();
+			entity = (await todoStore.FindByIDAsync(t.ID)).First();
 
 			// Assert
 			Assert.NotNull(entity);
