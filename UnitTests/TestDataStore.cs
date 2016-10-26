@@ -2167,7 +2167,7 @@ namespace UnitTestFramework
 			firstFlashCard = await flashCardStore.SaveAsync(firstFlashCard);
 
 			// Act
-			DataStoreResponse dsr = await todoStore.SyncAsync();
+			DataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
 
 			// Assert
 			Assert.NotNull(dsr);
@@ -2191,7 +2191,7 @@ namespace UnitTestFramework
 				await flashCardStore.RemoveAsync(fc.ID);
 			}
 
-			DataStoreResponse dsrDelete = await todoStore.SyncAsync();
+			DataStoreResponse<ToDo> dsrDelete = await todoStore.SyncAsync();
 			Assert.NotNull(dsrDelete);
 			Assert.IsNotNull(dsrDelete.Errors);
 			Assert.AreEqual(2, dsrDelete.Count);
@@ -2215,7 +2215,7 @@ namespace UnitTestFramework
 			ToDo updatedItem = await todoStore.SaveAsync(newItem);
 
 			// Act
-			DataStoreResponse dsr = await todoStore.SyncAsync();
+			DataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
 
 			// Assert
 			Assert.NotNull(dsr);
@@ -2337,7 +2337,7 @@ namespace UnitTestFramework
 			newItem10 = await todoStore.SaveAsync(newItem10);
 
 			// Act
-			DataStoreResponse dsr = await todoStore.SyncAsync();
+			DataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
 
 			// Assert
 			Assert.NotNull(dsr);

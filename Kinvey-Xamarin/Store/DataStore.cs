@@ -304,7 +304,7 @@ namespace KinveyXamarin
 		/// </summary>
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<DataStoreResponse> PushAsync(CancellationToken ct = default(CancellationToken))
+		public async Task<DataStoreResponse<T>> PushAsync(CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -326,7 +326,7 @@ namespace KinveyXamarin
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
+		public async Task<DataStoreResponse<T>> SyncAsync(IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -334,14 +334,15 @@ namespace KinveyXamarin
 			}
 
 			// first push
-			DataStoreResponse response = await this.PushAsync();   //partial success
+			DataStoreResponse<T> response = await this.PushAsync();   //partial success
 
 			ct.ThrowIfCancellationRequested();
 
 			//then pull
 			try
 			{
-				await this.PullAsync();
+				var pulledEntities = await this.PullAsync();
+				response.AddEntitiesFromPull(pulledEntities);
 			}
 			catch (KinveyException e)
 			{

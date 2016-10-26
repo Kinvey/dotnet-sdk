@@ -18,16 +18,16 @@ using Newtonsoft.Json.Linq;
 
 namespace KinveyXamarin
 {
-	public class PushRequest <T> : WriteRequest<T, DataStoreResponse>
+	public class PushRequest <T> : WriteRequest<T, DataStoreResponse<T>>
 	{
 		public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
 			: base (client, collection, cache, queue, policy)
 		{
 		}
 
-		public override async Task <DataStoreResponse> ExecuteAsync()
+		public override async Task <DataStoreResponse<T>> ExecuteAsync()
 		{
-			DataStoreResponse response = new DataStoreResponse();
+			DataStoreResponse<T> response = new DataStoreResponse<T>();
 
 			int limit = 3;
 			int offset = 0;

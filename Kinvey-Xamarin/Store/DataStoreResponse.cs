@@ -18,7 +18,7 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Class used to capture information about data store operations
 	/// </summary>
-	public class DataStoreResponse
+	public class DataStoreResponse<T>
 	{
 		/// <summary>
 		/// Gets the datastore errors.
@@ -38,6 +38,8 @@ namespace KinveyXamarin
 		/// <value>The count.</value>
 		public int Count { get; internal set; }
 
+		public List<T> EntitiesFromPull { get; private set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:KinveyXamarin.DataStoreResponse"/> class.
 		/// </summary>
@@ -46,6 +48,8 @@ namespace KinveyXamarin
 			Errors = new List<KinveyJsonError>();
 
 			KinveyExceptions = new List<KinveyException>();
+
+			EntitiesFromPull = new List<T>();
 		}
 
 		internal void AddKinveyException(KinveyException e)
@@ -56,6 +60,11 @@ namespace KinveyXamarin
 		internal void AddError(KinveyJsonError error)
 		{
 			Errors.Add(error);
+		}
+
+		internal void AddEntitiesFromPull(List<T> pulledEntities)
+		{
+			EntitiesFromPull.AddRange(pulledEntities);
 		}
 	}
 }
