@@ -57,7 +57,7 @@ namespace KinveyXamarin
 					catch (Exception e)
 					{
 						//Do nothing for now
-						response.addError(new KinveyJsonError());	//TODO
+						response.AddError(new KinveyJsonError());	//TODO
 					}
 				}
 

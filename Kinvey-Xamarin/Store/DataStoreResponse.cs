@@ -11,33 +11,51 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
 
 namespace KinveyXamarin
 {
+	/// <summary>
+	/// Class used to capture information about data store operations
+	/// </summary>
 	public class DataStoreResponse
 	{
-
+		/// <summary>
+		/// Gets the datastore errors.
+		/// </summary>
+		/// <value>The errors.</value>
 		public List<KinveyJsonError> Errors { get; private set; }
-		public List<KinveyException> KinveyExceptions { get; private set;}
-	
-		public int Count { get ; internal set; }
 
-		public DataStoreResponse () {
-			Errors = new List<KinveyJsonError> ();
-			KinveyExceptions = new List<KinveyException> ();
+		/// <summary>
+		/// Gets the datastore exceptions.
+		/// </summary>
+		/// <value>The kinvey exceptions.</value>
+		public List<KinveyException> KinveyExceptions { get; private set; }
+
+		/// <summary>
+		/// Gets or sets the count of datastore objects returned.
+		/// </summary>
+		/// <value>The count.</value>
+		public int Count { get; internal set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:KinveyXamarin.DataStoreResponse"/> class.
+		/// </summary>
+		public DataStoreResponse()
+		{
+			Errors = new List<KinveyJsonError>();
+
+			KinveyExceptions = new List<KinveyException>();
 		}
 
-		internal void addKinveyException (KinveyException e) {
-			KinveyExceptions.Add (e);
+		internal void AddKinveyException(KinveyException e)
+		{
+			KinveyExceptions.Add(e);
 		}
 
-		internal void addError (KinveyJsonError error){
-			Errors.Add (error);
+		internal void AddError(KinveyJsonError error)
+		{
+			Errors.Add(error);
 		}
-
-
-
 	}
 }

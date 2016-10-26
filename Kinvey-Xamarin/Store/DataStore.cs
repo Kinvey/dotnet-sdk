@@ -345,7 +345,7 @@ namespace KinveyXamarin
 			}
 			catch (KinveyException e)
 			{
-				response.addKinveyException (e);
+				response.AddKinveyException(e);
 			}
 
 			return response;
