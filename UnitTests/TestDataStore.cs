@@ -2289,55 +2289,14 @@ namespace UnitTestFramework
 
 			// Arrange
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-			ToDo newItem1 = new ToDo();
-			newItem1.Name = "Task to update to SyncQ";
-			newItem1.Details = "A sync add test";
-			newItem1 = await todoStore.SaveAsync(newItem1);
 
-			ToDo newItem2 = new ToDo();
-			newItem2.Name = "Task to update to SyncQ";
-			newItem2.Details = "A sync add test";
-			newItem2 = await todoStore.SaveAsync(newItem2);
-
-			ToDo newItem3 = new ToDo();
-			newItem3.Name = "Task to update to SyncQ";
-			newItem3.Details = "A sync add test";
-			newItem3 = await todoStore.SaveAsync(newItem3);
-
-			ToDo newItem4 = new ToDo();
-			newItem4.Name = "Task to update to SyncQ";
-			newItem4.Details = "A sync add test";
-			newItem4 = await todoStore.SaveAsync(newItem4);
-
-			ToDo newItem5 = new ToDo();
-			newItem5.Name = "Task to update to SyncQ";
-			newItem5.Details = "A sync add test";
-			newItem5 = await todoStore.SaveAsync(newItem5);
-
-			ToDo newItem6 = new ToDo();
-			newItem6.Name = "Task to update to SyncQ";
-			newItem6.Details = "A sync add test";
-			newItem6 = await todoStore.SaveAsync(newItem6);
-
-			ToDo newItem7 = new ToDo();
-			newItem7.Name = "Task to update to SyncQ";
-			newItem7.Details = "A sync add test";
-			newItem7 = await todoStore.SaveAsync(newItem7);
-
-			ToDo newItem8 = new ToDo();
-			newItem8.Name = "Task to update to SyncQ";
-			newItem8.Details = "A sync add test";
-			newItem8 = await todoStore.SaveAsync(newItem8);
-
-			ToDo newItem9 = new ToDo();
-			newItem9.Name = "Task to update to SyncQ";
-			newItem9.Details = "A sync add test";
-			newItem9 = await todoStore.SaveAsync(newItem9);
-
-			ToDo newItem10 = new ToDo();
-			newItem10.Name = "Task to update to SyncQ";
-			newItem10.Details = "A sync add test";
-			newItem10 = await todoStore.SaveAsync(newItem10);
+			for (int i = 0; i < 10; i++)
+			{
+				ToDo newItem = new ToDo();
+				newItem.Name = "Task to update to SyncQ";
+				newItem.Details = "A sync add test";
+				newItem = await todoStore.SaveAsync(newItem);
+			}
 
 			// Act
 			DataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
