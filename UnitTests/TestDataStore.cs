@@ -2221,6 +2221,9 @@ namespace UnitTestFramework
 			Assert.NotNull(dsr);
 			Assert.IsNotNull(dsr.Errors);
 			Assert.AreEqual(1, dsr.Count);
+			Assert.NotNull(dsr.EntitiesFromPull);
+			Assert.IsNotEmpty(dsr.EntitiesFromPull);
+			Assert.AreEqual(dsr.Count, dsr.EntitiesFromPull.Count);
 
 			// Teardown
 			List<ToDo> listRemoveToDo = new List<ToDo>();
@@ -2343,6 +2346,9 @@ namespace UnitTestFramework
 			Assert.NotNull(dsr);
 			Assert.IsNotNull(dsr.Errors);
 			Assert.AreEqual(10, dsr.Count);
+			Assert.NotNull(dsr.EntitiesFromPull);
+			Assert.IsNotEmpty(dsr.EntitiesFromPull);
+			Assert.AreEqual(10, dsr.EntitiesFromPull.Count);
 
 			// Teardown
 			List<ToDo> listRemoveToDo = new List<ToDo>();
