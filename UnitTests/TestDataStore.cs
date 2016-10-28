@@ -1330,6 +1330,191 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestCacheStoreFindByQueryTake1()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			//			var query = from todo in todoStore
+			//						where todo.Details.StartsWith("details for 2")
+			//						select todo;
+
+			List<ToDo> listToDo = new List<ToDo>();
+			List<ToDo> listToDoCache = new List<ToDo>();
+			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Take(1);
+
+			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
+			{
+				onSuccess = (List<ToDo> results) => listToDoCache.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+			};
+
+			listToDo = await todoStore.FindAsync(query, cacheResults);
+			listToDo.AddRange(listToDoCache);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.IsNotNull(listToDoCache);
+			Assert.IsNotEmpty(listToDoCache);
+			Assert.AreEqual(1, listToDoCache.Count); // take 1 from local instead of both
+			Assert.AreEqual(2, listToDo.Count); // 1 from local, 1 from network
+		}
+
+		[Test]
+		public async Task TestCacheStoreFindByQuerySkip1()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "yet another todo";
+			newItem3.Details = "details for 3";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			List<ToDo> listToDo = new List<ToDo>();
+			List<ToDo> listToDoCache = new List<ToDo>();
+			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Skip(1);
+
+			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
+			{
+				onSuccess = (List<ToDo> results) => listToDoCache.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+			};
+
+			listToDo = await todoStore.FindAsync(query, cacheResults);
+			listToDo.AddRange(listToDoCache);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.IsNotNull(listToDoCache);
+			Assert.IsNotEmpty(listToDoCache);
+			Assert.AreEqual(2, listToDoCache.Count); // take 2 from local instead all 3
+			Assert.AreEqual(4, listToDo.Count); // 2 from local, 2 from network
+		}
+
+		[Test]
+		public async Task TestCacheStoreFindByQuerySkip1Take1()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "yet another todo";
+			newItem3.Details = "details for 3";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			List<ToDo> listToDo = new List<ToDo>();
+			List<ToDo> listToDoCache = new List<ToDo>();
+			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Skip(1).Take(1);
+
+			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
+			{
+				onSuccess = (List<ToDo> results) => listToDoCache.AddRange(results),
+				onError = (Exception e) => Console.WriteLine(e.Message),
+			};
+
+			listToDo = await todoStore.FindAsync(query, cacheResults);
+			listToDo.AddRange(listToDoCache);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.IsNotNull(listToDoCache);
+			Assert.IsNotEmpty(listToDoCache);
+			Assert.AreEqual(1, listToDoCache.Count); // take 1 from local instead of both
+			Assert.AreEqual(2, listToDo.Count); // 1 from local, 1 from network
+			Assert.True(listToDo.First().Details.Equals("details for 2"));
+			Assert.True(listToDoCache.First().Details.Equals("details for 2"));
+		}
+
+		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestGetAsyncBad()
 		{
