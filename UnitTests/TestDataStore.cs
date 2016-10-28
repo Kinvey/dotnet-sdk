@@ -508,6 +508,54 @@ namespace UnitTestFramework
 		}
 
 		[Test]
+		public async Task TestNetworkStoreFindByQueryNotSupported()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			var query = todoStore.Where(x => true);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			// Act
+			Exception e = Assert.CatchAsync(async delegate {
+				listToDo = await todoStore.FindAsync(query);
+			});
+
+			// Assert
+			Assert.True(e.GetType() == typeof(KinveyException));
+			KinveyException ke = e as KinveyException;
+			Assert.True(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
+			Assert.True(ke.ErrorCode == EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestNetworkStoreFindByQueryWithSkip()
 		{
 			// Setup

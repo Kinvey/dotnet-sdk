@@ -305,6 +305,18 @@ namespace KinveyXamarin
 					description = "Error while trying to clear data in the cache based on a query.  No data was deleted from the cache.";
 					break;
 
+				case EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED:
+					error = "An exception was thrown while trying to call a method that is not implemented.";
+					debug = "Consult the reference guides for information on supported methods for the given class.";
+					description = "The method being called on this class/object is not currently implemnted by the SDK.";
+					break;
+
+				case EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED:
+					error = "An exception was thrown while trying to use a LINQ `Where` clause that is not supported.";
+					debug = "Consult the reference guides for information on supported LINQ clauses.";
+					description = "The LINQ `Where` clause being called is not supported by the SDK.";
+					break;
+
 				default:
 					error = "Unknown error";
 					debug = "Unknown error";
