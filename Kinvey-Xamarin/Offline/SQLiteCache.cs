@@ -215,14 +215,33 @@ namespace KinveyXamarin
 
 			try
 			{
-				Func<T, bool> func = ConvertQueryExpressionToFunction(expr);
+				int skipNumber = 0;
+				int takeNumber = 0;
+
+				Func<T, bool> func = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
 
 				if (func != null)
 				{
-					results = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+					if (skipNumber > 0 && takeNumber > 0)
+					{
+						results = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber).Take(takeNumber) select t).ToList();
+					}
+					else if (skipNumber > 0)
+					{
+						results = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber) select t).ToList();
+					}
+					else if (takeNumber > 0)
+					{
+						results = (from t in dbConnectionSync.Table<T>().Where(func).Take(takeNumber) select t).ToList();
+					}
+					else
+					{
+						results = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+					}
 				}
 				else
 				{
+					// TODO handle case where query expression was given, but could not be procesed - this case should be a KinveyException
 					results = (from t in dbConnectionSync.Table<T>() select t).ToList();
 				}
 			}
@@ -234,7 +253,7 @@ namespace KinveyXamarin
 			return results;
 		}
 
-		private Func<T, bool> ConvertQueryExpressionToFunction(Expression expr)
+		private Func<T, bool> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber)
 		{
 			Func<T, bool> func = null;
 			if (expr?.NodeType == ExpressionType.Call)
@@ -258,6 +277,28 @@ namespace KinveyXamarin
 							{
 								func = (Func<T, bool>)comp;
 							}
+						}
+					}
+					else if (nodeType == ExpressionType.Constant)
+					{
+						MethodInfo methodInfo = mcb.Method;
+
+						if (methodInfo.Name.Equals("Skip"))
+						{
+							if (IsTypeNumber(args[1]?.Type))
+							{
+								skipNumber = int.Parse(args[1].ToString());
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber);
+							}
+						}
+						else if (methodInfo.Name.Equals("Take"))
+						{
+							if (IsTypeNumber(args[1]?.Type))
+							{
+								takeNumber = int.Parse(args[1].ToString());
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber);
+							}
+
 						}
 					}
 				}
@@ -294,7 +335,10 @@ namespace KinveyXamarin
 			if (propInfo != null &&
 				IsTypeNumber(propInfo.PropertyType))
 			{
-				Func<T, bool> func = ConvertQueryExpressionToFunction(query);
+				int skipNumber = 0;
+				int takeNumber = 0;
+
+				Func<T, bool> func = ConvertQueryExpressionToFunction(query, ref skipNumber, ref takeNumber);
 
 				if (String.IsNullOrEmpty(groupField))
 				{
@@ -303,6 +347,7 @@ namespace KinveyXamarin
 					GroupAggregationResults gar = new GroupAggregationResults();
 					gar.GroupField = null;
 
+					// TODO do "skip" and "take" have to be taken into account in group aggregate functions?
 					if (func != null)
 					{
 						listValues = (from t in dbConnectionSync.Table<T>().Where(func) select t.GetType().GetRuntimeProperty(aggregateField).GetValue(t, null)).ToList();
@@ -464,13 +509,35 @@ namespace KinveyXamarin
 
 			try
 			{
-				Func<T, bool> func = ConvertQueryExpressionToFunction(expr);
+				int skipNumber = 0;
+				int takeNumber = 0;
+
+				Func<T, bool> func = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
 
 				if (func != null)
 				{
 					try
 					{
-						List<T> matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+						List<T> matches = null;
+
+						if (skipNumber > 0 && takeNumber > 0)
+						{
+							matches = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber).Take(takeNumber) select t).ToList();
+						}
+						else if (skipNumber > 0)
+						{
+							matches = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber) select t).ToList();
+						}
+						else if (takeNumber > 0)
+						{
+							matches = (from t in dbConnectionSync.Table<T>().Where(func).Take(takeNumber) select t).ToList();
+						}
+						else
+						{
+							matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+						}
+
+
 						List<string> matchIDs = new List<string>();
 						foreach (var match in matches)
 						{
