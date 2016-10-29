@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testdroidapp", "testdroidap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testdroidapp2", "testdroidapp2\testdroidapp2.csproj", "{EE0B4449-9333-4B5E-9FE3-7A520C3EBED6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Unit", "TestFramework\Tests.Unit\Tests.Unit.csproj", "{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -214,6 +216,24 @@ Global
 		{EE0B4449-9333-4B5E-9FE3-7A520C3EBED6}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
 		{EE0B4449-9333-4B5E-9FE3-7A520C3EBED6}.AppStore|iPhone.ActiveCfg = Release|Any CPU
 		{EE0B4449-9333-4B5E-9FE3-7A520C3EBED6}.AppStore|iPhone.Build.0 = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Release|iPhone.Build.0 = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.AppStore|iPhone.ActiveCfg = Release|Any CPU
+		{7F0B4C62-4AF6-477A-93F0-0FC190C6D5D8}.AppStore|iPhone.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
