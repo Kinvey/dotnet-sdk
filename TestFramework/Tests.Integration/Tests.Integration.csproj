@@ -46,6 +46,12 @@
     <Reference Include="Remotion.Linq">
       <HintPath>..\..\packages\Remotion.Linq.2.0.1\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\..\packages\Moq.4.5.10\lib\net45\Moq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Tests\ClientIntegrationTests.cs" />
@@ -75,6 +81,9 @@
     </Compile>
     <Compile Include="Tests\FileIntegrationTests.cs" />
     <Compile Include="Tests\UserIntegrationTests.cs" />
+    <Compile Include="Tests\DataStoreNetworkIntegrationTests.cs" />
+    <Compile Include="Tests\DataStoreCacheIntegrationTests.cs" />
+    <Compile Include="Tests\DataStoreSyncIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\" />
