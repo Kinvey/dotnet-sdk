@@ -18,7 +18,7 @@ This repository contains a solution file (`Kinvey-Xamarin.sln`) that is compatib
 Build the `UnitTestFramework` project to build all the Kinvey Xamarin SDK tests, which can then be run from Xamarin Studio Unit Tests window.
 
 ## License
-See [LICENSE.txt](LICENSE) for details.
+See [LICENSE](LICENSE.txt) for details.
 
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on reporting bugs and making contributions.
