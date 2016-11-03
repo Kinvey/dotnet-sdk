@@ -28,10 +28,13 @@ namespace testdroidapp2
 			button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
 
 			Client.Builder builder = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
-								 //			myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
-								 .setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
-								 .setOfflinePlatform(new SQLitePlatformAndroid())
+			//Client.Builder builder = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
+				.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
+				.setOfflinePlatform(new SQLitePlatformAndroid())
+				.setCredentialStore(new AndroidNativeCredentialStore(this))
+				.SetSSOGroupKey("com.kinvey")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
+
 			myClient = await builder.Build();
 
 			await DoStuff();
