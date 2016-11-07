@@ -14,9 +14,15 @@ namespace testdroidapp2
 		int count = 1;
 		Client myClient;
 
+		public bool Bound { get; set; }
+
+		public IBinder Binder { get; set; }
+
 		protected override async void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
+
+			var hmm = BindService(new Android.Content.Intent(this, typeof(KinveyAccountService)), new KinveyAuthenticatorServiceConnection(this), Android.Content.Bind.AutoCreate);
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -81,6 +87,46 @@ namespace testdroidapp2
 			return user;
 		}
 	}
+
+	public class KinveyAccountServiceBinder : Binder
+	{
+		KinveyAccountService service;
+
+		public KinveyAccountServiceBinder(KinveyAccountService service)
+		{
+			this.service = service;
+		}
+
+		public KinveyAccountService GetKinveyAccountService()
+		{
+			return service;
+		}
+	}
+
+	class KinveyAuthenticatorServiceConnection : Java.Lang.Object, Android.Content.IServiceConnection
+	{
+		MainActivity activity;
+
+		public KinveyAuthenticatorServiceConnection(MainActivity activity)
+		{
+			this.activity = activity;
+		}
+
+		public void OnServiceConnected(Android.Content.ComponentName name, IBinder service)
+		{
+			//var kinveyAccountServiceBinder = service as KinveyAccountServiceBinder;
+			var kinveyAccountServiceBinder = service;
+
+			if (kinveyAccountServiceBinder != null)
+			{
+				activity.Binder = kinveyAccountServiceBinder;
+				activity.Bound = true;
+			}
+		}
+
+		public void OnServiceDisconnected(Android.Content.ComponentName name)
+		{
+			activity.Bound = false;
+		}
+	}
 }
-
-
