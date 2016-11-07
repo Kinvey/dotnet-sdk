@@ -181,17 +181,10 @@ namespace KinveyXamarin
 			}
 
 			// Add new credential
-			Account account = new Account(serializedCredential, ssoGroupKey);
+			Account account = new Account(nativeCredential.UserID, ssoGroupKey);
 			Android.OS.Bundle bundle = new Android.OS.Bundle();
-			bundle.PutCharArray("kinvey", serializedCredential.ToCharArray());
-
-			//int uid = Android.OS.Binder.CallingUid;
-			//var future = accountManager.AddAccount(ssoGroupKey,"kinveyMIC", null, null, this.appActivity, null, null);
-			//System.Threading.Tasks.Task<Java.Lang.Object> res = future.GetResultAsync(10, Java.Util.Concurrent.TimeUnit.Seconds);
-			//var future = accountManager.AddAccount(ssoGroupKey, "kinvey", null, bundle, null, null, null);
-
-
-			bool isSaved = accountManager.AddAccountExplicitly(account, "", bundle);
+			bundle.PutString("kinvey", serializedCredential);
+			accountManager.AddAccountExplicitly(account, "", bundle);
 		}
 
 		private NativeCredential FindCredential(string username, string ssoGroupKey)
@@ -213,8 +206,18 @@ namespace KinveyXamarin
 
 		private NativeCredential GetCredentialFromAccount(Account account)
 		{
-			var serializedNativeCredential = account.Name;
-			return NativeCredential.Deserialize(serializedNativeCredential);
+			NativeCredential nc = null;
+			try
+			{
+				var serializedNativeCredential = accountManager.GetUserData(account, "kinvey");
+				nc = NativeCredential.Deserialize(serializedNativeCredential);
+			}
+			catch (Exception e)
+			{
+				string msg = e.Message;
+			}
+
+			return nc;
 		}
 
 		#endregion
