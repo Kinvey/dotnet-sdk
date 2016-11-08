@@ -33,7 +33,7 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:KinveyXamarin.AndroidNativeCredentialStore"/> class.
 		/// </summary>
-		/// <param name="context">App Context.</param>
+		/// <param name="activity">App activity.</param>
 		public AndroidNativeCredentialStore(Android.App.Activity activity)
 		{
 			appActivity = activity;
@@ -45,6 +45,7 @@ namespace KinveyXamarin
 		/// Load the specified userID.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		override public Credential Load(string userID, string ssoGroupKey)
 		{
 			Credential credential = null;
@@ -82,6 +83,7 @@ namespace KinveyXamarin
 		/// Store the specified userID and credential.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		/// <param name="credential">Credential.</param>
 		override public void Store(string userID, string ssoGroupKey, Credential credential)
 		{
@@ -117,6 +119,7 @@ namespace KinveyXamarin
 		/// Delete the specified userID.
 		/// </summary>
 		/// <param name="userID">User identifier.</param>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		override public void Delete(string userID, string ssoGroupKey)
 		{
 			var nativeCredEnumeration = FindCredentialsForOrg(ssoGroupKey);
@@ -130,7 +133,7 @@ namespace KinveyXamarin
 					{
 						if (account.Type.Equals(ssoGroupKey))
 						{
-							accountManager.RemoveAccount(account, null, null);
+							accountManager.RemoveAccountExplicitly(account);
 						}
 					}
 					break;
@@ -142,6 +145,7 @@ namespace KinveyXamarin
 		/// Gets the active user.
 		/// </summary>
 		/// <returns>The active user.</returns>
+		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		override public Credential GetStoredCredential(string ssoGroupKey)
 		{
 			return Load(string.Empty, ssoGroupKey);
@@ -176,8 +180,7 @@ namespace KinveyXamarin
 			var existingCredential = FindCredential(nativeCredential.UserID, ssoGroupKey);
 			if (existingCredential != null)
 			{
-				accountManager.RemoveAccount(new Account(existingCredential.UserID, ssoGroupKey), null, null);
-
+				accountManager.RemoveAccountExplicitly(new Account(existingCredential.UserID, ssoGroupKey));
 			}
 
 			// Add new credential

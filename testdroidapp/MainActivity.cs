@@ -31,7 +31,10 @@ namespace testdroidapp
 			// and attach an event to it
 			Button button = FindViewById<Button>(Resource.Id.myButton);
 
-			button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
+			button.Click += delegate { 
+				//button.Text = string.Format("{0} clicks!", count++);
+				Client.SharedClient.ActiveUser.Logout();
+			};
 
 			Client.Builder builder = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
 			//Client.Builder builder = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
@@ -130,5 +133,3 @@ namespace testdroidapp
 		}
 	}
 }
-
-
