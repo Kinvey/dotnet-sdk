@@ -57,7 +57,9 @@ namespace KinveyXamarin
 					catch (Exception e)
 					{
 						//Do nothing for now
-						response.AddError(new KinveyJsonError());	//TODO
+						response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+						                                                EnumErrorCode.ERROR_JSON_RESPONSE,
+						                                                ""));  // TODO provide correct exception
 					}
 				}
 

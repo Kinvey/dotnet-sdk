@@ -2171,7 +2171,7 @@ namespace UnitTestFramework
 
 			// Assert
 			Assert.NotNull(dsr);
-			Assert.IsNotNull(dsr.Errors);
+			Assert.IsNotNull(dsr.KinveyExceptions);
 			Assert.AreEqual(2, dsr.Count);
 
 			// Teardown
@@ -2193,7 +2193,7 @@ namespace UnitTestFramework
 
 			DataStoreResponse<ToDo> dsrDelete = await todoStore.SyncAsync();
 			Assert.NotNull(dsrDelete);
-			Assert.IsNotNull(dsrDelete.Errors);
+			Assert.IsNotNull(dsrDelete.KinveyExceptions);
 			Assert.AreEqual(2, dsrDelete.Count);
 			kinveyClient.ActiveUser.Logout();
 		}
@@ -2219,7 +2219,7 @@ namespace UnitTestFramework
 
 			// Assert
 			Assert.NotNull(dsr);
-			Assert.IsNotNull(dsr.Errors);
+			Assert.IsNotNull(dsr.KinveyExceptions);
 			Assert.AreEqual(1, dsr.Count);
 			Assert.NotNull(dsr.EntitiesFromPull);
 			Assert.IsNotEmpty(dsr.EntitiesFromPull);
@@ -2303,7 +2303,7 @@ namespace UnitTestFramework
 
 			// Assert
 			Assert.NotNull(dsr);
-			Assert.IsNotNull(dsr.Errors);
+			Assert.IsNotNull(dsr.KinveyExceptions);
 			Assert.AreEqual(10, dsr.Count);
 			Assert.NotNull(dsr.EntitiesFromPull);
 			Assert.IsNotEmpty(dsr.EntitiesFromPull);

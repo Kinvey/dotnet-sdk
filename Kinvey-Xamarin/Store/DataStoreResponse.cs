@@ -21,12 +21,6 @@ namespace KinveyXamarin
 	public class DataStoreResponse<T>
 	{
 		/// <summary>
-		/// Gets the datastore errors.
-		/// </summary>
-		/// <value>The errors.</value>
-		public List<KinveyJsonError> Errors { get; private set; }
-
-		/// <summary>
 		/// Gets the datastore exceptions.
 		/// </summary>
 		/// <value>The kinvey exceptions.</value>
@@ -45,8 +39,6 @@ namespace KinveyXamarin
 		/// </summary>
 		public DataStoreResponse()
 		{
-			Errors = new List<KinveyJsonError>();
-
 			KinveyExceptions = new List<KinveyException>();
 
 			EntitiesFromPull = new List<T>();
@@ -55,11 +47,6 @@ namespace KinveyXamarin
 		internal void AddKinveyException(KinveyException e)
 		{
 			KinveyExceptions.Add(e);
-		}
-
-		internal void AddError(KinveyJsonError error)
-		{
-			Errors.Add(error);
 		}
 
 		internal void AddEntitiesFromPull(List<T> pulledEntities)
