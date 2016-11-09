@@ -18,40 +18,55 @@ namespace KinveyXamarin
 	/// <summary>
 	/// Class used to capture information about data store operations
 	/// </summary>
-	public class DataStoreResponse<T>
+	abstract public class DataStoreResponse<T>
 	{
+		/// <summary>
+		/// The count of results from the data store operation
+		/// </summary>
+		protected int count;
+
+		/// <summary>
+		/// The entities resulting from a data store operation.
+		/// </summary>
+		protected List<T> entities;
+
+		List<KinveyException> kinveyExceptions;
+
 		/// <summary>
 		/// Gets the datastore exceptions.
 		/// </summary>
 		/// <value>The kinvey exceptions.</value>
-		public List<KinveyException> KinveyExceptions { get; private set; }
+		public List<KinveyException> KinveyExceptions
+		{
+			get
+			{
+				return kinveyExceptions;
+			}
 
-		/// <summary>
-		/// Gets or sets the count of datastore objects returned.
-		/// </summary>
-		/// <value>The count.</value>
-		public int Count { get; internal set; }
-
-		public List<T> EntitiesFromPull { get; private set; }
+			private set
+			{
+				kinveyExceptions = value;
+			}
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:KinveyXamarin.DataStoreResponse"/> class.
 		/// </summary>
-		public DataStoreResponse()
+		protected DataStoreResponse()
 		{
-			KinveyExceptions = new List<KinveyException>();
-
-			EntitiesFromPull = new List<T>();
+			count = 0;
+			entities = new List<T>();
+			kinveyExceptions = new List<KinveyException>();
 		}
 
 		internal void AddKinveyException(KinveyException e)
 		{
-			KinveyExceptions.Add(e);
+			kinveyExceptions.Add(e);
 		}
 
-		internal void AddEntitiesFromPull(List<T> pulledEntities)
+		internal void AddEntities(List<T> newEntities)
 		{
-			EntitiesFromPull.AddRange(pulledEntities);
+			entities.AddRange(newEntities);
 		}
 	}
 }

@@ -108,7 +108,8 @@ namespace UnitTestFramework
 			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
 
 			// Act
-			List<ToDo> results = await todoStore.PullAsync();
+			var dsr = await todoStore.PullAsync();
+			List<ToDo> results = dsr.PullEntities;
 
 			// Assert
 			Assert.NotNull(results);
@@ -181,7 +182,8 @@ namespace UnitTestFramework
 			//stopwatch.Start();
 
 			longdataStore.DeltaSetFetchingEnabled = true;
-			List<LongData> listResultsSecond = await longdataStore.PullAsync();
+			var response = await longdataStore.PullAsync();
+			List<LongData> listResultsSecond = response.PullEntities;
 
 			//stopwatch.Stop();
 			//TimeSpan timeForSecondFetch = stopwatch.Elapsed;
@@ -2167,12 +2169,13 @@ namespace UnitTestFramework
 			firstFlashCard = await flashCardStore.SaveAsync(firstFlashCard);
 
 			// Act
-			DataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
+			SyncDataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
 
 			// Assert
 			Assert.NotNull(dsr);
-			Assert.IsNotNull(dsr.KinveyExceptions);
-			Assert.AreEqual(2, dsr.Count);
+			Assert.IsNotNull(dsr.PullResponse.KinveyExceptions);
+			Assert.IsNotNull(dsr.PushResponse.KinveyExceptions);
+			Assert.AreEqual(2, dsr.PushResponse.PushCount);
 
 			// Teardown
 			List<ToDo> listRemoveToDo = new List<ToDo>();
@@ -2191,10 +2194,11 @@ namespace UnitTestFramework
 				await flashCardStore.RemoveAsync(fc.ID);
 			}
 
-			DataStoreResponse<ToDo> dsrDelete = await todoStore.SyncAsync();
+			SyncDataStoreResponse<ToDo> dsrDelete = await todoStore.SyncAsync();
 			Assert.NotNull(dsrDelete);
-			Assert.IsNotNull(dsrDelete.KinveyExceptions);
-			Assert.AreEqual(2, dsrDelete.Count);
+			Assert.IsNotNull(dsrDelete.PushResponse.KinveyExceptions);
+			Assert.IsNotNull(dsrDelete.PullResponse.KinveyExceptions);
+			Assert.AreEqual(2, dsrDelete.PushResponse.PushCount);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -2215,15 +2219,16 @@ namespace UnitTestFramework
 			ToDo updatedItem = await todoStore.SaveAsync(newItem);
 
 			// Act
-			DataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
+			SyncDataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
 
 			// Assert
 			Assert.NotNull(dsr);
-			Assert.IsNotNull(dsr.KinveyExceptions);
-			Assert.AreEqual(1, dsr.Count);
-			Assert.NotNull(dsr.EntitiesFromPull);
-			Assert.IsNotEmpty(dsr.EntitiesFromPull);
-			Assert.AreEqual(dsr.Count, dsr.EntitiesFromPull.Count);
+			Assert.IsNotNull(dsr.PushResponse.KinveyExceptions);
+			Assert.IsNotNull(dsr.PullResponse.KinveyExceptions);
+			Assert.AreEqual(1, dsr.PushResponse.PushCount);
+			Assert.NotNull(dsr.PullResponse.PullEntities);
+			Assert.IsNotEmpty(dsr.PullResponse.PullEntities);
+			Assert.AreEqual(dsr.PullResponse.PullCount, dsr.PullResponse.PullEntities.Count);
 
 			// Teardown
 			List<ToDo> listRemoveToDo = new List<ToDo>();
@@ -2238,7 +2243,7 @@ namespace UnitTestFramework
 
 			dsr = await todoStore.SyncAsync();
 			Assert.NotNull(dsr);
-			Assert.AreEqual(1, dsr.Count);
+			Assert.AreEqual(1, dsr.PushResponse.PushCount);
 //			Assert.AreSame(dsr.Count, kdr.count);
 			kinveyClient.ActiveUser.Logout();
 		}
@@ -2299,15 +2304,16 @@ namespace UnitTestFramework
 			}
 
 			// Act
-			DataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
+			SyncDataStoreResponse<ToDo> dsr = await todoStore.SyncAsync();
 
 			// Assert
 			Assert.NotNull(dsr);
-			Assert.IsNotNull(dsr.KinveyExceptions);
-			Assert.AreEqual(10, dsr.Count);
-			Assert.NotNull(dsr.EntitiesFromPull);
-			Assert.IsNotEmpty(dsr.EntitiesFromPull);
-			Assert.AreEqual(10, dsr.EntitiesFromPull.Count);
+			Assert.IsNotNull(dsr.PushResponse.KinveyExceptions);
+			Assert.IsNotNull(dsr.PullResponse.KinveyExceptions);
+			Assert.AreEqual(10, dsr.PushResponse.PushCount);
+			Assert.NotNull(dsr.PullResponse.PullEntities);
+			Assert.IsNotEmpty(dsr.PullResponse.PullEntities);
+			Assert.AreEqual(10, dsr.PullResponse.PullEntities.Count);
 
 			// Teardown
 			List<ToDo> listRemoveToDo = new List<ToDo>();
@@ -2330,7 +2336,8 @@ namespace UnitTestFramework
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
-			List<ToDo> todosBeforeSave = await todoStore.PullAsync ();
+			PullDataStoreResponse<ToDo> dsrBefore = await todoStore.PullAsync();
+			List<ToDo> todosBeforeSave = dsrBefore.PullEntities;
 
 			// Assert
 			Assert.IsNotNull (todosBeforeSave);
@@ -2353,7 +2360,8 @@ namespace UnitTestFramework
 
 			await todoStore.PushAsync ();
 
-			List<ToDo> todosAfterSave = await todoStore.PullAsync ();
+			var dsrAfter = await todoStore.PullAsync();
+			List<ToDo> todosAfterSave = dsrAfter.PullEntities;
 
 			// Assert
 			Assert.NotNull (todosAfterSave);
@@ -2376,7 +2384,8 @@ namespace UnitTestFramework
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
-			List<ToDo> todosBeforeSave = await todoStore.PullAsync();
+			var dsrBefore = await todoStore.PullAsync();
+			List<ToDo> todosBeforeSave = dsrBefore.PullEntities;
 
 			// Assert
 			Assert.IsNotNull(todosBeforeSave);
@@ -2401,14 +2410,16 @@ namespace UnitTestFramework
 
 			var query = from x in todoStore where x.Details.StartsWith("Another", StringComparison.Ordinal) select x;
 
-			List<ToDo> todosAfterSave = await todoStore.PullAsync(query);
+			var dsrAfter = await todoStore.PullAsync(query);
+			List<ToDo> todosAfterSave = dsrAfter.PullEntities;
 
 			// Assert
 			Assert.NotNull(todosAfterSave);
 			Assert.AreEqual(1, todosAfterSave.Count);
 
 			// Teardown
-			List<ToDo> todoCleanup = await todoStore.PullAsync();
+			var cleanup = await todoStore.PullAsync();
+			List<ToDo> todoCleanup = cleanup.PullEntities;
 			foreach (var todo in todoCleanup)
 			{
 				await todoStore.RemoveAsync(todo.ID);
