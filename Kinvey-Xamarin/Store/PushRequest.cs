@@ -36,7 +36,7 @@ namespace KinveyXamarin
 
 			while (pendingActions != null && pendingActions.Count > 0)
 			{
-				var tasks = new List<Task<int>>();
+				var tasks = new List<Task<T>>();
 				foreach (PendingWriteAction pwa in pendingActions)
 				{
 					try
@@ -59,15 +59,27 @@ namespace KinveyXamarin
 						//Do nothing for now
 						response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
 						                                                EnumErrorCode.ERROR_JSON_RESPONSE,
-						                                                ""));  // TODO provide correct exception
+						                                                "",
+						                                               e));  // TODO provide correct exception
 					}
 				}
 
 				await Task.WhenAll(tasks.ToArray());
+
+				List<T> resultEntities = new List<T>();
+				int resultCount = 0;
 				foreach (var t in tasks)
 				{
-					response.PushCount += t.Result;
+					if (!EqualityComparer<T>.Default.Equals(t.Result, default(T)))
+					{
+						resultEntities.Add(t.Result);
+					}
+
+					resultCount++;
 				}
+
+				response.AddEntities(resultEntities);
+				response.PushCount += resultCount;
 
 				pendingActions = SyncQueue.GetFirstN(limit, offset);
 			}
@@ -80,7 +92,7 @@ namespace KinveyXamarin
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PushRequest not implemented.");
 		}
 
-		private async Task<int> HandlePushPOST(PendingWriteAction pwa)
+		private async Task<T> HandlePushPOST(PendingWriteAction pwa)
 		{
 			int result = 0;
 
@@ -98,10 +110,10 @@ namespace KinveyXamarin
 
 			result = SyncQueue.Remove(tempID);
 
-			return result;
+			return entity;
 		}
 
-		private async Task<int> HandlePushPUT(PendingWriteAction pwa)
+		private async Task<T> HandlePushPUT(PendingWriteAction pwa)
 		{
 			int result = 0;
 
@@ -109,14 +121,14 @@ namespace KinveyXamarin
 			T entity = Cache.FindByID(pwa.entityId);
 
 			NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
-			await request.ExecuteAsync();
+			entity = await request.ExecuteAsync();
 
 			result = SyncQueue.Remove(tempID);
 
-			return result;
+			return entity;
 		}
 
-		private async Task<int> HandlePushDELETE(PendingWriteAction pwa)
+		private async Task<T> HandlePushDELETE(PendingWriteAction pwa)
 		{
 			int result = 0;
 
@@ -128,7 +140,7 @@ namespace KinveyXamarin
 				result = SyncQueue.Remove(pwa.entityId);
 			}
 
-			return result;
+			return default(T);
 		}
 	}
 }
