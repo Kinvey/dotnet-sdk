@@ -22,16 +22,17 @@ namespace KinveyXamarin
 	/// Request operation for pulling all records for a collection during a sync, and refreshing the cache with the
 	/// updated data.
 	/// </summary>
-	public class PullRequest<T> : ReadRequest<T, List<T>>
+	public class PullRequest<T> : ReadRequest<T, PullDataStoreResponse<T>>
 	{
 		public PullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<object> query)
 			: base(client, collection, cache, query, ReadPolicy.FORCE_NETWORK, deltaSetFetchingEnabled)
 		{
 		}
 
-		public override async Task<List<T>> ExecuteAsync()
+		public override async Task<PullDataStoreResponse<T>> ExecuteAsync()
 		{
-			List<T> listResults = new List<T>();
+			PullDataStoreResponse<T> response = new PullDataStoreResponse<T>();
+			List<T> listResults = new List<T>(); // TODO remove??
 
 			string mongoQuery = this.BuildMongoQuery();
 
@@ -47,7 +48,10 @@ namespace KinveyXamarin
 
 			Cache.RefreshCache(listResults);
 
-			return listResults;
+			response.AddEntities(listResults);
+			response.PullCount = listResults.Count;
+
+			return response;
 		}
 
 		public override Task<bool> Cancel()

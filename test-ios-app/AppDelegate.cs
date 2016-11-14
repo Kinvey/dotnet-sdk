@@ -451,8 +451,10 @@ namespace testiosapp
 				//List<Book> listBooks = new List<Book>();
 				//listBooks = await store.FindAsync();
 
-				List<Book> pullFirst = await store.PullAsync();
-				List<Book> pullSecond = await store.PullAsync();
+				var pullDSR = await store.PullAsync();
+				List<Book> pullFirst = pullDSR.PullEntities;
+				var pullDSR2 = await store.PullAsync();
+				List<Book> pullSecond = pullDSR2.PullEntities;
 			}
 			catch (Exception e)
 			{

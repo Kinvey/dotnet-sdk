@@ -280,7 +280,7 @@ namespace KinveyXamarin
 		/// <returns>Entities that were pulled from the backend.</returns>
 		/// <param name="query">Optional Query parameter.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<T>> PullAsync(IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
+		public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -295,16 +295,16 @@ namespace KinveyXamarin
 			//TODO query
 			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, cache, DeltaSetFetchingEnabled, query);
 			ct.ThrowIfCancellationRequested();
-			return await pullRequest.ExecuteAsync ();
+			return await pullRequest.ExecuteAsync();
 		}
 
 		/// <summary>
 		/// Push local data in the datastore to the backend.
 		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
 		/// </summary>
-		/// <returns>DataStoreResponse indicating errors, if any.</returns>
+		/// <returns>PushDataStoreResponse indicating errors, if any.</returns>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<DataStoreResponse> PushAsync(CancellationToken ct = default(CancellationToken))
+		public async Task<PushDataStoreResponse<T>> PushAsync(CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -326,7 +326,7 @@ namespace KinveyXamarin
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<DataStoreResponse> SyncAsync (IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
+		public async Task<SyncDataStoreResponse<T>> SyncAsync(IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -334,19 +334,26 @@ namespace KinveyXamarin
 			}
 
 			// first push
-			DataStoreResponse response = await this.PushAsync();   //partial success
+			PushDataStoreResponse<T> pushResponse = await this.PushAsync();   //partial success
 
 			ct.ThrowIfCancellationRequested();
 
 			//then pull
+			PullDataStoreResponse<T> pullResponse = null;
+
 			try
 			{
-				await this.PullAsync();
+				pullResponse = await this.PullAsync();
 			}
 			catch (KinveyException e)
 			{
-				response.addKinveyException (e);
+				pullResponse = new PullDataStoreResponse<T>();
+				pullResponse.AddKinveyException(e);
 			}
+
+			SyncDataStoreResponse<T> response = new SyncDataStoreResponse<T>();
+			response.PushResponse = pushResponse;
+			response.PullResponse = pullResponse;
 
 			return response;
 		}
