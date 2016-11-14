@@ -40,7 +40,7 @@ namespace testdroidapp2
 			//Client.Builder builder = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
 				.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
 				.setOfflinePlatform(new SQLitePlatformAndroid())
-				.setCredentialStore(new AndroidNativeCredentialStore(this))
+				.setCredentialStore(new AndroidNativeCredentialStore(this.ApplicationContext))
 				.SetSSOGroupKey("com.kinvey")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 

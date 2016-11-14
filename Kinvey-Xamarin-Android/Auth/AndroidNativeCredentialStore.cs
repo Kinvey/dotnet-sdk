@@ -24,7 +24,6 @@ namespace KinveyXamarin
 	/// </summary>
 	public class AndroidNativeCredentialStore : NativeCredentialStore
 	{
-		private Android.App.Activity appActivity;
 		private Context appContext;
 		private AccountManager accountManager;
 
@@ -33,11 +32,10 @@ namespace KinveyXamarin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:KinveyXamarin.AndroidNativeCredentialStore"/> class.
 		/// </summary>
-		/// <param name="activity">App activity.</param>
-		public AndroidNativeCredentialStore(Android.App.Activity activity)
+		/// <param name="context">App context.</param>
+		public AndroidNativeCredentialStore(Context context)
 		{
-			appActivity = activity;
-			appContext = appActivity.ApplicationContext;
+			appContext = context;
 			accountManager = AccountManager.Get(appContext);
 		}
 
@@ -73,7 +71,7 @@ namespace KinveyXamarin
 			}
 			catch (System.Exception e)
 			{
-				string msg = e.Message;
+				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_LOAD_CREDENTIAL, "", e);
 			}
 
 			return credential;
@@ -111,7 +109,7 @@ namespace KinveyXamarin
 			}
 			catch (System.Exception e)
 			{
-				string msg = e.Message;
+				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_STORE_CREDENTIAL, "", e);
 			}
 		}
 
@@ -127,7 +125,7 @@ namespace KinveyXamarin
 			{
 				if (nc.UserID.Equals(userID))
 				{
-					Account[] accounts = accountManager.GetAccounts();
+					Account[] accounts = accountManager.GetAccountsByType(ssoGroupKey);
 
 					foreach (var account in accounts)
 					{
@@ -159,7 +157,7 @@ namespace KinveyXamarin
 		{
 			List<NativeCredential> credentials = new List<NativeCredential>();
 
-			Account[] accounts = accountManager.GetAccounts();
+			Account[] accounts = accountManager.GetAccountsByType(ssoGroupKey);
 
 			foreach (var account in accounts)
 			{
@@ -186,7 +184,7 @@ namespace KinveyXamarin
 			// Add new credential
 			Account account = new Account(nativeCredential.UserID, ssoGroupKey);
 			Android.OS.Bundle bundle = new Android.OS.Bundle();
-			bundle.PutString("kinvey", serializedCredential);
+			bundle.PutString(Constants.STR_CREDENTIAL, serializedCredential);
 			accountManager.AddAccountExplicitly(account, "", bundle);
 		}
 
@@ -194,7 +192,7 @@ namespace KinveyXamarin
 		{
 			NativeCredential nc = null;
 
-			Account[] accounts = accountManager.GetAccounts();
+			Account[] accounts = accountManager.GetAccountsByType(ssoGroupKey);
 
 			foreach (var account in accounts)
 			{
@@ -212,12 +210,12 @@ namespace KinveyXamarin
 			NativeCredential nc = null;
 			try
 			{
-				var serializedNativeCredential = accountManager.GetUserData(account, "kinvey");
+				var serializedNativeCredential = accountManager.GetUserData(account, Constants.STR_CREDENTIAL);
 				nc = NativeCredential.Deserialize(serializedNativeCredential);
 			}
 			catch (Exception e)
 			{
-				string msg = e.Message;
+				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_GET_CREDENTIAL_FOR_ACCOUNT, "", e);
 			}
 
 			return nc;

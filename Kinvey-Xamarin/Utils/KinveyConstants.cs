@@ -31,5 +31,7 @@ namespace KinveyXamarin
 		public const string STR_USERNAME = "UserName";
 		public const string STR_ATTRIBUTES = "Attributes";
 		public const string STR_USER_KMD = "UserKMD";
+
+		public const string STR_CREDENTIAL = "credential";
 	}
 }
