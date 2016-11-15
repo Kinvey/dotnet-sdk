@@ -14,9 +14,15 @@ namespace testdroidapp2
 		int count = 1;
 		Client myClient;
 
+		public bool Bound { get; set; }
+
+		public IBinder Binder { get; set; }
+
 		protected override async void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
+
+			var hmm = BindService(new Android.Content.Intent(this, typeof(KinveyAccountService)), new KinveyAuthenticatorServiceConnection(this), Android.Content.Bind.AutoCreate);
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
@@ -25,13 +31,19 @@ namespace testdroidapp2
 			// and attach an event to it
 			Button button = FindViewById<Button>(Resource.Id.myButton);
 
-			button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
+			button.Click += delegate {
+				//button.Text = string.Format("{0} clicks!", count++);
+				Client.SharedClient.ActiveUser.Logout();
+			};
 
 			Client.Builder builder = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
-								 //			myClient = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
-								 .setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
-								 .setOfflinePlatform(new SQLitePlatformAndroid())
+			//Client.Builder builder = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
+				.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
+				.setOfflinePlatform(new SQLitePlatformAndroid())
+				.setCredentialStore(new AndroidNativeCredentialStore(this.ApplicationContext))
+				.SetSSOGroupKey("com.kinvey")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
+
 			myClient = await builder.Build();
 
 			await DoStuff();
@@ -78,6 +90,46 @@ namespace testdroidapp2
 			return user;
 		}
 	}
+
+	public class KinveyAccountServiceBinder : Binder
+	{
+		KinveyAccountService service;
+
+		public KinveyAccountServiceBinder(KinveyAccountService service)
+		{
+			this.service = service;
+		}
+
+		public KinveyAccountService GetKinveyAccountService()
+		{
+			return service;
+		}
+	}
+
+	class KinveyAuthenticatorServiceConnection : Java.Lang.Object, Android.Content.IServiceConnection
+	{
+		MainActivity activity;
+
+		public KinveyAuthenticatorServiceConnection(MainActivity activity)
+		{
+			this.activity = activity;
+		}
+
+		public void OnServiceConnected(Android.Content.ComponentName name, IBinder service)
+		{
+			//var kinveyAccountServiceBinder = service as KinveyAccountServiceBinder;
+			var kinveyAccountServiceBinder = service;
+
+			if (kinveyAccountServiceBinder != null)
+			{
+				activity.Binder = kinveyAccountServiceBinder;
+				activity.Bound = true;
+			}
+		}
+
+		public void OnServiceDisconnected(Android.Content.ComponentName name)
+		{
+			activity.Bound = false;
+		}
+	}
 }
-
-

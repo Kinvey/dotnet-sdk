@@ -130,6 +130,21 @@ namespace KinveyXamarin
 		ERROR_USER_LOGIN_ATTEMPT,
 
 		/// <summary>
+		/// User Error - Loading credential from credential store.
+		/// </summary>
+		ERROR_USER_LOAD_CREDENTIAL,
+
+		/// <summary>
+		/// User Error - Storing credential in credential store.
+		/// </summary>
+		ERROR_USER_STORE_CREDENTIAL,
+
+		/// <summary>
+		/// User Error - Retrieving credential for given account.
+		/// </summary>
+		ERROR_USER_GET_CREDENTIAL_FOR_ACCOUNT,
+
+		/// <summary>
 		/// MIC Error - Missing redirect code.
 		/// </summary>
 		ERROR_MIC_MISSING_REDIRECT_CODE,
