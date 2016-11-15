@@ -121,11 +121,12 @@ namespace TestFramework
 			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
 
 			// Act
-			List<ToDo> results = await todoStore.PullAsync();
+			PullDataStoreResponse<ToDo> results = await todoStore.PullAsync();
 
 			// Assert
 			Assert.NotNull(results);
-			Assert.IsEmpty(results);
+			Assert.NotNull(results.PullEntities);
+			Assert.IsEmpty(results.PullEntities);
 
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
@@ -194,7 +195,7 @@ namespace TestFramework
 			//stopwatch.Start();
 
 			longdataStore.DeltaSetFetchingEnabled = true;
-			List<LongData> listResultsSecond = await longdataStore.PullAsync();
+			PullDataStoreResponse<LongData> pullResultsSecond = await longdataStore.PullAsync();
 
 			//stopwatch.Stop();
 			//TimeSpan timeForSecondFetch = stopwatch.Elapsed;
@@ -203,8 +204,9 @@ namespace TestFramework
 			Assert.NotNull(listResultsCache);
 			Assert.IsEmpty(listResultsCache);
 
-			Assert.NotNull(listResultsSecond);
-			Assert.IsEmpty(listResultsSecond);
+			Assert.NotNull(pullResultsSecond);
+			Assert.NotNull(pullResultsSecond.PullEntities);
+			Assert.IsEmpty(pullResultsSecond.PullEntities);
 
 			// Teardown
 			kinveyClient.ActiveUser.Logout();
