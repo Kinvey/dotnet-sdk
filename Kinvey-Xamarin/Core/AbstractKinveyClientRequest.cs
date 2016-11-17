@@ -20,11 +20,10 @@ using Newtonsoft.Json;
 using System.IO;
 using RestSharp;
 using System.Net.Http;
-using KinveyXamarin;
 using KinveyUtils;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 
 	/// <summary>

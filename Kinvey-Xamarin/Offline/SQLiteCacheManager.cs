@@ -24,7 +24,7 @@ using SQLite.Net;
 using SQLite.Net.Async;
 using SQLite.Net.Interop;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// SQLite cache manager.

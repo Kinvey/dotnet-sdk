@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using Remotion.Linq.Parsing.Structure;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class KinveyQueryExecutor<K> : IQueryExecutor
 	{

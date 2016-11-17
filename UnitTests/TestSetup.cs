@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using KinveyXamarin;
+using Kinvey;
 
 namespace UnitTestFramework
 {

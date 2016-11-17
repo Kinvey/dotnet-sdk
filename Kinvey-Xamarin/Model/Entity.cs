@@ -13,7 +13,7 @@
 
 using Newtonsoft.Json;
 using SQLite.Net.Attributes;
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Base class for model objects backed by Kinvey.  Implements the

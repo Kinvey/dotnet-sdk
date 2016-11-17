@@ -14,7 +14,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class RemoveRequest <T> : WriteRequest <T, KinveyDeleteResponse>
 	{

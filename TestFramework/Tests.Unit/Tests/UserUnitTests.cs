@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using KinveyXamarin;
+using Kinvey;
 
 namespace TestFramework
 {

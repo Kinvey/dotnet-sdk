@@ -13,7 +13,7 @@
 
 using System.Text;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Builds a mongo-style query to be run against the backend.

@@ -15,7 +15,7 @@ using System;
 using SQLite.Net.Attributes;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class PendingWriteAction
 	{

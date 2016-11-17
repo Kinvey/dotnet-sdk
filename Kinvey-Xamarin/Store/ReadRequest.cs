@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Remotion.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public abstract class ReadRequest <T, U> : Request <T, U>
 	{

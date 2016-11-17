@@ -17,7 +17,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public abstract class AbstractPush
 	{

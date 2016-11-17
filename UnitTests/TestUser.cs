@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using KinveyXamarin;
+using Kinvey;
 
 namespace UnitTestFramework
 {

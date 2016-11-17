@@ -14,7 +14,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Executes a custom endpoint expecting a single result

@@ -21,7 +21,7 @@ using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class KinveyQueryVisitor : QueryModelVisitorBase
 	{

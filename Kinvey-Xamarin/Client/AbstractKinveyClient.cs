@@ -15,7 +15,7 @@ using RestSharp;
 using Newtonsoft.Json.Linq;
 using KinveyUtils;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Base class of the Kinvey Client.  Handles setup for making requests to Kinvey backend.

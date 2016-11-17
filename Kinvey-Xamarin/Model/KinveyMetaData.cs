@@ -15,7 +15,7 @@ using System;
 using Newtonsoft.Json;
 using SQLite.Net;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// JSON representation of the _kmd field present on every entity stored in Kinvey

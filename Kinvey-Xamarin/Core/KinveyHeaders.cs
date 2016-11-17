@@ -18,7 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Default Kinvey specific headers added to every request.

@@ -1,7 +1,7 @@
 ﻿using Foundation;
 using UIKit;
 
-using KinveyXamarin;
+using Kinvey;
 using KinveyXamariniOS;
 using SQLite.Net.Platform.XamarinIOS;
 using System.Threading.Tasks;

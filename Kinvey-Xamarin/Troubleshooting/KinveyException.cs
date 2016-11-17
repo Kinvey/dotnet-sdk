@@ -14,7 +14,7 @@
 using System;
 using RestSharp;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Wrapper for a Kinvey-specific exception, which contains information about how to resolve the issue.

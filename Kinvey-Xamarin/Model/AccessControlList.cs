@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using SQLite.Net;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 
 	/// <summary>

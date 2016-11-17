@@ -15,7 +15,7 @@ using System;
 using System.Linq;
 using RestSharp;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class HelperMethods
 	{

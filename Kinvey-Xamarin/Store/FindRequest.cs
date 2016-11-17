@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Find request built for use by a <see cref="KinveyXamarin.DataStore{T}"/>

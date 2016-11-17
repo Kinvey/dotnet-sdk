@@ -15,7 +15,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	[JsonObject]
 	public class KinveyReference<T>

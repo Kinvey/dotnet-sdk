@@ -13,7 +13,7 @@
 
 using System.Collections.Generic;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Class used to capture information about push data store operations

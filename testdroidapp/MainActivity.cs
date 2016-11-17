@@ -4,7 +4,7 @@ using Android.OS;
 using System;
 using System.Threading.Tasks;
 using SQLite.Net.Platform.XamarinAndroid;
-using KinveyXamarin;
+using Kinvey;
 
 namespace testdroidapp
 {

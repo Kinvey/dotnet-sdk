@@ -14,7 +14,7 @@
 using System;
 using SQLite.Net.Attributes;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class CollectionTableMap
 	{

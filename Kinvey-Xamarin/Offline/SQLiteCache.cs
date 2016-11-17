@@ -28,7 +28,7 @@ using Newtonsoft.Json.Linq;
 using Remotion.Linq;
 using KinveyUtils;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// This is an implementation of an OfflineStore, using SQLite to manage maintaining data.

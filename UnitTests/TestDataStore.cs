@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 
-using KinveyXamarin;
+using Kinvey;
 
 namespace UnitTestFramework
 {

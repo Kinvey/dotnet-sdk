@@ -16,7 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq; 
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class GetCountRequest<T> : ReadRequest<T, uint>
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using KinveyXamarin;
+using Kinvey;
 using Newtonsoft.Json.Linq;
 
 namespace UnitTestFramework

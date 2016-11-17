@@ -11,7 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// This interface defines the behaivor of building a query.

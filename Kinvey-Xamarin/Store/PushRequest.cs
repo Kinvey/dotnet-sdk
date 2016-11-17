@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class PushRequest <T> : WriteRequest<T, PushDataStoreResponse<T>>
 	{

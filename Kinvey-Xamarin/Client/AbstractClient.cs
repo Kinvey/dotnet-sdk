@@ -14,7 +14,7 @@
 using System;
 using RestSharp;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 
 	/// <summary>
