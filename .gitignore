@@ -4,5 +4,6 @@
 Kinvey-Xamarin.userprefs
 api
 Makefile
+README.txt
 release/*
 *.nupkg
