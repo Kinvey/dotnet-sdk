@@ -14,7 +14,7 @@
 using System;
 using SQLite.Net.Interop;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public interface ICacheManager
 	{

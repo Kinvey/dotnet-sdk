@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using SQLite.Net.Attributes;
 using Newtonsoft.Json.Linq; 
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// These are the structures stored in the database, one for each table

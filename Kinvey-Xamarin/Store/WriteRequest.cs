@@ -14,7 +14,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public abstract class WriteRequest <T, U> : Request <T, U>
 	{

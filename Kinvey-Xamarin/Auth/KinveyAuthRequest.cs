@@ -21,7 +21,7 @@ using System.Net.Http;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 
 	/// <summary>

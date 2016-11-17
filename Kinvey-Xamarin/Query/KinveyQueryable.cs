@@ -16,7 +16,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Kinvey queryable base class.  Used to provide access to LINQ queries in order to process them.

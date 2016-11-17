@@ -14,7 +14,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// This class represents the response sent from Kinvey after a delete has been executed.

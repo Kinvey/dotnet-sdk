@@ -11,7 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	internal class MICLoginRequest : LoginRequest
 	{

@@ -13,7 +13,7 @@
 
 using System;
 using System.Collections.Generic;
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class NetworkRequest <T> : AbstractKinveyClientRequest <T>
 	{

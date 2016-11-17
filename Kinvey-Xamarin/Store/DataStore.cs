@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Remotion.Linq.Parsing.Structure;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Each DataStore in your application represents a collection on your backend. The DataStore class manages the access of data between the Kinvey backend and the app.

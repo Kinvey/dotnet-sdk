@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Interface for the data store cache.

@@ -13,7 +13,7 @@
 
 using SQLite.Net;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Persistable interface which model objects can choose to implement as an alternative

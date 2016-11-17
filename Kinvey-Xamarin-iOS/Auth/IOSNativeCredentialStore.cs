@@ -16,7 +16,7 @@ using Foundation;
 using Security;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// iOS native credential store.

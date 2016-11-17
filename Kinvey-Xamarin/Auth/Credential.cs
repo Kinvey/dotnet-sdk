@@ -16,7 +16,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// This is a credential object, storing authentication information

@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Request operation for pulling all records for a collection during a sync, and refreshing the cache with the

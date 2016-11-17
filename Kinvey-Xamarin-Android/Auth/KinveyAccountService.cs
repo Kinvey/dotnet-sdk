@@ -6,7 +6,7 @@ using Android.Content;
 using Newtonsoft.Json;
 using KinveyXamarin;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Kinvey account service.

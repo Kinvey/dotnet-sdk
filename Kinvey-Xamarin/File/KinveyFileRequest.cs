@@ -20,7 +20,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using ModernHttpClient;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	internal class KinveyFileRequest : AbstractKinveyClientRequest<FileMetaData>
 	{

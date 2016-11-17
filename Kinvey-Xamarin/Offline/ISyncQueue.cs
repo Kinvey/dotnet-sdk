@@ -15,7 +15,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public interface ISyncQueue
 	{

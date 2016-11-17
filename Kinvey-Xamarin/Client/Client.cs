@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using KinveyUtils;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// This class is the entry point for access to all of the Kinvey's library features.  Use a Client.Builder to create one.

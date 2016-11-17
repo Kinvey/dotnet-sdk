@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// In memory credential store.

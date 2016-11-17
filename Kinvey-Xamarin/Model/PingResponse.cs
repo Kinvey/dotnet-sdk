@@ -15,7 +15,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// This class represents the response of a ping request.

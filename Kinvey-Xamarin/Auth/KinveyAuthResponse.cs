@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// This class represents the response of a Kinvey Auth Request.

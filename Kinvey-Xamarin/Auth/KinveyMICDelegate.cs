@@ -13,7 +13,7 @@
 
 using System;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class KinveyMICDelegate<T> : KinveyDelegate<T>
 	{

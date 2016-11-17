@@ -24,7 +24,7 @@ using KinveyXamarin;
 using KinveyUtils;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 
 	/// <summary>

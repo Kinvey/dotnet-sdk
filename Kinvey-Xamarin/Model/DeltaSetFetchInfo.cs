@@ -14,7 +14,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// JSON representation of the fields needed to do delta set comparisons

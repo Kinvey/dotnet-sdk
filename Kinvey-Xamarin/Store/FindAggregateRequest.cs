@@ -17,7 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Find request built in order to apply grouping/aggregation functions to entities within a <see cref="KinveyXamarin.DataStore{T}"/>

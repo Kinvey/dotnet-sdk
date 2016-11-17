@@ -13,7 +13,7 @@
 
 using System.Collections.Generic;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// The class used to define the parameters for a UserDiscovery lookup

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using RestSharp;
 
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Authenticator for kinvey style authentication.

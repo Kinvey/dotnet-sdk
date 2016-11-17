@@ -17,7 +17,7 @@ using SQLite.Net;
 using System.Threading.Tasks;
 
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class SQLiteSyncQueue : ISyncQueue
 	{

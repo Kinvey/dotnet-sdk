@@ -14,7 +14,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	[JsonObject(MemberSerialization.OptIn)]
 	public class ThirdPartyIdentity

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// SQ lite credential store.

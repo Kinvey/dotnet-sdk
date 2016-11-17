@@ -13,7 +13,7 @@
 
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// JSON representation of the fields return from group aggreation functions

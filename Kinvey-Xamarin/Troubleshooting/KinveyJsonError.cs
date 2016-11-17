@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Kinvey json error.

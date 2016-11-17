@@ -14,7 +14,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	[JsonObject]
 	public class KinveyFile

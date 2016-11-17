@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public class NetworkFactory
 	{

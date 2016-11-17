@@ -17,7 +17,7 @@ using Android.Accounts;
 using Android.Content;
 using Newtonsoft.Json;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Android native credential store.

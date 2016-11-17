@@ -13,7 +13,7 @@
 
 using System;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	public sealed class PreserveAttribute : System.Attribute {
 		public bool AllMembers;

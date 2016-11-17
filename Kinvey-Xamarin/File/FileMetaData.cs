@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Defines file meta data, storing arbitrary key/value pairs of data associated with a file.

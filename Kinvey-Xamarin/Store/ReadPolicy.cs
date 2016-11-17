@@ -13,7 +13,7 @@
 
 using System;
 
-namespace KinveyXamarin
+namespace Kinvey
 {
 	/// <summary>
 	/// Cache policies, used for Caching.
