@@ -1,6 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
-using KinveyXamarin;
+using Kinvey;
 
 namespace testiosapp
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using KinveyXamarin;
+using Kinvey;
 using Android.Content;
 
 namespace KinveyXamarinAndroid

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SQLite.Net.Attributes;
-using KinveyXamarin;
+using Kinvey;
 
 namespace TestFramework
 {

@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using KinveyXamarin;
+using Kinvey;
 
 namespace TestFramework
 {

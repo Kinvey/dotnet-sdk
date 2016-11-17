@@ -1,5 +1,5 @@
 ﻿using System;
-using KinveyXamarin;
+using Kinvey;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;

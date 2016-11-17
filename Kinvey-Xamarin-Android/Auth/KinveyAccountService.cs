@@ -4,7 +4,7 @@ using Android.Accounts;
 using Android.App;
 using Android.Content;
 using Newtonsoft.Json;
-using KinveyXamarin;
+using Kinvey;
 
 namespace Kinvey
 {
