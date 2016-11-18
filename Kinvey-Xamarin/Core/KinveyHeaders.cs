@@ -28,7 +28,7 @@ namespace Kinvey
 		/// <summary>
 		/// The version of the library.
 		/// </summary>
-		public static string VERSION = "3.0.0-Beta05";
+		public static string VERSION = "3.0.0-Beta06";
 
 		/// <summary>
 		/// The kinvey API version key.
