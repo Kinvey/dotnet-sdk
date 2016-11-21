@@ -542,10 +542,24 @@ namespace Kinvey
 				return await onRedirectAsync(newLoc);
 			}
 			// special case to handle void or empty responses
-			if (response.Content == null) 
+			if (response.Content == null)
 			{
 				return default(T);
 			}
+
+			string path = response?.ResponseUri?.AbsolutePath;
+
+			if (path != null &&
+			    path.Contains("/custom/") &&
+			    (((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302))
+			{
+				// Seems like only Custom Endpoint/BL would result in having a successful response
+				// without having a successful status code.  The BL executed successfully, but did
+				// produce a successsful outcome.
+				var ke =  new KinveyException(EnumErrorCategory.ERROR_CUSTOM_ENDPOINT, EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR, response);
+				throw ke;
+			}
+
 			try
 			{
 				return JsonConvert.DeserializeObject<T>(response.Content);
