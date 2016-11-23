@@ -178,10 +178,11 @@ namespace TestFramework
 		public async Task TestCustomEndpoint()
 		{
 			// Arrange
-			new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.Build();
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+
+			await builder.Build();
 
 			if (!Client.SharedClient.IsUserLoggedIn())
 			{
@@ -203,6 +204,41 @@ namespace TestFramework
 
 			// Teardown
 			Client.SharedClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestCustomEndpointBad()
+		{
+			// Arrange
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+
+			await builder.Build();
+
+			if (!Client.SharedClient.IsUserLoggedIn())
+			{
+				await User.LoginAsync(TestSetup.user, TestSetup.pass);
+			}
+
+			// Act
+			JObject obj = new JObject();
+			obj.Add("input", 1);
+
+			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+			Exception e = Assert.CatchAsync(async delegate
+			{
+				await ce.ExecuteCustomEndpoint("test_bad", obj);
+			});
+
+			// Teardown
+			Client.SharedClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.NotNull(e);
+			Assert.True(e.GetType() == typeof(KinveyException));
+			KinveyException ke = e as KinveyException;
+			Assert.AreEqual(404, ke.StatusCode);
 		}
 	}
 }

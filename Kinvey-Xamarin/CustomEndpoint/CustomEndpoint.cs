@@ -99,6 +99,10 @@ namespace Kinvey
 			{
 				result = await BuildCustomEnpointRequest(endpoint, input).ExecuteAsync();
 			}
+			catch (KinveyException ke)
+			{
+				throw ke;
+			}
 			catch (Exception e)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_CUSTOM_ENDPOINT, EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR, "", e);

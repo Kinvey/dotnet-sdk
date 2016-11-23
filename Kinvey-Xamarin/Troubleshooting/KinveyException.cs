@@ -95,6 +95,12 @@ namespace Kinvey
 			set { this.requestID = value; }
 		}
 
+		/// <summary>
+		/// Gets or sets the status code for this error.
+		/// </summary>
+		/// <value>The status code.</value>
+		public int StatusCode { get; set; }
+
 		#endregion
 
 		#region Constructors
@@ -124,11 +130,14 @@ namespace Kinvey
 			this.errorCategory = errorCategory;
 			this.errorCode = errorCode;
 
+			Tuple<string, string, string> errorInfo = InfoFromErrorCode(errorCategory, errorCode);
+
 			KinveyJsonError errorJSON = KinveyJsonError.parse(responseJSON);
-			this.error = errorJSON.Error;
-			this.debug = errorJSON.Debug;
-			this.description = errorJSON.Description;
+			this.error = errorJSON.Error ?? errorInfo.Item1;
+			this.debug = errorJSON.Debug ?? errorInfo.Item2;
+			this.description = errorJSON.Description ?? errorInfo.Item3;
 			this.requestID = HelperMethods.getRequestID(responseJSON);
+			StatusCode = (int)responseJSON.StatusCode;
 		}
 
 		#endregion
@@ -284,7 +293,7 @@ namespace Kinvey
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_REFRESH:
 					error = "An exception was thrown while trying to refresh entities in the cache.";
 					debug = "";
-					description = "Error in trying to insert or update entities in the cache based on teh list of given entities.";
+					description = "Error in trying to insert or update entities in the cache based on the list of given entities.";
 					break;
 
 				case EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVE_ENTITY:
@@ -315,6 +324,12 @@ namespace Kinvey
 					error = "An exception was thrown while trying to use a LINQ `Where` clause that is not supported.";
 					debug = "Consult the reference guides for information on supported LINQ clauses.";
 					description = "The LINQ `Where` clause being called is not supported by the SDK.";
+					break;
+
+				case EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR:
+					error = "An exception was thrown while trying to execute a custom endpoint.";
+					debug = "Inspect the StatusCode property to determine the cause of the exception.";
+					description = "A 4xx/5xx status code was set in the response by the custom endpint.";
 					break;
 
 				default:
