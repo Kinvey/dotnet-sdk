@@ -705,5 +705,37 @@ namespace UnitTestFramework
 			// Teardown
 			kinveyClient.ActiveUser.Logout();
 		}
+
+		[Test]
+		public async Task TestUserInitFromCredential()
+		{
+			// Setup
+			Client.Builder builder1 = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+
+			Client kinveyClient1 = await builder1.Build();
+
+			// Arrange
+			User activeUser = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient1);
+
+			// Act
+			Client.Builder builder2 = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+
+			Client kinveyClient2 = await builder2.Build();
+
+			// Assert
+			Assert.True(activeUser?.AccessToken == kinveyClient2?.ActiveUser?.AccessToken);
+			Assert.AreEqual(activeUser?.Attributes, kinveyClient2?.ActiveUser?.Attributes);
+			Assert.True(activeUser?.AuthToken == kinveyClient2?.ActiveUser?.AuthToken);
+			Assert.True(activeUser?.Id == kinveyClient2?.ActiveUser?.Id);
+			Assert.AreEqual(activeUser?.Metadata, kinveyClient2?.ActiveUser?.Metadata);
+			Assert.True(activeUser?.UserName == kinveyClient2?.ActiveUser?.UserName);
+
+			// Teardown
+			kinveyClient1.ActiveUser.Logout();
+		}
 	}
 }
