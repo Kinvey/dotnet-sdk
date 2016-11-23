@@ -55,14 +55,12 @@ namespace testiosapp
 			Client.Builder cb = new Client.Builder(appKey, appSecret)
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
-				.setCredentialStore(new IOSNativeCredentialStore())
-				.SetSSOGroupKey("KinveyOrg")
-				//.setBaseURL("https://alm-kcs.ngrok.io")
+				//.setCredentdialStore(new IOSNativeCredentialStore())
+				//.SetSSOGroupKey("KinveyOrg")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
 			myClient = await cb.Build();
 
-			//myClient.MICHostName = "https://alm-auth.ngrok.io"; // SSO-TEST
 			//myClient.MICApiVersion = "v3"; // SSO-TEST
 
 			// create a new window instance based on the screen size

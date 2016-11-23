@@ -93,38 +93,20 @@ namespace Kinvey
 
 		private User InitUser(Credential cred) // TODO move to UserFactory?
 		{
-			User u = new User(this.abstractClient);
-			u.Id = cred.UserId;
-			u.AccessToken = cred.AccessToken;
-			u.AuthToken = cred.AuthToken;
+			((KinveyClientRequestInitializer)abstractClient.RequestInitializer).KinveyCredential = cred;
 
-			//CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = cred;
+			abstractClient.ActiveUser = User.From(cred, abstractClient);
 
-			this.abstractClient.ActiveUser = u;
-			return u;
+			return abstractClient.ActiveUser;
 		}
 
 		private User InitUser(KinveyAuthResponse response, string userType) // TODO move to UserFactory?
 		{
-			User u = new User(this.abstractClient);
-
-			u.Id = response.UserId;
-			// TODO process Unknown keys
-			// this.put("_kmd", response.getMetadata());
-			// this.putAll(response.getUnknownKeys());
-
-			//this.username = response
-			u.AccessToken = response.AccessToken;
-			u.AuthToken = response.AuthToken;
-			u.Attributes = response.Attributes;
-			u.Metadata = response.UserMetaData;
-
 			CredentialManager credentialManager = new CredentialManager(this.abstractClient.Store);
-			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, u.Id, this.abstractClient.SSOGroupKey);
 
-			this.abstractClient.ActiveUser = u;
-			return u;
+			Credential activeUserCredential = credentialManager.CreateAndStoreCredential(response, response.UserId, abstractClient.SSOGroupKey);
+
+			return InitUser(activeUserCredential);
 		}
 	}
 }

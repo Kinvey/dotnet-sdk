@@ -212,6 +212,23 @@ namespace Kinvey
             return this;
         }
 
+		static internal User From(Credential credential, AbstractClient userClient = null)
+		{
+			// NOTE: do not set the RedirectURI or the Refresh Token from the credential in
+			// the User object, because the user object does not hold these properties
+
+			AbstractClient uc = userClient ?? Client.SharedClient;
+			User u = new User(uc);
+
+			u.AccessToken = credential.AccessToken;
+			u.Attributes = credential.Attributes;
+			u.AuthToken = credential.AuthToken;
+			u.Id = credential.UserId;
+			u.metadata = credential.UserKMD;
+			u.UserName = credential.UserName;
+			return u;
+		}
+
 		///// <summary>
 		///// Removes the user from the store..
 		///// </summary>
