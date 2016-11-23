@@ -93,7 +93,7 @@ namespace Kinvey
 
 		private User InitUser(Credential cred) // TODO move to UserFactory?
 		{
-			((KinveyClientRequestInitializer)this.abstractClient.RequestInitializer).KinveyCredential = cred;
+			((KinveyClientRequestInitializer)abstractClient.RequestInitializer).KinveyCredential = cred;
 
 			abstractClient.ActiveUser = User.From(cred, abstractClient);
 
@@ -106,11 +106,7 @@ namespace Kinvey
 
 			Credential activeUserCredential = credentialManager.CreateAndStoreCredential(response, response.UserId, abstractClient.SSOGroupKey);
 
-			((KinveyClientRequestInitializer)abstractClient.RequestInitializer).KinveyCredential = activeUserCredential;
-
-			abstractClient.ActiveUser = User.From(activeUserCredential, abstractClient);
-
-			return abstractClient.ActiveUser;
+			return InitUser(activeUserCredential);
 		}
 	}
 }
