@@ -56,10 +56,10 @@ namespace Kinvey
 		public class AclGroups  {
 
 			[JsonProperty("r")]
-			public string read {get; set;}
+			public List<string> read { get; set; }
 
 			[JsonProperty("w")]
-			public string write {get; set;}
+			public List<string> write { get; set; }
 
 			public AclGroups(){}
 
