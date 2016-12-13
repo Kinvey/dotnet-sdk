@@ -11,65 +11,98 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using SQLite.Net;
 
 namespace Kinvey
 {
-
 	/// <summary>
-	/// JSON represention of the _acl fied present on every stored in Kinvey
+	/// JSON represention of the _acl present on every entity stored in Kinvey.
+	/// This object allows the app to modify with more granularity the
+	/// access permissions on the entity, which will override the settings at
+	/// the collection level.
 	/// </summary>
 	[JsonObject]
 	public class AccessControlList : ISerializable<string>
 	{
-
 		/// <summary>
 		/// the field name within every JSON object.
 		/// </summary>
 		public const string JSON_FIELD_NAME = "_acl";
 
+		/// <summary>
+		/// Gets or sets the creator value.
+		/// </summary>
+		/// <value>The creator</value>
+		[JsonProperty("creator")]
+		public string Creator { get; set; }
 
-		[JsonProperty]
-		public string creator {get; set;}
-
+		/// <summary>
+		/// Gets or sets whether this entity is globally readable.
+		/// </summary>
+		/// <value><c>true</c> if globally readable; otherwise, <c>false</c>.</value>
 		[JsonProperty("gr")]
-		public bool globallyReadable {get; set;}
+		public bool GloballyReadable { get; set; }
 
+		/// <summary>
+		/// Gets or sets whether this entity is globally writeable.
+		/// </summary>
+		/// <value><c>true</c> if globally writeable; otherwise, <c>false</c>.</value>
 		[JsonProperty("gw")]
-		public bool globallyWriteable {get; set;}
+		public bool GloballyWriteable { get; set; }
 
+		/// <summary>
+		/// Gets or sets a list of user IDs that are specifically allowed to read this entity.
+		/// </summary>
+		/// <value>The list of user IDs allowed to read this entity.</value>
 		[JsonProperty("r")]
-		public List<string> read {get; set;}
+		public List<string> Read { get; set; }
 
+		/// <summary>
+		/// Gets or sets a list of user IDs that are specifically allowed to modify this entity.
+		/// </summary>
+		/// <value>The list of user IDs allowed to modify this entity.</value>
 		[JsonProperty("w")]
-		public List<string> write {get; set;}
+		public List<string> Write { get; set; }
 
+		/// <summary>
+		/// Gets or sets the ACL groups that are associated with the entity for reading and writing.
+		/// Within each ACLGroups object, there are 2 lists: one list for the user groups allowed to
+		/// read the entity, and one list for the user groups that are allowed to modify the entity.
+		/// </summary>
+		/// <value>The list of user groups allowed to read and/or modify the entity.</value>
 		[JsonProperty("groups")]
-		public List<AclGroups> groups { get; set;}
+		public List<ACLGroups> Groups { get; set; }
 
-		public AccessControlList(){}
-
+		/// <summary>
+		/// Class that holds the list of user groups that can read the entity and the list of user groups
+		/// that can modify the entity.
+		/// </summary>
 		[JsonObject]
-		public class AclGroups  {
-
+		public class ACLGroups
+		{
+			/// <summary>
+			/// Gets or sets the list of user groups that can read the entity.
+			/// </summary>
+			/// <value>The list of user groups with read access to the entity.</value>
 			[JsonProperty("r")]
-			public List<string> read { get; set; }
+			public List<string> Read { get; set; }
 
+			/// <summary>
+			/// Gets or sets the list of user groups that can modify the entity.
+			/// </summary>
+			/// <value>The list of user groups with write access to the entity.</value>
 			[JsonProperty("w")]
-			public List<string> write { get; set; }
-
-			public AclGroups(){}
-
+			public List<string> Write { get; set; }
 		}
 
+		/// <summary>
+		/// Implementation of ISerializeable interface, used to serialize this <see cref="AccessControlList"/> instance.
+		/// </summary>
 		public string Serialize()
 		{
 			return JsonConvert.SerializeObject(this);
 		}
 	}
-
 }
-
