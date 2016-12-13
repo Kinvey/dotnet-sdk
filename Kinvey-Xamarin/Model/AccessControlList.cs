@@ -96,6 +96,22 @@ namespace Kinvey
 			/// <value>The list of user groups with write access to the entity.</value>
 			[JsonProperty("w")]
 			public List<string> Write { get; set; }
+
+			public ACLGroups()
+			{
+				Read = new List<string>();
+
+				Write = new List<string>();
+			}
+		}
+
+		public AccessControlList()
+		{
+			Read = new List<string>();
+
+			Write = new List<string>();
+
+			Groups = new ACLGroups();
 		}
 
 		/// <summary>
