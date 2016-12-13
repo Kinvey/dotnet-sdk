@@ -67,13 +67,14 @@ namespace Kinvey
 		public List<string> Write { get; set; }
 
 		/// <summary>
-		/// Gets or sets the ACL groups that are associated with the entity for reading and writing.
-		/// Within each ACLGroups object, there are 2 lists: one list for the user groups allowed to
+		/// Gets or sets the ACL group that contains lists of user groups which are authorized on the
+		/// entity for reading and writing.
+		/// Within the ACLGroups object, there are 2 lists: one list for the user groups allowed to
 		/// read the entity, and one list for the user groups that are allowed to modify the entity.
 		/// </summary>
-		/// <value>The list of user groups allowed to read and/or modify the entity.</value>
+		/// <value>The group object which contains the list of user groups allowed to read and/or modify the entity.</value>
 		[JsonProperty("groups")]
-		public List<ACLGroups> Groups { get; set; }
+		public ACLGroups Groups { get; set; }
 
 		/// <summary>
 		/// Class that holds the list of user groups that can read the entity and the list of user groups
