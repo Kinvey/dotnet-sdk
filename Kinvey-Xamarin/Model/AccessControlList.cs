@@ -57,14 +57,14 @@ namespace Kinvey
 		/// </summary>
 		/// <value>The list of user IDs allowed to read this entity.</value>
 		[JsonProperty("r")]
-		public List<string> Read { get; set; }
+		public List<string> Readers { get; set; }
 
 		/// <summary>
 		/// Gets or sets a list of user IDs that are specifically allowed to modify this entity.
 		/// </summary>
 		/// <value>The list of user IDs allowed to modify this entity.</value>
 		[JsonProperty("w")]
-		public List<string> Write { get; set; }
+		public List<string> Writers { get; set; }
 
 		/// <summary>
 		/// Gets or sets the ACL group that contains lists of user groups which are authorized on the
@@ -88,28 +88,28 @@ namespace Kinvey
 			/// </summary>
 			/// <value>The list of user groups with read access to the entity.</value>
 			[JsonProperty("r")]
-			public List<string> Read { get; set; }
+			public List<string> Readers { get; set; }
 
 			/// <summary>
 			/// Gets or sets the list of user groups that can modify the entity.
 			/// </summary>
 			/// <value>The list of user groups with write access to the entity.</value>
 			[JsonProperty("w")]
-			public List<string> Write { get; set; }
+			public List<string> Writers { get; set; }
 
 			public ACLGroups()
 			{
-				Read = new List<string>();
+				Readers = new List<string>();
 
-				Write = new List<string>();
+				Writers = new List<string>();
 			}
 		}
 
 		public AccessControlList()
 		{
-			Read = new List<string>();
+			Readers = new List<string>();
 
-			Write = new List<string>();
+			Writers = new List<string>();
 
 			Groups = new ACLGroups();
 		}
