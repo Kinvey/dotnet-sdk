@@ -1404,5 +1404,217 @@ namespace TestFramework
 				await todoStore.SyncAsync();
 			});
 		}
+
+		[Test]
+		public async Task TestACLGloballyReadableSave()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			AccessControlList acl = new AccessControlList();
+			acl.GloballyReadable = true;
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+			ToDo todo = new ToDo();
+			todo.ACL = acl;
+
+			// Act
+			ToDo savedToDo = await todoStore.SaveAsync(todo);
+
+			// Assert
+			Assert.AreEqual(true, acl.GloballyReadable);
+			Assert.AreEqual(false, acl.GloballyWriteable);
+			Assert.AreNotEqual(todo.ACL, savedToDo.ACL);
+			Assert.AreNotEqual(todo.ACL.Creator, savedToDo.ACL.Creator);
+			Assert.AreEqual(todo.ACL.GloballyReadable, savedToDo.ACL.GloballyReadable);
+			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
+
+			// Teardown
+			await todoStore.RemoveAsync(savedToDo.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestACLGloballyWriteableSave()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			AccessControlList acl = new AccessControlList();
+			acl.GloballyWriteable = true;
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+			ToDo todo = new ToDo();
+			todo.ACL = acl;
+
+			// Act
+			ToDo savedToDo = await todoStore.SaveAsync(todo);
+
+			// Assert
+			Assert.AreEqual(false, acl.GloballyReadable);
+			Assert.AreEqual(true, acl.GloballyWriteable);
+			Assert.AreNotEqual(todo.ACL, savedToDo.ACL);
+			Assert.AreNotEqual(todo.ACL.Creator, savedToDo.ACL.Creator);
+			Assert.AreEqual(todo.ACL.GloballyReadable, savedToDo.ACL.GloballyReadable);
+			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
+
+			// Teardown
+			await todoStore.RemoveAsync(savedToDo.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestACLReadListSave()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			AccessControlList acl = new AccessControlList();
+			acl.Readers.Add("reader1");
+			acl.Readers.Add("reader2");
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+			ToDo todo = new ToDo();
+			todo.ACL = acl;
+
+			// Act
+			ToDo savedToDo = await todoStore.SaveAsync(todo);
+
+			// Assert
+			Assert.AreEqual(false, acl.GloballyReadable);
+			Assert.AreEqual(false, acl.GloballyWriteable);
+			Assert.AreNotEqual(todo.ACL, savedToDo.ACL);
+			Assert.AreNotEqual(todo.ACL.Creator, savedToDo.ACL.Creator);
+			Assert.AreEqual(todo.ACL.GloballyReadable, savedToDo.ACL.GloballyReadable);
+			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
+			Assert.IsNotNull(savedToDo.ACL.Writers);
+			Assert.IsNotNull(savedToDo.ACL.Readers);
+			Assert.AreEqual(todo.ACL.Readers, savedToDo.ACL.Readers);
+			Assert.AreEqual(2, savedToDo.ACL.Readers.Count);
+			Assert.True(savedToDo.ACL.Readers[0].Equals("reader1"));
+			Assert.True(savedToDo.ACL.Readers[1].Equals("reader2"));
+
+			// Teardown
+			await todoStore.RemoveAsync(savedToDo.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestACLWriteListSave()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			AccessControlList acl = new AccessControlList();
+			acl.Writers.Add("writer1");
+			acl.Writers.Add("writer2");
+			acl.Writers.Add("writer3");
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+			ToDo todo = new ToDo();
+			todo.ACL = acl;
+
+			// Act
+			ToDo savedToDo = await todoStore.SaveAsync(todo);
+
+			// Assert
+			Assert.AreEqual(false, acl.GloballyReadable);
+			Assert.AreEqual(false, acl.GloballyWriteable);
+			Assert.AreNotEqual(todo.ACL, savedToDo.ACL);
+			Assert.AreNotEqual(todo.ACL.Creator, savedToDo.ACL.Creator);
+			Assert.AreEqual(todo.ACL.GloballyReadable, savedToDo.ACL.GloballyReadable);
+			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
+			Assert.IsNotNull(savedToDo.ACL.Readers);
+			Assert.IsNotNull(savedToDo.ACL.Writers);
+			Assert.AreEqual(todo.ACL.Writers, savedToDo.ACL.Writers);
+			Assert.AreEqual(3, savedToDo.ACL.Writers.Count);
+			Assert.True(savedToDo.ACL.Writers[0].Equals("writer1"));
+			Assert.True(savedToDo.ACL.Writers[1].Equals("writer2"));
+			Assert.True(savedToDo.ACL.Writers[2].Equals("writer3"));
+
+			// Teardown
+			await todoStore.RemoveAsync(savedToDo.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestACLGroupReadListSave()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			AccessControlList acl = new AccessControlList();
+			acl.Groups.Readers.Add("groupread1");
+			acl.Groups.Readers.Add("groupread2");
+			acl.Groups.Readers.Add("groupread3");
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+			ToDo todo = new ToDo();
+			todo.ACL = acl;
+
+			// Act
+			ToDo savedToDo = await todoStore.SaveAsync(todo);
+
+			// Assert
+			Assert.AreEqual(false, acl.GloballyReadable);
+			Assert.AreEqual(false, acl.GloballyWriteable);
+			Assert.AreNotEqual(todo.ACL, savedToDo.ACL);
+			Assert.AreNotEqual(todo.ACL.Creator, savedToDo.ACL.Creator);
+			Assert.AreEqual(todo.ACL.GloballyReadable, savedToDo.ACL.GloballyReadable);
+			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
+			Assert.IsNotNull(savedToDo.ACL.Readers);
+			Assert.IsNotNull(savedToDo.ACL.Writers);
+			Assert.IsNotNull(savedToDo.ACL.Groups);
+			Assert.IsNotNull(savedToDo.ACL.Groups.Writers);
+			Assert.IsNotNull(savedToDo.ACL.Groups.Readers);
+			Assert.AreEqual(todo.ACL.Groups.Readers, savedToDo.ACL.Groups.Readers);
+			Assert.AreEqual(3, savedToDo.ACL.Groups.Readers.Count);
+			Assert.True(savedToDo.ACL.Groups.Readers[0].Equals("groupread1"));
+			Assert.True(savedToDo.ACL.Groups.Readers[1].Equals("groupread2"));
+			Assert.True(savedToDo.ACL.Groups.Readers[2].Equals("groupread3"));
+
+			// Teardown
+			await todoStore.RemoveAsync(savedToDo.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestACLGroupWriteListSave()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			AccessControlList acl = new AccessControlList();
+			acl.Groups.Writers.Add("groupwrite1");
+			acl.Groups.Writers.Add("groupwrite2");
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+			ToDo todo = new ToDo();
+			todo.ACL = acl;
+
+			// Act
+			ToDo savedToDo = await todoStore.SaveAsync(todo);
+
+			// Assert
+			Assert.AreEqual(false, acl.GloballyReadable);
+			Assert.AreEqual(false, acl.GloballyWriteable);
+			Assert.AreNotEqual(todo.ACL, savedToDo.ACL);
+			Assert.AreNotEqual(todo.ACL.Creator, savedToDo.ACL.Creator);
+			Assert.AreEqual(todo.ACL.GloballyReadable, savedToDo.ACL.GloballyReadable);
+			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
+			Assert.IsNotNull(savedToDo.ACL.Readers);
+			Assert.IsNotNull(savedToDo.ACL.Writers);
+			Assert.IsNotNull(savedToDo.ACL.Groups);
+			Assert.IsNotNull(savedToDo.ACL.Groups.Readers);
+			Assert.IsNotNull(savedToDo.ACL.Groups.Writers);
+			Assert.AreEqual(todo.ACL.Groups.Writers, savedToDo.ACL.Groups.Writers);
+			Assert.AreEqual(2, savedToDo.ACL.Groups.Writers.Count);
+			Assert.True(savedToDo.ACL.Groups.Writers[0].Equals("groupwrite1"));
+			Assert.True(savedToDo.ACL.Groups.Writers[1].Equals("groupwrite2"));
+
+			// Teardown
+			await todoStore.RemoveAsync(savedToDo.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
 	}
 }
