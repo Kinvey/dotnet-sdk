@@ -159,7 +159,7 @@ namespace Kinvey
 			/// <summary>
 			/// This method creates and initializes a client for use with Kinvey.
 			/// </summary>
-			public virtual async Task<Client> Build()
+			public virtual Client Build()
 			{
 				if (this.filePath != null && offlinePlatform != null)
 				{
@@ -194,7 +194,7 @@ namespace Kinvey
 				Credential currentCredential = this.Store.GetStoredCredential(this.ssoGroupKey);
 				if (currentCredential != null)
 				{
-					await User.LoginAsync(currentCredential, c);
+					User.LoginAsync(currentCredential, c);
 				}
 
 				return c;
