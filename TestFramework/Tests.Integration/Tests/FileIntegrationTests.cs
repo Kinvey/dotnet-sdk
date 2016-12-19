@@ -32,10 +32,10 @@ namespace TestFramework
 		private static string downloadStreamFilePath = image_dir + "downloadStreamTest.png";
 
 		[SetUp]
-		public async Task Setup()
+		public void Setup()
 		{
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
-			kinveyClient = await builder.Build();
+			kinveyClient = builder.Build();
 		}
 
 

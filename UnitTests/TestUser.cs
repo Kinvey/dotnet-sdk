@@ -18,13 +18,13 @@ namespace UnitTestFramework
 		private const string collectionName = "ToDos";
 
 		[SetUp]
-		public async Task Setup()
+		public void Setup()
 		{
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
-			kinveyClient = await builder.Build();
+			kinveyClient = builder.Build();
 		}
 
 		[TearDown]
@@ -88,7 +88,7 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake);
-			Client fakeClient = await builder.Build();
+			Client fakeClient = builder.Build();
 
 			// Act
 			// Assert
@@ -335,7 +335,7 @@ namespace UnitTestFramework
 			string saml_app_key = "kid_ZkPDb_34T";
 			string saml_app_secret = "c3752d5079f34353ab89d07229efaf63";
 			Client.Builder localBuilder = new Client.Builder(saml_app_key, saml_app_secret);
-			Client localClient = await localBuilder.Build();
+			Client localClient = localBuilder.Build();
 			localClient.MICApiVersion = "v2";
 
 			// Act
@@ -714,7 +714,7 @@ namespace UnitTestFramework
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
-			Client kinveyClient1 = await builder1.Build();
+			Client kinveyClient1 = builder1.Build();
 
 			// Arrange
 			User activeUser = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient1);
@@ -724,7 +724,7 @@ namespace UnitTestFramework
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
-			Client kinveyClient2 = await builder2.Build();
+			Client kinveyClient2 = builder2.Build();
 
 			// Assert
 			Assert.True(activeUser?.AccessToken == kinveyClient2?.ActiveUser?.AccessToken);

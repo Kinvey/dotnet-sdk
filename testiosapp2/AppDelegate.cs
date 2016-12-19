@@ -40,7 +40,7 @@ namespace testiosapp2
 			return true;
 		}
 
-		public async Task BuildClient()
+		public void BuildClient()
 		{
 			//string appKey = "kid_r12RGpW6", appSecret = "b1b7768429344a2085e75e2d48b39d19"; // SSO-TEST
 			//string appKey = "kid_ZkPDb_34T", appSecret = "c3752d5079f34353ab89d07229efaf63"; // MIC-SAML-TEST
@@ -55,7 +55,7 @@ namespace testiosapp2
 				//.setBaseURL("https://alm-kcs.ngrok.io")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
-			myClient = await cb.Build();
+			myClient = cb.Build();
 
 			//myClient.MICHostName = "https://alm-auth.ngrok.io"; // SSO-TEST
 			//myClient.MICApiVersion = "v3"; // SSO-TEST

@@ -31,13 +31,13 @@ namespace TestFramework
 		private const string collectionName = "ToDos";
 
 		[SetUp]
-		public async Task Setup()
+		public void Setup()
 		{
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
-			kinveyClient = await builder.Build();
+			kinveyClient = builder.Build();
 		}
 
 		[TearDown]
@@ -101,7 +101,7 @@ namespace TestFramework
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake);
-			Client fakeClient = await builder.Build();
+			Client fakeClient = builder.Build();
 
 			// Act
 			// Assert
@@ -356,7 +356,7 @@ namespace TestFramework
 			string saml_app_key = "kid_ZkPDb_34T";
 			string saml_app_secret = "c3752d5079f34353ab89d07229efaf63";
 			Client.Builder localBuilder = new Client.Builder(saml_app_key, saml_app_secret);
-			Client localClient = await localBuilder.Build();
+			Client localClient = localBuilder.Build();
 			localClient.MICApiVersion = "v2";
 
 			// Act

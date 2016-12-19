@@ -44,7 +44,7 @@ namespace testdroidapp
 				.SetSSOGroupKey("com.kinvey")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
-			myClient = await builder.Build();
+			myClient = builder.Build();
 
 			await DoStuff();
 

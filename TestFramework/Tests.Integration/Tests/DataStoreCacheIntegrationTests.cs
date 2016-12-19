@@ -31,13 +31,13 @@ namespace TestFramework
 		private const string collectionName = "ToDos";
 
 		[SetUp]
-		public async Task Setup()
+		public void Setup()
 		{
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
-			kinveyClient = await builder.Build();
+			kinveyClient = builder.Build();
 		}
 
 		[TearDown]
