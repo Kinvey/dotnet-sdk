@@ -18,13 +18,13 @@ namespace UnitTestFramework
 		private const string collectionName = "ToDos";
 
 		[SetUp]
-		public async Task Setup()
+		public void Setup()
 		{
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
-			kinveyClient = await builder.Build();
+			kinveyClient = builder.Build();
 		}
 
 		[TearDown]
@@ -215,7 +215,7 @@ namespace UnitTestFramework
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
 				.SetRestClient(moqRC.Object);
 
-			Client c = await cb.Build();
+			Client c = cb.Build();
 
 			// Arrange
 			DataStore<ToDo> store = DataStore<ToDo>.Collection("todos", DataStoreType.NETWORK, c);

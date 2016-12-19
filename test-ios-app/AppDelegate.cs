@@ -35,17 +35,13 @@ namespace testiosapp
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
 
-			var task = BuildClient();
-			if (task.Status != TaskStatus.RanToCompletion)
-			{
-				task.RunSynchronously();
-			}
+			BuildClient();
 			//myClient.Push().RegisterForToken();
 
 			return true;
 		}
 
-		public async Task BuildClient()
+		public void BuildClient()
 		{
 			//string appKey = "kid_B15RMaba", appSecret = "0c0c30097a6d4811a267b70a024540e2"; // SSO-TEST
 			//string appKey = "kid_ZkPDb_34T", appSecret = "c3752d5079f34353ab89d07229efaf63"; // MIC-SAML-TEST
@@ -59,7 +55,7 @@ namespace testiosapp
 				//.SetSSOGroupKey("KinveyOrg")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
-			myClient = await cb.Build();
+			myClient = cb.Build();
 
 			//myClient.MICApiVersion = "v3"; // SSO-TEST
 

@@ -20,14 +20,14 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestClientBuilderBasic()
+		public void TestClientBuilderBasic()
 		{
 			// Arrange
 			const string url = "https://baas.kinvey.com/";
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
-			Client client = await builder.Build();
+			Client client = builder.Build();
 
 			// Assert
 			Assert.False(client == null);
@@ -48,7 +48,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestClientBuilderSetValues()
+		public void TestClientBuilderSetValues()
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
@@ -58,7 +58,7 @@ namespace UnitTestFramework
 				.setLogger(delegate(string msg) { Console.WriteLine(msg); });
 
 			// Assert
-			Client client = await builder.Build();
+			Client client = builder.Build();
 
 			Assert.False(client == null);
 			Assert.False(string.IsNullOrEmpty(client.BaseUrl));
@@ -68,7 +68,7 @@ namespace UnitTestFramework
 		}
 
 		[Test]
-		public async Task TestClientBuilderSetOrgID()
+		public void TestClientBuilderSetOrgID()
 		{
 			// Arrange
 			const string TEST_ORG = "testOrg";
@@ -76,21 +76,21 @@ namespace UnitTestFramework
 
 			// Act
 			builder.SetSSOGroupKey(TEST_ORG);
-			Client c = await builder.Build();
+			Client c = builder.Build();
 
 			// Assert
 			Assert.True(c.SSOGroupKey.Equals(TEST_ORG));
 		}
 
 		[Test]
-		public async Task TestClientBuilderDoNotSetOrgID()
+		public void TestClientBuilderDoNotSetOrgID()
 		{
 			// Arrange
 			const string TEST_ORG = "testOrg";
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
-			Client c = await builder.Build();
+			Client c = builder.Build();
 
 			// Assert
 			Assert.False(c.SSOGroupKey.Equals(TEST_ORG));
@@ -130,7 +130,7 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
-			Client client = await builder.Build();
+			Client client = builder.Build();
 
 			// Act
 			PingResponse pr = await client.PingAsync();
@@ -148,7 +148,7 @@ namespace UnitTestFramework
 		{
 			// Arrange
 			Client.Builder builder = new Client.Builder(TestSetup.app_key_fake, TestSetup.app_secret_fake);
-			Client client = await builder.Build();
+			Client client = builder.Build();
 
 			// Act
 			PingResponse pr = await client.PingAsync();
