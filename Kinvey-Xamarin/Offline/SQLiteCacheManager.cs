@@ -39,7 +39,7 @@ namespace Kinvey
 
 		// The asynchronous db connection.
 		private SQLiteConnection _dbConnectionSync;
-		private SQLiteConnection dbConnectionSync
+		private SQLiteConnection DBConnectionSync
 		{
 			get
 			{
@@ -114,19 +114,19 @@ namespace Kinvey
 		/// </summary>
 		public void clearStorage()
 		{
-			if (TableExists<CollectionTableMap>(dbConnectionSync))
+			if (TableExists<CollectionTableMap>(DBConnectionSync))
 			{
-				List<CollectionTableMap> collections = dbConnectionSync.Table<CollectionTableMap>().ToList();
+				List<CollectionTableMap> collections = DBConnectionSync.Table<CollectionTableMap>().ToList();
 				if (collections != null)
 				{
 					foreach (var collection in collections)
 					{
 						string dropQuery = $"DROP TABLE IF EXISTS {collection.TableName}";
-						dbConnectionSync.Execute(dropQuery);
+						DBConnectionSync.Execute(dropQuery);
 						GetSyncQueue(collection.CollectionName).RemoveAll();
 					}
 
-					dbConnectionSync.DeleteAll<CollectionTableMap>();
+					DBConnectionSync.DeleteAll<CollectionTableMap>();
 				}
 			}
 		}
@@ -142,23 +142,23 @@ namespace Kinvey
 
 		public ICache<T> GetCache<T>(string collectionName) where T : class
 		{
-			if (!TableExists<CollectionTableMap>(dbConnectionSync))
+			if (!TableExists<CollectionTableMap>(DBConnectionSync))
 			{
-				dbConnectionSync.CreateTable<CollectionTableMap>();
+				DBConnectionSync.CreateTable<CollectionTableMap>();
 			}
 
 			CollectionTableMap ctm = new CollectionTableMap();
 			ctm.CollectionName = collectionName;
 			ctm.TableName = typeof(T).Name;
 
-			dbConnectionSync.InsertOrReplace(ctm);
+			DBConnectionSync.InsertOrReplace(ctm);
 
 			if (mapCollectionToCache.ContainsKey(collectionName))
 			{
 				return mapCollectionToCache[collectionName] as ICache<T>;
 			}
 
-			mapCollectionToCache[collectionName] = new SQLiteCache<T> (collectionName, dbConnectionAsync, dbConnectionSync, platform);
+			mapCollectionToCache[collectionName] = new SQLiteCache<T> (collectionName, dbConnectionAsync, DBConnectionSync, platform);
 			return mapCollectionToCache[collectionName] as ICache<T>;
 		}
 
@@ -168,7 +168,7 @@ namespace Kinvey
 		/// <returns>The collection tables.</returns>
 		public List<string> getCollectionTables()
 		{
-			List<SQLTemplates.TableItem> result = dbConnectionSync.Table<SQLTemplates.TableItem>().OrderByDescending(t => t.name).ToList();
+			List<SQLTemplates.TableItem> result = DBConnectionSync.Table<SQLTemplates.TableItem>().OrderByDescending(t => t.name).ToList();
 			List<string> collections = new List<string>();
 
 			foreach (SQLTemplates.TableItem item in result)
@@ -197,11 +197,11 @@ namespace Kinvey
 		}
 
 		public ISyncQueue GetSyncQueue(string collectionName) {
-			if (!TableExists<PendingWriteAction>(dbConnectionSync)){
-				dbConnectionSync.CreateTable<PendingWriteAction> ();
+			if (!TableExists<PendingWriteAction>(DBConnectionSync)){
+				DBConnectionSync.CreateTable<PendingWriteAction> ();
 			}
 
-			return new SQLiteSyncQueue(collectionName, dbConnectionSync);
+			return new SQLiteSyncQueue(collectionName, DBConnectionSync);
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)
