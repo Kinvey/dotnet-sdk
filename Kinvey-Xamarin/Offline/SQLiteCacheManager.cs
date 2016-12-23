@@ -38,7 +38,22 @@ namespace Kinvey
 		private SQLiteAsyncConnection dbConnectionAsync;
 
 		// The asynchronous db connection.
-		private SQLiteConnection dbConnectionSync;
+		private SQLiteConnection _dbConnectionSync;
+		private SQLiteConnection DBConnectionSync
+		{
+			get
+			{
+				//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
+				if (_dbConnectionSync == null)
+				{
+					//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
+					//dbConnection = new SQLiteAsyncConnection (connectionFactory);
+					_dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
+				}
+
+				return _dbConnectionSync;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the platform.
@@ -59,32 +74,9 @@ namespace Kinvey
 		{
 			this.platform = platform;
 			this.dbpath = Path.Combine (filePath, "kinveyOffline.sqlite");
-
-			new Task( () =>kickOffUpgrade() ).Start();
-			//			Task.Run (kickOffUpgrade ());
 		}
 
 		private Dictionary<string, object> mapCollectionToCache = new Dictionary<string, object>();
-
-		private int kickOffUpgrade()
-		{
-			// Get stored version number.  If null, set to the current dbscheme version and save.
-			int newVersion = 0;
-			SQLTemplates.OfflineVersion ver = getDBSchemaVersion();
-
-			if (ver == null)
-			{
-				newVersion = databaseSchemaVersion;
-			}
-			else
-			{
-				newVersion = ver.currentVersion + 1;
-			}
-
-			updateDBSchemaVersion(newVersion);
-
-			return newVersion;
-		}
 
 //		private async Task<int> kickOffUpgradeAsync(){
 //			//get stored version number, if it's null set it to the current dbscheme version and save it it
@@ -100,19 +92,6 @@ namespace Kinvey
 //			return newVersion;
 //		}
 
-		private SQLiteConnection getConnection()
-		{
-			//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
-			if (dbConnectionSync == null)
-			{
-				//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
-				//dbConnection = new SQLiteAsyncConnection (connectionFactory);			
-				dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
-			}
-
-			return dbConnectionSync;
-		}
-
 //		private SQLiteAsyncConnection getConnectionAsync(){
 //			//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
 //			if (dbConnectionAsync == null) {
@@ -124,14 +103,6 @@ namespace Kinvey
 //			return dbConnectionAsync;
 //		}
 
-
-		// Gets the DB schema version.
-		private SQLTemplates.OfflineVersion getDBSchemaVersion()
-		{
-			SQLTemplates.OfflineVersion ver = getConnection().Table<SQLTemplates.OfflineVersion>().FirstOrDefault();
-			return ver;
-		}
-
 //		// Gets the DB schema version asynchronously.
 //		private async Task<SQLTemplates.OfflineVersion> getDBSchemaVersionAsync (){
 //			SQLTemplates.OfflineVersion ver =  await getConnection ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
@@ -139,38 +110,23 @@ namespace Kinvey
 //		}
 
 		/// <summary>
-		/// Updates the DB schema version.
-		/// </summary>
-		/// <returns>The DB schema version.</returns>
-		/// <param name="newVersion">New version.</param>
-		public int updateDBSchemaVersion(int newVersion)
-		{
-			SQLTemplates.OfflineVersion ver = new SQLTemplates.OfflineVersion();
-			ver.currentVersion = newVersion;
-
-			getConnection().Insert(ver);
-
-			return ver.currentVersion;
-		}
-
-		/// <summary>
 		/// Clears the storage.
 		/// </summary>
 		public void clearStorage()
 		{
-			if (TableExists<CollectionTableMap>(dbConnectionSync))
+			if (TableExists<CollectionTableMap>(DBConnectionSync))
 			{
-				List<CollectionTableMap> collections = dbConnectionSync.Table<CollectionTableMap>().ToList();
+				List<CollectionTableMap> collections = DBConnectionSync.Table<CollectionTableMap>().ToList();
 				if (collections != null)
 				{
 					foreach (var collection in collections)
 					{
 						string dropQuery = $"DROP TABLE IF EXISTS {collection.TableName}";
-						dbConnectionSync.Execute(dropQuery);
+						DBConnectionSync.Execute(dropQuery);
 						GetSyncQueue(collection.CollectionName).RemoveAll();
 					}
 
-					dbConnectionSync.DeleteAll<CollectionTableMap>();
+					DBConnectionSync.DeleteAll<CollectionTableMap>();
 				}
 			}
 		}
@@ -186,23 +142,23 @@ namespace Kinvey
 
 		public ICache<T> GetCache<T>(string collectionName) where T : class
 		{
-			if (!TableExists<CollectionTableMap>(dbConnectionSync))
+			if (!TableExists<CollectionTableMap>(DBConnectionSync))
 			{
-				dbConnectionSync.CreateTable<CollectionTableMap>();
+				DBConnectionSync.CreateTable<CollectionTableMap>();
 			}
 
 			CollectionTableMap ctm = new CollectionTableMap();
 			ctm.CollectionName = collectionName;
 			ctm.TableName = typeof(T).Name;
 
-			dbConnectionSync.InsertOrReplace(ctm);
+			DBConnectionSync.InsertOrReplace(ctm);
 
 			if (mapCollectionToCache.ContainsKey(collectionName))
 			{
 				return mapCollectionToCache[collectionName] as ICache<T>;
 			}
 
-			mapCollectionToCache[collectionName] = new SQLiteCache<T> (collectionName, dbConnectionAsync, dbConnectionSync, platform);
+			mapCollectionToCache[collectionName] = new SQLiteCache<T> (collectionName, dbConnectionAsync, DBConnectionSync, platform);
 			return mapCollectionToCache[collectionName] as ICache<T>;
 		}
 
@@ -212,7 +168,7 @@ namespace Kinvey
 		/// <returns>The collection tables.</returns>
 		public List<string> getCollectionTables()
 		{
-			List<SQLTemplates.TableItem> result = dbConnectionSync.Table<SQLTemplates.TableItem>().OrderByDescending(t => t.name).ToList();
+			List<SQLTemplates.TableItem> result = DBConnectionSync.Table<SQLTemplates.TableItem>().OrderByDescending(t => t.name).ToList();
 			List<string> collections = new List<string>();
 
 			foreach (SQLTemplates.TableItem item in result)
@@ -241,11 +197,11 @@ namespace Kinvey
 		}
 
 		public ISyncQueue GetSyncQueue(string collectionName) {
-			if (!TableExists<PendingWriteAction>(dbConnectionSync)){
-				dbConnectionSync.CreateTable<PendingWriteAction> ();
+			if (!TableExists<PendingWriteAction>(DBConnectionSync)){
+				DBConnectionSync.CreateTable<PendingWriteAction> ();
 			}
 
-			return new SQLiteSyncQueue(collectionName, dbConnectionSync);
+			return new SQLiteSyncQueue(collectionName, DBConnectionSync);
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)
