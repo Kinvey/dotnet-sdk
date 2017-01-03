@@ -712,7 +712,12 @@ namespace TestFramework
 			Assert.NotNull(dsr);
 			Assert.NotNull(dsr.PushResponse);
 			Assert.NotNull(dsr.PullResponse);
+			Assert.IsNotNull(dsr.PushResponse.KinveyExceptions);
+			Assert.IsNotNull(dsr.PullResponse.KinveyExceptions);
 			Assert.AreEqual(1, dsr.PushResponse.PushCount);
+			Assert.NotNull(dsr.PullResponse.PullEntities);
+			Assert.IsNotEmpty(dsr.PullResponse.PullEntities);
+			Assert.AreEqual(dsr.PullResponse.PullCount, dsr.PullResponse.PullEntities.Count);
 
 			// Teardown
 			List<ToDo> listRemoveToDo = new List<ToDo>();

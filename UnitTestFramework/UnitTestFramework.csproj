@@ -58,9 +58,6 @@
     <Compile Include="..\UnitTests\TestFiles\ToDo.cs">
       <Link>UnitTests\TestFiles\ToDo.cs</Link>
     </Compile>
-    <Compile Include="..\UnitTests\TestDataStore.cs">
-      <Link>UnitTests\TestDataStore.cs</Link>
-    </Compile>
     <Compile Include="..\UnitTests\TestSetup.cs">
       <Link>UnitTests\TestSetup.cs</Link>
     </Compile>
