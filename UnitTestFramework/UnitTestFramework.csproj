@@ -55,15 +55,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\UnitTests\TestClient.cs">
-      <Link>UnitTests\TestClient.cs</Link>
-    </Compile>
-    <Compile Include="..\UnitTests\TestFile.cs">
-      <Link>UnitTests\TestFile.cs</Link>
-    </Compile>
-    <Compile Include="..\UnitTests\TestUser.cs">
-      <Link>UnitTests\TestUser.cs</Link>
-    </Compile>
     <Compile Include="..\UnitTests\TestFiles\ToDo.cs">
       <Link>UnitTests\TestFiles\ToDo.cs</Link>
     </Compile>
