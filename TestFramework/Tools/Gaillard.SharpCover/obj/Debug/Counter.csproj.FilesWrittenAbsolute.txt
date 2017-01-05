@@ -1,0 +1,5 @@
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover/bin/Debug/Counter.dll.mdb
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover/bin/Debug/Counter.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover/obj/Debug/Counter.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover/obj/Debug/Counter.dll.mdb

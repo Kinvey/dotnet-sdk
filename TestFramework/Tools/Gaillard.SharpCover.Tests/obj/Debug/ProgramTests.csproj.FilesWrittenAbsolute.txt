@@ -1,0 +1,17 @@
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/Mono.Cecil.Pdb.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/TestTarget.csproj
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/TestTarget.cs
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/ProgramTests.dll.mdb
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/ProgramTests.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/nunit.framework.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/SharpCover.exe
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/SharpCover.exe.mdb
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/Newtonsoft.Json.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/Mono.Cecil.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/Mono.Cecil.Rocks.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/Counter.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/Counter.dll.mdb
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/obj/Debug/ProgramTests.dll
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/obj/Debug/ProgramTests.dll.mdb
