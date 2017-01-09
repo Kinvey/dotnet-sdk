@@ -1,0 +1,3 @@
+{
+	"assemblies": ["TestFramework/Tests.Integration/bin/Debug/Kinvey-Xamarin.dll"]
+}

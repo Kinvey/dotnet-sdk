@@ -1,0 +1,5 @@
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/bin/Debug/TestTarget.exe.mdb
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/bin/Debug/TestTarget.exe
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/obj/Debug/TestTarget.exe
+/Users/tejas/codebase/tools/SharpCover/Gaillard.SharpCover.Tests/bin/Debug/obj/Debug/TestTarget.exe.mdb
