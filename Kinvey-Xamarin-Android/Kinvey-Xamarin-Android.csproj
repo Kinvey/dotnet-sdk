@@ -61,9 +61,9 @@
     <Compile Include="Push\KinveyGCMService.cs" />
     <Compile Include="Push\Push.cs" />
     <Compile Include="Push\PushExtension.cs" />
-    <Compile Include="User\UserExtension.cs" />
     <Compile Include="Auth\AndroidNativeCredentialStore.cs" />
     <Compile Include="Auth\KinveyAccountService.cs" />
+    <Compile Include="Auth\UserExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -72,7 +72,6 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Push\" />
-    <Folder Include="User\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>

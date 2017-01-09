@@ -559,12 +559,14 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="token">Grant token passed back from MIC grant request</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task GetMICAccessTokenAsync(String token, CancellationToken ct = default(CancellationToken))
+		static public async Task GetMICAccessTokenAsync(String token, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
+
 			try
 			{
 				ct.ThrowIfCancellationRequested();
-				JObject result = await User.GetMICToken(this.KinveyClient, token).ExecuteAsync();
+				JObject result = await User.GetMICToken(uc, token).ExecuteAsync();
 				string accessToken = result["access_token"].ToString();
 
 				ct.ThrowIfCancellationRequested();
@@ -573,15 +575,15 @@ namespace Kinvey
 				ct.ThrowIfCancellationRequested();
 
 				//store the new refresh token
-				Credential currentCred = KinveyClient.Store.Load(u.Id, KinveyClient.SSOGroupKey);
+				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
 				currentCred.RefreshToken = result["refresh_token"].ToString();
-				currentCred.RedirectUri = this.KinveyClient.MICRedirectURI;
-				KinveyClient.Store.Store(u.Id, KinveyClient.SSOGroupKey, currentCred);
+				currentCred.RedirectUri = uc.MICRedirectURI;
+				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
 
-				if (KinveyClient.MICDelegate != null)
+				if (uc.MICDelegate != null)
 				{
 					ct.ThrowIfCancellationRequested();
-					KinveyClient.MICDelegate.onSuccess(u);
+					uc.MICDelegate.onSuccess(u);
 				}
 				else
 				{
@@ -590,10 +592,10 @@ namespace Kinvey
 			}
 			catch(Exception e)
 			{
-				if (KinveyClient.MICDelegate != null)
+				if (uc.MICDelegate != null)
 				{
 					ct.ThrowIfCancellationRequested();
-					KinveyClient.MICDelegate.onError(e);
+					uc.MICDelegate.onError(e);
 				}
 				else
 				{
