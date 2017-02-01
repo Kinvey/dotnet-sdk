@@ -606,6 +606,64 @@ namespace Kinvey
 
 		#endregion
 
+		#region Realtime
+
+		/// <summary>
+		/// Registers the active user for realtime messaging.
+		/// </summary>
+		/// <returns>The realtime.</returns>
+		/// <param name="userClient">User client.</param>
+		/// <param name="ct">Ct.</param>
+		public async Task RegisterRealtime(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			if (!IsActive())
+			{
+				// throw an error stating that user object has to be the active user in order to register for realtime messages
+			}
+
+			try
+			{
+				// TODO make "Realtime Register" request to KCS, and throw any error received.
+				// Only proceed with RealtimeRouter init if call is successful.
+
+				string channelGroupName = Constants.PUBNUB_TEST_CHANNEL; // HACK will eventually come from KCS response
+				string publishKey = "demo"; // HACK will eventually come from KCS response
+				string subscribeKey = "demo"; // HACK will eventually come from KCS response
+
+				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, Id);
+			}
+			catch (KinveyException ke)
+			{
+				var msg = ke.Error;
+
+				throw ke;
+			}
+		}
+
+		/// <summary>
+		/// Unregisters the active user from realtime messaging.
+		/// </summary>
+		/// <returns>The realtime.</returns>
+		/// <param name="userClient">User client.</param>
+		/// <param name="ct">Ct.</param>
+		public async Task UnregisterRealtime(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			try
+			{
+				RealtimeRouter.Uninitialize();
+
+				// TODO make "Realtime Unregister" request to KCS, and throw any error received.
+			}
+			catch (KinveyException ke)
+			{
+				var msg = ke.Error;
+
+				throw ke;
+			}
+		}
+
+		#endregion
+
 		#endregion
 
 		#region User CRUD APIs

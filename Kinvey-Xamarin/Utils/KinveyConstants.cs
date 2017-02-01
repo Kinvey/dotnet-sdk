@@ -18,10 +18,14 @@ namespace Kinvey
 		// Const Characters
 		public const char CHAR_AMPERSAND = '&';
 		public const char CHAR_EQUAL = '=';
+		internal const char CHAR_COMMA = ',';
+		internal const char CHAR_PERIOD = '.';
 
 		// Const Strings
 		public const string STR_AMPERSAND = "&";
 		public const string STR_EQUAL = "=";
+		internal const string STR_SQUARE_BRACKET_OPEN = "[";
+		internal const string STR_SQUARE_BRACKET_CLOSE = "]";
 
 		// Authentication Strings
 		public const string STR_ACCESS_TOKEN = "AccessToken";
@@ -33,5 +37,10 @@ namespace Kinvey
 		public const string STR_USER_KMD = "UserKMD";
 
 		public const string STR_CREDENTIAL = "credential";
+
+		// Realtime Strings
+		internal const string PUBNUB_TEST_CHANNEL = "blah-hey.s-my.u-1234abcd"; // HACK to be removed once channel/channel group comes from KCS
+		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
+		internal const string STR_REALTIME_STREAM_CHANNEL_PREPEND = "s-";
 	}
 }
