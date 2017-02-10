@@ -107,12 +107,14 @@ namespace Kinvey
 
 			string msg = String.Empty;
 			string time = String.Empty;
+			string group = String.Empty;
 			string chan = String.Empty;
 
-			if (ParsePubnubMessage(msgResult, ref msg, ref time, ref chan))
+			if (ParsePubnubMessage(msgResult, ref msg, ref time, ref group, ref chan))
 			{
 				KinveyUtils.Logger.Log("Subscribe Callback Message: " + msg);
 				KinveyUtils.Logger.Log("Subscribe Callback Timestamp: " + time);
+				KinveyUtils.Logger.Log("Subscribe Callback Channel Group: " + group);
 				KinveyUtils.Logger.Log("Subscribe Callback Channel: " + chan);
 
 				var callback = mapChannelToCallback[chan];
@@ -180,7 +182,7 @@ namespace Kinvey
 			mapChannelToCallback.Remove(channel);
 		}
 
-		static bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channel)
+		static bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channelGroup, ref string channel)
 		{
 			bool result = false;
 
@@ -201,12 +203,16 @@ namespace Kinvey
 				if (arrMessage.Length >= 3)
 				{
 					channel = arrMessage[arrMessage.Length - 1];
+					char[] trimQuotes = { Constants.CHAR_QUOTATION_MARK };
+					channel = channel.Trim(trimQuotes);
 					char[] delimsChannel = { Constants.CHAR_PERIOD };
 					var splitChannel = channel.Split(delimsChannel);
 					channel = splitChannel[1];
-					timestamp = arrMessage[arrMessage.Length - 2];
 
-					for (int i = 0; i < arrMessage.Length - 2; i++)
+					channelGroup = arrMessage[arrMessage.Length - 2];
+					timestamp = arrMessage[arrMessage.Length - 3];
+
+					for (int i = 0; i < arrMessage.Length - 3; i++)
 					{
 						message += Constants.CHAR_COMMA + arrMessage[i];
 					}

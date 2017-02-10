@@ -101,6 +101,9 @@ namespace Kinvey
 			this.customRequestProperties.Add (key, value);
 		}
 
+		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
+		Action<string> routerCallback;
+
 		#endregion
 
 		private DataStore (DataStoreType type, string collectionName, AbstractClient client = null)
@@ -139,6 +142,47 @@ namespace Kinvey
 			// TODO do we need to make this a singleton based on collection, store type and store ID?
 			return new DataStore<T> (type, collectionName, client);
 		}
+
+		#region Realtime
+
+		/// <summary>
+		/// Subscribe the specified callback.
+		/// </summary>
+		/// <param name="callback">Callback.</param>
+		public async Task<bool> Subscribe(KinveyRealtimeDelegate<T> callback)
+		{
+			bool success = false;
+
+			// TODO request subscribe access with KCS
+			var subscribeRequest = new SubscribeRequest<T>(client, collectionName, client.DeviceID);
+			var result = await subscribeRequest.ExecuteAsync();
+
+			if (callback != null)
+			{
+				RealtimeCallback = callback;
+
+				routerCallback = new Action<string>((message) => {
+					var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
+					RealtimeCallback.onSuccess(messageObj);
+				});
+
+				RealtimeRouter.SubscribeCollection(CollectionName, routerCallback);
+				success = true;
+			}
+
+			return success;
+		}
+
+		/// <summary>
+		/// Unsubscribe this instance.
+		/// </summary>
+		public async Task Unsubscribe()
+		{
+			RealtimeRouter.UnsubscribeCollection(CollectionName);
+			RealtimeCallback = null;
+		}
+
+		#endregion
 
 //		/// <summary>
 //		/// Get a single entity stored in a Kinvey collection.

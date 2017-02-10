@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Foundation;
 using UIKit;
+using SQLite.Net.Platform.XamarinIOS;
 using Kinvey;
 
 namespace Realtime
@@ -71,8 +72,8 @@ namespace Realtime
 		public void BuildClient()
 		{
 			Client.Builder cb = new Client.Builder(appKey, appSecret)
-				//.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
-				//.setOfflinePlatform(new SQLitePlatformIOS())
+				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
+				.setOfflinePlatform(new SQLitePlatformIOS())
 				//.setCredentdialStore(new IOSNativeCredentialStore())
 				//.SetSSOGroupKey("KinveyOrg")
 				.setBaseURL("http://127.0.0.1:7007/")
@@ -111,16 +112,35 @@ namespace Realtime
 				Window.RootViewController = navController;
 
 				await Client.SharedClient.ActiveUser.RegisterRealtime();
-				stream = new Stream<MedicalDeviceCommand>("my");
-				stream.Subscribe(new KinveyRealtimeDelegate<MedicalDeviceCommand>
+
+				DataStore<ToDo> store = DataStore<ToDo>.Collection("ToDo", DataStoreType.NETWORK, Client.SharedClient);
+
+				await store.Subscribe(new KinveyRealtimeDelegate<ToDo>
 				{
 					onError = (err) => Console.WriteLine("Error: " + err.Message),
 					onSuccess = (result) => {
-						Console.WriteLine("SenderID: " + result.SenderID + " -- Command: " + result.Command);
-						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(result.SenderID, result.Command));
+						Console.WriteLine("ToDo: Name: " + result.Name + " -- Details: " + result.Details);
+						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(result.Name, result.Details));
 					},
 					OnConnectionStatusMessage = (connectstatus) => Console.WriteLine("Conn Status: " + connectstatus)
 				});
+
+				var todo = new ToDo();
+				todo.Name = "Test Todo";
+				todo.Details = "Test Todo Details";
+
+				todo = await store.SaveAsync(todo);
+
+				//stream = new Stream<MedicalDeviceCommand>("my");
+				//stream.Subscribe(new KinveyRealtimeDelegate<MedicalDeviceCommand>
+				//{
+				//	onError = (err) => Console.WriteLine("Error: " + err.Message),
+				//	onSuccess = (result) => {
+				//		Console.WriteLine("SenderID: " + result.SenderID + " -- Command: " + result.Command);
+				//		InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(result.SenderID, result.Command));
+				//	},
+				//	OnConnectionStatusMessage = (connectstatus) => Console.WriteLine("Conn Status: " + connectstatus)
+				//});
 			}
 			catch (KinveyException e)
 			{

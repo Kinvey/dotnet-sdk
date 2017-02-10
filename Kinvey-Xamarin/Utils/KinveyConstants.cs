@@ -20,6 +20,7 @@ namespace Kinvey
 		public const char CHAR_EQUAL = '=';
 		internal const char CHAR_COMMA = ',';
 		internal const char CHAR_PERIOD = '.';
+		internal const char CHAR_QUOTATION_MARK = '"';
 
 		// Const Strings
 		public const string STR_AMPERSAND = "&";
