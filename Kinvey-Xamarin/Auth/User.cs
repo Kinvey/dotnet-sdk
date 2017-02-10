@@ -625,11 +625,16 @@ namespace Kinvey
 			{
 				// TODO make "Realtime Register" request to KCS, and throw any error received.
 				// Only proceed with RealtimeRouter init if call is successful.
+				JObject result = await RealtimeRegisterAsync(Id, KinveyClient.DeviceID);
 
-				string channelGroupName = Constants.PUBNUB_TEST_CHANNEL; // HACK will eventually come from KCS response
-				string publishKey = "demo"; // HACK will eventually come from KCS response
-				string subscribeKey = "demo"; // HACK will eventually come from KCS response
+				string channelGroupName = result[Constants.STR_REALTIME_CHANNEL_GROUP].ToString();
+				string publishKey = result[Constants.STR_REALTIME_PUBLISH_KEY].ToString();
+				string subscribeKey = result[Constants.STR_REALTIME_SUBSCRIBE_KEY].ToString();
 
+				//string channelGroupName = Constants.PUBNUB_TEST_CHANNEL; // HACK will eventually come from KCS response
+				//string publishKey = "demo"; // HACK will eventually come from KCS response
+				//string subscribeKey = "demo"; // HACK will eventually come from KCS response
+				Logger.Log("AuthToken: " + AuthToken);
 				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, Id);
 			}
 			catch (KinveyException ke)
@@ -653,6 +658,7 @@ namespace Kinvey
 				RealtimeRouter.Uninitialize();
 
 				// TODO make "Realtime Unregister" request to KCS, and throw any error received.
+				JObject result = await RealtimeUnregisterAsync(Id, KinveyClient.DeviceID);
 			}
 			catch (KinveyException ke)
 			{
@@ -891,6 +897,38 @@ namespace Kinvey
 			return await deleteRequest.ExecuteAsync();
 		}
 
+		#region Realtime
+
+		/// <summary>
+		/// Register the active user for realtime
+		/// </summary>
+		/// <returns>A response containing information necessary for realtime registration.</returns>
+		/// <param name="ct">[optional] Cancellation token.</param>
+		public async Task<JObject> RealtimeRegisterAsync(string activeUserID, string deviceID, CancellationToken ct = default(CancellationToken))
+		{
+			RealtimeRegisterRequest realtimeRequest = BuildRealtimeRegisterRequest(activeUserID, deviceID);
+			ct.ThrowIfCancellationRequested();
+			JObject realtime = await realtimeRequest.ExecuteAsync();
+
+			return realtime;
+		}
+
+		/// <summary>
+		/// Register the active user for realtime
+		/// </summary>
+		/// <returns>A response containing information necessary for realtime registration.</returns>
+		/// <param name="ct">[optional] Cancellation token.</param>
+		public async Task<JObject> RealtimeUnregisterAsync(string activeUserID, string deviceID, CancellationToken ct = default(CancellationToken))
+		{
+			RealtimeUnregisterRequest realtimeRequest = BuildRealtimeUnregisterRequest(activeUserID, deviceID);
+			ct.ThrowIfCancellationRequested();
+			JObject realtime = await realtimeRequest.ExecuteAsync();
+
+			return realtime;
+		}
+
+		#endregion
+
 		#endregion
 
 		#endregion
@@ -1128,6 +1166,30 @@ namespace Kinvey
 			client.InitializeRequest(email);
 
 			return email;
+		}
+
+		private RealtimeRegisterRequest BuildRealtimeRegisterRequest(string userID, string deviceID)
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("userID", userID);
+
+			var realtimeRegister = new RealtimeRegisterRequest(client, userID, deviceID, urlParameters);
+			client.InitializeRequest(realtimeRegister);
+
+			return realtimeRegister;
+		}
+
+		private RealtimeUnregisterRequest BuildRealtimeUnregisterRequest(string userID, string deviceID)
+		{
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("userID", userID);
+
+			var realtimeRegister = new RealtimeUnregisterRequest(client, userID, deviceID, urlParameters);
+			client.InitializeRequest(realtimeRegister);
+
+			return realtimeRegister;
 		}
 
 		#endregion
@@ -1381,6 +1443,44 @@ namespace Kinvey
 			{
 				this.userID = userID;
 				this.RequireAppCredentials = true;
+			}
+		}
+
+		// Build request to register for realtime
+		private class RealtimeRegisterRequest : AbstractKinveyClientRequest<JObject>
+		{
+			private const string REST_PATH = "user/{appKey}/{userID}/register-realtime";
+
+			[JsonProperty]
+			private string userID;
+
+			internal RealtimeRegisterRequest(AbstractClient client, string userID, string deviceID, Dictionary<string, string> urlProperties) :
+				base(client, "POST", REST_PATH, default(JObject), urlProperties)
+			{
+				this.userID = userID;
+
+				JObject requestPayload = new JObject();
+				requestPayload.Add(Constants.STR_REALTIME_DEVICEID, deviceID);
+				base.HttpContent = requestPayload;
+			}
+		}
+
+		// Build request to unregister for realtime
+		private class RealtimeUnregisterRequest : AbstractKinveyClientRequest<JObject>
+		{
+			private const string REST_PATH = "user/{appKey}/{userID}/unregister-realtime";
+
+			[JsonProperty]
+			private string userID;
+
+			internal RealtimeUnregisterRequest(AbstractClient client, string userID, string deviceID, Dictionary<string, string> urlProperties) :
+				base(client, "POST", REST_PATH, default(JObject), urlProperties)
+			{
+				this.userID = userID;
+
+				JObject requestPayload = new JObject();
+				requestPayload.Add(Constants.STR_REALTIME_DEVICEID, deviceID);
+				base.HttpContent = requestPayload;
 			}
 		}
 

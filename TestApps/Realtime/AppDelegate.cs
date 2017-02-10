@@ -19,7 +19,9 @@ namespace Realtime
 			set;
 		}
 
-		string appKey = "kid_byWWRXzJCe", appSecret = "4a58018febe945fea5ba76c08ce1e870"; // VINAY 1ST APP
+		//string appKey = "kid_byWWRXzJCe", appSecret = "4a58018febe945fea5ba76c08ce1e870"; // VINAY 1ST APP
+		string appKey = "kid_BJYSU7Yug", appSecret = "9dc0806a28df425999f73767554d068d"; // [local] RealtimeTestApp
+
 		LoginViewController vc;
 		//public string UserID { get { return myClient.ActiveUser.Id; } }
 		//public string AccessToken { get { return myClient.ActiveUser.AccessToken; } }
@@ -73,6 +75,7 @@ namespace Realtime
 				//.setOfflinePlatform(new SQLitePlatformIOS())
 				//.setCredentdialStore(new IOSNativeCredentialStore())
 				//.SetSSOGroupKey("KinveyOrg")
+				.setBaseURL("http://127.0.0.1:7007/")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
 			cb.Build();

@@ -42,5 +42,9 @@ namespace Kinvey
 		internal const string PUBNUB_TEST_CHANNEL = "blah-hey.s-my.u-1234abcd"; // HACK to be removed once channel/channel group comes from KCS
 		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
 		internal const string STR_REALTIME_STREAM_CHANNEL_PREPEND = "s-";
+		internal const string STR_REALTIME_DEVICEID = "deviceId";
+		internal const string STR_REALTIME_SUBSCRIBE_KEY = "subscribeKey";
+		internal const string STR_REALTIME_PUBLISH_KEY = "publishKey";
+		internal const string STR_REALTIME_CHANNEL_GROUP = "userChannelGroup";
 	}
 }

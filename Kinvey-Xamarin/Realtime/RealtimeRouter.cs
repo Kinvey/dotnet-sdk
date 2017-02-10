@@ -40,12 +40,12 @@ namespace Kinvey
 				ChannelGroup = channelGroup;
 
 				pubnubClient = new PubNubMessaging.Core.Pubnub(publishKey, subscribeKey);
-				//FOR AUTH KEY SETTING --> pubnubClient.AuthenticationKey = authKey;
+				pubnubClient.AuthenticationKey = authKey;
 
-				pubnubClient?.Subscribe<string>(ChannelGroup, SubscribeCallback, ConnectCallback, PubnubClientSubscribeErrorCallback);  // HACK eventually need to use channel group once integrated with KCS
-				//FOR CHANNEL GROUP SUBSCRIPTION --> pubnubClient.Subscribe<string>(string.Empty, ChannelGroup, SubscribeCallback, ConnectCallback, PubnubClientErrorCallback);
+				//pubnubClient?.Subscribe<string>(ChannelGroup, SubscribeCallback, ConnectCallback, PubnubClientSubscribeErrorCallback);  // HACK eventually need to use channel group once integrated with KCS
+				pubnubClient.Subscribe<string>(string.Empty, ChannelGroup, SubscribeCallback, ConnectCallback, PubnubClientSubscribeErrorCallback);
+
 				//FOR UNIQUE DEVICE GUID GENERATION --> Guid deviceGUID = pubnubClient.GenerateGuid(); string deviceID = deviceGUID.ToString();
-
 				ActiveUserID = activeUserID;
 				mapChannelToCallback = new Dictionary<string, Action<string>>();
 			}
@@ -59,9 +59,10 @@ namespace Kinvey
 			mapChannelToCallback.Clear();
 			mapChannelToCallback = null;
 
-			pubnubClient?.Unsubscribe<string>(ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);  // HACK eventually need to use channel group once integrated with KCS
-			//FOR CHANNEL GROUP UNSUBSCRIPTION --> pubnubClient?.Unsubscribe<string>(string.Empty, ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);
-			//FOR AUTH KEY SETTING --> pubnubClient.AuthenticationKey = String.Empty;
+			//pubnubClient?.Unsubscribe<string>(ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);  // HACK eventually need to use channel group once integrated with KCS
+			pubnubClient?.Unsubscribe<string>(string.Empty, ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);
+
+			pubnubClient.AuthenticationKey = String.Empty;
 			pubnubClient = null;
 
 			ChannelGroup = null;
