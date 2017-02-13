@@ -27,7 +27,7 @@ namespace Kinvey
 
 		static Dictionary<string, Action<string>> mapChannelToCallback;
 
-		static internal string ActiveUserID { get; private set; }
+		static internal string ActiveUserID { get; private set; } // HACK change to be an AbstractClient reference
 
 		static string ChannelGroup { get; set; }
 
@@ -189,6 +189,8 @@ namespace Kinvey
 			if (input.StartsWith(Constants.STR_SQUARE_BRACKET_OPEN, StringComparison.Ordinal) &&
 			    input.EndsWith(Constants.STR_SQUARE_BRACKET_CLOSE, StringComparison.Ordinal))
 			{
+				// TODO separate parsing into separate messages
+
 				// Trim leading/trailing whitespace
 				char[] trimChars = { ' ' };
 				input = input.Trim(trimChars);

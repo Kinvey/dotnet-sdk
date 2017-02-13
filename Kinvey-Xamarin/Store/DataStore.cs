@@ -102,7 +102,7 @@ namespace Kinvey
 		}
 
 		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
-		Action<string> routerCallback;
+		Action<string> routerCallback;  // HACK figure out how to pass back callbacks for error and status handling
 
 		#endregion
 

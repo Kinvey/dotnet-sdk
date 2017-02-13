@@ -122,7 +122,7 @@ namespace Realtime
 						Console.WriteLine("ToDo: Name: " + result.Name + " -- Details: " + result.Details);
 						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(result.Name, result.Details));
 					},
-					OnConnectionStatusMessage = (connectstatus) => Console.WriteLine("Conn Status: " + connectstatus)
+					OnStatus = (connectstatus) => Console.WriteLine("Conn Status: " + connectstatus)
 				});
 
 				var todo = new ToDo();
@@ -162,11 +162,11 @@ namespace Realtime
 			Window.RootViewController = navController;
 		}
 
-		public void Publish(string command)
+		public async Task Publish(string command)
 		{
 			var mdc = new MedicalDeviceCommand();
 			mdc.Command = command;
-			bool success = stream.Publish("1234abcd", mdc);
+			bool success = await stream.Publish("1234abcd", mdc);
 		}
 	}
 }
