@@ -160,10 +160,14 @@ namespace Realtime
 			}
 			catch (KinveyException e)
 			{
-				//Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
+				if (e.ErrorCategory == EnumErrorCategory.ERROR_REALTIME)
+				{
+					Console.WriteLine("VRG (exception caught) Exception from Realtime operation");
+				}
 				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
 				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
 				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
+				Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
 			}
 
 			return Client.SharedClient.ActiveUser;

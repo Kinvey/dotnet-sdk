@@ -329,7 +329,13 @@ namespace Kinvey
 				case EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR:
 					error = "An exception was thrown while trying to execute a custom endpoint.";
 					debug = "Inspect the StatusCode property to determine the cause of the exception.";
-					description = "A 4xx/5xx status code was set in the response by the custom endpint.";
+					description = "A 4xx/5xx status code was set in the response by the custom endpoint.";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_ERROR:
+					error = "An exception was thrown while trying to execute a realtime request.";
+					debug = "Inspect the StatusCode property to determine the cause of the exception.";
+					description = "A 4xx/5xx status code was set in the response by the realtime service.";
 					break;
 
 				default:

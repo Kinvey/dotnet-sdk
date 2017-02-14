@@ -550,13 +550,24 @@ namespace Kinvey
 			string path = response?.ResponseUri?.AbsolutePath;
 
 			if (path != null &&
-			    path.Contains("/custom/") &&
+			    path.Contains(Constants.STR_PATH_CUSTOM_ENDPOINT) &&
 			    (((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302))
 			{
 				// Seems like only Custom Endpoint/BL would result in having a successful response
 				// without having a successful status code.  The BL executed successfully, but did
 				// produce a successsful outcome.
 				var ke =  new KinveyException(EnumErrorCategory.ERROR_CUSTOM_ENDPOINT, EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR, response);
+				throw ke;
+			}
+
+			if (path != null &&
+			    path.Contains(Constants.STR_PATH_REALTIME_STREAM) &&
+				(((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302))
+			{
+				// Appears as though there is a stream error.  A stream error could result in having a successful response
+				// without having a successful status code, such as a 401.  The request was successful, but the response
+				// indicates that there is an issue with what was being requested
+				var ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_ERROR, response);
 				throw ke;
 			}
 

@@ -30,6 +30,8 @@ namespace Kinvey
 
 		// Core Product Strings
 		internal const string STR_APP_KEY = "appKey";
+		internal const string STR_PATH_CUSTOM_ENDPOINT = "/custom/";
+		internal const string STR_PATH_REALTIME_STREAM = "/stream/";
 
 		// Authentication Strings
 		public const string STR_ACCESS_TOKEN = "AccessToken";

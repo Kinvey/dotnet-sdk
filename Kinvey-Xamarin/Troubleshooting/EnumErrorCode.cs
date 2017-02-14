@@ -205,6 +205,11 @@ namespace Kinvey
 		ERROR_CUSTOM_ENDPOINT_ERROR,
 
 		/// <summary>
+		/// Error code for a backend realtime request error.
+		/// </summary>
+		ERROR_REALTIME_ERROR,
+
+		/// <summary>
 		/// General error condition
 		/// </summary>
 		ERROR_GENERAL
