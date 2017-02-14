@@ -27,39 +27,33 @@ namespace Kinvey
 
 		static Dictionary<string, Action<string>> mapChannelToCallback;
 
-		static internal string ActiveUserID { get; private set; } // HACK change to be an AbstractClient reference
+		static internal AbstractClient KinveyClient { get; private set; }
 
 		static string ChannelGroup { get; set; }
 
-		static internal void Initialize(string channelGroup, string publishKey, string subscribeKey, string authKey, string activeUserID)
+		static internal void Initialize(string channelGroup, string publishKey, string subscribeKey, string authKey, AbstractClient client)
 		{
 			if (pubnubClient == null)
 			{
-				// TODO call backend API for register - create a factory request to handle this
-
 				ChannelGroup = channelGroup;
 
 				pubnubClient = new PubNubMessaging.Core.Pubnub(publishKey, subscribeKey);
 				pubnubClient.AuthenticationKey = authKey;
 
-				//pubnubClient?.Subscribe<string>(ChannelGroup, SubscribeCallback, ConnectCallback, PubnubClientSubscribeErrorCallback);  // HACK eventually need to use channel group once integrated with KCS
 				pubnubClient.Subscribe<string>(string.Empty, ChannelGroup, SubscribeCallback, ConnectCallback, PubnubClientSubscribeErrorCallback);
 
 				//FOR UNIQUE DEVICE GUID GENERATION --> Guid deviceGUID = pubnubClient.GenerateGuid(); string deviceID = deviceGUID.ToString();
-				ActiveUserID = activeUserID;
+				KinveyClient = client;
 				mapChannelToCallback = new Dictionary<string, Action<string>>();
 			}
 		}
 
 		static internal void Uninitialize()
 		{
-			// TODO call backend API for register - create a factory request to handle this
-
-			ActiveUserID = null;
+			KinveyClient = null;
 			mapChannelToCallback.Clear();
 			mapChannelToCallback = null;
 
-			//pubnubClient?.Unsubscribe<string>(ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);  // HACK eventually need to use channel group once integrated with KCS
 			pubnubClient?.Unsubscribe<string>(string.Empty, ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);
 
 			pubnubClient.AuthenticationKey = String.Empty;
@@ -70,7 +64,7 @@ namespace Kinvey
 
 		static internal bool Publish(string channel, string receiverID, object message)
 		{
-			(message as IStreamable).SenderID = ActiveUserID;
+			(message as IStreamable).SenderID = KinveyClient.ActiveUser.Id;
 
 			return pubnubClient.Publish<string>(channel, message, PublishCallback, PubnubClientPublishErrorCallback);
 		}

@@ -138,8 +138,8 @@ namespace Realtime
 			buttonPublish.SetTitle("Publish", UIControlState.Normal);
 			buttonPublish.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			buttonPublish.BackgroundColor = UIColor.Gray;
-			buttonPublish.TouchUpInside += (sender, e) => {
-				myAppDel.Publish(PublishMessageView.Text);
+			buttonPublish.TouchUpInside += async (sender, e) => {
+				await myAppDel.Publish(PublishMessageView.Text);
 				PublishMessageView.Text = String.Empty;
 			};
 
@@ -155,8 +155,8 @@ namespace Realtime
 			var user = new UIViewController();
 			user.View.BackgroundColor = UIColor.Blue;
 
-			buttonLogout.TouchUpInside += (sender, e) => {
-				myAppDel.Logout();
+			buttonLogout.TouchUpInside += async (sender, e) => {
+				await myAppDel.Logout();
 			};
 
 			View.AddSubview(buttonLogout);

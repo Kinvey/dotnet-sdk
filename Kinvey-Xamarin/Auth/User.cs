@@ -614,7 +614,7 @@ namespace Kinvey
 		/// <returns>The realtime.</returns>
 		/// <param name="userClient">User client.</param>
 		/// <param name="ct">Ct.</param>
-		public async Task RegisterRealtime(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		public async Task RegisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			if (!IsActive())
 			{
@@ -623,19 +623,19 @@ namespace Kinvey
 
 			try
 			{
+				AbstractClient uc = userClient ?? Client.SharedClient;
+
 				// TODO make "Realtime Register" request to KCS, and throw any error received.
 				// Only proceed with RealtimeRouter init if call is successful.
-				JObject result = await RealtimeRegisterAsync(Id, KinveyClient.DeviceID);
+				RealtimeRegisterRequest realtimeRequest = BuildRealtimeRegisterRequest(Id, KinveyClient.DeviceID);
+				ct.ThrowIfCancellationRequested();
+				JObject responseRegister = await realtimeRequest.ExecuteAsync();
 
-				string channelGroupName = result[Constants.STR_REALTIME_CHANNEL_GROUP].ToString();
-				string publishKey = result[Constants.STR_REALTIME_PUBLISH_KEY].ToString();
-				string subscribeKey = result[Constants.STR_REALTIME_SUBSCRIBE_KEY].ToString();
+				string channelGroupName = responseRegister[Constants.STR_REALTIME_CHANNEL_GROUP].ToString();
+				string publishKey = responseRegister[Constants.STR_REALTIME_PUBLISH_KEY].ToString();
+				string subscribeKey = responseRegister[Constants.STR_REALTIME_SUBSCRIBE_KEY].ToString();
 
-				//string channelGroupName = Constants.PUBNUB_TEST_CHANNEL; // HACK will eventually come from KCS response
-				//string publishKey = "demo"; // HACK will eventually come from KCS response
-				//string subscribeKey = "demo"; // HACK will eventually come from KCS response
-				Logger.Log("AuthToken: " + AuthToken);
-				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, Id);
+				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, uc);
 			}
 			catch (KinveyException ke)
 			{
@@ -651,14 +651,16 @@ namespace Kinvey
 		/// <returns>The realtime.</returns>
 		/// <param name="userClient">User client.</param>
 		/// <param name="ct">Ct.</param>
-		public async Task UnregisterRealtime(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		public async Task UnregisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			try
 			{
 				RealtimeRouter.Uninitialize();
 
 				// TODO make "Realtime Unregister" request to KCS, and throw any error received.
-				JObject result = await RealtimeUnregisterAsync(Id, KinveyClient.DeviceID);
+				RealtimeUnregisterRequest realtimeRequest = BuildRealtimeUnregisterRequest(Id, KinveyClient.DeviceID);
+				ct.ThrowIfCancellationRequested();
+				JObject responseUnregister = await realtimeRequest.ExecuteAsync();
 			}
 			catch (KinveyException ke)
 			{
@@ -896,38 +898,6 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			return await deleteRequest.ExecuteAsync();
 		}
-
-		#region Realtime
-
-		/// <summary>
-		/// Register the active user for realtime
-		/// </summary>
-		/// <returns>A response containing information necessary for realtime registration.</returns>
-		/// <param name="ct">[optional] Cancellation token.</param>
-		public async Task<JObject> RealtimeRegisterAsync(string activeUserID, string deviceID, CancellationToken ct = default(CancellationToken))
-		{
-			RealtimeRegisterRequest realtimeRequest = BuildRealtimeRegisterRequest(activeUserID, deviceID);
-			ct.ThrowIfCancellationRequested();
-			JObject realtime = await realtimeRequest.ExecuteAsync();
-
-			return realtime;
-		}
-
-		/// <summary>
-		/// Register the active user for realtime
-		/// </summary>
-		/// <returns>A response containing information necessary for realtime registration.</returns>
-		/// <param name="ct">[optional] Cancellation token.</param>
-		public async Task<JObject> RealtimeUnregisterAsync(string activeUserID, string deviceID, CancellationToken ct = default(CancellationToken))
-		{
-			RealtimeUnregisterRequest realtimeRequest = BuildRealtimeUnregisterRequest(activeUserID, deviceID);
-			ct.ThrowIfCancellationRequested();
-			JObject realtime = await realtimeRequest.ExecuteAsync();
-
-			return realtime;
-		}
-
-		#endregion
 
 		#endregion
 

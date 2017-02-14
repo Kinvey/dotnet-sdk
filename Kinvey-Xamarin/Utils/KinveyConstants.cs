@@ -28,6 +28,9 @@ namespace Kinvey
 		internal const string STR_SQUARE_BRACKET_OPEN = "[";
 		internal const string STR_SQUARE_BRACKET_CLOSE = "]";
 
+		// Core Product Strings
+		internal const string STR_APP_KEY = "appKey";
+
 		// Authentication Strings
 		public const string STR_ACCESS_TOKEN = "AccessToken";
 		public const string STR_AUTH_TOKEN = "AuthToken";
@@ -36,16 +39,16 @@ namespace Kinvey
 		public const string STR_USERNAME = "UserName";
 		public const string STR_ATTRIBUTES = "Attributes";
 		public const string STR_USER_KMD = "UserKMD";
-
 		public const string STR_CREDENTIAL = "credential";
 
 		// Realtime Strings
-		internal const string PUBNUB_TEST_CHANNEL = "blah-hey.s-my.u-1234abcd"; // HACK to be removed once channel/channel group comes from KCS
 		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
 		internal const string STR_REALTIME_STREAM_CHANNEL_PREPEND = "s-";
 		internal const string STR_REALTIME_DEVICEID = "deviceId";
 		internal const string STR_REALTIME_SUBSCRIBE_KEY = "subscribeKey";
 		internal const string STR_REALTIME_PUBLISH_KEY = "publishKey";
 		internal const string STR_REALTIME_CHANNEL_GROUP = "userChannelGroup";
+		internal const string STR_REALTIME_STREAM_NAME = "streamName";
+		internal const string STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME = "substreamChannelName";
 	}
 }

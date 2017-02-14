@@ -20,14 +20,12 @@ namespace Realtime
 			set;
 		}
 
-		//string appKey = "kid_byWWRXzJCe", appSecret = "4a58018febe945fea5ba76c08ce1e870"; // VINAY 1ST APP
 		string appKey = "kid_BJYSU7Yug", appSecret = "9dc0806a28df425999f73767554d068d"; // [local] RealtimeTestApp
 
 		LoginViewController vc;
-		//public string UserID { get { return myClient.ActiveUser.Id; } }
-		//public string AccessToken { get { return myClient.ActiveUser.AccessToken; } }
 
 		Stream<MedicalDeviceCommand> stream;
+
 		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
 			// Override point for customization after application launch.
@@ -74,10 +72,10 @@ namespace Realtime
 			Client.Builder cb = new Client.Builder(appKey, appSecret)
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
-				//.setCredentdialStore(new IOSNativeCredentialStore())
-				//.SetSSOGroupKey("KinveyOrg")
 				.setBaseURL("http://127.0.0.1:7007/")
-				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
+				.setLogger(delegate(string msg) {
+					Console.WriteLine(msg);
+				});
 
 			cb.Build();
 
@@ -111,10 +109,16 @@ namespace Realtime
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
 
-				await Client.SharedClient.ActiveUser.RegisterRealtime();
+				// REALTIME REGISTRATION
 
+				// Register for realtime
+				await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+
+
+				// REALTIME COLLECTION SUBSCRIPTION
+
+				// Subscribe to collection for realtime updates
 				DataStore<ToDo> store = DataStore<ToDo>.Collection("ToDo", DataStoreType.NETWORK, Client.SharedClient);
-
 				await store.Subscribe(new KinveyRealtimeDelegate<ToDo>
 				{
 					onError = (err) => Console.WriteLine("Error: " + err.Message),
@@ -125,22 +129,34 @@ namespace Realtime
 					OnStatus = (connectstatus) => Console.WriteLine("Conn Status: " + connectstatus)
 				});
 
+				// save to collection to trigger realtime update
 				var todo = new ToDo();
 				todo.Name = "Test Todo";
 				todo.Details = "Test Todo Details";
-
 				todo = await store.SaveAsync(todo);
 
-				//stream = new Stream<MedicalDeviceCommand>("my");
-				//stream.Subscribe(new KinveyRealtimeDelegate<MedicalDeviceCommand>
-				//{
-				//	onError = (err) => Console.WriteLine("Error: " + err.Message),
-				//	onSuccess = (result) => {
-				//		Console.WriteLine("SenderID: " + result.SenderID + " -- Command: " + result.Command);
-				//		InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(result.SenderID, result.Command));
-				//	},
-				//	OnConnectionStatusMessage = (connectstatus) => Console.WriteLine("Conn Status: " + connectstatus)
-				//});
+
+				// REALTIME USER-TO-USER COMMUNICATION
+
+				// Create stream object corresponding to "meddevcmds" stream created on the backend
+				stream = new Stream<MedicalDeviceCommand>("meddevcmds");
+
+				// Grant stream access to active user for both publish and subscribe actions
+				var streamACL = new StreamAccessControlList();
+				streamACL.Publishers.Add(Client.SharedClient.ActiveUser.Id);
+				streamACL.Subscribers.Add(Client.SharedClient.ActiveUser.Id);
+				bool resultGrant = await stream.GrantStreamAccess(streamACL);
+
+				// Subscribe to user-to-user stream
+				await stream.Subscribe(Client.SharedClient.ActiveUser.Id, new KinveyRealtimeDelegate<MedicalDeviceCommand>
+				{
+					onError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
+					onSuccess = (message) => {
+						Console.WriteLine("STREAM SenderID: " + message.SenderID + " -- Command: " + message.Command);
+						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(message.SenderID, message.Command));
+					},
+					OnStatus = (connectstatus) => Console.WriteLine("STREAM Status: " + connectstatus)
+				});
 			}
 			catch (KinveyException e)
 			{
@@ -153,9 +169,10 @@ namespace Realtime
 			return Client.SharedClient.ActiveUser;
 		}
 
-		public void Logout()
+		public async Task Logout()
 		{
-			Client.SharedClient?.ActiveUser?.UnregisterRealtime();
+			await stream.Unsubscribe(Client.SharedClient.ActiveUser.Id);
+			Client.SharedClient?.ActiveUser?.UnregisterRealtimeAsync();
 			Client.SharedClient?.ActiveUser?.Logout();
 			var logInController = new Realtime.LoginViewController();
 			var navController = new UINavigationController(logInController);
@@ -166,8 +183,7 @@ namespace Realtime
 		{
 			var mdc = new MedicalDeviceCommand();
 			mdc.Command = command;
-			bool success = await stream.Publish("1234abcd", mdc);
+			bool success = await stream.Publish(Client.SharedClient.ActiveUser.Id, mdc);
 		}
 	}
 }
-
