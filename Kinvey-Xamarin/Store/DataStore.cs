@@ -102,7 +102,7 @@ namespace Kinvey
 		}
 
 		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
-		Action<string> routerCallback;  // HACK figure out how to pass back callbacks for error and status handling
+		KinveyRealtimeDelegate<string> routerCallback;
 
 		#endregion
 
@@ -161,10 +161,15 @@ namespace Kinvey
 			{
 				RealtimeCallback = callback;
 
-				routerCallback = new Action<string>((message) => {
-					var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
-					RealtimeCallback.onSuccess(messageObj);
-				});
+				routerCallback = new KinveyRealtimeDelegate<string>
+				{
+					onError = (error) => RealtimeCallback.onError(error),
+					onSuccess = (message) => {
+						var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
+						RealtimeCallback.onSuccess(messageObj);
+					},
+					OnStatus = (status) => RealtimeCallback.OnStatus(status)
+				};
 
 				RealtimeRouter.SubscribeCollection(CollectionName, routerCallback);
 				success = true;

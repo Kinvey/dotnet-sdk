@@ -25,7 +25,7 @@ namespace Kinvey
 	{
 		static PubNubMessaging.Core.Pubnub pubnubClient;
 
-		static Dictionary<string, Action<string>> mapChannelToCallback;
+		static Dictionary<string, KinveyRealtimeDelegate<string>> mapChannelToCallback;
 
 		static internal AbstractClient KinveyClient { get; private set; }
 
@@ -44,7 +44,7 @@ namespace Kinvey
 
 				//FOR UNIQUE DEVICE GUID GENERATION --> Guid deviceGUID = pubnubClient.GenerateGuid(); string deviceID = deviceGUID.ToString();
 				KinveyClient = client;
-				mapChannelToCallback = new Dictionary<string, Action<string>>();
+				mapChannelToCallback = new Dictionary<string, KinveyRealtimeDelegate<string>>();
 			}
 		}
 
@@ -69,7 +69,7 @@ namespace Kinvey
 			return pubnubClient.Publish<string>(channel, message, PublishCallback, PubnubClientPublishErrorCallback);
 		}
 
-		static internal void SubscribeCollection(string collectionName, Action<string> callback)
+		static internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate<string> callback)
 		{
 			string channel = Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
 			AddChannel(channel, callback);
@@ -81,7 +81,7 @@ namespace Kinvey
 			RemoveChannel(channel);
 		}
 
-		static internal void SubscribeStream(string streamName, Action<string> callback)
+		static internal void SubscribeStream(string streamName, KinveyRealtimeDelegate<string> callback)
 		{
 			string channel = Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
 			AddChannel(channel, callback);
@@ -111,7 +111,7 @@ namespace Kinvey
 				KinveyUtils.Logger.Log("Subscribe Callback Channel Group: " + group);
 				KinveyUtils.Logger.Log("Subscribe Callback Channel: " + chan);
 
-				var callback = mapChannelToCallback[chan];
+				var callback = mapChannelToCallback[chan].onSuccess;
 
 				callback.Invoke(msg);
 			}
@@ -152,14 +152,14 @@ namespace Kinvey
 		static void PubnubClientPublishErrorCallback(PubNubMessaging.Core.PubnubClientError error)
 		{
 			// TODO Map PubnubClientError objects to KinveyException objects before forwarding
-			KinveyUtils.Logger.Log("Subscribe Error: " + error);
+			KinveyUtils.Logger.Log("Publish Error: " + error);
 		}
 
 		#endregion
 
 		#region Helper methods
 
-		static void AddChannel(string channel, Action<string> callback)
+		static void AddChannel(string channel, KinveyRealtimeDelegate<string> callback)
 		{
 			if (mapChannelToCallback.ContainsKey(channel))
 			{

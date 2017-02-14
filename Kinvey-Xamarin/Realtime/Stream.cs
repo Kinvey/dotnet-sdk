@@ -26,7 +26,7 @@ namespace Kinvey
 	{
 		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
 
-		Action<string> routerCallback;
+		KinveyRealtimeDelegate<string> routerCallback;
 
 		/// <summary>
 		/// Represents the name of the stream.
@@ -77,7 +77,6 @@ namespace Kinvey
 			if (response != null)
 			{
 				string publishChannel = response[Constants.STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME].ToString();
-
 				result = RealtimeRouter.Publish(publishChannel, receiverID, message);
 			}
 
@@ -100,11 +99,15 @@ namespace Kinvey
 			{
 				RealtimeCallback = callback;
 
-				routerCallback = new Action<string>((message) => 
+				routerCallback = new KinveyRealtimeDelegate<string>
 				{
-					var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
-					RealtimeCallback.onSuccess(messageObj);
-				});
+					onError = (error) => RealtimeCallback.onError(error),
+					onSuccess = (message) => {
+						var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
+						RealtimeCallback.onSuccess(messageObj);
+					},
+					OnStatus = (status) => RealtimeCallback.OnStatus(status)
+				};
 
 				RealtimeRouter.SubscribeStream(StreamName, routerCallback);
 				success = true;
