@@ -136,6 +136,16 @@ namespace Kinvey
 		{
 			// TODO Map PubnubClientError objects to KinveyException objects before forwarding
 			KinveyUtils.Logger.Log("Subscribe Error: " + error);
+			KinveyUtils.Logger.Log("Subscribe Error Status Code: " + error.StatusCode);
+			KinveyUtils.Logger.Log("Subscribe Error Message: " + error.Message);
+
+			var exception = HandleErrorMessage(error);
+			if (exception != default(KinveyException))
+			{
+				var channel = GetChannelFromFullName(error.Channel);
+				var callback = mapChannelToCallback[channel].onError;
+				callback.Invoke(exception);
+			}
 		}
 
 		static void PubnubClientUnsubscribeErrorCallback(PubNubMessaging.Core.PubnubClientError error)
@@ -153,6 +163,16 @@ namespace Kinvey
 		{
 			// TODO Map PubnubClientError objects to KinveyException objects before forwarding
 			KinveyUtils.Logger.Log("Publish Error: " + error);
+			KinveyUtils.Logger.Log("Publish Error Status Code: " + error.StatusCode);
+			KinveyUtils.Logger.Log("Publish Error Message: " + error.Message);
+
+			var exception = HandleErrorMessage(error);
+			if (exception != default(KinveyException))
+			{
+				var channel = GetChannelFromFullName(error.Channel);
+				var callback = mapChannelToCallback[channel].onError;
+				callback.Invoke(exception);
+			}
 		}
 
 		#endregion
@@ -199,11 +219,7 @@ namespace Kinvey
 				if (arrMessage.Length >= 3)
 				{
 					channel = arrMessage[arrMessage.Length - 1];
-					char[] trimQuotes = { Constants.CHAR_QUOTATION_MARK };
-					channel = channel.Trim(trimQuotes);
-					char[] delimsChannel = { Constants.CHAR_PERIOD };
-					var splitChannel = channel.Split(delimsChannel);
-					channel = splitChannel[1];
+					channel = GetChannelFromFullName(channel);
 
 					channelGroup = arrMessage[arrMessage.Length - 2];
 					timestamp = arrMessage[arrMessage.Length - 3];
@@ -221,6 +237,153 @@ namespace Kinvey
 			}
 
 			return result;
+		}
+
+		static string GetChannelFromFullName(string fullChannelName)
+		{
+			char[] trimQuotes = { Constants.CHAR_QUOTATION_MARK };
+			string channel = fullChannelName.Trim(trimQuotes);
+			char[] delimsChannel = { Constants.CHAR_PERIOD };
+			var splitChannel = channel.Split(delimsChannel);
+			channel = splitChannel[1];
+			return channel;
+		}
+
+		static KinveyException HandleErrorMessage(PubNubMessaging.Core.PubnubClientError error)
+		{
+			KinveyException ke = default(KinveyException);
+
+			switch (error.Severity)
+			{
+				case PubNubMessaging.Core.PubnubErrorSeverity.Critical:
+					switch (error.StatusCode)
+					{
+						case 104: //ERROR_REALTIME_CRITICAL_VERIFY_CIPHER_KEY
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_CRITICAL_VERIFY_CIPHER_KEY, "PubNub status code: " + error.StatusCode);
+							break;
+						case 4010: //ERROR_REALTIME_CRITICAL_INCORRECT_SUBSBRIBE_KEY
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_CRITICAL_INCORRECT_SUBSBRIBE_KEY, "PubNub status code: " + error.StatusCode);
+							break;
+						case 4030: //ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL, "PubNub status code: " + error.StatusCode);
+							break;
+						case 5000: //ERROR_REALTIME_CRITICAL_INTERNAL_SERVER_ERROR
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_CRITICAL_INTERNAL_SERVER_ERROR, "PubNub status code: " + error.StatusCode);
+							break;
+						case 5020: //ERROR_REALTIME_CRITICAL_BAD_GATEWAY
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_CRITICAL_BAD_GATEWAY, "PubNub status code: " + error.StatusCode);
+							break;
+						case 5040: //ERROR_REALTIME_CRITICAL_GATEWAY_TIMEOUT
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_CRITICAL_GATEWAY_TIMEOUT, "PubNub status code: " + error.StatusCode);
+							break;
+						default: //ERROR_REALTIME_CRITICAL_UNKNOWN
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_CRITICAL_UNKNOWN, "PubNub status code: " + error.StatusCode);
+							break;
+					}
+				break;
+
+				case PubNubMessaging.Core.PubnubErrorSeverity.Warn:
+					switch (error.StatusCode)
+					{
+						case 103: //ERROR_REALTIME_WARNING_VERIFY_HOSTNAME
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_VERIFY_HOSTNAME, "PubNub status code: " + error.StatusCode);
+							break;
+						case 106: //ERROR_REALTIME_WARNING_CHECK_NETWORK_CONNECTION
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_CHECK_NETWORK_CONNECTION, "PubNub status code: " + error.StatusCode);
+							break;
+						case 108: //ERROR_REALTIME_WARNING_CHECK_NETWORK_CONNECTION
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_CHECK_NETWORK_CONNECTION, "PubNub status code: " + error.StatusCode);
+							break;
+						case 109: //ERROR_REALTIME_WARNING_NO_NETWORK_CONNECTION
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_NO_NETWORK_CONNECTION, "PubNub status code: " + error.StatusCode);
+							break;
+						case 114: //ERROR_REALTIME_WARNING_VERIFY_CIPHER_KEY
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_VERIFY_CIPHER_KEY, "PubNub status code: " + error.StatusCode);
+							break;
+						case 115: //ERROR_REALTIME_WARNING_PROTOCOL_ERROR
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_PROTOCOL_ERROR, "PubNub status code: " + error.StatusCode);
+							break;
+						case 116: //ERROR_REALTIME_WARNING_SERVER_PROTOCOL_VIOLATION
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_SERVER_PROTOCOL_VIOLATION, "PubNub status code: " + error.StatusCode);
+							break;
+						case 4000: //ERROR_REALTIME_WARNING_MESSAGE_TOO_LARGE
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_MESSAGE_TOO_LARGE, "PubNub status code: " + error.StatusCode);
+							break;
+						case 4001: //ERROR_REALTIME_WARNING_BAD_REQUEST
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_BAD_REQUEST, "PubNub status code: " + error.StatusCode);
+							break;
+						case 4002: //ERROR_REALTIME_WARNING_INVALID_PUBLISH_KEY
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_INVALID_PUBLISH_KEY, "PubNub status code: " + error.StatusCode);
+							break;
+						case 4031: //ERROR_REALTIME_WARNING_INCORRECT_PUBLIC_OR_SECRET_KEY
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_INCORRECT_PUBLIC_OR_SECRET_KEY, "PubNub status code: " + error.StatusCode);
+							break;
+						case 4040: //ERROR_REALTIME_WARNING_URL_LENGTH_TOO_LONG
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_URL_LENGTH_TOO_LONG, "PubNub status code: " + error.StatusCode);
+							break;
+						case 0: //ERROR_REALTIME_WARNING_UNDOCUMENTED_ERROR
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_UNDOCUMENTED_ERROR, "PubNub status code: " + error.StatusCode);
+							break;
+
+						case 4020: //ERROR_REALTIME_WARNING_PAM_NOT_ENABLED
+							// These case(s) are not applicable to our implementation
+							break;
+
+						default: //ERROR_REALTIME_WARNING_UNKNOWN
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_WARNING_UNKNOWN, error.StatusCode.ToString());
+							break;
+					}
+					break;
+
+				case PubNubMessaging.Core.PubnubErrorSeverity.Info:
+					switch (error.StatusCode)
+					{
+						case 110: //ERROR_REALTIME_INFORMATIONAL_NO_NETWORK_CONNECTION
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_NO_NETWORK_CONNECTION, "PubNub status code: " + error.StatusCode);
+							break;
+						case 111: //ERROR_REALTIME_INFORMATIONAL_DUPLICATE_CHANNEL_SUBSCRIPTION
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_DUPLICATE_CHANNEL_SUBSCRIPTION, "PubNub status code: " + error.StatusCode);
+							break;
+						case 112: //ERROR_REALTIME_INFORMATIONAL_DUPLICATE_CHANNEL_SUBSCRIPTION
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_DUPLICATE_CHANNEL_SUBSCRIPTION, "PubNub status code: " + error.StatusCode);
+							break;
+						case 117: //ERROR_REALTIME_INFORMATIONAL_INVALID_CHANNEL_NAME
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_INVALID_CHANNEL_NAME, "PubNub status code: " + error.StatusCode);
+							break;
+						case 118: //ERROR_REALTIME_INFORMATIONAL_CHANNEL_NOT_SUBSCRIBED
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_CHANNEL_NOT_SUBSCRIBED, "PubNub status code: " + error.StatusCode);
+							break;
+						case 120: //ERROR_REALTIME_INFORMATIONAL_UNSUBSCRIBE_INCOMPLETE
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_UNSUBSCRIBE_INCOMPLETE, "PubNub status code: " + error.StatusCode);
+							break;
+						case 122: //ERROR_REALTIME_INFORMATIONAL_NETWORK_NOT_AVAILABLE
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_NETWORK_NOT_AVAILABLE, "PubNub status code: " + error.StatusCode);
+							break;
+						case 123: //ERROR_REALTIME_INFORMATIONAL_NETWORK_MAX_RETRIES_REACHED
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_NETWORK_MAX_RETRIES_REACHED, "PubNub status code: " + error.StatusCode);
+							break;
+						case 125: //ERROR_REALTIME_INFORMATIONAL_PUBLISH_OPERATION_TIMEOUT
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_PUBLISH_OPERATION_TIMEOUT, "PubNub status code: " + error.StatusCode);
+							break;
+
+						case 113: // Duplicate channel subscription for presence
+						case 119: // Channel not subscribed for presence yet
+						case 121: // Incomplete presence-unsubscribe
+						case 124: // Max retries for presence
+						case 126: // HereNow operation timeout occurred
+						case 127: // Detailed History operation timeout occurred
+						case 128: // Time operation timeout occurred
+							// These case(s) are not applicable to our implementation
+							break;
+
+						default: //ERROR_REALTIME_INFORMATIONAL_UNKNOWN
+							ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_INFORMATIONAL_UNKNOWN, "PubNub status code: " + error.StatusCode);
+							break;
+					}
+					break;
+			}
+
+			return ke;
 		}
 
 		#endregion
