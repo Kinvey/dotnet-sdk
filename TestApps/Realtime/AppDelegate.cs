@@ -126,7 +126,12 @@ namespace Realtime
 						Console.WriteLine("ToDo: Name: " + result.Name + " -- Details: " + result.Details);
 						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(result.Name, result.Details));
 					},
-					OnStatus = (connectstatus) => Console.WriteLine("Conn Status: " + connectstatus)
+					OnStatus = (status) => {
+						Console.WriteLine("Status: " + status.Status);
+						Console.WriteLine("Status Message: " + status.Message);
+						Console.WriteLine("Status Channel: " + status.Channel);
+						Console.WriteLine("Status Channel Group: " + status.ChannelGroup);
+					}
 				});
 
 				// save to collection to trigger realtime update
@@ -155,7 +160,12 @@ namespace Realtime
 						Console.WriteLine("STREAM SenderID: " + message.SenderID + " -- Command: " + message.Command);
 						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(message.SenderID, message.Command));
 					},
-					OnStatus = (connectstatus) => Console.WriteLine("STREAM Status: " + connectstatus)
+					OnStatus = (status) => {
+						Console.WriteLine("Status: " + status.Status);
+						Console.WriteLine("Status Message: " + status.Message);
+						Console.WriteLine("Status Channel: " + status.Channel);
+						Console.WriteLine("Status Channel Group: " + status.ChannelGroup);
+					}
 				});
 			}
 			catch (KinveyException e)

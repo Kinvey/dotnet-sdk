@@ -50,16 +50,16 @@ namespace Kinvey
 
 		static internal void Uninitialize()
 		{
-			KinveyClient = null;
-			mapChannelToCallback.Clear();
-			mapChannelToCallback = null;
-
 			pubnubClient?.Unsubscribe<string>(string.Empty, ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);
-
 			pubnubClient.AuthenticationKey = String.Empty;
 			pubnubClient = null;
 
 			ChannelGroup = null;
+
+			mapChannelToCallback.Clear();
+			mapChannelToCallback = null;
+
+			KinveyClient = null;
 		}
 
 		static internal bool Publish(string channel, string receiverID, object message)
@@ -97,6 +97,7 @@ namespace Kinvey
 
 		static void SubscribeCallback(string msgResult)
 		{
+			// Message Format --> [message,timestamp,channelgroup,channel]
 			KinveyUtils.Logger.Log("Subscribe Callback: " + msgResult);
 
 			string msg = String.Empty;
@@ -125,16 +126,35 @@ namespace Kinvey
 		static void ConnectCallback(string msgConnect)
 		{
 			KinveyUtils.Logger.Log("Connect Callback: " + msgConnect);
+
+			// Since a connect or disconnect affects all those in the channel group, this status message has
+			// to be broadcast to all the callbacks.
+			var pubnubMessage = PrepPubnubMessage(msgConnect);
+			var status = new KinveyRealtimeStatus(KinveyRealtimeStatus.StatusType.STATUS_CONNECT, pubnubMessage);
+			foreach (var entry in mapChannelToCallback)
+			{
+				var callback = mapChannelToCallback[entry.Key].OnStatus;
+				callback.Invoke(status);
+			}
 		}
 
-		static void DisconnectCallback(string msgConnect)
+		static void DisconnectCallback(string msgDisonnect)
 		{
-			KinveyUtils.Logger.Log("Disconnect Callback: " + msgConnect);
+			KinveyUtils.Logger.Log("Disconnect Callback: " + msgDisonnect);
+
+			// Since a connect or disconnect affects all those in the channel group, this status message has
+			// to be broadcast to all the callbacks.
+			var pubnubMessage = PrepPubnubMessage(msgDisonnect);
+			var status = new KinveyRealtimeStatus(KinveyRealtimeStatus.StatusType.STATUS_DISCONNECT, pubnubMessage);
+			foreach (var entry in mapChannelToCallback)
+			{
+				var callback = mapChannelToCallback[entry.Key].OnStatus;
+				callback.Invoke(status);
+			}
 		}
 
 		static void PubnubClientSubscribeErrorCallback(PubNubMessaging.Core.PubnubClientError error)
 		{
-			// TODO Map PubnubClientError objects to KinveyException objects before forwarding
 			KinveyUtils.Logger.Log("Subscribe Error: " + error);
 			KinveyUtils.Logger.Log("Subscribe Error Status Code: " + error.StatusCode);
 			KinveyUtils.Logger.Log("Subscribe Error Message: " + error.Message);
@@ -150,18 +170,31 @@ namespace Kinvey
 
 		static void PubnubClientUnsubscribeErrorCallback(PubNubMessaging.Core.PubnubClientError error)
 		{
-			// TODO Map PubnubClientError objects to KinveyException objects before forwarding
 			KinveyUtils.Logger.Log("Unsubscribe Error: " + error);
+			KinveyUtils.Logger.Log("Unsubscribe Error Status Code: " + error.StatusCode);
+			KinveyUtils.Logger.Log("Unsubscribe Error Message: " + error.Message);
+
+			var exception = HandleErrorMessage(error);
+			if (exception != default(KinveyException))
+			{
+				var channel = GetChannelFromFullName(error.Channel);
+				var callback = mapChannelToCallback[channel].onError;
+				callback.Invoke(exception);
+			}
 		}
 
 		static void PublishCallback(string msgPublish)
 		{
 			KinveyUtils.Logger.Log("Publish Callback: " + msgPublish);
+			var pubnubMessage = PrepPubnubMessage(msgPublish);
+			var status = new KinveyRealtimeStatus(KinveyRealtimeStatus.StatusType.STATUS_PUBLISH, pubnubMessage);
+			var channel = GetChannelFromFullName(status.Channel);
+			var callback = mapChannelToCallback[channel].OnStatus;
+			callback.Invoke(status);
 		}
 
 		static void PubnubClientPublishErrorCallback(PubNubMessaging.Core.PubnubClientError error)
 		{
-			// TODO Map PubnubClientError objects to KinveyException objects before forwarding
 			KinveyUtils.Logger.Log("Publish Error: " + error);
 			KinveyUtils.Logger.Log("Publish Error Status Code: " + error.StatusCode);
 			KinveyUtils.Logger.Log("Publish Error Message: " + error.Message);
@@ -196,15 +229,13 @@ namespace Kinvey
 			mapChannelToCallback.Remove(channel);
 		}
 
-		static bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channelGroup, ref string channel)
+		static string[] PrepPubnubMessage(string input)
 		{
-			bool result = false;
+			string[] arrMessage = null;
 
 			if (input.StartsWith(Constants.STR_SQUARE_BRACKET_OPEN, StringComparison.Ordinal) &&
-			    input.EndsWith(Constants.STR_SQUARE_BRACKET_CLOSE, StringComparison.Ordinal))
+				input.EndsWith(Constants.STR_SQUARE_BRACKET_CLOSE, StringComparison.Ordinal))
 			{
-				// TODO separate parsing into separate messages
-
 				// Trim leading/trailing whitespace
 				char[] trimChars = { ' ' };
 				input = input.Trim(trimChars);
@@ -214,8 +245,19 @@ namespace Kinvey
 				input = input.Substring(0, input.Length - 1);
 
 				char[] delimChars = { Constants.CHAR_COMMA };
-				string[] arrMessage = input.Split(delimChars);
+				arrMessage = input.Split(delimChars);
+			}
 
+			return arrMessage;
+		}
+
+		static bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channelGroup, ref string channel)
+		{
+			bool result = false;
+
+			var arrMessage = PrepPubnubMessage(input);
+			if (arrMessage != null)
+			{
 				if (arrMessage.Length >= 3)
 				{
 					channel = arrMessage[arrMessage.Length - 1];
@@ -230,6 +272,7 @@ namespace Kinvey
 					}
 
 					// Trim leading comma
+					char[] delimChars = { Constants.CHAR_COMMA };
 					message = message.TrimStart(delimChars);
 
 					result = true;
@@ -385,6 +428,7 @@ namespace Kinvey
 
 			return ke;
 		}
+
 
 		#endregion
 	}

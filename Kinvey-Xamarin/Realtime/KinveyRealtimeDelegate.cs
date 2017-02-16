@@ -21,6 +21,6 @@ namespace Kinvey
 		/// This action is executed when there is a connection
 		/// status message available from the realtime service.
 		/// </summary>
-		public Action<string> OnStatus;
+		public Action<KinveyRealtimeStatus> OnStatus;
 	}
 }
