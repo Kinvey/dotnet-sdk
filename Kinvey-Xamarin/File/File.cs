@@ -123,7 +123,7 @@ namespace Kinvey
 		/// <param name="metadata">Metadata associated with the file; supports arbitrary key/value pairs.</param>
 		/// <param name="content">The actual bytes of the file to upload.</param>
 		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
+		public async Task<FileMetaData> UploadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
 		{
 			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
@@ -139,7 +139,7 @@ namespace Kinvey
 		/// <param name="metadata">Metadata associated with the file; supports arbitrary key/value pairs.</param>
 		/// <param name="content">The stream of file content to upload.</param>
 		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> uploadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
+		public async Task<FileMetaData> UploadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
 		{
 			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
@@ -154,7 +154,7 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="metadata">The updated FileMetaData to upload to Kinvey.</param>
 		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> uploadMetadataAsync(FileMetaData metadata, CancellationToken ct = default(CancellationToken))
+		public async Task<FileMetaData> UploadMetadataAsync(FileMetaData metadata, CancellationToken ct = default(CancellationToken))
 		{
 			UploadMetaDataRequest uploadMetaDataRequest = buildUploadMetaDataRequest(metadata);
 			ct.ThrowIfCancellationRequested();
@@ -172,7 +172,7 @@ namespace Kinvey
 		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
 		/// <param name="content">Content.</param>
 		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
+		public async Task<FileMetaData> DownloadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
 		{
 			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
@@ -188,7 +188,7 @@ namespace Kinvey
 		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
 		/// <param name="content">Where the contents of the file will be streamed.</param>
 		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
+		public async Task<FileMetaData> DownloadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
 		{
 			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
@@ -203,7 +203,7 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="fileId">The _id of the file's metadata to download. </param>
 		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> downloadMetadataAsync(string fileId, CancellationToken ct = default(CancellationToken))
+		public async Task<FileMetaData> DownloadMetadataAsync(string fileId, CancellationToken ct = default(CancellationToken))
 		{
 			DownloadMetaDataRequest downloadMetadataRequest = buildDownloadMetaDataRequest(fileId);
 			ct.ThrowIfCancellationRequested();
@@ -220,7 +220,7 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="fileId">The _id of the file to delete.</param>
 		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<KinveyDeleteResponse> delete(string fileId, CancellationToken ct = default(CancellationToken))
+		public async Task<KinveyDeleteResponse> Delete(string fileId, CancellationToken ct = default(CancellationToken))
 		{
 			DeleteFileAndMetaDataRequest request = buildDeleteFileRequest(fileId);
 			ct.ThrowIfCancellationRequested();

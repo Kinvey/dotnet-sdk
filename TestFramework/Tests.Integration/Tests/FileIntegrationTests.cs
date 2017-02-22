@@ -63,7 +63,7 @@ namespace TestFramework
 			fileMetaData.size = contentSize;
 
 			// Act
-			FileMetaData fmd = await kinveyClient.File().uploadAsync(fileMetaData, content);
+			FileMetaData fmd = await kinveyClient.File().UploadAsync(fileMetaData, content);
 
 			// Assert
 			Assert.NotNull(fmd);
@@ -91,7 +91,7 @@ namespace TestFramework
 			fileMetaData.size = contentSize;
 
 			// Act
-			FileMetaData fmd = await Client.SharedClient.File().uploadAsync(fileMetaData, content);
+			FileMetaData fmd = await Client.SharedClient.File().UploadAsync(fileMetaData, content);
 
 			// Assert
 			Assert.NotNull(fmd);
@@ -121,7 +121,7 @@ namespace TestFramework
 			MemoryStream streamContent = new MemoryStream(content);
 
 			// Act
-			FileMetaData fmd = await kinveyClient.File().uploadAsync(fileMetaData, streamContent);
+			FileMetaData fmd = await kinveyClient.File().UploadAsync(fileMetaData, streamContent);
 
 			// Assert
 			Assert.NotNull(fmd);
@@ -147,7 +147,7 @@ namespace TestFramework
 			// Assert
 			Assert.CatchAsync(async delegate ()
 			{
-				await kinveyClient.File().uploadAsync(fileMetaData, content);
+				await kinveyClient.File().UploadAsync(fileMetaData, content);
 			});
 
 			// Teardown
@@ -169,13 +169,13 @@ namespace TestFramework
 			int contentSize = (content.Length) * sizeof(byte);
 			fileMetaData.size = contentSize;
 
-			FileMetaData fmd = await kinveyClient.File().uploadAsync(fileMetaData, content);
+			FileMetaData fmd = await kinveyClient.File().UploadAsync(fileMetaData, content);
 
 			fmd._public = !publicAccess;
 			fmd.fileName = "test.png";
 
 			// Act
-			FileMetaData fmdUpdate = await kinveyClient.File().uploadMetadataAsync(fmd);
+			FileMetaData fmdUpdate = await kinveyClient.File().UploadMetadataAsync(fmd);
 
 			// Assert
 			Assert.NotNull(fmdUpdate);
@@ -200,7 +200,7 @@ namespace TestFramework
 			// Assert
 			Assert.CatchAsync(async delegate ()
 			{
-				await kinveyClient.File().uploadMetadataAsync(fileMetaData);
+				await kinveyClient.File().UploadMetadataAsync(fileMetaData);
 			});
 
 			// Teardown
@@ -221,15 +221,15 @@ namespace TestFramework
 			byte[] content = System.IO.File.ReadAllBytes(image_path);
 			int contentSize = (content.Length) * sizeof(byte);
 			uploadMetaData.size = contentSize;
-			FileMetaData uploadFMD = await kinveyClient.File().uploadAsync(uploadMetaData, content);
+			FileMetaData uploadFMD = await kinveyClient.File().UploadAsync(uploadMetaData, content);
 
 			FileMetaData downloadMetaData = new FileMetaData();
-			downloadMetaData = await kinveyClient.File().downloadMetadataAsync(uploadFMD.id);
+			downloadMetaData = await kinveyClient.File().DownloadMetadataAsync(uploadFMD.id);
 			downloadMetaData.id = uploadFMD.id;
 			byte[] downloadContent = new byte[downloadMetaData.size];
 
 			// Act
-			FileMetaData downloadFMD = await kinveyClient.File().downloadAsync(downloadMetaData, downloadContent);
+			FileMetaData downloadFMD = await kinveyClient.File().DownloadAsync(downloadMetaData, downloadContent);
 			System.IO.File.WriteAllBytes(downloadByteArrayFilePath, content);
 
 			// Assert
@@ -255,15 +255,15 @@ namespace TestFramework
 			int contentSize = (content.Length) * sizeof(byte);
 			uploadMetaData.size = contentSize;
 			MemoryStream uploadStreamContent = new MemoryStream(content);
-			FileMetaData uploadFMD = await kinveyClient.File().uploadAsync(uploadMetaData, uploadStreamContent);
+			FileMetaData uploadFMD = await kinveyClient.File().UploadAsync(uploadMetaData, uploadStreamContent);
 
 			FileMetaData downloadMetaData = new FileMetaData();
-			downloadMetaData = await kinveyClient.File().downloadMetadataAsync(uploadFMD.id);
+			downloadMetaData = await kinveyClient.File().DownloadMetadataAsync(uploadFMD.id);
 			downloadMetaData.id = uploadFMD.id;
 			MemoryStream downloadStreamContent = new MemoryStream();
 
 			// Act
-			FileMetaData downloadFMD = await kinveyClient.File().downloadAsync(downloadMetaData, downloadStreamContent);
+			FileMetaData downloadFMD = await kinveyClient.File().DownloadAsync(downloadMetaData, downloadStreamContent);
 			FileStream fs = new FileStream(downloadStreamFilePath, FileMode.Create);
 			downloadStreamContent.WriteTo(fs);
 			downloadStreamContent.Close();
@@ -291,7 +291,7 @@ namespace TestFramework
 			// Assert
 			Assert.CatchAsync(async delegate ()
 			{
-				await kinveyClient.File().downloadAsync(fileMetaData, content);
+				await kinveyClient.File().DownloadAsync(fileMetaData, content);
 			});
 
 			// Teardown
@@ -312,10 +312,10 @@ namespace TestFramework
 			byte[] content = System.IO.File.ReadAllBytes(image_path);
 			int contentSize = (content.Length) * sizeof(byte);
 			uploadMetaData.size = contentSize;
-			FileMetaData uploadFMD = await kinveyClient.File().uploadAsync(uploadMetaData, content);
+			FileMetaData uploadFMD = await kinveyClient.File().UploadAsync(uploadMetaData, content);
 
 			// Act
-			FileMetaData downloadMetaData = await kinveyClient.File().downloadMetadataAsync(uploadFMD.id);
+			FileMetaData downloadMetaData = await kinveyClient.File().DownloadMetadataAsync(uploadFMD.id);
 
 			// Assert
 			Assert.NotNull(downloadMetaData);
@@ -338,7 +338,7 @@ namespace TestFramework
 			// Assert
 			Assert.CatchAsync(async delegate ()
 			{
-				await kinveyClient.File().downloadMetadataAsync(fileID);
+				await kinveyClient.File().DownloadMetadataAsync(fileID);
 			});
 
 			// Teardown
