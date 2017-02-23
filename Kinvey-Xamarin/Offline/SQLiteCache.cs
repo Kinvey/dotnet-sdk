@@ -236,7 +236,10 @@ namespace Kinvey
 					}
 					else
 					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+						var test = (dbConnectionSync.Table<T>().Where(func)); 
+						//var test = (from t in dbConnectionSync.Table<T>().Where(func) select t);
+						//var test = (from t in dbConnectionSync.Query<T>("select * from Product where Product.Description like '%3/4%'") select t);
+						results = test.ToList();
 					}
 				}
 				else
@@ -551,6 +554,11 @@ namespace Kinvey
 					{
 						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY, "", e);
 					}
+				}
+				else if (skipNumber > 0)
+				{
+					// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
+					// Do nothing here.
 				}
 				else
 				{

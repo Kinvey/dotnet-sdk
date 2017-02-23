@@ -84,6 +84,7 @@
     <Compile Include="Tests\DataStoreNetworkIntegrationTests.cs" />
     <Compile Include="Tests\DataStoreCacheIntegrationTests.cs" />
     <Compile Include="Tests\DataStoreSyncIntegrationTests.cs" />
+    <Compile Include="TestSupportFiles\Product.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\" />
