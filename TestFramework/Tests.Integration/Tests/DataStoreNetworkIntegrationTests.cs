@@ -1140,7 +1140,7 @@ namespace TestFramework
 			p3.Age = 46;
 			p3 = await personStore.SaveAsync(p3);
 
-			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+			var query = personStore.Where(x => x.LastName.Equals("Bluth"));
 
 			// Act
 			int sum = 0;

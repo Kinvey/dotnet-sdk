@@ -264,7 +264,7 @@ namespace TestFramework
 
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal));
+			var query = todoStore.Where(x => x.Details.StartsWith("det"));
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -320,7 +320,7 @@ namespace TestFramework
 
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Take(1);
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).Take(1);
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -381,7 +381,7 @@ namespace TestFramework
 			// Act
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Skip(1);
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).Skip(1);
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -443,7 +443,7 @@ namespace TestFramework
 			// Act
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Skip(1).Take(1);
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).Skip(1).Take(1);
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -519,7 +519,7 @@ namespace TestFramework
 			p3.Age = 46;
 			p3 = await personStore.SaveAsync(p3);
 
-			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+			var query = personStore.Where(x => x.LastName.Equals("Bluth"));
 
 			// Act
 			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();
