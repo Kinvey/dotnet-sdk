@@ -362,7 +362,7 @@ namespace TestFramework
 			p3.Age = 46;
 			p3 = await personStore.SaveAsync(p3);
 
-			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+			var query = personStore.Where(x => x.LastName.Equals("Bluth"));
 
 			// Act
 			int sum = 0;
@@ -410,7 +410,7 @@ namespace TestFramework
 			p3.Age = 46;
 			p3 = await personStore.SaveAsync(p3);
 
-			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+			var query = personStore.Where(x => x.LastName.Equals("Bluth"));
 
 			// Act
 			int min = 0;
@@ -894,7 +894,7 @@ namespace TestFramework
 
 			await todoStore.PushAsync();
 
-			var query = from x in todoStore where x.Details.StartsWith("Another", StringComparison.Ordinal) select x;
+			var query = from x in todoStore where x.Details.StartsWith("Another") select x;
 
 			PullDataStoreResponse<ToDo> todosAfterSave = await todoStore.PullAsync(query);
 
@@ -911,6 +911,7 @@ namespace TestFramework
 			await todoStore.PushAsync();
 			kinveyClient.ActiveUser.Logout();
 		}
+
 
 		#region ORM Tests
 

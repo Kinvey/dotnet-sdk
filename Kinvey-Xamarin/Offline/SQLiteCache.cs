@@ -218,25 +218,25 @@ namespace Kinvey
 				int skipNumber = 0;
 				int takeNumber = 0;
 
-				Func<T, bool> func = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
+				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
 
-				if (func != null)
+				if (lambdaExpr != null)
 				{
 					if (skipNumber > 0 && takeNumber > 0)
 					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber).Take(takeNumber) select t).ToList();
+						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).Take(takeNumber).ToList();
 					}
 					else if (skipNumber > 0)
 					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber) select t).ToList();
+						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).ToList();
 					}
 					else if (takeNumber > 0)
 					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func).Take(takeNumber) select t).ToList();
+						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Take(takeNumber).ToList();
 					}
 					else
 					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+						results = dbConnectionSync.Table<T>().Where(lambdaExpr).ToList(); 
 					}
 				}
 				else
@@ -253,9 +253,9 @@ namespace Kinvey
 			return results;
 		}
 
-		private Func<T, bool> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber)
+		private Expression<Func<T, bool>> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber)
 		{
-			Func<T, bool> func = null;
+			Expression<Func<T, bool>> lambdaExpr = null;
 			if (expr?.NodeType == ExpressionType.Call)
 			{
 				MethodCallExpression mcb = expr as MethodCallExpression;
@@ -271,12 +271,7 @@ namespace Kinvey
 						if (quote.Operand.NodeType == ExpressionType.Lambda)
 						{
 							LambdaExpression le = quote.Operand as LambdaExpression;
-							var comp = le.Compile();
-							MethodInfo mi = comp.GetMethodInfo();
-							if (mi.ReturnType == typeof(bool))
-							{
-								func = (Func<T, bool>)comp;
-							}
+							lambdaExpr = le as Expression<Func<T,bool>>;
 						}
 					}
 					else if (nodeType == ExpressionType.Constant)
@@ -304,7 +299,7 @@ namespace Kinvey
 				}
 			}
 
-			return func;
+			return lambdaExpr;
 		}
 
 		private bool IsTypeNumber(Type type)
@@ -338,7 +333,7 @@ namespace Kinvey
 				int skipNumber = 0;
 				int takeNumber = 0;
 
-				Func<T, bool> func = ConvertQueryExpressionToFunction(query, ref skipNumber, ref takeNumber);
+				var lambdaExpr = ConvertQueryExpressionToFunction(query, ref skipNumber, ref takeNumber);
 
 				if (String.IsNullOrEmpty(groupField))
 				{
@@ -348,9 +343,9 @@ namespace Kinvey
 					gar.GroupField = null;
 
 					// TODO do "skip" and "take" have to be taken into account in group aggregate functions?
-					if (func != null)
+					if (lambdaExpr != null)
 					{
-						listValues = (from t in dbConnectionSync.Table<T>().Where(func) select t.GetType().GetRuntimeProperty(aggregateField).GetValue(t, null)).ToList();
+						listValues = (from t in dbConnectionSync.Table<T>().Where(lambdaExpr) select t.GetType().GetRuntimeProperty(aggregateField).GetValue(t, null)).ToList();
 					}
 					else
 					{
@@ -405,9 +400,9 @@ namespace Kinvey
 					// A grouping field was supplied, so aggregate
 					// result per group created on the group field
 					IEnumerable<IGrouping<object, T>> grouplist;
-					if (func != null)
+					if (lambdaExpr != null)
 					{
-						grouplist = from t in dbConnectionSync.Table<T>().Where(func)
+						grouplist = from t in dbConnectionSync.Table<T>().Where(lambdaExpr)
 									group t by t.GetType().GetRuntimeProperty(groupField).GetValue(t, null);
 					}
 					else
@@ -512,9 +507,9 @@ namespace Kinvey
 				int skipNumber = 0;
 				int takeNumber = 0;
 
-				Func<T, bool> func = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
+				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
 
-				if (func != null)
+				if (lambdaExpr != null)
 				{
 					try
 					{
@@ -522,19 +517,19 @@ namespace Kinvey
 
 						if (skipNumber > 0 && takeNumber > 0)
 						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber).Take(takeNumber) select t).ToList();
+							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).Take(takeNumber).ToList();
 						}
 						else if (skipNumber > 0)
 						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber) select t).ToList();
+							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).ToList();
 						}
 						else if (takeNumber > 0)
 						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func).Take(takeNumber) select t).ToList();
+							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Take(takeNumber).ToList();
 						}
 						else
 						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).ToList();
 						}
 
 
@@ -551,6 +546,11 @@ namespace Kinvey
 					{
 						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY, "", e);
 					}
+				}
+				else if (skipNumber > 0)
+				{
+					// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
+					// Do nothing here.
 				}
 				else
 				{
