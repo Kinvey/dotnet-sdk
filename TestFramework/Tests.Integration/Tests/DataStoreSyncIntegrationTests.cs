@@ -912,66 +912,6 @@ namespace TestFramework
 			kinveyClient.ActiveUser.Logout();
 		}
 
-		[Test]
-		public async Task TestSyncStorePullWithLimitAsyncLawson()
-		{
-			// Setup
-			Client.Builder builder = new Client.Builder("kid_SyKhgJWKg", "ec5751da1a344b04859c0e69493751bb")
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
-
-			var lawsonClient = builder.Build();
-
-			await User.LoginAsync("Test", "test", lawsonClient);
-
-			DataStore<Product> productStore = DataStore<Product>.Collection("products", DataStoreType.SYNC);
-
-			// Arrange
-			System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-			stopwatch.Start();
-
-			//List<List<Product>> allProducts = new List<List<Product>>();
-			PullDataStoreResponse<Product> pullResponse = null;
-			int skipCount = 0, i = 0;
-			do
-			{
-				var query = productStore.Skip(skipCount);
-				pullResponse = await productStore.PullAsync(query);
-				//allProducts.Add(response.PullEntities);
-				skipCount += 10000;
-				i++;
-			} while (pullResponse.PullCount == 10000); // (i < 24);
-
-			//var querylast = productStore.Skip(skipCount).Take(6000);
-			//pullResponse = await productStore.PullAsync(querylast);
-
-			stopwatch.Stop();
-			TimeSpan timeForPull = stopwatch.Elapsed;
-			stopwatch.Reset();
-
-			// Assert
-			Assert.IsNotNull(pullResponse);
-			Assert.IsNotEmpty(pullResponse.PullEntities);
-
-			//stopwatch.Start();
-			//var searchQuery = productStore.Where(x => x.Description.Contains("3/4"));
-			//var results = await productStore.FindAsync(searchQuery);
-			//int count = results.Count;
-			//stopwatch.Stop();
-			//TimeSpan timeForQuery = stopwatch.Elapsed;
-			//stopwatch.Reset();
-
-			stopwatch.Start();
-			var searchQuery2 = productStore.Where(x => x.ID.Equals("58a3720bcb3929b25c88f02c"));
-			var results2 = await productStore.FindAsync(searchQuery2);
-			int count2 = results2.Count;
-			TimeSpan timeForQuery2 = stopwatch.Elapsed;
-			stopwatch.Reset();
-
-			// Teardown
-			lawsonClient.ActiveUser.Logout();
-			lawsonClient = null;
-		}
 
 		#region ORM Tests
 
