@@ -24,7 +24,7 @@ namespace Kinvey
 	/// </summary>
 	public class Stream<T> where T : IStreamable
 	{
-		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
+		KinveyRealtimeDelegate<T> RealtimeDelegate { get; set; }
 
 		/// <summary>
 		/// Represents the name of the stream.
@@ -85,12 +85,12 @@ namespace Kinvey
 		/// Subscribe the specified callback.
 		/// </summary>
 		/// <param name="subscribeID">The ID of the user to subscribe to.</param>
-		/// <param name="callback">Callback used to forward realtime messages.</param>
-		public async Task<bool> Subscribe(string subscribeID, KinveyRealtimeDelegate<T> callback)
+		/// <param name="realtimeHandler">Delegate used to forward realtime messages.</param>
+		public async Task<bool> Subscribe(string subscribeID, KinveyRealtimeDelegate<T> realtimeHandler)
 		{
 			bool success = false;
 
-			if (callback == null)
+			if (realtimeHandler == null)
 			{
 				// No callback was supplied
 				return success;
@@ -101,16 +101,16 @@ namespace Kinvey
 
 			if (success)
 			{
-				RealtimeCallback = callback;
+				RealtimeDelegate = realtimeHandler;
 
 				KinveyRealtimeDelegate<string> routerCallback = new KinveyRealtimeDelegate<string>
 				{
-					onError = (error) => RealtimeCallback.onError(error),
+					onError = (error) => RealtimeDelegate.onError(error),
 					onSuccess = (message) => {
 						var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
-						RealtimeCallback.onSuccess(messageObj);
+						RealtimeDelegate.onSuccess(messageObj);
 					},
-					OnStatus = (status) => RealtimeCallback.OnStatus(status)
+					OnStatus = (status) => RealtimeDelegate.OnStatus(status)
 				};
 
 				RealtimeRouter.Instance.SubscribeStream(StreamName, routerCallback);
@@ -126,7 +126,7 @@ namespace Kinvey
 		public async Task Unsubscribe(string subscribeID)
 		{
 			RealtimeRouter.Instance.UnsubscribeStream(StreamName);
-			RealtimeCallback = null;
+			RealtimeDelegate = null;
 
 			// Make KCS request to unsubscribe access to a substream for the given subscribeID
 			bool success = await RequestUnsubscribeAccess(subscribeID);

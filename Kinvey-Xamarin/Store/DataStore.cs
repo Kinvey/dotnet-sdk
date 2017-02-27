@@ -101,7 +101,7 @@ namespace Kinvey
 			this.customRequestProperties.Add (key, value);
 		}
 
-		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
+		KinveyRealtimeDelegate<T> RealtimeDelegate { get; set; }
 
 		#endregion
 
@@ -147,8 +147,8 @@ namespace Kinvey
 		/// <summary>
 		/// Subscribe the specified callback.
 		/// </summary>
-		/// <param name="callback">Callback.</param>
-		public async Task<bool> Subscribe(KinveyRealtimeDelegate<T> callback)
+		/// <param name="realtimeHandler">Delegate used to forward realtime messages.</param>
+		public async Task<bool> Subscribe(KinveyRealtimeDelegate<T> realtimeHandler)
 		{
 			bool success = false;
 
@@ -156,18 +156,18 @@ namespace Kinvey
 			var subscribeRequest = new SubscribeRequest<T>(client, collectionName, client.DeviceID);
 			var result = await subscribeRequest.ExecuteAsync();
 
-			if (callback != null)
+			if (realtimeHandler != null)
 			{
-				RealtimeCallback = callback;
+				RealtimeDelegate = realtimeHandler;
 
 				KinveyRealtimeDelegate<string> routerCallback = new KinveyRealtimeDelegate<string>
 				{
-					onError = (error) => RealtimeCallback.onError(error),
+					onError = (error) => RealtimeDelegate.onError(error),
 					onSuccess = (message) => {
 						var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
-						RealtimeCallback.onSuccess(messageObj);
+						RealtimeDelegate.onSuccess(messageObj);
 					},
-					OnStatus = (status) => RealtimeCallback.OnStatus(status)
+					OnStatus = (status) => RealtimeDelegate.OnStatus(status)
 				};
 
 				RealtimeRouter.Instance.SubscribeCollection(CollectionName, routerCallback);
@@ -183,7 +183,7 @@ namespace Kinvey
 		public async Task Unsubscribe()
 		{
 			RealtimeRouter.Instance.UnsubscribeCollection(CollectionName);
-			RealtimeCallback = null;
+			RealtimeDelegate = null;
 		}
 
 		#endregion
