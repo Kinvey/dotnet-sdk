@@ -46,6 +46,8 @@ namespace Kinvey
 				if (instance == null)
 				{
 					// throw error stating that Reatime has not been initialized
+					var ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_NOT_REGISTERED, String.Empty);
+					throw ke;
 				}
 
 				return instance;

@@ -244,6 +244,11 @@ namespace Kinvey
 		ERROR_REALTIME_INFORMATIONAL_UNKNOWN,
 
 		/// <summary>
+		/// Error code for the realtime service attempting to be used without first registering for realtime access.
+		/// </summary>
+		ERROR_REALTIME_NOT_REGISTERED,
+
+		/// <summary>
 		/// General error condition
 		/// </summary>
 		ERROR_GENERAL
