@@ -26,6 +26,8 @@ namespace Kinvey
 	{
 		KinveyRealtimeDelegate<T> RealtimeDelegate { get; set; }
 
+		private Dictionary<string, string> mapPublishReceiverToChannel;
+
 		/// <summary>
 		/// Represents the name of the stream.
 		/// </summary>
@@ -43,6 +45,8 @@ namespace Kinvey
 			StreamName = streamName;
 
 			KinveyClient = client ?? Client.SharedClient;
+
+			mapPublishReceiverToChannel = new Dictionary<string, string>();
 		}
 
 		/// <summary>
@@ -68,13 +72,26 @@ namespace Kinvey
 		{
 			bool result = false;
 
-			// Make KCS request for publish access for the given receiverID
-			// KCS will return, if successful, a response which will include the PubNub channel name
-			JObject response = await RequestPublishAccess(receiverID);
-
-			if (response != null)
+			// If we do not have a channel for this receiverID, make KCS request for publish access for the
+			// given receiverID.  KCS will return, if successful, a response including the PubNub channel name
+			string publishChannel = String.Empty;
+			if (mapPublishReceiverToChannel.ContainsKey(receiverID))
 			{
-				string publishChannel = response[Constants.STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME].ToString();
+				publishChannel = mapPublishReceiverToChannel[receiverID];
+			}
+			else
+			{
+				JObject response = await RequestPublishAccess(receiverID);
+
+				if (response != null)
+				{
+					publishChannel = response[Constants.STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME].ToString();
+					mapPublishReceiverToChannel.Add(receiverID, publishChannel);
+				}
+			}
+
+			if (!String.IsNullOrEmpty(publishChannel))
+			{
 				result = RealtimeRouter.Instance.Publish(publishChannel, receiverID, message);
 			}
 
