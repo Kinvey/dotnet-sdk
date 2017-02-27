@@ -26,8 +26,6 @@ namespace Kinvey
 	{
 		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
 
-		KinveyRealtimeDelegate<string> routerCallback;
-
 		/// <summary>
 		/// Represents the name of the stream.
 		/// </summary>
@@ -92,14 +90,20 @@ namespace Kinvey
 		{
 			bool success = false;
 
+			if (callback == null)
+			{
+				// No callback was supplied
+				return success;
+			}
+
 			// Make KCS request for subscribe access to a user with the given subscribeID
 			success = await RequestSubscribeAccess(subscribeID);
 
-			if (success && callback != null)
+			if (success)
 			{
 				RealtimeCallback = callback;
 
-				routerCallback = new KinveyRealtimeDelegate<string>
+				KinveyRealtimeDelegate<string> routerCallback = new KinveyRealtimeDelegate<string>
 				{
 					onError = (error) => RealtimeCallback.onError(error),
 					onSuccess = (message) => {

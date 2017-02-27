@@ -102,7 +102,6 @@ namespace Kinvey
 		}
 
 		KinveyRealtimeDelegate<T> RealtimeCallback { get; set; }
-		KinveyRealtimeDelegate<string> routerCallback;
 
 		#endregion
 
@@ -161,7 +160,7 @@ namespace Kinvey
 			{
 				RealtimeCallback = callback;
 
-				routerCallback = new KinveyRealtimeDelegate<string>
+				KinveyRealtimeDelegate<string> routerCallback = new KinveyRealtimeDelegate<string>
 				{
 					onError = (error) => RealtimeCallback.onError(error),
 					onSuccess = (message) => {

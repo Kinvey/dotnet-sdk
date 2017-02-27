@@ -417,6 +417,8 @@ namespace Kinvey
 			// TODO rethink locking
 			lock (classLock)
 			{
+				RealtimeRouter.Uninitialize();
+
 				LogoutRequest logoutRequest = buildLogoutRequest();
 				logoutRequest.Execute();
 			}
@@ -1144,7 +1146,7 @@ namespace Kinvey
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userID);
 
-			var realtimeRegister = new RealtimeRegisterRequest(client, userID, deviceID, urlParameters);
+			var realtimeRegister = new RealtimeRegisterRequest(client, deviceID, urlParameters);
 			client.InitializeRequest(realtimeRegister);
 
 			return realtimeRegister;
@@ -1156,10 +1158,10 @@ namespace Kinvey
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userID);
 
-			var realtimeRegister = new RealtimeUnregisterRequest(client, userID, deviceID, urlParameters);
-			client.InitializeRequest(realtimeRegister);
+			var realtimeUnregister = new RealtimeUnregisterRequest(client, deviceID, urlParameters);
+			client.InitializeRequest(realtimeUnregister);
 
-			return realtimeRegister;
+			return realtimeUnregister;
 		}
 
 		#endregion
@@ -1421,14 +1423,9 @@ namespace Kinvey
 		{
 			private const string REST_PATH = "user/{appKey}/{userID}/register-realtime";
 
-			[JsonProperty]
-			private string userID;
-
-			internal RealtimeRegisterRequest(AbstractClient client, string userID, string deviceID, Dictionary<string, string> urlProperties) :
+			internal RealtimeRegisterRequest(AbstractClient client, string deviceID, Dictionary<string, string> urlProperties) :
 				base(client, "POST", REST_PATH, default(JObject), urlProperties)
 			{
-				this.userID = userID;
-
 				JObject requestPayload = new JObject();
 				requestPayload.Add(Constants.STR_REALTIME_DEVICEID, deviceID);
 				base.HttpContent = requestPayload;
@@ -1440,14 +1437,9 @@ namespace Kinvey
 		{
 			private const string REST_PATH = "user/{appKey}/{userID}/unregister-realtime";
 
-			[JsonProperty]
-			private string userID;
-
-			internal RealtimeUnregisterRequest(AbstractClient client, string userID, string deviceID, Dictionary<string, string> urlProperties) :
+			internal RealtimeUnregisterRequest(AbstractClient client, string deviceID, Dictionary<string, string> urlProperties) :
 				base(client, "POST", REST_PATH, default(JObject), urlProperties)
 			{
-				this.userID = userID;
-
 				JObject requestPayload = new JObject();
 				requestPayload.Add(Constants.STR_REALTIME_DEVICEID, deviceID);
 				base.HttpContent = requestPayload;
