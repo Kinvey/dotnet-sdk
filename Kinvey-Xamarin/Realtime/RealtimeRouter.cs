@@ -21,73 +21,115 @@ namespace Kinvey
 	/// appropriate <see cref="Kinvey.DataStore{T}"/> handler.
 	/// The handler will be a <see cref="Kinvey.KinveyRealtimeDelegate{T}"/> callback delegate.
 	/// </summary>
-	static public class RealtimeRouter
+	internal sealed class RealtimeRouter
 	{
-		static PubNubMessaging.Core.Pubnub pubnubClient;
+		private static volatile RealtimeRouter instance;
 
-		static Dictionary<string, KinveyRealtimeDelegate<string>> mapChannelToCallback;
+		private static object lockObject = new object();
 
-		static internal AbstractClient KinveyClient { get; private set; }
+		private PubNubMessaging.Core.Pubnub pubnubClient;
 
-		static string ChannelGroup { get; set; }
+		private Dictionary<string, KinveyRealtimeDelegate<string>> mapChannelToCallback;
+
+		private AbstractClient KinveyClient { get; set; }
+
+		private string ChannelGroup { get; set; }
+
+		// Make constructor inaccessible, so that all access to the singleton
+		// RealtimeRouter happens through the Instance property
+		private RealtimeRouter() { }
+
+		public static RealtimeRouter Instance
+		{
+			get
+			{
+				if (instance == null)
+				{
+					// throw error stating that Reatime has not been initialized
+				}
+
+				return instance;
+			}
+		}
 
 		static internal void Initialize(string channelGroup, string publishKey, string subscribeKey, string authKey, AbstractClient client)
 		{
-			if (pubnubClient == null)
+			if (instance == null)
 			{
-				ChannelGroup = channelGroup;
+				lock(lockObject)
+				{
+					if (instance == null)
+					{
+						instance = new RealtimeRouter();
+						if (instance.pubnubClient == null)
+						{
+							instance.ChannelGroup = channelGroup;
 
-				pubnubClient = new PubNubMessaging.Core.Pubnub(publishKey, subscribeKey);
-				pubnubClient.AuthenticationKey = authKey;
+							instance.pubnubClient = new PubNubMessaging.Core.Pubnub(publishKey, subscribeKey);
+							instance.pubnubClient.AuthenticationKey = authKey;
 
-				pubnubClient.Subscribe<string>(string.Empty, ChannelGroup, SubscribeCallback, ConnectCallback, PubnubClientSubscribeErrorCallback);
+							instance.pubnubClient.Subscribe<string>(string.Empty, instance.ChannelGroup, instance.SubscribeCallback, instance.ConnectCallback, instance.PubnubClientSubscribeErrorCallback);
 
-				//FOR UNIQUE DEVICE GUID GENERATION --> Guid deviceGUID = pubnubClient.GenerateGuid(); string deviceID = deviceGUID.ToString();
-				KinveyClient = client;
-				mapChannelToCallback = new Dictionary<string, KinveyRealtimeDelegate<string>>();
+							//FOR UNIQUE DEVICE GUID GENERATION --> Guid deviceGUID = pubnubClient.GenerateGuid(); string deviceID = deviceGUID.ToString();
+							instance.KinveyClient = client;
+							instance.mapChannelToCallback = new Dictionary<string, KinveyRealtimeDelegate<string>>();
+						}
+					}
+				}
 			}
 		}
 
 		static internal void Uninitialize()
 		{
-			pubnubClient?.Unsubscribe<string>(string.Empty, ChannelGroup, UnsubscribeCallback, ConnectCallback, DisconnectCallback, PubnubClientUnsubscribeErrorCallback);
-			pubnubClient.AuthenticationKey = String.Empty;
-			pubnubClient = null;
+			if (instance != null)
+			{
+				lock(lockObject)
+				{
+					if (instance != null)
+					{
+						instance.pubnubClient?.Unsubscribe<string>(string.Empty, instance.ChannelGroup, instance.UnsubscribeCallback, instance.ConnectCallback, instance.DisconnectCallback, instance.PubnubClientUnsubscribeErrorCallback);
+						instance.pubnubClient.AuthenticationKey = String.Empty;
+						instance.pubnubClient = null;
 
-			ChannelGroup = null;
+						instance.ChannelGroup = null;
 
-			mapChannelToCallback.Clear();
-			mapChannelToCallback = null;
+						instance.mapChannelToCallback.Clear();
+						instance.mapChannelToCallback = null;
 
-			KinveyClient = null;
+						instance.KinveyClient = null;
+
+						instance = null;
+					}
+				}
+			}
 		}
 
-		static internal bool Publish(string channel, string receiverID, object message)
+		internal bool Publish(string channel, string receiverID, object message)
 		{
 			(message as IStreamable).SenderID = KinveyClient.ActiveUser.Id;
 
 			return pubnubClient.Publish<string>(channel, message, PublishCallback, PubnubClientPublishErrorCallback);
 		}
 
-		static internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate<string> callback)
+		internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate<string> callback)
 		{
 			string channel = Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
 			AddChannel(channel, callback);
 		}
 
-		static internal void UnsubscribeCollection(string collectionName)
+		internal void UnsubscribeCollection(string collectionName)
 		{
 			string channel = Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
 			RemoveChannel(channel);
 		}
 
-		static internal void SubscribeStream(string streamName, KinveyRealtimeDelegate<string> callback)
+		internal void SubscribeStream(string streamName, KinveyRealtimeDelegate<string> callback)
 		{
 			string channel = Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
 			AddChannel(channel, callback);
 		}
 
-		static internal void UnsubscribeStream(string streamName)
+		internal void UnsubscribeStream(string streamName)
 		{
 			string channel = Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
 			RemoveChannel(channel);
@@ -95,7 +137,7 @@ namespace Kinvey
 
 		#region Realtime Callbacks
 
-		static void SubscribeCallback(string msgResult)
+		void SubscribeCallback(string msgResult)
 		{
 			// Message Format --> [message,timestamp,channelgroup,channel]
 			KinveyUtils.Logger.Log("Subscribe Callback: " + msgResult);
@@ -118,12 +160,12 @@ namespace Kinvey
 			}
 		}
 
-		static void UnsubscribeCallback(string msgResult)
+		void UnsubscribeCallback(string msgResult)
 		{
 			KinveyUtils.Logger.Log("Unsubscribe Callback: " + msgResult);
 		}
 
-		static void ConnectCallback(string msgConnect)
+		void ConnectCallback(string msgConnect)
 		{
 			KinveyUtils.Logger.Log("Connect Callback: " + msgConnect);
 
@@ -138,7 +180,7 @@ namespace Kinvey
 			}
 		}
 
-		static void DisconnectCallback(string msgDisonnect)
+		void DisconnectCallback(string msgDisonnect)
 		{
 			KinveyUtils.Logger.Log("Disconnect Callback: " + msgDisonnect);
 
@@ -153,7 +195,7 @@ namespace Kinvey
 			}
 		}
 
-		static void PubnubClientSubscribeErrorCallback(PubNubMessaging.Core.PubnubClientError error)
+		void PubnubClientSubscribeErrorCallback(PubNubMessaging.Core.PubnubClientError error)
 		{
 			KinveyUtils.Logger.Log("Subscribe Error: " + error);
 			KinveyUtils.Logger.Log("Subscribe Error Status Code: " + error.StatusCode);
@@ -168,7 +210,7 @@ namespace Kinvey
 			}
 		}
 
-		static void PubnubClientUnsubscribeErrorCallback(PubNubMessaging.Core.PubnubClientError error)
+		void PubnubClientUnsubscribeErrorCallback(PubNubMessaging.Core.PubnubClientError error)
 		{
 			KinveyUtils.Logger.Log("Unsubscribe Error: " + error);
 			KinveyUtils.Logger.Log("Unsubscribe Error Status Code: " + error.StatusCode);
@@ -183,7 +225,7 @@ namespace Kinvey
 			}
 		}
 
-		static void PublishCallback(string msgPublish)
+		void PublishCallback(string msgPublish)
 		{
 			KinveyUtils.Logger.Log("Publish Callback: " + msgPublish);
 			var pubnubMessage = PrepPubnubMessage(msgPublish);
@@ -193,7 +235,7 @@ namespace Kinvey
 			callback.Invoke(status);
 		}
 
-		static void PubnubClientPublishErrorCallback(PubNubMessaging.Core.PubnubClientError error)
+		void PubnubClientPublishErrorCallback(PubNubMessaging.Core.PubnubClientError error)
 		{
 			KinveyUtils.Logger.Log("Publish Error: " + error);
 			KinveyUtils.Logger.Log("Publish Error Status Code: " + error.StatusCode);
@@ -212,7 +254,7 @@ namespace Kinvey
 
 		#region Helper methods
 
-		static void AddChannel(string channel, KinveyRealtimeDelegate<string> callback)
+		void AddChannel(string channel, KinveyRealtimeDelegate<string> callback)
 		{
 			if (mapChannelToCallback.ContainsKey(channel))
 			{
@@ -224,12 +266,12 @@ namespace Kinvey
 			}
 		}
 
-		static void RemoveChannel(string channel)
+		void RemoveChannel(string channel)
 		{
 			mapChannelToCallback.Remove(channel);
 		}
 
-		static string[] PrepPubnubMessage(string input)
+		string[] PrepPubnubMessage(string input)
 		{
 			string[] arrMessage = null;
 
@@ -251,7 +293,7 @@ namespace Kinvey
 			return arrMessage;
 		}
 
-		static bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channelGroup, ref string channel)
+		bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channelGroup, ref string channel)
 		{
 			bool result = false;
 
@@ -282,7 +324,7 @@ namespace Kinvey
 			return result;
 		}
 
-		static string GetChannelFromFullName(string fullChannelName)
+		string GetChannelFromFullName(string fullChannelName)
 		{
 			char[] trimQuotes = { Constants.CHAR_QUOTATION_MARK };
 			string channel = fullChannelName.Trim(trimQuotes);
@@ -292,7 +334,7 @@ namespace Kinvey
 			return channel;
 		}
 
-		static KinveyException HandleErrorMessage(PubNubMessaging.Core.PubnubClientError error)
+		KinveyException HandleErrorMessage(PubNubMessaging.Core.PubnubClientError error)
 		{
 			KinveyException ke = default(KinveyException);
 
@@ -428,7 +470,6 @@ namespace Kinvey
 
 			return ke;
 		}
-
 
 		#endregion
 	}

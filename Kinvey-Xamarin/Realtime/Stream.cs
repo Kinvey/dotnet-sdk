@@ -77,7 +77,7 @@ namespace Kinvey
 			if (response != null)
 			{
 				string publishChannel = response[Constants.STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME].ToString();
-				result = RealtimeRouter.Publish(publishChannel, receiverID, message);
+				result = RealtimeRouter.Instance.Publish(publishChannel, receiverID, message);
 			}
 
 			return result;
@@ -109,7 +109,7 @@ namespace Kinvey
 					OnStatus = (status) => RealtimeCallback.OnStatus(status)
 				};
 
-				RealtimeRouter.SubscribeStream(StreamName, routerCallback);
+				RealtimeRouter.Instance.SubscribeStream(StreamName, routerCallback);
 				success = true;
 			}
 
@@ -121,7 +121,7 @@ namespace Kinvey
 		/// </summary>
 		public async Task Unsubscribe(string subscribeID)
 		{
-			RealtimeRouter.UnsubscribeStream(StreamName);
+			RealtimeRouter.Instance.UnsubscribeStream(StreamName);
 			RealtimeCallback = null;
 
 			// Make KCS request to unsubscribe access to a substream for the given subscribeID

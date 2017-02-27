@@ -171,7 +171,7 @@ namespace Kinvey
 					OnStatus = (status) => RealtimeCallback.OnStatus(status)
 				};
 
-				RealtimeRouter.SubscribeCollection(CollectionName, routerCallback);
+				RealtimeRouter.Instance.SubscribeCollection(CollectionName, routerCallback);
 				success = true;
 			}
 
@@ -183,7 +183,7 @@ namespace Kinvey
 		/// </summary>
 		public async Task Unsubscribe()
 		{
-			RealtimeRouter.UnsubscribeCollection(CollectionName);
+			RealtimeRouter.Instance.UnsubscribeCollection(CollectionName);
 			RealtimeCallback = null;
 		}
 
