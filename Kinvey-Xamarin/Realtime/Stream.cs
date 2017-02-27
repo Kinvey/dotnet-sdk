@@ -122,10 +122,10 @@ namespace Kinvey
 
 				KinveyRealtimeDelegate<string> routerDelegate = new KinveyRealtimeDelegate<string>
 				{
-					onError = (error) => RealtimeDelegate.onError(error),
-					onSuccess = (message) => {
+					OnError = (error) => RealtimeDelegate.OnError(error),
+					OnNext = (message) => {
 						var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
-						RealtimeDelegate.onSuccess(messageObj);
+						RealtimeDelegate.OnNext(messageObj);
 					},
 					OnStatus = (status) => RealtimeDelegate.OnStatus(status)
 				};

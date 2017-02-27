@@ -15,8 +15,20 @@ using System;
 
 namespace Kinvey
 {
-	public class KinveyRealtimeDelegate<T> : KinveyDelegate<T>
+	public class KinveyRealtimeDelegate<T>
 	{
+		/// <summary>
+		/// This action is executed when there is a new or updated
+		/// entity available from the realtime service.
+		/// </summary>
+		public Action<T> OnNext;
+
+		/// <summary>
+		/// This action is executed when an exception occurs.  This can be
+		/// either on the device, or returned from the realtime service.
+		/// </summary>
+		public Action<Exception> OnError;
+
 		/// <summary>
 		/// This action is executed when there is a connection
 		/// status message available from the realtime service.

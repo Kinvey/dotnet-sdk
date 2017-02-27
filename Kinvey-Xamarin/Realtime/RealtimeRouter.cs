@@ -156,7 +156,7 @@ namespace Kinvey
 				KinveyUtils.Logger.Log("Subscribe Callback Channel Group: " + group);
 				KinveyUtils.Logger.Log("Subscribe Callback Channel: " + chan);
 
-				var callback = mapChannelToCallback[chan].onSuccess;
+				var callback = mapChannelToCallback[chan].OnNext;
 
 				callback.Invoke(msg);
 			}
@@ -207,7 +207,7 @@ namespace Kinvey
 			if (exception != default(KinveyException))
 			{
 				var channel = GetChannelFromFullName(error.Channel);
-				var callback = mapChannelToCallback[channel].onError;
+				var callback = mapChannelToCallback[channel].OnError;
 				callback.Invoke(exception);
 			}
 		}
@@ -222,7 +222,7 @@ namespace Kinvey
 			if (exception != default(KinveyException))
 			{
 				var channel = GetChannelFromFullName(error.Channel);
-				var callback = mapChannelToCallback[channel].onError;
+				var callback = mapChannelToCallback[channel].OnError;
 				callback.Invoke(exception);
 			}
 		}
@@ -247,7 +247,7 @@ namespace Kinvey
 			if (exception != default(KinveyException))
 			{
 				var channel = GetChannelFromFullName(error.Channel);
-				var callback = mapChannelToCallback[channel].onError;
+				var callback = mapChannelToCallback[channel].OnError;
 				callback.Invoke(exception);
 			}
 		}
