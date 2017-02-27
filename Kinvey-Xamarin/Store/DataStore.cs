@@ -160,7 +160,7 @@ namespace Kinvey
 			{
 				RealtimeDelegate = realtimeHandler;
 
-				KinveyRealtimeDelegate<string> routerCallback = new KinveyRealtimeDelegate<string>
+				KinveyRealtimeDelegate<string> routerDelegate = new KinveyRealtimeDelegate<string>
 				{
 					onError = (error) => RealtimeDelegate.onError(error),
 					onSuccess = (message) => {
@@ -170,7 +170,7 @@ namespace Kinvey
 					OnStatus = (status) => RealtimeDelegate.OnStatus(status)
 				};
 
-				RealtimeRouter.Instance.SubscribeCollection(CollectionName, routerCallback);
+				RealtimeRouter.Instance.SubscribeCollection(CollectionName, routerDelegate);
 				success = true;
 			}
 
