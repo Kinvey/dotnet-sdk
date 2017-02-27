@@ -53,9 +53,9 @@ namespace Kinvey
 		/// <returns>True if the grant request was successful, otherwise false.</returns>
 		/// <param name="streamACL"><see cref="StreamAccessControlList"/> object used to determine which users should be granted access for publish and/or subscribe access.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<bool> GrantStreamAccess(StreamAccessControlList streamACL, CancellationToken ct = default(CancellationToken))
+		public async Task<bool> GrantStreamAccess(string userID, StreamAccessControlList streamACL, CancellationToken ct = default(CancellationToken))
 		{
-			GrantStreamAccessRequest requestGrant = BuildGrantStreamAccessRequest(streamACL);
+			GrantStreamAccessRequest requestGrant = BuildGrantStreamAccessRequest(userID, streamACL);
 			ct.ThrowIfCancellationRequested();
 			var success = await requestGrant.ExecuteAsync();
 			return (success != null);
@@ -153,12 +153,12 @@ namespace Kinvey
 
 		#region Stream request builders
 
-		private GrantStreamAccessRequest BuildGrantStreamAccessRequest(StreamAccessControlList streamACL)
+		private GrantStreamAccessRequest BuildGrantStreamAccessRequest(string userID, StreamAccessControlList streamACL)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add(Constants.STR_APP_KEY, ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey);
 			urlParameters.Add(Constants.STR_REALTIME_STREAM_NAME, StreamName);
-			urlParameters.Add("userID", KinveyClient.ActiveUser.Id);
+			urlParameters.Add("userID", userID);
 
 			var requestStreamGrantAccess = new GrantStreamAccessRequest(streamACL, KinveyClient, urlParameters);
 			KinveyClient.InitializeRequest(requestStreamGrantAccess);

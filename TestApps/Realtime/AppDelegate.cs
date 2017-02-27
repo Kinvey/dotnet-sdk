@@ -150,7 +150,7 @@ namespace Realtime
 				var streamACL = new StreamAccessControlList();
 				streamACL.Publishers.Add(Client.SharedClient.ActiveUser.Id);
 				streamACL.Subscribers.Add(Client.SharedClient.ActiveUser.Id);
-				bool resultGrant = await stream.GrantStreamAccess(streamACL);
+				bool resultGrant = await stream.GrantStreamAccess(Client.SharedClient.ActiveUser.Id, streamACL);
 
 				// Subscribe to user-to-user stream
 				await stream.Subscribe(Client.SharedClient.ActiveUser.Id, new KinveyRealtimeDelegate<MedicalDeviceCommand>
