@@ -219,31 +219,20 @@ namespace Kinvey
 				int takeNumber = 0;
 
 				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
-
+				var query = dbConnectionSync.Table<T>();
 				if (lambdaExpr != null)
 				{
-					if (skipNumber > 0 && takeNumber > 0)
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).Take(takeNumber).ToList();
-					}
-					else if (skipNumber > 0)
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).ToList();
-					}
-					else if (takeNumber > 0)
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Take(takeNumber).ToList();
-					}
-					else
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).ToList(); 
-					}
+					query = query.Where(lambdaExpr);
 				}
-				else
+				if (skipNumber != 0)
 				{
-					// TODO handle case where query expression was given, but could not be procesed - this case should be a KinveyException
-					results = (from t in dbConnectionSync.Table<T>() select t).ToList();
+					query = query.Skip(skipNumber);
 				}
+				if (takeNumber != 0)
+				{
+					query = query.Take(takeNumber);
+				}
+				results = query.ToList();
 			}
 			catch (Exception e)
 			{
@@ -502,6 +491,7 @@ namespace Kinvey
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
+
 			try
 			{
 				int skipNumber = 0;
@@ -509,43 +499,35 @@ namespace Kinvey
 
 				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
 
-				if (lambdaExpr != null)
+				if (lambdaExpr != null && skipNumber == 0)
 				{
-					try
+					List<T> results;
+
+					var query = dbConnectionSync.Table<T>();
+					if (lambdaExpr != null)
 					{
-						List<T> matches = null;
-
-						if (skipNumber > 0 && takeNumber > 0)
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).Take(takeNumber).ToList();
-						}
-						else if (skipNumber > 0)
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).ToList();
-						}
-						else if (takeNumber > 0)
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Take(takeNumber).ToList();
-						}
-						else
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).ToList();
-						}
-
-
-						List<string> matchIDs = new List<string>();
-						foreach (var match in matches)
-						{
-							IPersistable entity = match as IPersistable;
-							matchIDs.Add(entity.ID);
-						}
-
-						kdr = this.DeleteByIDs(matchIDs);
+						query = query.Where(lambdaExpr);
 					}
-					catch (Exception e)
+					if (skipNumber != 0)
 					{
-						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY, "", e);
+						query = query.Skip(skipNumber);
 					}
+					if (takeNumber != 0)
+					{
+						query = query.Take(takeNumber);
+					}
+
+					results = query.ToList();
+
+
+					List<string> matchIDs = new List<string>();
+					foreach (var match in results)
+					{
+						IPersistable entity = match as IPersistable;
+						matchIDs.Add(entity.ID);
+					}
+
+					kdr = this.DeleteByIDs(matchIDs);
 				}
 				else if (skipNumber > 0)
 				{
