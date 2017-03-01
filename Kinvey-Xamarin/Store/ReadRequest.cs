@@ -92,7 +92,9 @@ namespace Kinvey
 			foreach (var cacheItem in cacheItems)
 			{
 				Entity item = cacheItem as Entity;
-				dictCachedEntities.Add(item.ID, item.KMD.lastModifiedTime);
+				if (item.KMD?.lastModifiedTime != null) {  //if lmt doesn't exist for cache entity, avoid crashing
+					dictCachedEntities.Add(item.ID, item.KMD.lastModifiedTime);
+				}
 			}
 
 			List<string> listCachedEntitiesToRemove = new List<string>(dictCachedEntities.Keys);
