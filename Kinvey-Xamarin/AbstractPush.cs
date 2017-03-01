@@ -81,10 +81,6 @@ namespace KinveyXamarin
 			[JsonProperty]
 			private String deviceId {get; set;}
 
-			public PushPayload(string platform) {
-				this.platform = platform;
-			}
-
 			public PushPayload(string platform, string deviceId) {
 				this.platform = platform;
 				this.deviceId = deviceId;
