@@ -81,7 +81,7 @@ namespace Kinvey
 		}
 
 
-		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, List<DeltaSetFetchInfo> networkItems)
+		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, List<DeltaSetFetchInfo> networkItems, string mongoQuery)
 		{
 			List<T> listDeltaSetResults = new List<T>();
 
@@ -147,7 +147,14 @@ namespace Kinvey
 
 			// Then, with this set of IDs from the previous step, make a query to the
 			// backend, to get full records for each ID that has changed since last fetch.
-			int numIDs = listIDsToFetch.Count();
+			int numIDs = listIDsToFetch.Count;
+
+			if (numIDs == networkItems.Count) {
+				//Special case where delta set is the same size as the network result.
+				//This will occur either when all entities are new/updated, or in error cases such as missing lmts
+				return await RetrieveNetworkResults(mongoQuery);
+			}
+
 			int start = 0;
 			int batchSize = 200;
 
@@ -226,10 +233,10 @@ namespace Kinvey
 
 						#endregion
 
-						var delta = await RetrieveDeltaSet(localResults, networkMetadata);
-						if (delta.Count > 0) 
+						var delta = await RetrieveDeltaSet(localResults, networkMetadata, mongoQuery);
+						if (delta.Count > 0)
 						{
-							Cache.RefreshCache(delta);							
+							Cache.RefreshCache(delta);
 						}
 
 						return new NetworkReadResponse<T>(delta, networkMetadata.Count, true);
