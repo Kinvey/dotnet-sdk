@@ -43,7 +43,7 @@ namespace KinveyXamarin
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload (platform);
+			PushPayload input = new PushPayload (platform, deviceId);
 
 			RemovePush disable = new RemovePush (client, input, urlParameters);
 
