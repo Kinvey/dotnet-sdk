@@ -17,8 +17,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Linq;
 
-using System.Diagnostics;
-
 namespace Kinvey
 {
 	public abstract class ReadRequest <T, U> : Request <T, U>
@@ -83,29 +81,9 @@ namespace Kinvey
 		}
 
 
-		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, string mongoQuery)
+		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, List<DeltaSetFetchInfo> networkItems)
 		{
 			List<T> listDeltaSetResults = new List<T>();
-
-			#region DSF Step 1: Pull all entity IDs and LMTs of a collection in the backend
-
-			// TODO Need to paginate in case there are more than 10,0000 entities in the collection
-			if (String.IsNullOrEmpty(mongoQuery))
-			{
-				mongoQuery = "{}";
-			}
-
-			mongoQuery += "&fields=_id,_kmd.lmt";
-
-			Stopwatch sw = new Stopwatch();
-			sw.Start();
-			List<DeltaSetFetchInfo> listNetworkEntities = new List<DeltaSetFetchInfo>();
-			listNetworkEntities = await Client.NetworkFactory.buildGetRequest<DeltaSetFetchInfo>(Collection, mongoQuery).ExecuteAsync();
-
-			sw.Stop();
-
-			Debug.WriteLine("_id, _lmt fetch time: " + sw.Elapsed.TotalSeconds);
-			#endregion
 
 			#region DSF Step 2: Pull all entity IDs and LMTs of a collection in local storage
 
@@ -125,7 +103,7 @@ namespace Kinvey
 
 			List<string> listIDsToFetch = new List<string>();
 
-			foreach (var networkEntity in listNetworkEntities)
+			foreach (var networkEntity in networkItems)
 			{
 				string ID = networkEntity.ID;
 				string LMT = networkEntity.KMD.lastModifiedTime;
@@ -223,46 +201,43 @@ namespace Kinvey
 			return cacheHits;
 		}
 
-		protected async Task<List<T>> PerformNetworkFind()
+		protected async Task<NetworkReadResponse<T>> PerformNetworkFind()
 		{
-			List<T> results = null;
-			var sw = new Stopwatch();
 			try
 			{
 				string mongoQuery = this.BuildMongoQuery();
 
 				if (DeltaSetFetchingEnabled && !Cache.IsCacheEmpty())
 				{
-
-					sw.Start();
 					var localResults = PerformLocalFind();
-					sw.Stop();
-
-					Debug.WriteLine("Local find: " + sw.Elapsed.TotalSeconds);
 
 					if (localResults?.Count > 0)
 					{
-						sw.Reset();
-						sw.Start();
-
-						results = await RetrieveDeltaSet(localResults, mongoQuery);
-
-						sw.Stop();
-						Debug.WriteLine("Delta fetch: size: " + results.Count + " time: "  + sw.Elapsed.TotalSeconds);
-						if (results.Count == 0) 
+						#region DSF Step 1: Pull all entity IDs and LMTs of a collection in the backend
+						if (String.IsNullOrEmpty(mongoQuery))
 						{
-							//short circuit in case there is no delta
-							return localResults;
+							mongoQuery = "{}";
+						}
+						mongoQuery += "&fields=_id,_kmd.lmt";
+
+						List<DeltaSetFetchInfo> networkMetadata = await Client.NetworkFactory.buildGetRequest<DeltaSetFetchInfo>(Collection, mongoQuery).ExecuteAsync();
+
+						#endregion
+
+						var delta = await RetrieveDeltaSet(localResults, networkMetadata);
+						if (delta.Count > 0) 
+						{
+							Cache.RefreshCache(delta);							
 						}
 
-						Cache.RefreshCache(results);
-						return PerformLocalFind();
+						return new NetworkReadResponse<T>(delta, networkMetadata.Count, true);
 					}
 				}
-				Debug.WriteLine("plain network results, query: " + mongoQuery);
-				results = await RetrieveNetworkResults(mongoQuery);
+
+				var results = await RetrieveNetworkResults(mongoQuery);
 				Cache.Clear(Query?.Expression);
 				Cache.RefreshCache(results);
+				return new NetworkReadResponse<T>(results, results.Count, false);
 			}
 			catch (KinveyException ke)
 			{
@@ -275,8 +250,6 @@ namespace Kinvey
 										  "Error in FindAsync() for network results.",
 										  e);
 			}
-
-			return results;
 		}
 
 		private async Task<List<T>> RetrieveNetworkResults(string mongoQuery) 
@@ -331,5 +304,20 @@ namespace Kinvey
 
 			return query.ToString();
 		}
+
+		protected class NetworkReadResponse<T>
+		{
+			public List<T> ResultSet;
+			public int TotalCount;
+			public bool IsDeltaFetched;
+
+			public NetworkReadResponse(List<T> result, int count, bool isDelta)
+			{
+				this.ResultSet = result;
+				this.TotalCount = count;
+				this.IsDeltaFetched = isDelta;
+			}
+		}
+
 	}
 }

@@ -56,7 +56,8 @@ namespace Kinvey
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					listResult = await PerformNetworkFind();
+					var result = await PerformNetworkFind();
+					listResult = result.ResultSet;
 					break;
 
 				case ReadPolicy.BOTH:
@@ -66,8 +67,15 @@ namespace Kinvey
 					PerformLocalFind(cacheDelegate);
 
 					// once local query finishes, perform network query
-					listResult = await PerformNetworkFind();
-					Cache.RefreshCache(listResult);
+					var resolved = await PerformNetworkFind();
+					if (resolved.IsDeltaFetched)
+					{
+						listResult = PerformLocalFind();
+					}
+					else 
+					{
+						listResult = resolved.ResultSet;
+					}
 					break;
 
 				default:

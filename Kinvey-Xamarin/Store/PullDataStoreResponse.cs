@@ -20,6 +20,19 @@ namespace Kinvey
 	/// </summary>
 	public class PullDataStoreResponse<T> : DataStoreResponse<T>
 	{
+		internal PullDataStoreResponse() { }
+
+		internal PullDataStoreResponse(int total, int pulled, List<T> pullEntities) {
+			this.TotalCount = total;
+			this.PullCount = pulled;
+			this.PullEntities = pullEntities;
+		}
+		/// <summary>
+		/// Gets or sets the count of datastore objects returned.
+		/// </summary>
+		/// <value>The count.</value>
+		public int TotalCount;
+
 		/// <summary>
 		/// Gets or sets the count of datastore objects returned.
 		/// </summary>

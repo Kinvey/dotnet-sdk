@@ -31,20 +31,13 @@ namespace Kinvey
 
 		public override async Task<PullDataStoreResponse<T>> ExecuteAsync()
 		{
-			List<T> listResults = await PerformNetworkFind();
-			return BuildPullResponse(listResults);
+			var result = await PerformNetworkFind();
+			return new PullDataStoreResponse<T>(result.TotalCount, result.ResultSet.Count, result.ResultSet);
 		}
 
 		public override Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PullRequest not implemented.");
-		}
-
-		private PullDataStoreResponse<T> BuildPullResponse(List<T> listResults) { 
-			PullDataStoreResponse<T> response = new PullDataStoreResponse<T>();
-			response.AddEntities(listResults);
-			response.PullCount = listResults.Count;
-			return response;
 		}
 	}
 }
