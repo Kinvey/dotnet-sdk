@@ -523,8 +523,11 @@ namespace Kinvey
 
 				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
 
-				if (lambdaExpr != null && skipNumber == 0)
+				if (lambdaExpr == null && skipNumber == 0 && takeNumber == 0)
 				{
+					kdr.count = dbConnectionSync.DeleteAll<T>();
+				}
+				else if (skipNumber == 0) { 
 					List<T> results;
 
 					var query = dbConnectionSync.Table<T>();
@@ -540,7 +543,6 @@ namespace Kinvey
 
 					results = query.ToList();
 
-
 					List<string> matchIDs = new List<string>();
 					foreach (var match in results)
 					{
@@ -550,14 +552,10 @@ namespace Kinvey
 
 					kdr = this.DeleteByIDs(matchIDs);
 				}
-				else if (skipNumber > 0)
-				{
-					// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
-					// Do nothing here.
-				}
 				else
 				{
-					kdr.count = dbConnectionSync.DeleteAll<T>();
+					// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
+					// Do nothing here.					
 				}
 			}
 			catch (SQLiteException e)
