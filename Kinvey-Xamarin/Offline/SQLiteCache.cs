@@ -532,10 +532,7 @@ namespace Kinvey
 					{
 						query = query.Where(lambdaExpr);
 					}
-					if (skipNumber != 0)
-					{
-						query = query.Skip(skipNumber);
-					}
+
 					if (takeNumber != 0)
 					{
 						query = query.Take(takeNumber);
