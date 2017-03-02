@@ -4,7 +4,7 @@ using Kinvey;
 namespace TestFramework
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class ToDo : Entity
+	public class ToDo : Entity, IStreamable
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -14,6 +14,9 @@ namespace TestFramework
 
 		[JsonProperty("due_date")]
 		public string DueDate { get; set; }
+
+		[JsonProperty("SenderID")]
+		public string SenderID { get; set; }
 	}
 }
 
