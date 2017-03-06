@@ -15,13 +15,13 @@ using System;
 
 namespace Kinvey
 {
-	internal class KinveyRealtimeDelegate
+	public class KinveyDataStoreDelegate<T>
 	{
 		/// <summary>
 		/// This action is executed when there is a new or updated
 		/// entity available from the realtime service.
 		/// </summary>
-		public Action<string> OnNext;
+		public Action<T> OnNext;
 
 		/// <summary>
 		/// This action is executed when an exception occurs.  This can be

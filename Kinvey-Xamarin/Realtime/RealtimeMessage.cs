@@ -11,17 +11,25 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using Newtonsoft.Json;
+
 namespace Kinvey
 {
-	/// <summary>
-	/// Interface for defining the responsibility of a class used for realtime streaming.
-	/// </summary>
-	public interface IStreamable
+	[JsonObject(MemberSerialization.OptOut)]
+	public class RealtimeMessage<T>
 	{
-		/// <summary>
-		/// Gets or sets the user identifier.
-		/// </summary>
-		/// <value>The user identifier.</value>
-		string SenderID { get; set; }
+		public string SenderID { get; set; }
+
+		public T Message { get; set; }
+
+		public RealtimeMessage()
+		{
+		}
+
+		internal RealtimeMessage(string senderID, T message)
+		{
+			SenderID = senderID;
+			Message = message;
+		}
 	}
 }

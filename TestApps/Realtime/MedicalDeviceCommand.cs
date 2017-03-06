@@ -4,11 +4,8 @@ using Kinvey;
 namespace Realtime
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class MedicalDeviceCommand : IStreamable
+	public class MedicalDeviceCommand
 	{
-		[JsonProperty("SenderID")]
-		public string SenderID { get; set; }
-
 		[JsonProperty("command")]
 		public string Command { get; set; }
 	}

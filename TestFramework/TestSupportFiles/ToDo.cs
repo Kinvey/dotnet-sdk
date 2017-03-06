@@ -4,7 +4,7 @@ using Kinvey;
 namespace TestFramework
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class ToDo : Entity, IStreamable
+	public class ToDo : Entity
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }

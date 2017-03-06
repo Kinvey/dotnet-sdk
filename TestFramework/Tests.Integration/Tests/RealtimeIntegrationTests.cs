@@ -101,7 +101,7 @@ namespace TestFramework
 
 			// Act
 			ToDo ent = null;
-			var realtimeDelegate = new KinveyRealtimeDelegate<ToDo>
+			var realtimeDelegate = new KinveyDataStoreDelegate<ToDo>
 			{
 				OnError = (err) => { },
 				OnNext = (entity) => {
@@ -154,11 +154,13 @@ namespace TestFramework
 
 			// Realtime delegate setup
 			ToDo ent = null;
-			KinveyRealtimeDelegate<ToDo> realtimeDelegate = new KinveyRealtimeDelegate<ToDo>
+			string sender = String.Empty;
+			KinveyStreamDelegate<ToDo> realtimeDelegate = new KinveyStreamDelegate<ToDo>
 			{
 				OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
-				OnNext = (message) => {
+				OnNext = (senderID, message) => {
 					ent = message;
+					sender = senderID;
 					autoEvent.Set();
 				},
 				OnStatus = (status) => {
@@ -184,7 +186,7 @@ namespace TestFramework
 			Assert.NotNull(ent);
 			Assert.AreEqual(0, ent.Name.CompareTo("stream test"));
 			Assert.AreEqual(0, ent.Details.CompareTo("Stream Details"));
-			Assert.AreEqual(Client.SharedClient.ActiveUser.Id, ent.SenderID);
+			Assert.AreEqual(Client.SharedClient.ActiveUser.Id, sender);
 
 			// Teardown
 			await stream.Unsubscribe(Client.SharedClient.ActiveUser.Id);

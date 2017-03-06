@@ -101,7 +101,7 @@ namespace Kinvey
 			this.customRequestProperties.Add (key, value);
 		}
 
-		KinveyRealtimeDelegate<T> RealtimeDelegate { get; set; }
+		KinveyDataStoreDelegate<T> RealtimeDelegate { get; set; }
 
 		#endregion
 
@@ -148,7 +148,7 @@ namespace Kinvey
 		/// Subscribe the specified callback.
 		/// </summary>
 		/// <param name="realtimeHandler">Delegate used to forward realtime messages.</param>
-		public async Task<bool> Subscribe(KinveyRealtimeDelegate<T> realtimeHandler)
+		public async Task<bool> Subscribe(KinveyDataStoreDelegate<T> realtimeHandler)
 		{
 			bool success = false;
 
@@ -160,7 +160,7 @@ namespace Kinvey
 			{
 				RealtimeDelegate = realtimeHandler;
 
-				KinveyRealtimeDelegate<string> routerDelegate = new KinveyRealtimeDelegate<string>
+				var routerDelegate = new KinveyRealtimeDelegate
 				{
 					OnError = (error) => RealtimeDelegate.OnError(error),
 					OnNext = (message) => {
