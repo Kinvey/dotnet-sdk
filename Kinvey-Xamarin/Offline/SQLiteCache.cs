@@ -177,9 +177,14 @@ namespace Kinvey
 
 		public List<T> FindAll()
 		{
-			return (from t in dbConnectionSync.Table<T>()
-			        select t).ToList();
+			return dbConnectionSync.Table<T>().ToList();
 		}
+
+		public int CountAll() 
+		{
+			return dbConnectionSync.Table<T>().Count();
+		}
+
 
 		public T FindByID(string ID)
 		{
@@ -211,46 +216,54 @@ namespace Kinvey
 
 		public List<T> FindByQuery(Expression expr)
 		{
-			List<T> results = null;
-
 			try
 			{
-				int skipNumber = 0;
-				int takeNumber = 0;
-
-				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
-
-				if (lambdaExpr != null)
-				{
-					if (skipNumber > 0 && takeNumber > 0)
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).Take(takeNumber).ToList();
-					}
-					else if (skipNumber > 0)
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).ToList();
-					}
-					else if (takeNumber > 0)
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).Take(takeNumber).ToList();
-					}
-					else
-					{
-						results = dbConnectionSync.Table<T>().Where(lambdaExpr).ToList(); 
-					}
-				}
-				else
-				{
-					// TODO handle case where query expression was given, but could not be procesed - this case should be a KinveyException
-					results = (from t in dbConnectionSync.Table<T>() select t).ToList();
-				}
+				var query = BuildQuery(expr);
+				return query.ToList();
 			}
 			catch (Exception e)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY, "", e);
 			}
+		}
 
-			return results;
+		public int CountByQuery(Expression expr)
+		{
+			try
+			{
+				var query = BuildQuery(expr);
+				if (query == null) { return 0; }
+
+				return query.Count();
+			}
+			catch (Exception e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY, "", e);
+			}
+		}
+
+		private TableQuery<T> BuildQuery(Expression expr)
+		{
+			int skipNumber = 0;
+			int takeNumber = 0;
+
+			var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
+
+			var query = dbConnectionSync.Table<T>();
+			if (lambdaExpr != null)
+			{
+				query = query.Where(lambdaExpr);
+			}
+			if (skipNumber != 0)
+			{
+				query = query.Skip(skipNumber);
+			}
+			if (takeNumber != 0)
+			{
+				query = query.Take(takeNumber);
+			}
+
+			return query;
 		}
 
 		private Expression<Func<T, bool>> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber)
@@ -502,6 +515,7 @@ namespace Kinvey
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
+
 			try
 			{
 				int skipNumber = 0;
@@ -509,52 +523,39 @@ namespace Kinvey
 
 				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
 
-				if (lambdaExpr != null)
+				if (lambdaExpr == null && skipNumber == 0 && takeNumber == 0)
 				{
-					try
-					{
-						List<T> matches = null;
-
-						if (skipNumber > 0 && takeNumber > 0)
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).Take(takeNumber).ToList();
-						}
-						else if (skipNumber > 0)
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Skip(skipNumber).ToList();
-						}
-						else if (takeNumber > 0)
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).Take(takeNumber).ToList();
-						}
-						else
-						{
-							matches = dbConnectionSync.Table<T>().Where(lambdaExpr).ToList();
-						}
-
-
-						List<string> matchIDs = new List<string>();
-						foreach (var match in matches)
-						{
-							IPersistable entity = match as IPersistable;
-							matchIDs.Add(entity.ID);
-						}
-
-						kdr = this.DeleteByIDs(matchIDs);
-					}
-					catch (Exception e)
-					{
-						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY, "", e);
-					}
+					kdr.count = dbConnectionSync.DeleteAll<T>();
 				}
-				else if (skipNumber > 0)
-				{
-					// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
-					// Do nothing here.
+				else if (skipNumber == 0) { 
+					List<T> results;
+
+					var query = dbConnectionSync.Table<T>();
+					if (lambdaExpr != null)
+					{
+						query = query.Where(lambdaExpr);
+					}
+
+					if (takeNumber != 0)
+					{
+						query = query.Take(takeNumber);
+					}
+
+					results = query.ToList();
+
+					List<string> matchIDs = new List<string>();
+					foreach (var match in results)
+					{
+						IPersistable entity = match as IPersistable;
+						matchIDs.Add(entity.ID);
+					}
+
+					kdr = this.DeleteByIDs(matchIDs);
 				}
 				else
 				{
-					kdr.count = dbConnectionSync.DeleteAll<T>();
+					// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
+					// Do nothing here.					
 				}
 			}
 			catch (SQLiteException e)

@@ -20,10 +20,25 @@ namespace Kinvey
 	/// </summary>
 	public class PullDataStoreResponse<T> : DataStoreResponse<T>
 	{
+		internal PullDataStoreResponse() { }
+
+		internal PullDataStoreResponse(int total, int pulled, List<T> pullEntities) {
+			this.TotalCount = total;
+			this.PullCount = pulled;
+			this.PullEntities = pullEntities;
+		}
+		/// <summary>
+		/// Gets or sets the total count of entities that match the request.
+		/// This number will be equal to the <see cref="KinveyXamarin.PullDataStoreResponse.PullCount"/>, unless delta set caching is in use.
+		/// When delta set caching is used, the number of entities retrieved from the backend (PullCount) is typically less than the total number of entities that match the request (TotalCount).
+		/// </summary>
+		/// <value>The total count of entities that match the request.</value>
+		public int TotalCount;
+
 		/// <summary>
 		/// Gets or sets the count of datastore objects returned.
 		/// </summary>
-		/// <value>The count.</value>
+		/// <value>The count of entities retrieved from the backend.</value>
 		public int PullCount
 		{
 			get

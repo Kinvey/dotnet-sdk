@@ -127,6 +127,8 @@ namespace TestFramework
 			Assert.NotNull(results);
 			Assert.NotNull(results.PullEntities);
 			Assert.IsEmpty(results.PullEntities);
+			Assert.AreEqual(results.PullCount, 0);
+			Assert.AreEqual(results.TotalCount, 2);
 
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
