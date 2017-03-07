@@ -84,7 +84,7 @@ namespace DemoKLS
 		}
 
 		private void RenderView() { 
-			Title = "Demo Kinvey Live Service - Patient";
+			Title = "Kinvey Live Service - Patient";
 			View.BackgroundColor = UIColor.FromRGB(7, 69, 126);
 			nfloat w = View.Bounds.Width;
 
@@ -92,7 +92,7 @@ namespace DemoKLS
 
 			var titleLabel = new UILabel
 			{
-				Text = "My Device Status",
+				Text = "My Device Reading",
 				TextColor = UIColor.White,
 				TextAlignment = UITextAlignment.Center,
 				Frame = new CGRect(10, 80, w - 20, h)
