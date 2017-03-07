@@ -132,6 +132,8 @@
     </Compile>
     <Compile Include="MedicalDeviceCommand.cs" />
     <Compile Include="MedicalDeviceStatus.cs" />
+    <Compile Include="PatientViewController.cs" />
+    <Compile Include="DoctorViewController.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Kinvey-Utils\Kinvey-Utils.csproj">
