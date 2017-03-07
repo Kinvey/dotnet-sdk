@@ -122,7 +122,7 @@ namespace DemoKLS
 			UIButton buttonPublishDecrement;
 			buttonPublishDecrement = UIButton.FromType(UIButtonType.System);
 			buttonPublishDecrement.Frame = new CGRect(10, 280, buttonWidth, 44);
-			buttonPublishDecrement.SetTitle("Decrement", UIControlState.Normal);
+			buttonPublishDecrement.SetTitle("Decrease", UIControlState.Normal);
 			buttonPublishDecrement.SetTitleColor(UIColor.Red, UIControlState.Normal);
 			buttonPublishDecrement.BackgroundColor = colorLightBlue;
 			buttonPublishDecrement.TouchUpInside += async (sender, e) => {
@@ -135,7 +135,7 @@ namespace DemoKLS
 			UIButton buttonPublishIncrement;
 			buttonPublishIncrement = UIButton.FromType(UIButtonType.System);
 			buttonPublishIncrement.Frame = new CGRect(w - buttonWidth - 10, 280, buttonWidth, 44);
-			buttonPublishIncrement.SetTitle("Increment", UIControlState.Normal);
+			buttonPublishIncrement.SetTitle("Increase", UIControlState.Normal);
 			buttonPublishIncrement.SetTitleColor(UIColor.Green, UIControlState.Normal);
 			buttonPublishIncrement.BackgroundColor = colorLightBlue;
 			//buttonPublishIncrement.BackgroundColor = UIColor.Green;
