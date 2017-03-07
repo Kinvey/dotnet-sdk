@@ -31,6 +31,8 @@ namespace DemoKLS
 		User alice;
 		User bob;
 
+		System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
 		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
 			// Override point for customization after application launch.
@@ -128,8 +130,12 @@ namespace DemoKLS
 				{
 					OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
 					OnNext = (senderID, message) => {
-						Console.WriteLine("STREAM SenderID: " + senderID + " -- Command: " + message.Setting);
-						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(senderID, message.Setting));
+						//Console.WriteLine("STREAM SenderID: " + senderID + " -- Command: " + message.Setting);
+						stopwatch.Stop();
+						TimeSpan timeForRoundtrip = stopwatch.Elapsed;
+						stopwatch.Reset();
+						string time = timeForRoundtrip.TotalMilliseconds + " ms";
+						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(message.Setting, time));
 					},
 					OnStatus = (status) => {
 						Console.WriteLine("Status: " + status.Status);
@@ -435,6 +441,7 @@ namespace DemoKLS
 		{
 			var mdc = new MedicalDeviceCommand();
 			mdc.Command = command;
+			stopwatch.Start();
 			bool success = await streamCommand.Publish(bob.Id, mdc);
 		}
 

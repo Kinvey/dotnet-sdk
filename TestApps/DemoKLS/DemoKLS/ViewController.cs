@@ -159,21 +159,21 @@ namespace DemoKLS
 
 			AppDelegate myAppDel = (UIApplication.SharedApplication.Delegate as DemoKLS.AppDelegate);
 
-			SenderIDView = new UITextField
-			{
-				Placeholder = "Sender ID",
-				Frame = new CGRect(10, 82, w - 20, h),
-				BorderStyle = UITextBorderStyle.RoundedRect,
-				BackgroundColor = UIColor.White,
-				TextColor = UIColor.Black
-			};
+			//SenderIDView = new UITextField
+			//{
+			//	Placeholder = "Sender ID",
+			//	Frame = new CGRect(10, 82, w - 20, h),
+			//	BorderStyle = UITextBorderStyle.RoundedRect,
+			//	BackgroundColor = UIColor.White,
+			//	TextColor = UIColor.Black
+			//};
 
-			View.AddSubview(SenderIDView);
+			//View.AddSubview(SenderIDView);
 
 			MessageView = new UITextField
 			{
 				Placeholder = "Message",
-				Frame = new CGRect(10, 122, w - 20, h),
+				Frame = new CGRect(10, 82, w - 20, h),
 				BorderStyle = UITextBorderStyle.RoundedRect,
 				BackgroundColor = UIColor.White,
 				TextColor = UIColor.Black
@@ -227,10 +227,10 @@ namespace DemoKLS
 
 		public void ChangeText(string sender, string msg)
 		{
-			SenderIDView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
-			SenderIDView.Text = "Sender ID: " + sender;
+			//SenderIDView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
+			//SenderIDView.Text = "Sender ID: " + sender;
 
-			MessageView.Frame = new CGRect(10, 122, View.Bounds.Width - 20, h);
+			MessageView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
 			MessageView.Text = "Message: " + msg;
 		}
 	}
@@ -239,6 +239,8 @@ namespace DemoKLS
 	{
 		internal UITextField SenderIDView;
 		internal UITextField MessageView;
+		internal UITextField TimeView;
+
 		nfloat h = 31.0f;
 		//UIColor colorBackgroundButtonLogin = UIColor.FromRGB(5, 58, 114);
 		UIColor colorBackgroundButtonLogin = UIColor.FromRGB(92, 127, 159);
@@ -256,27 +258,38 @@ namespace DemoKLS
 
 			AppDelegate myAppDel = (UIApplication.SharedApplication.Delegate as DemoKLS.AppDelegate);
 
-			SenderIDView = new UITextField
+			//SenderIDView = new UITextField
+			//{
+			//	Placeholder = "Sender ID",
+			//	Frame = new CGRect(10, 82, w - 20, h),
+			//	BorderStyle = UITextBorderStyle.RoundedRect,
+			//	BackgroundColor = UIColor.White,
+			//	TextColor = UIColor.Black
+			//};
+
+			//View.AddSubview(SenderIDView);
+
+			MessageView = new UITextField
 			{
-				Placeholder = "Sender ID",
+				Placeholder = "Message",
 				Frame = new CGRect(10, 82, w - 20, h),
 				BorderStyle = UITextBorderStyle.RoundedRect,
 				BackgroundColor = UIColor.White,
 				TextColor = UIColor.Black
 			};
 
-			View.AddSubview(SenderIDView);
+			View.AddSubview(MessageView);
 
-			MessageView = new UITextField
+			TimeView = new UITextField
 			{
-				Placeholder = "Message",
+				Placeholder = "Roundtrip Time",
 				Frame = new CGRect(10, 122, w - 20, h),
 				BorderStyle = UITextBorderStyle.RoundedRect,
 				BackgroundColor = UIColor.White,
 				TextColor = UIColor.Black
 			};
 
-			View.AddSubview(MessageView);
+			View.AddSubview(TimeView);
 
 			//UITextField PublishMessageView = new UITextField
 			//{
@@ -348,13 +361,16 @@ namespace DemoKLS
 			base.DidReceiveMemoryWarning();
 		}
 
-		public void ChangeText(string sender, string msg)
+		public void ChangeText(string msg, string time)
 		{
-			MessageView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
-			MessageView.Text = "Reading: " + msg;
+			//SenderIDView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
+			//SenderIDView.Text = "Sender ID: " + sender;
 
-			SenderIDView.Frame = new CGRect(10, 122, View.Bounds.Width - 20, h);
-			SenderIDView.Text = "Roundtrip Time: " + sender;
+			MessageView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
+			MessageView.Text = "Message: " + msg;
+
+			TimeView.Frame = new CGRect(10, 122, View.Bounds.Width - 20, h);
+			TimeView.Text = "Roundtrip Time: " + time;
 		}
 	}
 }
