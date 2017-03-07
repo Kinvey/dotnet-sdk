@@ -449,7 +449,7 @@ namespace DemoKLS
 		{
 			var mds = new MedicalDeviceStatus();
 			mds.Setting = setting;
-			bool success = await streamStatus.Publish(alice.Id, mds);
+			bool success = await streamStatus.Publish(bob.Id, mds);
 		}
 	}
 }
