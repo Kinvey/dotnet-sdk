@@ -199,7 +199,7 @@ namespace DemoKLS
 					OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
 					OnNext = async (senderID, message) => {
 						//Console.WriteLine("STREAM SenderID: " + senderID + " -- Command: " + message.Command);
-						if (message.Command.CompareTo("Inc") == 0)
+						if (message.Command == MedicalDeviceCommand.EnumCommand.INCREMENT)
 						{
 							settingValue++;
 						}
@@ -231,6 +231,9 @@ namespace DemoKLS
 				lookup = await Client.SharedClient.ActiveUser.LookupAsync(criteria);
 				bob = lookup[0];
 
+				// Set and send initial setting
+				InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(string.Empty, settingValue.ToString()));
+				await this.PublishStatus(settingValue.ToString());
 			}
 			catch (KinveyException e)
 			{
@@ -428,7 +431,7 @@ namespace DemoKLS
 			Window.RootViewController = navController;
 		}
 
-		public async Task PublishCommand(string command)
+		public async Task PublishCommand(MedicalDeviceCommand.EnumCommand command)
 		{
 			var mdc = new MedicalDeviceCommand();
 			mdc.Command = command;

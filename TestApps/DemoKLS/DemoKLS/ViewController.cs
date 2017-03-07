@@ -118,18 +118,18 @@ namespace DemoKLS
 
 			//View.AddSubview(buttonLoginCharlie);
 
-			buttonLoginDan = UIButton.FromType(UIButtonType.System);
-			buttonLoginDan.Frame = new CGRect(10, 400, w - 20, 44);
-			buttonLoginDan.SetTitle("Login Dan", UIControlState.Normal);
-			buttonLoginDan.SetTitleColor(UIColor.White, UIControlState.Normal);
-			buttonLoginDan.BackgroundColor = colorBackgroundButtonLogin;
+			//buttonLoginDan = UIButton.FromType(UIButtonType.System);
+			//buttonLoginDan.Frame = new CGRect(10, 400, w - 20, 44);
+			//buttonLoginDan.SetTitle("Login Dan", UIControlState.Normal);
+			//buttonLoginDan.SetTitleColor(UIColor.White, UIControlState.Normal);
+			//buttonLoginDan.BackgroundColor = colorBackgroundButtonLogin;
 
-			buttonLoginDan.TouchUpInside += async (sender, e) => {
-				AppDelegate myAppDel = (UIApplication.SharedApplication.Delegate as DemoKLS.AppDelegate);
-				await myAppDel.LoginDan();
-			};
+			//buttonLoginDan.TouchUpInside += async (sender, e) => {
+			//	AppDelegate myAppDel = (UIApplication.SharedApplication.Delegate as DemoKLS.AppDelegate);
+			//	await myAppDel.LoginDan();
+			//};
 
-			View.AddSubview(buttonLoginDan);
+			//View.AddSubview(buttonLoginDan);
 		}
 
 		public override void DidReceiveMemoryWarning()
@@ -146,6 +146,8 @@ namespace DemoKLS
 		nfloat h = 31.0f;
 		UIColor colorBackgroundButtonLogin = UIColor.FromRGB(5, 58, 114);
 		//UIColor colorBackgroundButtonLogin = UIColor.FromRGB(92, 127, 159);
+		UIColor colorDarkBlue = UIColor.FromRGB(7, 69, 126);
+		UIColor colorLightBlue = UIColor.FromRGB(92, 127, 159);
 
 		public override void ViewDidLoad()
 		{
@@ -162,8 +164,8 @@ namespace DemoKLS
 				Placeholder = "Sender ID",
 				Frame = new CGRect(10, 82, w - 20, h),
 				BorderStyle = UITextBorderStyle.RoundedRect,
-				BackgroundColor = UIColor.FromRGB(50, 50, 255),
-				TextColor = UIColor.White
+				BackgroundColor = UIColor.White,
+				TextColor = UIColor.Black
 			};
 
 			View.AddSubview(SenderIDView);
@@ -173,8 +175,8 @@ namespace DemoKLS
 				Placeholder = "Message",
 				Frame = new CGRect(10, 122, w - 20, h),
 				BorderStyle = UITextBorderStyle.RoundedRect,
-				BackgroundColor = UIColor.FromRGB(50, 50, 255),
-				TextColor = UIColor.White
+				BackgroundColor = UIColor.White,
+				TextColor = UIColor.Black
 			};
 
 			View.AddSubview(MessageView);
@@ -205,11 +207,11 @@ namespace DemoKLS
 			buttonLogout = UIButton.FromType(UIButtonType.System);
 			buttonLogout.Frame = new CGRect(10, 322, w - 20, 44);
 			buttonLogout.SetTitle("Logout", UIControlState.Normal);
-			buttonLogout.SetTitleColor(UIColor.Red, UIControlState.Normal);
-			buttonLogout.BackgroundColor = colorBackgroundButtonLogin;
+			buttonLogout.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			buttonLogout.BackgroundColor = UIColor.Gray;
 
 			var user = new UIViewController();
-			user.View.BackgroundColor = UIColor.FromRGB(7, 69,126);
+			user.View.BackgroundColor = colorDarkBlue;
 
 			buttonLogout.TouchUpInside += async (sender, e) => {
 				await myAppDel.Logout();
@@ -240,6 +242,8 @@ namespace DemoKLS
 		nfloat h = 31.0f;
 		//UIColor colorBackgroundButtonLogin = UIColor.FromRGB(5, 58, 114);
 		UIColor colorBackgroundButtonLogin = UIColor.FromRGB(92, 127, 159);
+		UIColor colorDarkBlue = UIColor.FromRGB(7, 69, 126);
+		UIColor colorLightBlue = UIColor.FromRGB(92, 127, 159);
 
 		public override void ViewDidLoad()
 		{
@@ -257,8 +261,8 @@ namespace DemoKLS
 				Placeholder = "Sender ID",
 				Frame = new CGRect(10, 82, w - 20, h),
 				BorderStyle = UITextBorderStyle.RoundedRect,
-				BackgroundColor = colorBackgroundButtonLogin,
-				TextColor = UIColor.White
+				BackgroundColor = UIColor.White,
+				TextColor = UIColor.Black
 			};
 
 			View.AddSubview(SenderIDView);
@@ -268,8 +272,8 @@ namespace DemoKLS
 				Placeholder = "Message",
 				Frame = new CGRect(10, 122, w - 20, h),
 				BorderStyle = UITextBorderStyle.RoundedRect,
-				BackgroundColor = colorBackgroundButtonLogin,
-				TextColor = UIColor.White
+				BackgroundColor = UIColor.White,
+				TextColor = UIColor.Black
 			};
 
 			View.AddSubview(MessageView);
@@ -285,12 +289,13 @@ namespace DemoKLS
 
 			UIButton buttonPublishDecrement;
 			buttonPublishDecrement = UIButton.FromType(UIButtonType.System);
-			buttonPublishDecrement.Frame = new CGRect(10, 242, buttonWidth, 44);
+			buttonPublishDecrement.Frame = new CGRect(10, 202, buttonWidth, 44);
 			buttonPublishDecrement.SetTitle("Decrement", UIControlState.Normal);
-			buttonPublishDecrement.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			buttonPublishDecrement.BackgroundColor = UIColor.Gray;
+			buttonPublishDecrement.SetTitleColor(UIColor.Red, UIControlState.Normal);
+			buttonPublishDecrement.BackgroundColor = colorLightBlue;
+			//buttonPublishDecrement.BackgroundColor = UIColor.Red;
 			buttonPublishDecrement.TouchUpInside += async (sender, e) => {
-				await myAppDel.PublishCommand("Dec");
+				await myAppDel.PublishCommand(MedicalDeviceCommand.EnumCommand.DECREMENT);
 				//PublishMessageView.Text = String.Empty;
 			};
 
@@ -298,12 +303,13 @@ namespace DemoKLS
 
 			UIButton buttonPublishIncrement;
 			buttonPublishIncrement = UIButton.FromType(UIButtonType.System);
-			buttonPublishIncrement.Frame = new CGRect(w - buttonWidth - 10, 242, buttonWidth, 44);
+			buttonPublishIncrement.Frame = new CGRect(w - buttonWidth - 10, 202, buttonWidth, 44);
 			buttonPublishIncrement.SetTitle("Increment", UIControlState.Normal);
-			buttonPublishIncrement.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			buttonPublishIncrement.BackgroundColor = UIColor.Gray;
+			buttonPublishIncrement.SetTitleColor(UIColor.Green, UIControlState.Normal);
+			buttonPublishIncrement.BackgroundColor = colorLightBlue;
+			//buttonPublishIncrement.BackgroundColor = UIColor.Green;
 			buttonPublishIncrement.TouchUpInside += async (sender, e) => {
-				await myAppDel.PublishCommand("Inc");
+				await myAppDel.PublishCommand(MedicalDeviceCommand.EnumCommand.INCREMENT);
 				//PublishMessageView.Text = String.Empty;
 			};
 
@@ -324,8 +330,8 @@ namespace DemoKLS
 			buttonLogout = UIButton.FromType(UIButtonType.System);
 			buttonLogout.Frame = new CGRect(10, 322, w - 20, 44);
 			buttonLogout.SetTitle("Logout", UIControlState.Normal);
-			buttonLogout.SetTitleColor(UIColor.Red, UIControlState.Normal);
-			buttonLogout.BackgroundColor = colorBackgroundButtonLogin;
+			buttonLogout.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			buttonLogout.BackgroundColor = UIColor.Gray;
 
 			var user = new UIViewController();
 			user.View.BackgroundColor = UIColor.FromRGB(7, 69, 126);
@@ -344,11 +350,11 @@ namespace DemoKLS
 
 		public void ChangeText(string sender, string msg)
 		{
-			SenderIDView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
-			SenderIDView.Text = "Sender ID: " + sender;
+			MessageView.Frame = new CGRect(10, 82, View.Bounds.Width - 20, h);
+			MessageView.Text = "Reading: " + msg;
 
-			MessageView.Frame = new CGRect(10, 122, View.Bounds.Width - 20, h);
-			MessageView.Text = "Message: " + msg;
+			SenderIDView.Frame = new CGRect(10, 122, View.Bounds.Width - 20, h);
+			SenderIDView.Text = "Roundtrip Time: " + sender;
 		}
 	}
 }

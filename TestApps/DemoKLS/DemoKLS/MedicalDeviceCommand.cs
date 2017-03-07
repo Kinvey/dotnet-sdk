@@ -7,6 +7,12 @@ namespace DemoKLS
 	public class MedicalDeviceCommand
 	{
 		[JsonProperty("command")]
-		public string Command { get; set; }
+		public EnumCommand Command { get; set; }
+
+		public enum EnumCommand
+		{
+			INCREMENT,
+			DECREMENT
+		}
 	}
 }
