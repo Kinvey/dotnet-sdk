@@ -206,7 +206,7 @@ namespace Kinvey
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add(Constants.STR_APP_KEY, ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey);
 			urlParameters.Add(Constants.STR_REALTIME_STREAM_NAME, StreamName);
-			urlParameters.Add("userID", KinveyClient.ActiveUser.Id);
+			urlParameters.Add("userID", subscribeID);
 
 			var requestStreamSubscribe = new StreamSubscribeAccessRequest(subscribeID, KinveyClient, urlParameters);
 			KinveyClient.InitializeRequest(requestStreamSubscribe);

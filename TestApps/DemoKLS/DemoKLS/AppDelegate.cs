@@ -28,6 +28,9 @@ namespace DemoKLS
 		Stream<MedicalDeviceCommand> streamCommand;
 		Stream<MedicalDeviceStatus> streamStatus;
 
+		User alice;
+		User bob;
+
 		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
 			// Override point for customization after application launch.
@@ -74,7 +77,6 @@ namespace DemoKLS
 			Client.Builder cb = new Client.Builder(appKey, appSecret)
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
 				.setOfflinePlatform(new SQLitePlatformIOS())
-				//.setBaseURL("http://127.0.0.1:7007/")
 				.setLogger(delegate (string msg)
 				{
 					Console.WriteLine(msg);
@@ -87,7 +89,7 @@ namespace DemoKLS
 
 			if (Client.SharedClient.IsUserLoggedIn())
 			{
-				var alreadyLoggedInController = new PubSubViewController();
+				var alreadyLoggedInController = new PatientViewController();
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
 			}
@@ -108,7 +110,7 @@ namespace DemoKLS
 			{
 				await User.LoginAsync("Alice", "alice");
 
-				var alreadyLoggedInController = new PubSubViewController();
+				var alreadyLoggedInController = new DoctorViewController();
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
 
@@ -141,9 +143,13 @@ namespace DemoKLS
 				var criteria = new UserDiscovery();
 				criteria.FirstName = "Bob";
 				var lookup = await Client.SharedClient.ActiveUser.LookupAsync(criteria);
-				User bob = lookup[0];
+				bob = lookup[0];
 
 				await streamStatus.Subscribe(bob.Id, streamDelegate);
+
+				criteria.FirstName = "Alice";
+				lookup = await Client.SharedClient.ActiveUser.LookupAsync(criteria);
+				alice = lookup[0];
 
 				//// Subscribe to status stream for Charlie
 				//criteria.FirstName = "Charlie";
@@ -173,14 +179,58 @@ namespace DemoKLS
 			{
 				await User.LoginAsync("Bob", "bob");
 
-				var alreadyLoggedInController = new PubSubViewController();
+				var alreadyLoggedInController = new PatientViewController();
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
 
 				// REALTIME REGISTRATION
+				int settingValue = 70;
 
 				// Register for realtime
 				await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+
+				// Create stream object corresponding to "meddevcmds" stream created on the backend
+				streamCommand = new Stream<MedicalDeviceCommand>("device_command");
+				streamStatus = new Stream<MedicalDeviceStatus>("device_status");
+
+				// Set up command subscribe delegate
+				var streamDelegate = new KinveyStreamDelegate<MedicalDeviceCommand>
+				{
+					OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
+					OnNext = async (senderID, message) => {
+						//Console.WriteLine("STREAM SenderID: " + senderID + " -- Command: " + message.Command);
+						if (message.Command.CompareTo("Inc") == 0)
+						{
+							settingValue++;
+						}
+						else
+						{
+							settingValue--;
+						}
+						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(senderID, settingValue.ToString()));
+						await this.PublishStatus(settingValue.ToString());
+					},
+					OnStatus = (status) => {
+						Console.WriteLine("Status: " + status.Status);
+						Console.WriteLine("Status Message: " + status.Message);
+						Console.WriteLine("Status Channel: " + status.Channel);
+						Console.WriteLine("Status Channel Group: " + status.ChannelGroup);
+					}
+				};
+
+				// Subscribe to command stream for Alice
+				var criteria = new UserDiscovery();
+				criteria.FirstName = "Alice";
+				var lookup = await Client.SharedClient.ActiveUser.LookupAsync(criteria);
+				alice = lookup[0];
+
+				await streamCommand.Subscribe(alice.Id, streamDelegate);
+
+				// Alice
+				criteria.FirstName = "Bob";
+				lookup = await Client.SharedClient.ActiveUser.LookupAsync(criteria);
+				bob = lookup[0];
+
 			}
 			catch (KinveyException e)
 			{
@@ -197,35 +247,39 @@ namespace DemoKLS
 			return Client.SharedClient.ActiveUser;
 		}
 
-		public async Task<User> LoginCharlie()
-		{
-			try
-			{
-				await User.LoginAsync("Charlie", "charlie");
+		//public async Task<User> LoginCharlie()
+		//{
+		//	try
+		//	{
+		//		await User.LoginAsync("Charlie", "charlie");
 
-				var alreadyLoggedInController = new PubSubViewController();
-				var navController = new UINavigationController(alreadyLoggedInController);
-				Window.RootViewController = navController;
+		//		var alreadyLoggedInController = new PatientViewController();
+		//		var navController = new UINavigationController(alreadyLoggedInController);
+		//		Window.RootViewController = navController;
 
-				// REALTIME REGISTRATION
+		//		// REALTIME REGISTRATION
 
-				// Register for realtime
-				await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
-			}
-			catch (KinveyException e)
-			{
-				if (e.ErrorCategory == EnumErrorCategory.ERROR_REALTIME)
-				{
-					Console.WriteLine("VRG (exception caught) Exception from Realtime operation");
-				}
-				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
-				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
-				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
-				Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
-			}
+		//		// Register for realtime
+		//		await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
 
-			return Client.SharedClient.ActiveUser;
-		}
+		//		// Create stream object corresponding to "meddevcmds" stream created on the backend
+		//		streamCommand = new Stream<MedicalDeviceCommand>("device_command");
+		//		streamStatus = new Stream<MedicalDeviceStatus>("device_status");
+		//	}
+		//	catch (KinveyException e)
+		//	{
+		//		if (e.ErrorCategory == EnumErrorCategory.ERROR_REALTIME)
+		//		{
+		//			Console.WriteLine("VRG (exception caught) Exception from Realtime operation");
+		//		}
+		//		Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
+		//		Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
+		//		Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
+		//		Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
+		//	}
+
+		//	return Client.SharedClient.ActiveUser;
+		//}
 
 		public async Task<User> LoginDan()
 		{
@@ -233,7 +287,7 @@ namespace DemoKLS
 			{
 				await User.LoginAsync("Dan", "dan");
 
-				var alreadyLoggedInController = new PubSubViewController();
+				var alreadyLoggedInController = new PatientViewController();
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
 
@@ -264,22 +318,23 @@ namespace DemoKLS
 				//lookup = await Client.SharedClient.ActiveUser.LookupAsync(criteria);
 				//User charlie = lookup[0];
 
-				//// Grant stream access for the device stream
-				//var streamACLDeviceAlice = new StreamAccessControlList();
-				//streamACLDeviceAlice.Publishers.Add(alice.Id);
-				//bool resultGrantDevice = await streamCommand.GrantStreamAccess(alice.Id, streamACLDeviceAlice);
+				// Grant stream access for the device stream
+				var streamACLDeviceAlice = new StreamAccessControlList();
+				streamACLDeviceAlice.Publishers.Add(alice.Id);
+				streamACLDeviceAlice.Subscribers.Add(bob.Id);
+				bool resultGrantDevice = await streamCommand.GrantStreamAccess(alice.Id, streamACLDeviceAlice);
 
 				//var streamACLDeviceBob = new StreamAccessControlList();
 				//streamACLDeviceBob.Subscribers.Add(bob.Id);
 				//bool resultGrantDeviceBob = await streamCommand.GrantStreamAccess(alice.Id, streamACLDeviceBob);
 
-				//// Grant stream access for the status stream
-				//var streamACLStatusBob = new StreamAccessControlList();
-				//streamACLStatusBob.Publishers.Add(bob.Id);
-				//streamACLStatusBob.Publishers.Add(alice.Id);
-				//streamACLStatusBob.Subscribers.Add(alice.Id);
-				//streamACLStatusBob.Subscribers.Add(bob.Id);
-				//bool resultGrantStatusBob = await streamStatus.GrantStreamAccess(bob.Id, streamACLStatusBob);
+				// Grant stream access for the status stream
+				var streamACLStatusBob = new StreamAccessControlList();
+				streamACLStatusBob.Publishers.Add(bob.Id);
+				streamACLStatusBob.Publishers.Add(alice.Id);
+				streamACLStatusBob.Subscribers.Add(alice.Id);
+				streamACLStatusBob.Subscribers.Add(bob.Id);
+				bool resultGrantStatusBob = await streamStatus.GrantStreamAccess(bob.Id, streamACLStatusBob);
 
 				var streamACLStatusAlice = new StreamAccessControlList();
 				streamACLStatusAlice.Subscribers.Add(alice.Id);
@@ -309,7 +364,7 @@ namespace DemoKLS
 			{
 				await User.LoginAsync(user, pass);
 
-				var alreadyLoggedInController = new PubSubViewController();
+				var alreadyLoggedInController = new PatientViewController();
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
 
@@ -373,11 +428,18 @@ namespace DemoKLS
 			Window.RootViewController = navController;
 		}
 
-		public async Task PublishStatus(string command)
+		public async Task PublishCommand(string command)
+		{
+			var mdc = new MedicalDeviceCommand();
+			mdc.Command = command;
+			bool success = await streamCommand.Publish(bob.Id, mdc);
+		}
+
+		public async Task PublishStatus(string setting)
 		{
 			var mds = new MedicalDeviceStatus();
-			mds.Setting = "4";
-			bool success = await streamStatus.Publish(Client.SharedClient.ActiveUser.Id, mds);
+			mds.Setting = setting;
+			bool success = await streamStatus.Publish(alice.Id, mds);
 		}
 	}
 }
