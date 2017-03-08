@@ -12,13 +12,8 @@
 // contents is a violation of applicable laws.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
-using Moq;
 using NUnit.Framework;
-
 using Kinvey;
 
 namespace TestFramework
@@ -29,15 +24,12 @@ namespace TestFramework
 		private Client kinveyClient;
 
 		private const string collectionName = "ToDos";
-		private const string user = "Test";
-		private const string pass = "test";
 
 		[SetUp]
 		public void Setup()
 		{
-			string appKey = "kid_BJYSU7Yug", appSecret = "9dc0806a28df425999f73767554d068d"; // [local] RealtimeTestApp
+			string appKey = "kid_Zy0JOYPKkZ", appSecret = "d83de70e64d540e49acd6cfce31415df"; // UnitTestFramework
 			Client.Builder builder = new Client.Builder(appKey, appSecret)
-				.setBaseURL("http://127.0.0.1:7007/")
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
@@ -56,7 +48,7 @@ namespace TestFramework
 		public async Task TestRealtimeRegistration()
 		{
 			// Setup
-			await User.LoginAsync(user, pass, kinveyClient);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 
@@ -74,7 +66,7 @@ namespace TestFramework
 		public async Task TestRealtimeUnregistration()
 		{
 			// Setup
-			await User.LoginAsync(user, pass, kinveyClient);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 
@@ -92,7 +84,7 @@ namespace TestFramework
 		public async Task TestRealtimeCollectionSubscription()
 		{
 			// Setup
-			await User.LoginAsync(user, pass, kinveyClient);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			var autoEvent = new System.Threading.AutoResetEvent(false);
@@ -128,6 +120,7 @@ namespace TestFramework
 			Assert.AreEqual(0, ent.Details.CompareTo("Test Todo Details"));
 
 			// Teardown
+			await store.RemoveAsync(todo.ID);
 			await store.Unsubscribe();
 			await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
 			kinveyClient.ActiveUser.Logout();
@@ -137,14 +130,14 @@ namespace TestFramework
 		public async Task TestRealtimeUserCommunication()
 		{
 			// Setup
-			await User.LoginAsync(user, pass, kinveyClient);
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
 			var autoEvent = new System.Threading.AutoResetEvent(false);
 			await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
 
 			// Create stream object corresponding to "meddevcmds" stream created on the backend
-			Stream<ToDo> stream = new Stream<ToDo>("meddevcmds");
+			Stream<ToDo> stream = new Stream<ToDo>("todo_stream");
 
 			// Grant stream access to active user for both publish and subscribe actions
 			var streamACL = new StreamAccessControlList();
