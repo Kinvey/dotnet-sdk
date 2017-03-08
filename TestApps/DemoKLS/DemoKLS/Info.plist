@@ -3,9 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>Realtime</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.kinvey.realtime</string>
+	<string>Demo-KLS</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
@@ -35,5 +33,7 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.kinvey.demokls</string>
 </dict>
 </plist>

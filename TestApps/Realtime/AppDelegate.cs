@@ -119,7 +119,7 @@ namespace Realtime
 
 				// Subscribe to collection for realtime updates
 				DataStore<ToDo> store = DataStore<ToDo>.Collection("ToDo", DataStoreType.NETWORK, Client.SharedClient);
-				await store.Subscribe(new KinveyRealtimeDelegate<ToDo>
+				await store.Subscribe(new KinveyDataStoreDelegate<ToDo>
 				{
 					OnError = (err) => Console.WriteLine("Error: " + err.Message),
 					OnNext = (result) => {
@@ -153,12 +153,12 @@ namespace Realtime
 				bool resultGrant = await stream.GrantStreamAccess(Client.SharedClient.ActiveUser.Id, streamACL);
 
 				// Subscribe to user-to-user stream
-				await stream.Subscribe(Client.SharedClient.ActiveUser.Id, new KinveyRealtimeDelegate<MedicalDeviceCommand>
+				await stream.Subscribe(Client.SharedClient.ActiveUser.Id, new KinveyStreamDelegate<MedicalDeviceCommand>
 				{
 					OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
-					OnNext = (message) => {
-						Console.WriteLine("STREAM SenderID: " + message.SenderID + " -- Command: " + message.Command);
-						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(message.SenderID, message.Command));
+					OnNext = (senderID, message) => {
+						Console.WriteLine("STREAM SenderID: " + senderID + " -- Command: " + message.Command);
+						InvokeOnMainThread(() => alreadyLoggedInController.ChangeText(senderID, message.Command));
 					},
 					OnStatus = (status) => {
 						Console.WriteLine("Status: " + status.Status);

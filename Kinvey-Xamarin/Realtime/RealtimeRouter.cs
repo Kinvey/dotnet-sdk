@@ -29,7 +29,7 @@ namespace Kinvey
 
 		private PubNubMessaging.Core.Pubnub pubnubClient;
 
-		private Dictionary<string, KinveyRealtimeDelegate<string>> mapChannelToCallback;
+		private Dictionary<string, KinveyRealtimeDelegate> mapChannelToCallback;
 
 		private AbstractClient KinveyClient { get; set; }
 
@@ -74,7 +74,7 @@ namespace Kinvey
 
 							//FOR UNIQUE DEVICE GUID GENERATION --> Guid deviceGUID = pubnubClient.GenerateGuid(); string deviceID = deviceGUID.ToString();
 							instance.KinveyClient = client;
-							instance.mapChannelToCallback = new Dictionary<string, KinveyRealtimeDelegate<string>>();
+							instance.mapChannelToCallback = new Dictionary<string, KinveyRealtimeDelegate>();
 						}
 					}
 				}
@@ -108,12 +108,10 @@ namespace Kinvey
 
 		internal bool Publish(string channel, string receiverID, object message)
 		{
-			(message as IStreamable).SenderID = KinveyClient.ActiveUser.Id;
-
 			return pubnubClient.Publish<string>(channel, message, PublishCallback, PubnubClientPublishErrorCallback);
 		}
 
-		internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate<string> callback)
+		internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate callback)
 		{
 			string channel = Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
 			AddChannel(channel, callback);
@@ -125,7 +123,7 @@ namespace Kinvey
 			RemoveChannel(channel);
 		}
 
-		internal void SubscribeStream(string streamName, KinveyRealtimeDelegate<string> callback)
+		internal void SubscribeStream(string streamName, KinveyRealtimeDelegate callback)
 		{
 			string channel = Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
 			AddChannel(channel, callback);
@@ -256,7 +254,7 @@ namespace Kinvey
 
 		#region Helper methods
 
-		void AddChannel(string channel, KinveyRealtimeDelegate<string> callback)
+		void AddChannel(string channel, KinveyRealtimeDelegate callback)
 		{
 			if (mapChannelToCallback.ContainsKey(channel))
 			{

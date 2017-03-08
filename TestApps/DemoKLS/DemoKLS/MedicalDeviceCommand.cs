@@ -1,12 +1,18 @@
 ﻿using Newtonsoft.Json;
 using Kinvey;
 
-namespace Realtime
+namespace DemoKLS
 {
 	[JsonObject(MemberSerialization.OptIn)]
 	public class MedicalDeviceCommand
 	{
 		[JsonProperty("command")]
-		public string Command { get; set; }
+		public EnumCommand Command { get; set; }
+
+		public enum EnumCommand
+		{
+			INCREMENT,
+			DECREMENT
+		}
 	}
 }

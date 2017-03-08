@@ -22,9 +22,9 @@ namespace Kinvey
 {
 	/// <summary>
 	/// </summary>
-	public class Stream<T> where T : IStreamable
+	public class Stream<T>
 	{
-		KinveyRealtimeDelegate<T> RealtimeDelegate { get; set; }
+		KinveyStreamDelegate<T> RealtimeDelegate { get; set; }
 
 		private Dictionary<string, string> mapPublishReceiverToChannel;
 
@@ -92,7 +92,8 @@ namespace Kinvey
 
 			if (!String.IsNullOrEmpty(publishChannel))
 			{
-				result = RealtimeRouter.Instance.Publish(publishChannel, receiverID, message);
+				var realtimeMessage = new RealtimeMessage<T>(KinveyClient.ActiveUser.Id, message);
+				result = RealtimeRouter.Instance.Publish(publishChannel, receiverID, realtimeMessage);
 			}
 
 			return result;
@@ -103,7 +104,7 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="subscribeID">The ID of the user to subscribe to.</param>
 		/// <param name="realtimeHandler">Delegate used to forward realtime messages.</param>
-		public async Task<bool> Subscribe(string subscribeID, KinveyRealtimeDelegate<T> realtimeHandler)
+		public async Task<bool> Subscribe(string subscribeID, KinveyStreamDelegate<T> realtimeHandler)
 		{
 			bool success = false;
 
@@ -120,12 +121,12 @@ namespace Kinvey
 			{
 				RealtimeDelegate = realtimeHandler;
 
-				KinveyRealtimeDelegate<string> routerDelegate = new KinveyRealtimeDelegate<string>
+				var routerDelegate = new KinveyRealtimeDelegate
 				{
 					OnError = (error) => RealtimeDelegate.OnError(error),
 					OnNext = (message) => {
-						var messageObj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(message);
-						RealtimeDelegate.OnNext(messageObj);
+						var realtimeMessage = Newtonsoft.Json.JsonConvert.DeserializeObject<RealtimeMessage<T>>(message);
+						RealtimeDelegate.OnNext(realtimeMessage.SenderID, realtimeMessage.Message);
 					},
 					OnStatus = (status) => RealtimeDelegate.OnStatus(status)
 				};
@@ -192,7 +193,7 @@ namespace Kinvey
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add(Constants.STR_APP_KEY, ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey);
 			urlParameters.Add(Constants.STR_REALTIME_STREAM_NAME, StreamName);
-			urlParameters.Add("userID", KinveyClient.ActiveUser.Id);
+			urlParameters.Add("userID", receiverID);
 
 			var requestStreamPublish = new StreamPublishAccessRequest(receiverID, KinveyClient, urlParameters);
 			KinveyClient.InitializeRequest(requestStreamPublish);
@@ -205,7 +206,7 @@ namespace Kinvey
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add(Constants.STR_APP_KEY, ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey);
 			urlParameters.Add(Constants.STR_REALTIME_STREAM_NAME, StreamName);
-			urlParameters.Add("userID", KinveyClient.ActiveUser.Id);
+			urlParameters.Add("userID", subscribeID);
 
 			var requestStreamSubscribe = new StreamSubscribeAccessRequest(subscribeID, KinveyClient, urlParameters);
 			KinveyClient.InitializeRequest(requestStreamSubscribe);
