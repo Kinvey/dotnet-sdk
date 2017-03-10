@@ -60,16 +60,11 @@ namespace Kinvey
 			{
 				StringQueryBuilder queryBuilder = new StringQueryBuilder();
 
-				queryBuilder.Reset();
-
 				KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
-
-				QueryModel queryModel = (Query.Provider as KinveyQueryProvider).qm;
+				QueryModel queryModel = (Query.Provider as KinveyQueryProvider)?.qm;
 
 				queryBuilder.Write("{");
-
-				queryModel.Accept(visitor);
-
+				queryModel?.Accept(visitor);
 				queryBuilder.Write("}");
 
 				string mongoQuery = queryBuilder.BuildQueryString();
