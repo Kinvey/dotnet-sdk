@@ -23,6 +23,7 @@
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
       <dependency id="Xamarin.GooglePlayServices.Gcm" version="27.0.0.0"/>
       <dependency id="Kinvey" version="3.0.2"/>
+      <dependency id="Xam.Plugin.DeviceInfo" version="2.1.2"/>
     </dependencies>
   </metadata>
   <files>
