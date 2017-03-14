@@ -23,6 +23,7 @@ namespace Realtime
 		string appKey = "kid_BJYSU7Yug", appSecret = "9dc0806a28df425999f73767554d068d"; // [local] RealtimeTestApp
 
 		LoginViewController vc;
+		PubSubViewController alreadyLoggedInController;
 
 		Stream<MedicalDeviceCommand> stream;
 
@@ -84,9 +85,11 @@ namespace Realtime
 
 			if (Client.SharedClient.IsUserLoggedIn())
 			{
-				var alreadyLoggedInController = new Realtime.PubSubViewController();
+				alreadyLoggedInController = new Realtime.PubSubViewController();
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
+
+				RealtimeSetup();
 			}
 			else
 			{
@@ -105,10 +108,31 @@ namespace Realtime
 			{
 				await User.LoginAsync(user, pass);
 
-				var alreadyLoggedInController = new Realtime.PubSubViewController();
+				alreadyLoggedInController = new Realtime.PubSubViewController();
 				var navController = new UINavigationController(alreadyLoggedInController);
 				Window.RootViewController = navController;
 
+				await RealtimeSetup();
+			}
+			catch (KinveyException e)
+			{
+				if (e.ErrorCategory == EnumErrorCategory.ERROR_REALTIME)
+				{
+					Console.WriteLine("VRG (exception caught) Exception from Realtime operation");
+				}
+				Console.WriteLine("VRG (exception caught) Exception Error -> " + e.Error);
+				Console.WriteLine("VRG (exception caught) Exception Description -> " + e.Description);
+				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
+				Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
+			}
+
+			return Client.SharedClient.ActiveUser;
+		}
+
+		public async Task RealtimeSetup()
+		{
+			try
+			{
 				// REALTIME REGISTRATION
 
 				// Register for realtime
@@ -179,8 +203,6 @@ namespace Realtime
 				Console.WriteLine("VRG (exception caught) Exception Debug -> " + e.Debug);
 				Console.WriteLine("VRG (exception caught) Exception Request ID -> " + e.RequestID);
 			}
-
-			return Client.SharedClient.ActiveUser;
 		}
 
 		public async Task Logout()
