@@ -104,7 +104,7 @@ namespace Kinvey
 		{
 			CredentialManager credentialManager = new CredentialManager(this.abstractClient.Store);
 
-			Credential activeUserCredential = credentialManager.CreateAndStoreCredential(response, response.UserId, abstractClient.SSOGroupKey);
+			Credential activeUserCredential = credentialManager.CreateAndStoreCredential(response, response.UserId, abstractClient.SSOGroupKey, abstractClient.DeviceID);
 
 			return InitUser(activeUserCredential);
 		}

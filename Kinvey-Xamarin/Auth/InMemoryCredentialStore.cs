@@ -55,7 +55,7 @@ namespace Kinvey
         {
             if (userId != null)
             {
-				Credential cred = new Credential(userId, credential.AccessToken, credential.AuthToken, credential.UserName, credential.Attributes, credential.UserKMD, credential.RefreshToken, credential.RedirectUri);
+				Credential cred = new Credential(userId, credential.AccessToken, credential.AuthToken, credential.UserName, credential.Attributes, credential.UserKMD, credential.RefreshToken, credential.RedirectUri, credential.DeviceID);
                 store.Add(userId, cred);
             }
         }

@@ -194,6 +194,10 @@ namespace Kinvey
 
 				return _deviceID;
 			}
+			set
+			{
+				_deviceID = value;
+			}
 		}
 
 		/// <summary>

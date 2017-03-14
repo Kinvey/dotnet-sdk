@@ -70,6 +70,12 @@ namespace Kinvey
 		private KinveyUserMetaData userKMD;
 
 		/// <summary>
+		/// The device ID associated with this user.
+		/// </summary>
+		[DataMember]
+		public string DeviceID { get; set; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
 		[Preserve]
@@ -95,7 +101,8 @@ namespace Kinvey
 		                  Dictionary<string, JToken> attributes,
 		                  KinveyUserMetaData kmd,
 		                  string refreshToken,
-		                  string redirectURI)
+		                  string redirectURI,
+		                  string deviceID)
 		{
 			this.userId = userId;
 			this.AccessToken = accessToken;
@@ -105,6 +112,7 @@ namespace Kinvey
 			this.userKMD = kmd;
 			this.RefreshToken = refreshToken;
 			this.RedirectUri = redirectURI;
+			this.DeviceID = deviceID;
 		}
 		/// <summary>
 		/// Gets or sets the user _id.
@@ -172,7 +180,7 @@ namespace Kinvey
 		/// <param name="response">The response of a Kinvey login/create request.</param>
 		public static Credential From(KinveyAuthResponse response)
 		{
-			return new Credential(response.UserId, response.AccessToken, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null);
+			return new Credential(response.UserId, response.AccessToken, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null, null);
 		}
 
 		/// <summary>
@@ -181,7 +189,7 @@ namespace Kinvey
 		/// <param name="user">User.</param>
 		public static Credential From(User user)
 		{
-			return new Credential(user.Id, user.AccessToken, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null);
+			return new Credential(user.Id, user.AccessToken, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null, user.KinveyClient.DeviceID);
 		}
 
 		public static Credential From(NativeCredential nc)
@@ -193,7 +201,8 @@ namespace Kinvey
 			                      JsonConvert.DeserializeObject<Dictionary<string, JToken>>(nc.Properties[Constants.STR_ATTRIBUTES]),
 			                      JsonConvert.DeserializeObject<KinveyUserMetaData>(nc.Properties[Constants.STR_USER_KMD]),
 			                      nc.Properties[Constants.STR_REFRESH_TOKEN],
-			                      nc.Properties[Constants.STR_REDIRECT_URI]);
+			                      nc.Properties[Constants.STR_REDIRECT_URI],
+			                      null);
 		}
 	}
 }

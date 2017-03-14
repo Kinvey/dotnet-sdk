@@ -194,6 +194,7 @@ namespace Kinvey
 				Credential currentCredential = this.Store.GetStoredCredential(this.ssoGroupKey);
 				if (currentCredential != null)
 				{
+					c.DeviceID = currentCredential.DeviceID;
 					User.LoginAsync(currentCredential, c);
 				}
 

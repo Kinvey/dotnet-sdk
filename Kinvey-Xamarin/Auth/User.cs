@@ -208,7 +208,7 @@ namespace Kinvey
 			this.Attributes = response.Attributes;
 			this.Metadata = response.UserMetaData;
             CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-			((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id, KinveyClient.SSOGroupKey);
+			((KinveyClientRequestInitializer) KinveyClient.RequestInitializer).KinveyCredential = credentialManager.CreateAndStoreCredential(response, this.id, KinveyClient.SSOGroupKey, KinveyClient.DeviceID);
             return this;
         }
 
@@ -418,6 +418,7 @@ namespace Kinvey
 			lock (classLock)
 			{
 				RealtimeRouter.Uninitialize();
+				this.KinveyClient.DeviceID = null;
 
 				LogoutRequest logoutRequest = buildLogoutRequest();
 				logoutRequest.Execute();

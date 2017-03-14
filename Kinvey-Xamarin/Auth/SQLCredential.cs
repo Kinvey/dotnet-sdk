@@ -66,4 +66,10 @@ public class SQLCredential
 	/// </summary>
 	/// <value>The attributes dictionary</value>
 	public string Attributes { get; set; }
+
+	/// <summary>
+	/// Gets or sets the device ID associated with this active user.
+	/// </summary>
+	/// <value>The attributes dictionary</value>
+	public string DeviceID { get; set; }
 }
