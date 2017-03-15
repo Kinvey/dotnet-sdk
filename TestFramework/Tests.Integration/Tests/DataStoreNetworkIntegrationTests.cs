@@ -128,7 +128,7 @@ namespace TestFramework
 
 			Assert.NotNull(er);
 			KinveyException ke = er as KinveyException;
-			Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
+			Assert.AreEqual(EnumErrorCode.ERROR_GENERAL, ke.ErrorCode);
 
 			// Teardown
 			c.ActiveUser.Logout();

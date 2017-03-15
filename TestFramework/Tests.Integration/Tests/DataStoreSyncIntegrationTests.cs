@@ -631,6 +631,42 @@ namespace TestFramework
 		}
 
 		[Test]
+		public async Task TestSyncQueueAddThenDelete()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			ToDo newItem = new ToDo();
+			newItem.Name = "Task to save to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem = await todoStore.SaveAsync(newItem);
+			var responseDelete = await todoStore.RemoveAsync(newItem.ID);
+
+			// Act
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			var pushresp = await todoStore.PushAsync();
+			int syncQueueCount = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+
+			// Assert
+			Assert.NotNull(pwa);
+			Assert.IsNotNull(pwa.entityId);
+			Assert.IsNotEmpty(pwa.entityId);
+			Assert.True(String.Equals(collectionName, pwa.collection));
+			Assert.True(String.Equals("DELETE", pwa.action));
+			Assert.NotNull(pushresp);
+			Assert.NotNull(pushresp.KinveyExceptions);
+			Assert.AreEqual(1, pushresp.KinveyExceptions.Count);
+			Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, pushresp.KinveyExceptions.First().ErrorCode);
+			Assert.AreEqual(1, syncQueueCount);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestSyncQueuePush()
 		{
 			// Setup
