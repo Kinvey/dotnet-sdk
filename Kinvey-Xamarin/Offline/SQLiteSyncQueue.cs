@@ -54,7 +54,14 @@ namespace Kinvey
 				else if (pending.action == "DELETE")
 				{
 					// no matter what, favor the current deletion
-					this.Remove(existingSyncItem.entityId);
+					int countDeleted = this.Remove(existingSyncItem.entityId);
+
+					// If the existing item that is being deleted is something that only existed locally,
+					// do not insert the DELETE action into the queue, since it is local-only
+					if (existingSyncItem.entityId.StartsWith("temp_", StringComparison.OrdinalIgnoreCase))
+					{
+						return countDeleted;
+					}
 				}
 			}
 
