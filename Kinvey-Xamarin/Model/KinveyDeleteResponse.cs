@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Kinvey
@@ -26,13 +27,21 @@ namespace Kinvey
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyDeleteResponse"/> class.
 		/// </summary>
 		public KinveyDeleteResponse ()
-		{}
+		{
+		}
 		/// <summary>
 		/// Gets or sets the count of entities deleted.
 		/// </summary>
 		/// <value>The count.</value>
 		[JsonProperty]
 		public int count{get; set;}
+
+		/// <summary>
+		/// Represents the IDs of the entities deleted, when available.
+		/// For internal use only.
+		/// </summary>
+		/// <value>List of IDs for deleted entities</value>
+		internal List<string> IDs { get; set;}
 	}
 }
 

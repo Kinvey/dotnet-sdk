@@ -31,6 +31,7 @@ namespace Kinvey
 		PendingWriteAction GetByID(string entityId);
 
 		int Remove (string entityId);
+		int Remove(List<string> entityIDs);
 		int RemoveAll ();
 	}
 }

@@ -511,52 +511,59 @@ namespace Kinvey
 		/// <summary>
 		/// Clear this local cache table of all its content.
 		/// </summary>
-		public KinveyDeleteResponse Clear(Expression expr)
+		public KinveyDeleteResponse Clear(Expression expr = null)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
-
 			try
 			{
-				int skipNumber = 0;
-				int takeNumber = 0;
-
-				var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
-
-				if (lambdaExpr == null && skipNumber == 0 && takeNumber == 0)
+				if (expr == null)
 				{
 					kdr.count = dbConnectionSync.DeleteAll<T>();
 				}
-				else if (skipNumber == 0) { 
-					List<T> results;
+				else { 
+					int skipNumber = 0;
+					int takeNumber = 0;
 
-					var query = dbConnectionSync.Table<T>();
-					if (lambdaExpr != null)
+					var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
+
+					if (lambdaExpr == null && skipNumber == 0 && takeNumber == 0)
 					{
-						query = query.Where(lambdaExpr);
+						kdr.count = dbConnectionSync.DeleteAll<T>();
 					}
-
-					if (takeNumber != 0)
+					else if (skipNumber == 0)
 					{
-						query = query.Take(takeNumber);
+						List<T> results;
+
+						var query = dbConnectionSync.Table<T>();
+						if (lambdaExpr != null)
+						{
+							query = query.Where(lambdaExpr);
+						}
+
+						if (takeNumber != 0)
+						{
+							query = query.Take(takeNumber);
+						}
+
+						results = query.ToList();
+
+						List<string> matchIDs = new List<string>();
+						foreach (var match in results)
+						{
+							IPersistable entity = match as IPersistable;
+							matchIDs.Add(entity.ID);
+						}
+
+						kdr = this.DeleteByIDs(matchIDs);
 					}
-
-					results = query.ToList();
-
-					List<string> matchIDs = new List<string>();
-					foreach (var match in results)
+					else
 					{
-						IPersistable entity = match as IPersistable;
-						matchIDs.Add(entity.ID);
+						// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
+						// Do nothing here.					
 					}
-
-					kdr = this.DeleteByIDs(matchIDs);
 				}
-				else
-				{
-					// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
-					// Do nothing here.					
-				}
+
 			}
 			catch (SQLiteException e)
 			{
@@ -573,6 +580,9 @@ namespace Kinvey
 			try
 			{
 				kdr.count = dbConnectionSync.Delete<T>(id);
+				var ids = new List<string>();
+				ids.Add(id);
+				kdr.IDs = ids;
 			}
 			catch (SQLiteException e)
 			{
@@ -595,6 +605,7 @@ namespace Kinvey
 				kdr.count += DeleteByID(ID).count;
 			}
 
+			kdr.IDs = new List<string>(IDs);
 			return kdr;
 		}
 
