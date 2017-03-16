@@ -1045,6 +1045,114 @@ namespace TestFramework
 			kinveyClient.ActiveUser.Logout();
 		}
 
+		[Test]
+		public async Task TestPurge() { 
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			await store.SaveAsync(new Person());
+			Assert.AreEqual(store.GetSyncCount(), 1);
+
+			store.Purge();
+			Assert.AreEqual(store.GetSyncCount(), 0);
+			ICache<Person> cache = kinveyClient.CacheManager.GetCache<Person>("Person");
+			Assert.AreEqual(cache.CountAll(), 1);
+
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestPurgeByQuery()
+		{
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			var person1 = new Person();
+			person1.FirstName = "james";
+			await store.SaveAsync(person1);
+
+			var person2 = new Person();
+			person2.FirstName = "bond";
+			await store.SaveAsync(person2);
+
+			ICache<Person> cache = kinveyClient.CacheManager.GetCache<Person>("Person");
+			Assert.AreEqual(cache.CountAll(), 2);
+			Assert.AreEqual(store.GetSyncCount(), 2);
+
+			var query = store.Where(x => x.FirstName.Equals(person2.FirstName));
+			var result = store.Purge(query);
+			Assert.AreEqual(result, 1);
+			Assert.AreEqual(cache.CountAll(), 2);
+			Assert.AreEqual(store.GetSyncCount(), 1);
+
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestClear() { 
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			await store.SaveAsync(new Person());
+
+			ICache<Person> cache = kinveyClient.CacheManager.GetCache<Person>("Person");
+			Assert.AreEqual(cache.CountAll(), 1);
+			Assert.AreEqual(store.GetSyncCount(), 1);
+
+			var result = store.ClearCache();
+			Assert.AreEqual(result.count, 1);
+			Assert.AreEqual(cache.CountAll(), 0);
+			Assert.AreEqual(store.GetSyncCount(), 0);
+
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestClearByQuery()
+		{
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			var person1 = new Person();
+			person1.FirstName = "james";
+			await store.SaveAsync(person1);
+
+			var person2 = new Person();
+			person2.FirstName = "bond";
+			await store.SaveAsync(person2);
+
+			ICache<Person> cache = kinveyClient.CacheManager.GetCache<Person>("Person");
+			Assert.AreEqual(cache.CountAll(), 2);
+			Assert.AreEqual(store.GetSyncCount(), 2);
+
+			var query = store.Where(x => x.FirstName.Equals(person2.FirstName));
+			var result = store.ClearCache(query);
+			Assert.AreEqual(result.count, 1);
+			Assert.AreEqual(cache.CountAll(), 1);
+			Assert.AreEqual(store.GetSyncCount(), 1);
+
+			kinveyClient.ActiveUser.Logout();
+		}
 		#endregion
 	}
 }

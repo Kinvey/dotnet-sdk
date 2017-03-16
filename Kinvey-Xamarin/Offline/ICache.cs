@@ -112,7 +112,7 @@ namespace Kinvey
 		/// </summary>
 		/// <returns>A KinveyDeleteResponse object.</returns>
 		/// <param name="expr">Expression derived from QueryModel object.</param>
-		KinveyDeleteResponse Clear(Expression expr);
+		KinveyDeleteResponse Clear(Expression expr = null);
 
 		/// <summary>
 		/// Deletes the cached item by ID.

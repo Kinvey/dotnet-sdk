@@ -368,6 +368,44 @@ namespace Kinvey
 			return syncQueue.Count(allCollections);
 		}
 
+		/// <summary>
+		/// Removes data from local storage. This does not affect the backend.
+		/// </summary>
+		/// <returns>Details of the clear operation, including the number of entities that were cleared.</returns>
+		/// <param name="query">Optional Query parameter.</param>
+		public KinveyDeleteResponse ClearCache(IQueryable<T> query = null)
+		{
+			var ret = cache.Clear(query?.Expression);
+			if (ret?.IDs != null)
+			{
+				syncQueue.Remove(ret.IDs);
+			}
+			else {
+				syncQueue.RemoveAll();
+			}
+			return ret;
+		}
+
+		/// <summary>
+		/// Removes pending write operations from local storage. This prevents changes made on the client from being persisted on the backend.
+		/// </summary>
+		/// <returns>The number of pending operations that were purged.</returns>
+		/// <param name="query">Optional Query parameter.</param>
+		public int Purge(IQueryable<T> query = null)
+		{
+			if (query!=null) 
+			{
+				var ids = new List<string>();
+				var entities = cache.FindByQuery(query.Expression);
+				foreach (var entity in entities) {					
+					ids.Add((entity as IPersistable).ID);
+				}
+				return syncQueue.Remove(ids);
+			}
+
+			return syncQueue.RemoveAll();
+		}
+
 		#endregion
 
 		#region Requests

@@ -134,6 +134,19 @@ namespace Kinvey
 			return dbConnection.Delete(item);
 		}
 
+		public int Remove(List<string> entityIDs) {
+			if (entityIDs == null) 
+			{
+				return RemoveAll();
+			}
+
+			int ret = 0;
+			foreach (var id in entityIDs) {
+				ret += this.Remove(id);
+			}
+			return ret;
+		}
+
 		public int RemoveAll () {
 			return  dbConnection.DeleteAll <PendingWriteAction> ();
 		}
