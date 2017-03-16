@@ -146,8 +146,9 @@ namespace Kinvey
 				string propertyName = mapPropertyToName[name];
 				//name = name.Replace("\"", "\\\"");
 
-				string argument = b.Arguments[0].ToString().Trim('"');
-				argument = argument.Replace("\"", "\\\"");
+				var arg = b.Arguments[0];
+				var argType = arg.Type;
+				string argument = arg.ToString().Trim('"');
 
 				if (b.Method.Name.Equals("StartsWith"))
 				{
@@ -159,6 +160,7 @@ namespace Kinvey
 
 					builderMongoQuery.Write("\"" + propertyName + "\"");
 					builderMongoQuery.Write(":{\"$regex\":\"^");
+					argument = argument.Replace("\"", "\\\"");
 					builderMongoQuery.Write(argument);
 					builderMongoQuery.Write("\"}");
 				}
@@ -172,7 +174,12 @@ namespace Kinvey
 
 					builderMongoQuery.Write("\"" + propertyName + "\"");
 					builderMongoQuery.Write(":");
-					builderMongoQuery.Write("\"" + argument + "\"");
+					if (argType.Name.Equals("String"))
+					{
+						argument = argument.Replace("\"", "\\\"");
+						argument = "\"" + argument + "\"";
+					}
+					builderMongoQuery.Write(argument);
 				}
 				else
 				{
