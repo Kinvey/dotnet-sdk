@@ -13,9 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RestSharp;
 
 namespace Kinvey
@@ -26,36 +23,52 @@ namespace Kinvey
     public class KinveyHeaders : List<HttpHeader>
     {
 		/// <summary>
-		/// The version of the library.
+		/// The version of the SDK.
 		/// </summary>
 		public static string VERSION = "3.0.2";
 
-		/// <summary>
-		/// The kinvey API version key.
-		/// </summary>
-        private static string kinveyApiVersionKey = "X-Kinvey-API-Version";
-		/// <summary>
-		/// The kinvey API version.
-		/// </summary>
-        private static string kinveyApiVersion = "3";
+		// The kinvey API version.
+        static string kinveyApiVersionKey = "X-Kinvey-API-Version";
+        static string kinveyApiVersion = "3";
+
+		// The user agent.
+        static string userAgentKey = "user-agent";
+		string userAgent = "xamarin-kinvey-http/" + VERSION;
+
+		// The device info, which includes the OS and OS version, as well as the device model.
+		static string kinveyDeviceInfoKey = "X-Kinvey-Device-Info";
+		static string _kinveyDeviceInfo = null;
+
+		static string KinveyDeviceInfo
+		{
+			get
+			{
+				if (_kinveyDeviceInfo == null)
+				{
+					try
+					{
+						_kinveyDeviceInfo = Plugin.DeviceInfo.CrossDeviceInfo.Current?.Platform + " " +
+											Plugin.DeviceInfo.CrossDeviceInfo.Current?.Version + " " +
+											Plugin.DeviceInfo.CrossDeviceInfo.Current?.Model;
+					}
+					catch (Exception e)
+					{
+						_kinveyDeviceInfo = String.Empty;
+					}
+				}
+
+				return _kinveyDeviceInfo;
+			}
+		}
 
 		/// <summary>
-		/// The user agent key.
+		/// Initializes a new instance of the <see cref="KinveyHeaders"/> class.
 		/// </summary>
-        private static string userAgentKey = "user-agent";
-		/// <summary>
-		/// The user agent.
-		/// </summary>
-		private string userAgent = "xamarin-kinvey-http/" + VERSION;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyHeaders"/> class.
-		/// </summary>
-        public KinveyHeaders() : base()
+        public KinveyHeaders()
         {
-			this.Add(new HttpHeader() {Name = userAgentKey, Value = new List<string>(){userAgent}});
-			this.Add(new HttpHeader() {Name = kinveyApiVersionKey, Value = new List<string>(){kinveyApiVersion}});
+			Add(new HttpHeader { Name = userAgentKey, Value = new List<string> { userAgent } });
+			Add(new HttpHeader { Name = kinveyApiVersionKey, Value = new List<string> { kinveyApiVersion } });
+			Add(new HttpHeader { Name = kinveyDeviceInfoKey, Value = new List<string> { KinveyDeviceInfo } });
         }
-
     }
 }
