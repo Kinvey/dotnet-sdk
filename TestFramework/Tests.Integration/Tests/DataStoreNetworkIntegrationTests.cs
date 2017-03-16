@@ -128,7 +128,7 @@ namespace TestFramework
 
 			Assert.NotNull(er);
 			KinveyException ke = er as KinveyException;
-			Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
+			Assert.AreEqual(EnumErrorCode.ERROR_GENERAL, ke.ErrorCode);
 
 			// Teardown
 			c.ActiveUser.Logout();
@@ -288,6 +288,51 @@ namespace TestFramework
 			Assert.IsNotNull(listToDo);
 			Assert.IsNotEmpty(listToDo);
 			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByQueryIntValue()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.Value = 1;
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			var query = todoStore.Where(x => x.Value.Equals(1));
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
 		}
 
 		[Test]

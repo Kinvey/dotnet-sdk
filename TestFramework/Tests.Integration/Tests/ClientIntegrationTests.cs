@@ -166,12 +166,16 @@ namespace TestFramework
 			Client client = builder.Build();
 
 			// Act
-			PingResponse pr = await client.PingAsync();
+			Exception e = Assert.CatchAsync(async delegate
+			{
+				PingResponse pr = await client.PingAsync();
+			});
 
 			// Assert
-			Assert.IsNotNull(pr);
-			Assert.IsNull(pr.kinvey);
-			Assert.IsNull(pr.version);
+			Assert.True(e.GetType() == typeof(KinveyException));
+			KinveyException ke = e as KinveyException;
+			Assert.True(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+			Assert.True(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
 		}
 
 		[Test]
