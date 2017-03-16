@@ -1031,6 +1031,38 @@ namespace TestFramework
 		}
 
 		[Test]
+		public async Task TestPurgeByQuery()
+		{
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			var person1 = new Person();
+			person1.FirstName = "james";
+			await store.SaveAsync(person1);
+
+			var person2 = new Person();
+			person2.FirstName = "bond";
+			await store.SaveAsync(person2);
+
+			ICache<Person> cache = kinveyClient.CacheManager.GetCache<Person>("Person");
+			Assert.AreEqual(cache.CountAll(), 2);
+			Assert.AreEqual(store.GetSyncCount(), 2);
+
+			var query = store.Where(x => x.FirstName.Equals(person2.FirstName));
+			var result = store.Purge(query);
+			Assert.AreEqual(result, 1);
+			Assert.AreEqual(cache.CountAll(), 2);
+			Assert.AreEqual(store.GetSyncCount(), 1);
+
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestClear() { 
 			if (kinveyClient.ActiveUser != null)
 			{

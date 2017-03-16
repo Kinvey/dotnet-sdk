@@ -390,8 +390,19 @@ namespace Kinvey
 		/// Removes pending write operations from local storage. This prevents changes made on the client from being persisted on the backend.
 		/// </summary>
 		/// <returns>The number of pending operations that were purged.</returns>
-		public int Purge()
+		/// <param name="query">Optional Query parameter.</param>
+		public int Purge(IQueryable<T> query = null)
 		{
+			if (query!=null) 
+			{
+				var ids = new List<string>();
+				var entities = cache.FindByQuery(query.Expression);
+				foreach (var entity in entities) {					
+					ids.Add((entity as IPersistable).ID);
+				}
+				return syncQueue.Remove(ids);
+			}
+
 			return syncQueue.RemoveAll();
 		}
 
