@@ -174,7 +174,7 @@ namespace TestFramework
 			// Assert
 			Assert.True(e.GetType() == typeof(KinveyException));
 			KinveyException ke = e as KinveyException;
-			Assert.True(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
+			Assert.True(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
 			Assert.True(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
 		}
 

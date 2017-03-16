@@ -562,7 +562,7 @@ namespace Kinvey
 
 			if (((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302)
 			{
-				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_RESPONSE, response);
+				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
 				kinveyException.RequestID = HelperMethods.getRequestID(response);
 				throw kinveyException;
 			}
