@@ -51,8 +51,7 @@ namespace TestFramework
 		[Test]
 		public void TestClientBuilderBasicBad()
 		{
-			// Arrange
-
+			Client.SharedClient = null;
 			// Act
 			// Assert
 			Assert.Catch(delegate ()
@@ -60,6 +59,7 @@ namespace TestFramework
 				DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.NETWORK);
 			});
 		}
+
 
 		[Test]
 		public void TestClientBuilderSetValues()
