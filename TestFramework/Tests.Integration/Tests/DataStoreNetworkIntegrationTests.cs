@@ -54,11 +54,27 @@ namespace TestFramework
 			// Arrange
 
 			// Act
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName);
+
+			// Assert
+			Assert.NotNull(todoStore);
+			Assert.AreEqual(todoStore.CollectionName, collectionName);
+			Assert.AreEqual(todoStore.StoreType, DataStoreType.CACHE);
+		}
+
+		[Test]
+		public async Task TestCollectionStoreType()
+		{
+			// Arrange
+
+			// Act
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
 			// Assert
 			Assert.NotNull(todoStore);
-			Assert.True(string.Equals(todoStore.CollectionName, collectionName));
+			Assert.AreEqual(todoStore.CollectionName, collectionName);
+			Assert.AreEqual(todoStore.StoreType, DataStoreType.NETWORK);
+
 		}
 
 		[Test]
