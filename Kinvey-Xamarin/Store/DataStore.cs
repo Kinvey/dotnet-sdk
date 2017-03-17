@@ -62,7 +62,7 @@ namespace Kinvey
 
 		/// <summary>
 		/// Gets the type of the store. 
-		/// <seealso cref="Client"/>
+		/// <seealso cref="DataStoreType"/>
 		/// </summary>
 		/// <value>The type of the store.</value>
 		public DataStoreType StoreType
@@ -73,7 +73,7 @@ namespace Kinvey
 
 		/// <summary>
 		/// Gets or sets the Kinvey client that is used for making data requests. 
-		/// <seealso cref="DataStoreType"/>
+		/// <seealso cref="Client"/>
 		/// </summary>
 		/// <value>The Kinvey client.</value>
 		public AbstractClient KinveyClient
