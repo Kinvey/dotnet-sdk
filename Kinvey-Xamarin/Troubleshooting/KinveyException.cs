@@ -354,7 +354,7 @@ namespace Kinvey
 
 				case EnumErrorCode.ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL:
 					error = "Not authorized.";
-					debug = "Check the permissions on the channel.Also verify authentication key, to check access.";
+					debug = "Check the permissions on the channel.  Also verify authentication key, to check access.";
 					description = "This corresponds to the user not being authorized to publish and/or subscribe on this channel.";
 					break;
 

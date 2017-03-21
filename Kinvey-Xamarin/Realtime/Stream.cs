@@ -70,6 +70,37 @@ namespace Kinvey
 		/// <param name="message">Message.</param>
 		public async Task<bool> Publish(string receiverID, T message)
 		{
+			Func<KinveyException, Task> publishError = async (error) => {
+				KinveyUtils.Logger.Log("publish error");
+
+				if (error.ErrorCode == EnumErrorCode.ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL)
+				{
+					// Clear out cached channel for receiver
+					mapPublishReceiverToChannel.Remove(receiverID);
+
+					// Attempt to re-request access once
+					Func<KinveyException, Task> requestPublishError = (requestError) => {
+						KinveyUtils.Logger.Log("publish retry error");
+						RealtimeDelegate.OnError(error);
+						return new Task<bool>(() => false);
+					};
+
+					bool success = await PublishHelper(receiverID, message, requestPublishError);
+					if (success)
+					{
+						// Subscribe access was granted
+						return;
+					}
+				}
+
+				RealtimeDelegate.OnError(error);
+			};
+
+			return await PublishHelper(receiverID, message, publishError);
+		}
+
+		internal async Task<bool> PublishHelper(string receiverID, T message, Func<KinveyException, Task> publishError)
+		{
 			bool result = false;
 
 			// If we do not have a channel for this receiverID, make KCS request for publish access for the
@@ -93,7 +124,7 @@ namespace Kinvey
 			if (!String.IsNullOrEmpty(publishChannel))
 			{
 				var realtimeMessage = new RealtimeMessage<T>(KinveyClient.ActiveUser.Id, message);
-				result = RealtimeRouter.Instance.Publish(publishChannel, receiverID, realtimeMessage);
+				result = RealtimeRouter.Instance.Publish(publishChannel, realtimeMessage, publishError);
 			}
 
 			return result;

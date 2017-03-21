@@ -19,7 +19,7 @@ namespace Kinvey
 	/// <summary>
 	/// Router object used to handle realtime messages and route them to the
 	/// appropriate <see cref="Kinvey.DataStore{T}"/> handler.
-	/// The handler will be a <see cref="Kinvey.KinveyRealtimeDelegate{T}"/> callback delegate.
+	/// The handler will be a <see cref="KinveyRealtimeDelegate"/> callback delegate.
 	/// </summary>
 	internal sealed class RealtimeRouter
 	{
@@ -106,9 +106,19 @@ namespace Kinvey
 			}
 		}
 
-		internal bool Publish(string channel, string receiverID, object message)
+		internal bool Publish(string channel, object message, Func<KinveyException, System.Threading.Tasks.Task> errorCallback)
 		{
-			return pubnubClient.Publish<string>(channel, message, PublishCallback, PubnubClientPublishErrorCallback);
+			Action<PubNubMessaging.Core.PubnubClientError> publishError = (error) => {
+				KinveyUtils.Logger.Log("RealtimeRouter: publish error");
+				KinveyUtils.Logger.Log("Publish Error: " + error);
+				KinveyUtils.Logger.Log("Publish Error Status Code: " + error.StatusCode);
+				KinveyUtils.Logger.Log("Publish Error Message: " + error.Message);
+
+				var exception = HandleErrorMessage(error);
+				errorCallback.Invoke(exception);
+			};
+
+			return pubnubClient.Publish<string>(channel, message, PublishCallback, publishError);
 		}
 
 		internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate callback)
@@ -231,23 +241,8 @@ namespace Kinvey
 			var pubnubMessage = PrepPubnubMessage(msgPublish);
 			var status = new KinveyRealtimeStatus(KinveyRealtimeStatus.StatusType.STATUS_PUBLISH, pubnubMessage);
 			var channel = GetChannelFromFullName(status.Channel);
-			var callback = mapChannelToCallback[channel].OnStatus;
-			callback.Invoke(status);
-		}
-
-		void PubnubClientPublishErrorCallback(PubNubMessaging.Core.PubnubClientError error)
-		{
-			KinveyUtils.Logger.Log("Publish Error: " + error);
-			KinveyUtils.Logger.Log("Publish Error Status Code: " + error.StatusCode);
-			KinveyUtils.Logger.Log("Publish Error Message: " + error.Message);
-
-			var exception = HandleErrorMessage(error);
-			if (exception != default(KinveyException))
-			{
-				var channel = GetChannelFromFullName(error.Channel);
-				var callback = mapChannelToCallback[channel].OnError;
-				callback.Invoke(exception);
-			}
+			//var callback = mapChannelToCallback[channel].OnStatus;
+			//callback.Invoke(status);
 		}
 
 		#endregion
