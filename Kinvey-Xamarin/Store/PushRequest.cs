@@ -28,7 +28,7 @@ namespace Kinvey
 		public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
 			: base (client, collection, cache, queue, policy)
 		{
-			limit = 3;
+			limit = 10;
 			offset = 0;
 
 			response = new PushDataStoreResponse<T>();
