@@ -32,7 +32,7 @@ namespace KinveyXamarinAndroid
 					ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
 					string gcmID = prefs.GetString(GCM_ID, "");
 
-					if (gcmID.Length <= 0)
+					if (String.IsNullOrEmpty(gcmID))
 					{
 						var gcm = GoogleCloudMessaging.GetInstance(appContext);
 						gcmID = gcm.Register(senders);
