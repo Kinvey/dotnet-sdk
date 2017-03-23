@@ -23,21 +23,20 @@ namespace KinveyXamarinAndroid
 
 			string senders = base.client.senderID;
 
-			ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences (appContext);
-			string alreadyInitialized = prefs.GetString (GCM_ID, "");
-
-			if (alreadyInitialized.Length > 0) {
-				//this device has already registered for push
-				return;
-			}
-
 			ThreadPool.QueueUserWorkItem(o => {
 
 				Intent intent;
 
 				try{
-					var gcm = GoogleCloudMessaging.GetInstance(appContext);
-					var gcmID = gcm.Register(senders); 
+				
+					ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
+					string gcmID = prefs.GetString(GCM_ID, "");
+
+					if (String.IsNullOrEmpty(gcmID))
+					{
+						var gcm = GoogleCloudMessaging.GetInstance(appContext);
+						gcmID = gcm.Register(senders);
+					}
 
 					Logger.Log ("-------sender ID is: " + senders);
 					Logger.Log ("-------GCM ID is: " + gcmID);
@@ -76,6 +75,10 @@ namespace KinveyXamarinAndroid
 
 			ThreadPool.QueueUserWorkItem (o => {
 				DisablePushViaRest("android", alreadyInitialized).Execute();
+
+				ISharedPreferencesEditor editor = prefs.Edit();
+				editor.Remove(GCM_ID);
+				editor.Apply();
 			});
 		}
 	}
