@@ -75,6 +75,10 @@ namespace KinveyXamarinAndroid
 
 			ThreadPool.QueueUserWorkItem (o => {
 				DisablePushViaRest("android", alreadyInitialized).Execute();
+
+				ISharedPreferencesEditor editor = prefs.Edit();
+				editor.Remove(GCM_ID);
+				editor.Apply();
 			});
 		}
 	}
