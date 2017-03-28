@@ -56,8 +56,8 @@ namespace Kinvey
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					var result = await PerformNetworkFind();
-					listResult = result.ResultSet;
+					var result = await RetrieveNetworkResults(this.BuildMongoQuery());
+					listResult = result;
 					break;
 
 				case ReadPolicy.BOTH:
