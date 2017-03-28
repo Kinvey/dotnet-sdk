@@ -240,7 +240,7 @@ namespace Kinvey
 
 				var results = await RetrieveNetworkResults(mongoQuery);
 				Cache.Clear(Query?.Expression);
-				Cache.RefreshCache(results);
+				Cache.RefreshCache(results);				
 				return new NetworkReadResponse<T>(results, results.Count, false);
 			}
 			catch (KinveyException ke)
@@ -256,7 +256,7 @@ namespace Kinvey
 			}
 		}
 
-		private async Task<List<T>> RetrieveNetworkResults(string mongoQuery) 
+		protected async Task<List<T>> RetrieveNetworkResults(string mongoQuery) 
 		{
 			List<T> networkResults = default(List<T>);
 
