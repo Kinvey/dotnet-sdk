@@ -246,8 +246,9 @@ namespace Kinvey
 		{
 			int skipNumber = 0;
 			int takeNumber = 0;
-
-			var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
+			bool sortAscending = true;
+			LambdaExpression exprSort = null;
+			var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
 
 			var query = dbConnectionSync.Table<T>();
 			if (lambdaExpr != null)
@@ -262,11 +263,15 @@ namespace Kinvey
 			{
 				query = query.Take(takeNumber);
 			}
+			if (exprSort != null)
+			{
+				ApplySort(ref query, sortAscending, exprSort);
+			}
 
 			return query;
 		}
 
-		private Expression<Func<T, bool>> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber)
+		private Expression<Func<T, bool>> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber, ref bool sortAscending, ref LambdaExpression exprSort)
 		{
 			Expression<Func<T, bool>> lambdaExpr = null;
 			if (expr?.NodeType == ExpressionType.Call)
@@ -279,12 +284,35 @@ namespace Kinvey
 					var nodeType = args[1]?.NodeType;
 					if (nodeType == ExpressionType.Quote)
 					{
-						UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+						MethodInfo methodInfo = mcb.Method;
 
-						if (quote.Operand.NodeType == ExpressionType.Lambda)
+						if (methodInfo.Name.Equals("OrderBy") ||
+						    methodInfo.Name.Equals("OrderByDescending"))
 						{
-							LambdaExpression le = quote.Operand as LambdaExpression;
-							lambdaExpr = le as Expression<Func<T,bool>>;
+							if (methodInfo.Name.Equals("OrderByDescending"))
+							{
+								sortAscending = false;
+							}
+
+							// sort modifier added
+							UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+
+							if (quote.Operand.NodeType == ExpressionType.Lambda)
+							{
+								LambdaExpression le = quote.Operand as LambdaExpression;
+								exprSort = le;
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
+							}
+						}
+						else
+						{
+							UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+
+							if (quote.Operand.NodeType == ExpressionType.Lambda)
+							{
+								LambdaExpression le = quote.Operand as LambdaExpression;
+								lambdaExpr = le as Expression<Func<T, bool>>;
+							}
 						}
 					}
 					else if (nodeType == ExpressionType.Constant)
@@ -296,7 +324,7 @@ namespace Kinvey
 							if (IsTypeNumber(args[1]?.Type))
 							{
 								skipNumber = int.Parse(args[1].ToString());
-								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber);
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
 							}
 						}
 						else if (methodInfo.Name.Equals("Take"))
@@ -304,7 +332,7 @@ namespace Kinvey
 							if (IsTypeNumber(args[1]?.Type))
 							{
 								takeNumber = int.Parse(args[1].ToString());
-								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber);
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
 							}
 
 						}
@@ -345,8 +373,10 @@ namespace Kinvey
 			{
 				int skipNumber = 0;
 				int takeNumber = 0;
+				bool sort = false;
+				LambdaExpression exprSort = null;
 
-				var lambdaExpr = ConvertQueryExpressionToFunction(query, ref skipNumber, ref takeNumber);
+				var lambdaExpr = ConvertQueryExpressionToFunction(query, ref skipNumber, ref takeNumber, ref sort, ref exprSort);
 
 				if (String.IsNullOrEmpty(groupField))
 				{
@@ -524,8 +554,10 @@ namespace Kinvey
 				else { 
 					int skipNumber = 0;
 					int takeNumber = 0;
+					bool sortAscending = true;
+					LambdaExpression exprSort = null;
 
-					var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
+					var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
 
 					if (lambdaExpr == null && skipNumber == 0 && takeNumber == 0)
 					{
@@ -544,6 +576,11 @@ namespace Kinvey
 						if (takeNumber != 0)
 						{
 							query = query.Take(takeNumber);
+						}
+
+						if (exprSort != null)
+						{
+							ApplySort(ref query, sortAscending, exprSort);
 						}
 
 						results = query.ToList();
@@ -571,6 +608,26 @@ namespace Kinvey
 			}
 
 			return kdr;
+		}
+
+		private void ApplySort(ref TableQuery<T> query, bool sortAscending, LambdaExpression exprSort)
+		{
+			Type retType = exprSort.ReturnType;
+			if (retType == typeof(string))
+			{
+				var funcSort = exprSort as Expression<Func<T, string>>;
+				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
+			else if (retType == typeof(int))
+			{
+				var funcSort = exprSort as Expression<Func<T, int>>;
+				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
+			else if (retType == typeof(uint))
+			{
+				var funcSort = exprSort as Expression<Func<T, uint>>;
+				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
 		}
 
 		public KinveyDeleteResponse DeleteByID(string id)

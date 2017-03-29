@@ -222,9 +222,10 @@ namespace Kinvey
 						{
 							mongoQuery = "{}";
 						}
-						mongoQuery += "&fields=_id,_kmd.lmt";
 
-						List<DeltaSetFetchInfo> networkMetadata = await Client.NetworkFactory.buildGetRequest<DeltaSetFetchInfo>(Collection, mongoQuery).ExecuteAsync();
+						var fieldsQuery = mongoQuery + "&fields=_id,_kmd.lmt";
+
+						List<DeltaSetFetchInfo> networkMetadata = await Client.NetworkFactory.buildGetRequest<DeltaSetFetchInfo>(Collection, fieldsQuery).ExecuteAsync();
 
 						#endregion
 
