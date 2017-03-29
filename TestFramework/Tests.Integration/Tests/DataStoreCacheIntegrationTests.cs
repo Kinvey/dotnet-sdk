@@ -469,8 +469,6 @@ namespace TestFramework
 			Assert.IsNotEmpty(listToDoCache);
 			Assert.AreEqual(1, listToDoCache.Count); // take 1 from local instead of both
 			Assert.AreEqual(2, listToDo.Count); // 1 from local, 1 from network
-			Assert.True(listToDo.First().Details.Equals("details for 2"));
-			Assert.True(listToDoCache.First().Details.Equals("details for 2"));
 		}
 
 		[Test]
