@@ -138,6 +138,7 @@ namespace Kinvey
 		public async Task<bool> Subscribe(string subscribeID, KinveyStreamDelegate<T> realtimeHandler)
 		{
 			bool success = false;
+			bool attemptRetry = false;
 
 			if (realtimeHandler == null)
 			{
@@ -154,7 +155,35 @@ namespace Kinvey
 
 				var routerDelegate = new KinveyRealtimeDelegate
 				{
-					OnError = (error) => RealtimeDelegate.OnError(error),
+					OnError = async (error) => {
+						var kinveyException = error as KinveyException;
+
+						if (kinveyException != null &&
+						    kinveyException.ErrorCode == EnumErrorCode.ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL)
+						{
+							if (attemptRetry)
+							{
+								// If we have not attempted to re-subscribe, try once
+								attemptRetry = false;
+
+								// Make KCS request for subscribe access to a user with the given subscribeID
+								success = await RequestSubscribeAccess(subscribeID);
+								if (!success)
+								{
+									// Re-request failed, unsubscribe stream
+									RealtimeRouter.Instance.UnsubscribeStream(StreamName);
+								}
+								else
+								{
+									// Re-request was succssful, reset retry flag
+									attemptRetry = true;
+									return;
+								}
+							}
+						}
+
+						RealtimeDelegate.OnError(error);
+					},
 					OnNext = (message) => {
 						var realtimeMessage = Newtonsoft.Json.JsonConvert.DeserializeObject<RealtimeMessage<T>>(message);
 						RealtimeDelegate.OnNext(realtimeMessage.SenderID, realtimeMessage.Message);
@@ -163,6 +192,7 @@ namespace Kinvey
 				};
 
 				RealtimeRouter.Instance.SubscribeStream(StreamName, routerDelegate);
+				attemptRetry = true;
 				success = true;
 			}
 
