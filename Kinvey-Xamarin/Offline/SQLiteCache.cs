@@ -23,6 +23,7 @@ using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using SQLite.Net.Interop;
 using System.Reflection;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Remotion.Linq;
@@ -35,7 +36,7 @@ namespace Kinvey
 	/// This class is responsible for breaking apart a request, and determing what actions to take
 	/// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
 	/// </summary>
-	public class SQLiteCache <T> : ICache <T> where T:class
+	public class SQLiteCache <T> : ICache <T> where T:class, IPersistable
 	{
 
 		private string collectionName;
@@ -227,6 +228,29 @@ namespace Kinvey
 			}
 		}
 
+		public T LastModifiedEntity(Expression expr) {
+			try
+			{
+				var query = BuildQuery(expr, false).OrderByDescending(x => x.KMD);
+				var obj = query.FirstOrDefault();
+				return obj;
+
+				//string tableName = typeof(T).Name;
+
+				////var query = $"select * from {tableName} order by _kmd desc limit 1";
+				//Stopwatch sw = new Stopwatch();
+				//sw.Start();
+				//var item = dbConnectionSync.FindWithQuery<T>(query);
+
+				//sw.Stop();
+				//Debug.WriteLine("Found last object in: " + sw.Elapsed);
+				//return item;
+
+			}
+			catch (Exception e) { 
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY, "", e);
+			}
+		}
 		public int CountByQuery(Expression expr)
 		{
 			try
@@ -242,7 +266,7 @@ namespace Kinvey
 			}
 		}
 
-		private TableQuery<T> BuildQuery(Expression expr)
+		private TableQuery<T> BuildQuery(Expression expr, bool shouldApplySort = true)
 		{
 			int skipNumber = 0;
 			int takeNumber = 0;
@@ -263,7 +287,7 @@ namespace Kinvey
 			{
 				query = query.Take(takeNumber);
 			}
-			if (exprSort != null)
+			if (exprSort != null && shouldApplySort)
 			{
 				ApplySort(ref query, sortAscending, exprSort);
 			}

@@ -132,6 +132,8 @@ namespace Kinvey
 
 		List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query);
 
+		T LastModifiedEntity(Expression expr);
+
 		//Task<int> InsertEntityAsync (T entity);
 
 		//Task<T> UpsertEntityAsync(string id, string json);

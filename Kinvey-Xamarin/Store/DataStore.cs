@@ -25,7 +25,7 @@ namespace Kinvey
 	/// Each DataStore in your application represents a collection on your backend. The DataStore class manages the access of data between the Kinvey backend and the app.
 	/// The DataStore provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
 	/// </summary>
-	public class DataStore<T> : KinveyQueryable<T>  where T:class
+	public class DataStore<T> : KinveyQueryable<T>  where T:class, IPersistable
 	{
 		#region Member variables
 

@@ -35,7 +35,7 @@ namespace Kinvey
 		/// </summary>
 		/// <returns>The cache.</returns>
 		/// <param name="collectionName">Collection name.</param>
-		ICache<T> GetCache <T>(string collectionName) where T:class;
+		ICache<T> GetCache <T>(string collectionName) where T:class, IPersistable;
 
 		ISyncQueue GetSyncQueue (string collectionName);
 

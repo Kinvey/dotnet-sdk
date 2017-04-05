@@ -46,6 +46,7 @@ namespace Kinvey
 		/// <value>The kmd.</value>
 		[JsonProperty("_kmd")]
 		[Preserve]
+		[Indexed]
 		[Column("_kmd")]
 		public KinveyMetaData KMD { get; set; }
 
