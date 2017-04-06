@@ -55,6 +55,7 @@ namespace Kinvey
 			if (lastEntity == null) {
 				return BuildMongoQuery();
 			}
+
 			string deltaQuery = "\"_kmd.lmt\": { \"$gt\": \"" + lastEntity.KMD.lastModifiedTime + "\"}";
 
 			if (Query != null)
@@ -64,18 +65,18 @@ namespace Kinvey
 				KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
 				QueryModel queryModel = (Query.Provider as KinveyQueryProvider)?.qm;
 
-				queryBuilder.Write("{");
 				queryModel?.Accept(visitor);
-				queryBuilder.Write(", " + deltaQuery);
-				queryBuilder.Write("}");
+				queryBuilder.AddQueryExpression(deltaQuery);
 
 				string mongoQuery = queryBuilder.BuildQueryString();
 
 				return mongoQuery;
 			}
 
-			return "{" + deltaQuery + "}";
+			var q = new StringQueryBuilder();
+			q.AddQueryExpression(deltaQuery);
 
+			return q.BuildQueryString();
 
 		}
 
@@ -92,12 +93,9 @@ namespace Kinvey
 				KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
 				QueryModel queryModel = (Query.Provider as KinveyQueryProvider)?.qm;
 
-				queryBuilder.Write("{");
 				queryModel?.Accept(visitor);
-				queryBuilder.Write("}");
 
 				string mongoQuery = queryBuilder.BuildQueryString();
-
 				return mongoQuery;
 			}
 
@@ -145,7 +143,6 @@ namespace Kinvey
 		{
 			try
 			{
-				string mongoQuery = this.BuildMongoQuery();
 				if (DeltaSetFetchingEnabled && !Cache.IsCacheEmpty())
 				{
 
@@ -161,9 +158,13 @@ namespace Kinvey
 						Cache.DeleteByIDs(deletedItems.Select(x => x.ID).ToList());
 					}
 
+					System.Diagnostics.Debug.WriteLine("delta size: " + delta.Count + "  delete size: " + deletedItems.Count);
 					//TODO: total count should be returned in this response
 					return new NetworkReadResponse<T>(delta, 0, true);
+				
 				}
+
+				string mongoQuery = this.BuildMongoQuery();
 
 				var results = await RetrieveNetworkResults(mongoQuery);
 				Cache.Clear(Query?.Expression);

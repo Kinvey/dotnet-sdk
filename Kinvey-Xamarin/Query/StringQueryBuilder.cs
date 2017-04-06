@@ -65,13 +65,24 @@ namespace Kinvey
 			modifierBuilder.Append(value);
 		}
 
+		public void AddQueryExpression(object value) 
+		{
+			if (queryBuilder.Length != 0) {
+				queryBuilder.Append(", ");
+			}
+			queryBuilder.Append(value);
+		}
 		/// <summary>
 		/// Gets the full string by combining the two StringBuilders.
 		/// </summary>
 		/// <returns>The full string.</returns>
 		public string BuildQueryString()
 		{
-			return queryBuilder + modifierBuilder.ToString();
+			var queryOutput = new StringBuilder();
+			queryOutput.Append("{");
+			queryOutput.Append(queryBuilder);
+			queryOutput.Append("}");
+			return queryOutput + modifierBuilder.ToString();
 		}
 	}
 }
