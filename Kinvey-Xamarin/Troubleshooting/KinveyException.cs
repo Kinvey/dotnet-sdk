@@ -132,12 +132,20 @@ namespace Kinvey
 
 			Tuple<string, string, string> errorInfo = InfoFromErrorCode(errorCategory, errorCode);
 
-			KinveyJsonError errorJSON = KinveyJsonError.parse(responseJSON);
-			this.error = errorJSON.Error ?? errorInfo.Item1;
-			this.debug = errorJSON.Debug ?? errorInfo.Item2;
-			this.description = errorJSON.Description ?? errorInfo.Item3;
-			this.requestID = HelperMethods.getRequestID(responseJSON);
-			StatusCode = (int)responseJSON.StatusCode;
+			StatusCode = (int)responseJSON?.StatusCode;
+
+			try
+			{
+				KinveyJsonError errorJSON = KinveyJsonError.parse(responseJSON);
+				this.error = errorJSON.Error ?? errorInfo.Item1;
+				this.debug = errorJSON.Debug ?? errorInfo.Item2;
+				this.description = errorJSON.Description ?? errorInfo.Item3;
+				this.requestID = HelperMethods.getRequestID(responseJSON);
+
+			}
+			catch (Exception e) { 
+				//Catch any exceptions thrown while parsing an unknown responseJSON
+			}
 		}
 
 		#endregion
