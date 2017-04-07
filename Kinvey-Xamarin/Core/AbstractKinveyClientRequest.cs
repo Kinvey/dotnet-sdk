@@ -435,39 +435,52 @@ namespace Kinvey
 			}
 
 			//process refresh token needed
-			if ((int)response.StatusCode == 401 && !hasRetryed){
-
-				//get the refresh token
-				Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
-				String refreshToken = null;
-				string redirectUri = null;
-				if (cred != null){
-					refreshToken = cred.RefreshToken;
-					redirectUri = cred.RedirectUri;
-				}
-
-				if (refreshToken != null )
+			if ((int)response.StatusCode == 401)
+			{
+				if (!hasRetryed)
 				{
-					//logout the current user
-					Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
+					// Attempt to get the refresh token
+					Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
+					string refreshToken = null;
+					string redirectUri = null;
 
-					//use the refresh token for a new access token
-					JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
+					if (cred != null)
+					{
+						refreshToken = cred.RefreshToken;
+						redirectUri = cred.RedirectUri;
+					}
 
-					//login with the access token
-					Provider provider = new Provider ();
-					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
-					User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
+					if (refreshToken != null)
+					{
+						//use the refresh token for a new access token
+						JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
 
-					//store the new refresh token
-					Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
-					currentCred.RefreshToken = result["refresh_token"].ToString();
-					currentCred.RedirectUri = redirectUri;
-					Client.Store.Store(Client.ActiveUser.Id, Client.SSOGroupKey, currentCred);
-					hasRetryed = true;
-					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
-					var retryResponse = await ExecuteUnparsedAsync ();
-					return retryResponse;
+						// log out the current user without removing the user record from the credential store
+						Client.ActiveUser.LogoutSoft();
+
+						//login with the access token
+						Provider provider = new Provider();
+						provider.kinveyAuth = new MICCredential(result["access_token"].ToString());
+						User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
+
+						//store the new refresh token
+						Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
+						currentCred.AccessToken = result["access_token"].ToString();
+						currentCred.RefreshToken = result["refresh_token"].ToString();
+						currentCred.RedirectUri = redirectUri;
+						Client.Store.Store(Client.ActiveUser.Id, Client.SSOGroupKey, currentCred);
+
+						// Retry the original request
+						hasRetryed = true;
+						RequestAuth = new KinveyAuthenticator(currentCred.AuthToken);
+						var retryResponse = await ExecuteUnparsedAsync();
+						return retryResponse;
+					}
+					else
+					{
+						//logout the current user
+						Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
+					}
 				}
 			}
 
@@ -534,7 +547,15 @@ namespace Kinvey
 						int i = response.Headers.IndexOf(param);
 						Parameter p = response.Headers[i];
 						var obj = p.Value as List<string>;
-						newLoc = obj.FirstOrDefault();
+						if (obj == null)
+						{
+							var obj2 = p.Value as string[];
+							newLoc = obj2.FirstOrDefault();
+						}
+						else
+						{
+							newLoc = obj.FirstOrDefault();
+						}
 						break;
 					}
 				}

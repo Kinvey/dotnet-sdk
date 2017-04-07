@@ -422,6 +422,16 @@ namespace Kinvey
 			}
 		}
 
+		internal void LogoutSoft()
+		{
+			// TODO rethink locking
+			lock (classLock)
+			{
+				LogoutRequest logoutRequest = BuildLogoutSoftRequest();
+				logoutRequest.Execute();
+			}
+		}
+
 		#region User class login methods - MIC methods
 
 		/// <summary>
@@ -544,6 +554,7 @@ namespace Kinvey
 
 				//store the new refresh token
 				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
+				currentCred.AccessToken = accessResult["access_token"].ToString();
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
@@ -576,6 +587,7 @@ namespace Kinvey
 
 				//store the new refresh token
 				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
+				currentCred.AccessToken = result["access_token"].ToString();
 				currentCred.RefreshToken = result["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
@@ -979,6 +991,11 @@ namespace Kinvey
 			return new LogoutRequest(this.KinveyClient.Store, this);
 		}
 
+		private LogoutRequest BuildLogoutSoftRequest()
+		{
+			return new LogoutRequest(this.KinveyClient.Store, this, false);
+		}
+
 		private RetrieveRequest buildRetrieveRequest(string userid)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -1140,11 +1157,13 @@ namespace Kinvey
         {
 			private ICredentialStore store;
 			private User memberUser;
+			private bool hardLogout;
 
-			internal LogoutRequest(ICredentialStore store, User user)
+			internal LogoutRequest(ICredentialStore store, User user, bool hardLogout = true)
 			{
 				this.memberUser = user;
 				this.store = store;
+				this.hardLogout = hardLogout;
 			}
 
 			internal void Execute()
@@ -1155,7 +1174,7 @@ namespace Kinvey
 
 				CredentialManager manager = new CredentialManager(this.store);
 				var userId = memberUser.id;
-				if (userId != null)
+				if (userId != null && hardLogout)
 				{
 					manager.RemoveCredential (userId, memberUser.KinveyClient.SSOGroupKey);
 				}
