@@ -855,7 +855,8 @@ namespace Kinvey
 		static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
-			if (!String.IsNullOrEmpty(cred.AccessToken))
+			if (!String.IsNullOrEmpty(cred.AccessToken) &&
+			    (0 != string.Compare(uc.SSOGroupKey, ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey, StringComparison.Ordinal)) )
 			{
 				User u = await User.LoginMICWithAccessTokenAsync(cred.AccessToken);
 				uc.ActiveUser = u;
