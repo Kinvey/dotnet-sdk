@@ -81,6 +81,7 @@ namespace Kinvey
 			cred.UserName = credential.UserName;
 			cred.Attributes = JsonConvert.SerializeObject(credential.Attributes);
 			cred.UserKMD = JsonConvert.SerializeObject(credential.UserKMD);
+			cred.AccessToken = credential.AccessToken;
 			cred.RefreshToken = credential.RefreshToken;
 			cred.RedirectUri = credential.RedirectUri;
 			_dbConnection.Insert(cred);

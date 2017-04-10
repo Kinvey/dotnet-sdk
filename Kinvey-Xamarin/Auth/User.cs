@@ -422,6 +422,16 @@ namespace Kinvey
 			}
 		}
 
+		internal void LogoutSoft()
+		{
+			// TODO rethink locking
+			lock (classLock)
+			{
+				LogoutRequest logoutRequest = BuildLogoutSoftRequest();
+				logoutRequest.Execute();
+			}
+		}
+
 		#region User class login methods - MIC methods
 
 		/// <summary>
@@ -544,6 +554,7 @@ namespace Kinvey
 
 				//store the new refresh token
 				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
+				currentCred.AccessToken = accessResult["access_token"].ToString();
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
@@ -576,6 +587,7 @@ namespace Kinvey
 
 				//store the new refresh token
 				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
+				currentCred.AccessToken = result["access_token"].ToString();
 				currentCred.RefreshToken = result["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
@@ -843,7 +855,8 @@ namespace Kinvey
 		static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
-			if (!String.IsNullOrEmpty(cred.AccessToken))
+			if (!String.IsNullOrEmpty(cred.AccessToken) &&
+			    (0 != string.Compare(uc.SSOGroupKey, ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey, StringComparison.Ordinal)) )
 			{
 				User u = await User.LoginMICWithAccessTokenAsync(cred.AccessToken);
 				uc.ActiveUser = u;
@@ -977,6 +990,11 @@ namespace Kinvey
 		private LogoutRequest buildLogoutRequest()
 		{
 			return new LogoutRequest(this.KinveyClient.Store, this);
+		}
+
+		private LogoutRequest BuildLogoutSoftRequest()
+		{
+			return new LogoutRequest(this.KinveyClient.Store, this, false);
 		}
 
 		private RetrieveRequest buildRetrieveRequest(string userid)
@@ -1140,24 +1158,30 @@ namespace Kinvey
         {
 			private ICredentialStore store;
 			private User memberUser;
+			private bool hardLogout;
 
-			internal LogoutRequest(ICredentialStore store, User user)
+			internal LogoutRequest(ICredentialStore store, User user, bool hardLogout = true)
 			{
 				this.memberUser = user;
 				this.store = store;
+				this.hardLogout = hardLogout;
 			}
 
 			internal void Execute()
 			{
-				// delete cache and sync queue
-				ICacheManager cm = ((Client)memberUser.KinveyClient).CacheManager;
-				cm?.clearStorage();
-
-				CredentialManager manager = new CredentialManager(this.store);
-				var userId = memberUser.id;
-				if (userId != null)
+				if (hardLogout)
 				{
-					manager.RemoveCredential (userId, memberUser.KinveyClient.SSOGroupKey);
+					// delete cache and sync queue
+					ICacheManager cm = ((Client)memberUser.KinveyClient).CacheManager;
+					cm?.clearStorage();
+
+					CredentialManager manager = new CredentialManager(this.store);
+					var userId = memberUser.id;
+
+					if (userId != null)
+					{
+						manager.RemoveCredential(userId, memberUser.KinveyClient.SSOGroupKey);
+					}
 				}
 
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
