@@ -1168,15 +1168,19 @@ namespace Kinvey
 
 			internal void Execute()
 			{
-				// delete cache and sync queue
-				ICacheManager cm = ((Client)memberUser.KinveyClient).CacheManager;
-				cm?.clearStorage();
-
-				CredentialManager manager = new CredentialManager(this.store);
-				var userId = memberUser.id;
-				if (userId != null && hardLogout)
+				if (hardLogout)
 				{
-					manager.RemoveCredential (userId, memberUser.KinveyClient.SSOGroupKey);
+					// delete cache and sync queue
+					ICacheManager cm = ((Client)memberUser.KinveyClient).CacheManager;
+					cm?.clearStorage();
+
+					CredentialManager manager = new CredentialManager(this.store);
+					var userId = memberUser.id;
+
+					if (userId != null)
+					{
+						manager.RemoveCredential(userId, memberUser.KinveyClient.SSOGroupKey);
+					}
 				}
 
 				((KinveyClientRequestInitializer)memberUser.KinveyClient.RequestInitializer).KinveyCredential = null;
