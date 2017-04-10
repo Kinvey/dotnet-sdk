@@ -49,19 +49,6 @@ namespace TestFramework
 		}
 
 		[Test]
-		public void TestClientBuilderBasicBad()
-		{
-			// Arrange
-
-			// Act
-			// Assert
-			Assert.Catch(delegate ()
-			{
-				DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.NETWORK);
-			});
-		}
-
-		[Test]
 		public void TestClientBuilderSetValues()
 		{
 			// Arrange
