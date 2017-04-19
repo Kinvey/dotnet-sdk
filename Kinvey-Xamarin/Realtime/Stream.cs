@@ -63,12 +63,72 @@ namespace Kinvey
 			return (success != null);
 		}
 
+		#region Directed Communication
+
 		/// <summary>
-		/// Publish a message of type {T} to the specified user.
+		/// In live stream directed communication, sends a message of type {T} to the specified user.
 		/// </summary>
-		/// <param name="receiverID">Receiver identifier.</param>
-		/// <param name="message">Message.</param>
-		public async Task<bool> Publish(string receiverID, T message)
+		/// <param name="toUser">ID of the user that this message is being sent to.</param>
+		/// <param name="message">Message to be sent.</param>
+		public async Task<bool> Send(string toUser, T message)
+		{
+			return await Publish(toUser, message);
+		}
+
+		/// <summary>
+		/// In live stream directed communication, receives messages of type {T} that are sent to the active users.
+		/// </summary>
+		/// <param name="liveServiceHandler">Delegate used to receive live service messages posted by the active user.</param>
+		public async Task<bool> Listen(KinveyStreamDelegate<T> liveServiceHandler)
+		{
+			return await Subscribe(KinveyClient.ActiveUser.Id, liveServiceHandler);
+		}
+
+		/// <summary>
+		/// In live stream directed communication, elects to stop receiving messages of type {T} sent to the active user.
+		/// </summary>
+		public async Task StopListening()
+		{
+			await Unsubscribe(KinveyClient.ActiveUser.Id);
+		}
+
+		#endregion
+
+		#region Feed Communication
+
+		/// <summary>
+		/// In live stream feed communication, posts a message of type {T} to the active user.
+		/// </summary>
+		/// <param name="message">Message to be posted to the active user.</param>
+		public async Task<bool> Post(T message)
+		{
+			return await Publish(KinveyClient.ActiveUser.Id, message);
+		}
+
+		/// <summary>
+		/// In live stream feed communication, receives messages of type {T} posted by the specified user.
+		/// </summary>
+		/// <param name="userID">The ID of the user to follow.</param>
+		/// <param name="liveServiceHandler">Delegate used to receive live service messages posted by the specified user.</param>
+		public async Task<bool> Follow(string userID, KinveyStreamDelegate<T> liveServiceHandler)
+		{
+			return await Subscribe(userID, liveServiceHandler);
+		}
+
+		/// <summary>
+		/// In live stream feed communication, elects to stop receiving messages of type {T} posted by the specified user.
+		/// </summary>
+		/// <param name="userID">The ID of the user to follow.</param>
+		public async Task Unfollow(string userID)
+		{
+			await Unsubscribe(userID);
+		}
+
+		#endregion
+
+		#region Send/Post helper methods
+
+		internal async Task<bool> Publish(string receiverID, T message)
 		{
 			Func<KinveyException, Task> publishError = async (error) => {
 				KinveyUtils.Logger.Log("publish error");
@@ -130,12 +190,18 @@ namespace Kinvey
 			return result;
 		}
 
-		/// <summary>
-		/// Subscribe the specified callback.
-		/// </summary>
-		/// <param name="subscribeID">The ID of the user to subscribe to.</param>
-		/// <param name="realtimeHandler">Delegate used to forward realtime messages.</param>
-		public async Task<bool> Subscribe(string subscribeID, KinveyStreamDelegate<T> realtimeHandler)
+		internal async Task<JObject> RequestPublishAccess(string receiverID, CancellationToken ct = default(CancellationToken))
+		{
+			StreamPublishAccessRequest requestPublish = BuildStreamPublishAccessRequest(receiverID);
+			ct.ThrowIfCancellationRequested();
+			return await requestPublish.ExecuteAsync();
+		}
+
+		#endregion
+
+		#region Listen/Follow helper methods
+
+		internal async Task<bool> Subscribe(string subscribeID, KinveyStreamDelegate<T> realtimeHandler)
 		{
 			bool success = false;
 			bool attemptRetry = false;
@@ -159,7 +225,7 @@ namespace Kinvey
 						var kinveyException = error as KinveyException;
 
 						if (kinveyException != null &&
-						    kinveyException.ErrorCode == EnumErrorCode.ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL)
+							kinveyException.ErrorCode == EnumErrorCode.ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL)
 						{
 							if (attemptRetry)
 							{
@@ -199,23 +265,13 @@ namespace Kinvey
 			return success;
 		}
 
-		/// <summary>
-		/// Unsubscribe this instance.
-		/// </summary>
-		public async Task Unsubscribe(string subscribeID)
+		internal async Task Unsubscribe(string subscribeID)
 		{
 			RealtimeRouter.Instance.UnsubscribeStream(StreamName);
 			RealtimeDelegate = null;
 
 			// Make KCS request to unsubscribe access to a substream for the given subscribeID
 			bool success = await RequestUnsubscribeAccess(subscribeID);
-		}
-
-		internal async Task<JObject> RequestPublishAccess(string receiverID, CancellationToken ct = default(CancellationToken))
-		{
-			StreamPublishAccessRequest requestPublish = BuildStreamPublishAccessRequest(receiverID);
-			ct.ThrowIfCancellationRequested();
-			return await requestPublish.ExecuteAsync();
 		}
 
 		internal async Task<bool> RequestSubscribeAccess(string subscribeID, CancellationToken ct = default(CancellationToken))
@@ -233,6 +289,8 @@ namespace Kinvey
 			var result = await requestUnsubscribe.ExecuteAsync();
 			return true;
 		}
+
+		#endregion
 
 		#region Stream request builders
 

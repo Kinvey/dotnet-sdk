@@ -165,11 +165,11 @@ namespace TestFramework
 			};
 
 			// Act
-			bool result = await stream.Subscribe(Client.SharedClient.ActiveUser.Id, realtimeDelegate);
+			bool result = await stream.Listen(realtimeDelegate);
 			var streamTodo = new ToDo();
 			streamTodo.Name = "stream test";
 			streamTodo.Details = "Stream Details";
-			bool publishResult = await stream.Publish(Client.SharedClient.ActiveUser.Id, streamTodo);
+			bool publishResult = await stream.Send(Client.SharedClient.ActiveUser.Id, streamTodo);
 
 			// Assert
 			Assert.True(result);
@@ -182,7 +182,7 @@ namespace TestFramework
 			Assert.AreEqual(Client.SharedClient.ActiveUser.Id, sender);
 
 			// Teardown
-			await stream.Unsubscribe(Client.SharedClient.ActiveUser.Id);
+			await stream.StopListening();
 			await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
 			kinveyClient.ActiveUser.Logout();
 		}

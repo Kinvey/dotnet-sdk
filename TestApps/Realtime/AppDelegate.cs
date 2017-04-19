@@ -177,7 +177,7 @@ namespace Realtime
 				bool resultGrant = await stream.GrantStreamAccess(Client.SharedClient.ActiveUser.Id, streamACL);
 
 				// Subscribe to user-to-user stream
-				await stream.Subscribe(Client.SharedClient.ActiveUser.Id, new KinveyStreamDelegate<MedicalDeviceCommand>
+				await stream.Listen(new KinveyStreamDelegate<MedicalDeviceCommand>
 				{
 					OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
 					OnNext = (senderID, message) => {
@@ -207,7 +207,7 @@ namespace Realtime
 
 		public async Task Logout()
 		{
-			await stream.Unsubscribe(Client.SharedClient.ActiveUser.Id);
+			await stream.StopListening();
 			Client.SharedClient?.ActiveUser?.UnregisterRealtimeAsync();
 			Client.SharedClient?.ActiveUser?.Logout();
 			var logInController = new Realtime.LoginViewController();
@@ -219,7 +219,7 @@ namespace Realtime
 		{
 			var mdc = new MedicalDeviceCommand();
 			mdc.Command = command;
-			bool success = await stream.Publish(Client.SharedClient.ActiveUser.Id, mdc);
+			bool success = await stream.Send(Client.SharedClient.ActiveUser.Id, mdc);
 		}
 	}
 }

@@ -65,7 +65,7 @@ namespace DemoKLS
 				}
 			};
 
-			await streamCommand.Subscribe(sender, streamDelegate);
+			await streamCommand.Listen(streamDelegate);
 
 		}
 
@@ -74,7 +74,7 @@ namespace DemoKLS
 			var receiver = Client.SharedClient.ActiveUser.Id;
 			var mds = new MedicalDeviceStatus();
 			mds.Setting = setting;
-			await streamStatus.Publish(receiver, mds);
+			await streamStatus.Send(receiver, mds);
 		}
 
 

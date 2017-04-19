@@ -67,7 +67,7 @@ namespace DemoKLS
 				}
 			};
 
-			await streamStatus.Subscribe(patient.Id, streamDelegate);			
+			await streamStatus.Follow(patient.Id, streamDelegate);
 		}
 
 		public async Task Publish(MedicalDeviceCommand.EnumCommand command)
@@ -75,7 +75,7 @@ namespace DemoKLS
 			var mdc = new MedicalDeviceCommand();
 			mdc.Command = command;
 			stopwatch.Start();
-			await streamCommand.Publish(patient.Id, mdc);
+			await streamCommand.Send(patient.Id, mdc);
 		}
 
 		private void RenderView() { 
