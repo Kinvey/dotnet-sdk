@@ -28,26 +28,46 @@ namespace Kinvey
 		{
 			if (response != null && response.Headers != null)
 			{
-				try {
+				try
+				{
 					var item = response.Headers
-						.Cast<Parameter> ()
-						.SingleOrDefault (i => i.Name.ToLower().Equals ("x-kinvey-request-id"))
+						.Cast<Parameter>()
+						.SingleOrDefault(i => i.Name.ToLower().Equals ("x-kinvey-request-id"))
 						.Value;
 
-					Type valueType = item.GetType ();
-					if (valueType != null &&
-						(valueType.IsArray) &&
-						(valueType.GetElementType () == typeof (string))) {
-						string [] arrRequestID = ((string [])item);
-						if (arrRequestID != null &&
-							arrRequestID.Length > 0) {
-							return arrRequestID [0];
+					Type valueType = item.GetType();
+					if (valueType != null)
+					{
+						if (valueType.IsArray)
+						{
+							if (valueType.GetElementType() == typeof(string))
+							{
+								string[] arrRequestID = ((string[])item);
+								if (arrRequestID != null &&
+									arrRequestID.Length > 0)
+								{
+									return arrRequestID[0];
+								}
+							}
+						}
+						else if (valueType.IsConstructedGenericType)
+						{
+							if (valueType.Name.Contains("List"))
+							{
+								var listRequestID = ((System.Collections.Generic.List<string>)item);
+								if (listRequestID != null &&
+								    listRequestID.Count > 0)
+								{
+									return listRequestID.First();
+								}
+							}
 						}
 					}
-				} catch (Exception e) {
+				}
+				catch(Exception e)
+				{
 					return string.Empty;
 				}
-
 			}
 
 			return string.Empty;

@@ -181,6 +181,25 @@ namespace Kinvey
             }
         }
 
+		private string _deviceID;
+		internal string DeviceID
+		{
+			get
+			{
+				if (_deviceID == null ||
+					_deviceID == String.Empty)
+				{
+					_deviceID = System.Guid.NewGuid().ToString();
+				}
+
+				return _deviceID;
+			}
+			set
+			{
+				_deviceID = value;
+			}
+		}
+
 		/// <summary>
 		/// Checks if there is currently a logged in user for this client.
 		/// </summary>

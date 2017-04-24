@@ -34,6 +34,37 @@ namespace Kinvey
 
 		#region Request Builders
 
+		public NetworkRequest<T> BuildSubscribeRequest<T>(string collectionName, string deviceID)
+		{
+			const string REST_PATH = "appdata/{appKey}/{collectionName}/_subscribe";
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", collectionName);
+
+			NetworkRequest<T> subscribeCollection = new NetworkRequest<T>(client, "POST", REST_PATH, null, urlParameters);
+
+			JObject requestPayload = new JObject();
+			requestPayload.Add(Constants.STR_REALTIME_DEVICEID, deviceID);
+			subscribeCollection.HttpContent = requestPayload;
+
+			client.InitializeRequest(subscribeCollection);
+			return subscribeCollection;
+		}
+
+		public NetworkRequest<T> BuildUnsubscribeRequest<T>(string collectionName)
+		{
+			const string REST_PATH = "appdata/{appKey}/{collectionName}/_unsubscribe";
+
+			var urlParameters = new Dictionary<string, string>();
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("collectionName", collectionName);
+
+			NetworkRequest<T> unsubscribeCollection = new NetworkRequest<T>(client, "POST", REST_PATH, null, urlParameters);
+			client.InitializeRequest(unsubscribeCollection);
+			return unsubscribeCollection;
+		}
+
 		public NetworkRequest<T> buildGetByIDRequest <T> (string collectionName, string entityID)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";

@@ -31,7 +31,7 @@ namespace Kinvey
 		private SQLiteConnection _dbConnection;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteCredentialStore"/> class.
+		/// Initializes a new instance of the <see cref="SQLiteCredentialStore"/> class.
 		/// </summary>
 		/// <param name="platform">Platform.</param>
 		/// <param name="filepath">Filepath.</param>
@@ -58,9 +58,7 @@ namespace Kinvey
 			Credential cred = null;
 			if (sqlcred != null)
 			{
-				Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
-				KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
-				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred = Credential.From(sqlcred);
 			}
 
 			return cred;
@@ -84,6 +82,7 @@ namespace Kinvey
 			cred.AccessToken = credential.AccessToken;
 			cred.RefreshToken = credential.RefreshToken;
 			cred.RedirectUri = credential.RedirectUri;
+			cred.DeviceID = credential.DeviceID;
 			_dbConnection.Insert(cred);
 		}
 
@@ -116,7 +115,7 @@ namespace Kinvey
 				{
 					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				}
-				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
 			}
 
 			return cred;

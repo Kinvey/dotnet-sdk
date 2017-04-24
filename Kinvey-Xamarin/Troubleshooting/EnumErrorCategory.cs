@@ -60,6 +60,12 @@ namespace Kinvey
 		ERROR_CUSTOM_ENDPOINT,
 
 		/// <summary>
+		/// The error code associated with this category has to do with an error
+		/// received from the reaaltime service because of an issue.
+		/// </summary>
+		ERROR_REALTIME,
+
+		/// <summary>
 		/// General error category
 		/// </summary>
 		ERROR_GENERAL

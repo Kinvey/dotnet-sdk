@@ -125,6 +125,15 @@
     <Compile Include="Store\PushDataStoreResponse.cs" />
     <Compile Include="Store\PullDataStoreResponse.cs" />
     <Compile Include="Store\SyncDataStoreResponse.cs" />
+    <Compile Include="Realtime\KinveyRealtimeDelegate.cs" />
+    <Compile Include="Realtime\RealtimeRouter.cs" />
+    <Compile Include="Realtime\Stream.cs" />
+    <Compile Include="Store\SubscribeRequest.cs" />
+    <Compile Include="Realtime\StreamAccessControlList.cs" />
+    <Compile Include="Realtime\KinveyRealtimeStatus.cs" />
+    <Compile Include="Realtime\RealtimeMessage.cs" />
+    <Compile Include="Store\KinveyDataStoreDelegate.cs" />
+    <Compile Include="Realtime\KinveyStreamDelegate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
@@ -140,6 +149,7 @@
     <Folder Include="Store\" />
     <Folder Include="Push\" />
     <Folder Include="Utils\" />
+    <Folder Include="Realtime\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -180,6 +190,12 @@
     </Reference>
     <Reference Include="Plugin.DeviceInfo">
       <HintPath>..\packages\Xam.Plugin.DeviceInfo.2.1.2\lib\portable-net45+wp80+win8+wpa81\Plugin.DeviceInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="crypto">
+      <HintPath>..\packages\Portable.BouncyCastle-Signed.1.7.0.2\lib\portable-net45+dnxcore50+wp80+win+wpa81+MonoTouch10+MonoAndroid10+xamarinmac20+xamarinios10\crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="PubNub-Messaging">
+      <HintPath>..\packages\PubnubPCL.3.8.5.0\lib\portable-net40+sl50+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\PubNub-Messaging.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -18,10 +18,20 @@ namespace Kinvey
 		// Const Characters
 		public const char CHAR_AMPERSAND = '&';
 		public const char CHAR_EQUAL = '=';
+		internal const char CHAR_COMMA = ',';
+		internal const char CHAR_PERIOD = '.';
+		internal const char CHAR_QUOTATION_MARK = '"';
 
 		// Const Strings
 		public const string STR_AMPERSAND = "&";
 		public const string STR_EQUAL = "=";
+		internal const string STR_SQUARE_BRACKET_OPEN = "[";
+		internal const string STR_SQUARE_BRACKET_CLOSE = "]";
+
+		// Core Product Strings
+		internal const string STR_APP_KEY = "appKey";
+		internal const string STR_PATH_CUSTOM_ENDPOINT = "/custom/";
+		internal const string STR_PATH_REALTIME_STREAM = "/stream/";
 
 		// Authentication Strings
 		public const string STR_ACCESS_TOKEN = "AccessToken";
@@ -31,7 +41,16 @@ namespace Kinvey
 		public const string STR_USERNAME = "UserName";
 		public const string STR_ATTRIBUTES = "Attributes";
 		public const string STR_USER_KMD = "UserKMD";
-
 		public const string STR_CREDENTIAL = "credential";
+
+		// Realtime Strings
+		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
+		internal const string STR_REALTIME_STREAM_CHANNEL_PREPEND = "s-";
+		internal const string STR_REALTIME_DEVICEID = "deviceId";
+		internal const string STR_REALTIME_SUBSCRIBE_KEY = "subscribeKey";
+		internal const string STR_REALTIME_PUBLISH_KEY = "publishKey";
+		internal const string STR_REALTIME_CHANNEL_GROUP = "userChannelGroup";
+		internal const string STR_REALTIME_STREAM_NAME = "streamName";
+		internal const string STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME = "substreamChannelName";
 	}
 }

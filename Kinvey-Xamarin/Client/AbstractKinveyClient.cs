@@ -229,8 +229,13 @@ namespace Kinvey
 		/// <param name="rootUrl">Root URL.</param>
         private static string NormalizeRootUrl(string rootUrl)
         {
-			if (!rootUrl.ToUpper ().StartsWith ("HTTPS")) {
-				throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_HTTPS, "");
+			if (!rootUrl.ToUpper().StartsWith("HTTPS", System.StringComparison.OrdinalIgnoreCase))
+			{
+				if (!rootUrl.ToLower().StartsWith("http://localhost:", System.StringComparison.OrdinalIgnoreCase) &&
+				    !rootUrl.ToLower().StartsWith("http://127.0.0.1:", System.StringComparison.OrdinalIgnoreCase))
+				{
+					throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_HTTPS, "");
+				}
 			}
 
             if (!rootUrl.EndsWith("/"))

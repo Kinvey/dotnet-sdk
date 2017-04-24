@@ -93,9 +93,10 @@ namespace Kinvey
 		/// <param name="response">Response.</param>
 		/// <param name="userId">User _id.</param>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId, string ssoGroupKey)
+		public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId, string ssoGroupKey, string deviceID)
         {
             Credential newCredential = Credential.From(response);
+			newCredential.DeviceID = deviceID;
             if (userId != null && credentialStore != null)
             {
 				credentialStore.Store(userId, ssoGroupKey, newCredential);

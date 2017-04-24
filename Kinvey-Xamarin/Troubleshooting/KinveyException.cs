@@ -329,8 +329,60 @@ namespace Kinvey
 				case EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR:
 					error = "An exception was thrown while trying to execute a custom endpoint.";
 					debug = "Inspect the StatusCode property to determine the cause of the exception.";
-					description = "A 4xx/5xx status code was set in the response by the custom endpint.";
+					description = "A 4xx/5xx status code was set in the response by the custom endpoint.";
 					break;
+
+					#region Realtime errors
+
+				case EnumErrorCode.ERROR_REALTIME_ERROR:
+					error = "An exception was thrown while trying to execute a realtime request.";
+					debug = "Inspect the StatusCode property to determine the cause of the exception.";
+					description = "A 4xx/5xx status code was set in the response by the realtime service.";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_CRITICAL_VERIFY_CIPHER_KEY:
+					error = "Invalid cipher key.";
+					debug = "Verify your cipher key.";
+					description = "";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_CRITICAL_INCORRECT_SUBSBRIBE_KEY:
+					error = "Incorrect subscribe key.";
+					debug = "Please provide correct subscribe key.";
+					description = "This corresponds to a 401 on the server due to a bad sub key.";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL:
+					error = "Not authorized.";
+					debug = "Check the permissions on the channel.  Also verify authentication key, to check access.";
+					description = "This corresponds to the user not being authorized to publish and/or subscribe on this channel.";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_CRITICAL_INTERNAL_SERVER_ERROR:
+					error = "Internal Server Error.";
+					debug = "Please try again. If same problem persists, please contact PubNub support.";
+					description = "Unexpected error occured at PubNub Server";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_CRITICAL_BAD_GATEWAY:
+					error = "Bad Gateway.";
+					debug = "Please try again. If same problem persists, please contact PubNub support.";
+					description = "Unexpected error occured at PubNub Server.";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_CRITICAL_GATEWAY_TIMEOUT:
+					error = "Gateway Timeout.";
+					debug = "Please try again. If same problem persists, please contact PubNub support.";
+					description = "No response from server due to PubNub server timeout.";
+					break;
+
+				case EnumErrorCode.ERROR_REALTIME_CRITICAL_UNKNOWN:
+					error = "Unknown critical PubNub error.";
+					debug = "";
+					description = "";
+					break;
+
+					#endregion
 
 				default:
 					error = "Unknown error";
