@@ -177,9 +177,14 @@ namespace Kinvey
 
 		public List<T> FindAll()
 		{
-			return (from t in dbConnectionSync.Table<T>()
-			        select t).ToList();
+			return dbConnectionSync.Table<T>().ToList();
 		}
+
+		public int CountAll() 
+		{
+			return dbConnectionSync.Table<T>().Count();
+		}
+
 
 		public T FindByID(string ID)
 		{
@@ -211,51 +216,64 @@ namespace Kinvey
 
 		public List<T> FindByQuery(Expression expr)
 		{
-			List<T> results = null;
-
 			try
 			{
-				int skipNumber = 0;
-				int takeNumber = 0;
-
-				Func<T, bool> func = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
-
-				if (func != null)
-				{
-					if (skipNumber > 0 && takeNumber > 0)
-					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber).Take(takeNumber) select t).ToList();
-					}
-					else if (skipNumber > 0)
-					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber) select t).ToList();
-					}
-					else if (takeNumber > 0)
-					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func).Take(takeNumber) select t).ToList();
-					}
-					else
-					{
-						results = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
-					}
-				}
-				else
-				{
-					// TODO handle case where query expression was given, but could not be procesed - this case should be a KinveyException
-					results = (from t in dbConnectionSync.Table<T>() select t).ToList();
-				}
+				var query = BuildQuery(expr);
+				return query.ToList();
 			}
 			catch (Exception e)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY, "", e);
 			}
-
-			return results;
 		}
 
-		private Func<T, bool> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber)
+		public int CountByQuery(Expression expr)
 		{
-			Func<T, bool> func = null;
+			try
+			{
+				var query = BuildQuery(expr);
+				if (query == null) { return 0; }
+
+				return query.Count();
+			}
+			catch (Exception e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_QUERY, "", e);
+			}
+		}
+
+		private TableQuery<T> BuildQuery(Expression expr)
+		{
+			int skipNumber = 0;
+			int takeNumber = 0;
+			bool sortAscending = true;
+			LambdaExpression exprSort = null;
+			var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
+
+			var query = dbConnectionSync.Table<T>();
+			if (lambdaExpr != null)
+			{
+				query = query.Where(lambdaExpr);
+			}
+			if (skipNumber != 0)
+			{
+				query = query.Skip(skipNumber);
+			}
+			if (takeNumber != 0)
+			{
+				query = query.Take(takeNumber);
+			}
+			if (exprSort != null)
+			{
+				ApplySort(ref query, sortAscending, exprSort);
+			}
+
+			return query;
+		}
+
+		private Expression<Func<T, bool>> ConvertQueryExpressionToFunction(Expression expr, ref int skipNumber, ref int takeNumber, ref bool sortAscending, ref LambdaExpression exprSort)
+		{
+			Expression<Func<T, bool>> lambdaExpr = null;
 			if (expr?.NodeType == ExpressionType.Call)
 			{
 				MethodCallExpression mcb = expr as MethodCallExpression;
@@ -266,16 +284,34 @@ namespace Kinvey
 					var nodeType = args[1]?.NodeType;
 					if (nodeType == ExpressionType.Quote)
 					{
-						UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+						MethodInfo methodInfo = mcb.Method;
 
-						if (quote.Operand.NodeType == ExpressionType.Lambda)
+						if (methodInfo.Name.Equals("OrderBy") ||
+						    methodInfo.Name.Equals("OrderByDescending"))
 						{
-							LambdaExpression le = quote.Operand as LambdaExpression;
-							var comp = le.Compile();
-							MethodInfo mi = comp.GetMethodInfo();
-							if (mi.ReturnType == typeof(bool))
+							if (methodInfo.Name.Equals("OrderByDescending"))
 							{
-								func = (Func<T, bool>)comp;
+								sortAscending = false;
+							}
+
+							// sort modifier added
+							UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+
+							if (quote.Operand.NodeType == ExpressionType.Lambda)
+							{
+								LambdaExpression le = quote.Operand as LambdaExpression;
+								exprSort = le;
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
+							}
+						}
+						else
+						{
+							UnaryExpression quote = mcb.Arguments[1] as UnaryExpression;
+
+							if (quote.Operand.NodeType == ExpressionType.Lambda)
+							{
+								LambdaExpression le = quote.Operand as LambdaExpression;
+								lambdaExpr = le as Expression<Func<T, bool>>;
 							}
 						}
 					}
@@ -288,7 +324,7 @@ namespace Kinvey
 							if (IsTypeNumber(args[1]?.Type))
 							{
 								skipNumber = int.Parse(args[1].ToString());
-								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber);
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
 							}
 						}
 						else if (methodInfo.Name.Equals("Take"))
@@ -296,7 +332,7 @@ namespace Kinvey
 							if (IsTypeNumber(args[1]?.Type))
 							{
 								takeNumber = int.Parse(args[1].ToString());
-								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber);
+								return ConvertQueryExpressionToFunction(args[0], ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
 							}
 
 						}
@@ -304,7 +340,7 @@ namespace Kinvey
 				}
 			}
 
-			return func;
+			return lambdaExpr;
 		}
 
 		private bool IsTypeNumber(Type type)
@@ -337,8 +373,10 @@ namespace Kinvey
 			{
 				int skipNumber = 0;
 				int takeNumber = 0;
+				bool sort = false;
+				LambdaExpression exprSort = null;
 
-				Func<T, bool> func = ConvertQueryExpressionToFunction(query, ref skipNumber, ref takeNumber);
+				var lambdaExpr = ConvertQueryExpressionToFunction(query, ref skipNumber, ref takeNumber, ref sort, ref exprSort);
 
 				if (String.IsNullOrEmpty(groupField))
 				{
@@ -348,9 +386,9 @@ namespace Kinvey
 					gar.GroupField = null;
 
 					// TODO do "skip" and "take" have to be taken into account in group aggregate functions?
-					if (func != null)
+					if (lambdaExpr != null)
 					{
-						listValues = (from t in dbConnectionSync.Table<T>().Where(func) select t.GetType().GetRuntimeProperty(aggregateField).GetValue(t, null)).ToList();
+						listValues = (from t in dbConnectionSync.Table<T>().Where(lambdaExpr) select t.GetType().GetRuntimeProperty(aggregateField).GetValue(t, null)).ToList();
 					}
 					else
 					{
@@ -405,9 +443,9 @@ namespace Kinvey
 					// A grouping field was supplied, so aggregate
 					// result per group created on the group field
 					IEnumerable<IGrouping<object, T>> grouplist;
-					if (func != null)
+					if (lambdaExpr != null)
 					{
-						grouplist = from t in dbConnectionSync.Table<T>().Where(func)
+						grouplist = from t in dbConnectionSync.Table<T>().Where(lambdaExpr)
 									group t by t.GetType().GetRuntimeProperty(groupField).GetValue(t, null);
 					}
 					else
@@ -503,43 +541,52 @@ namespace Kinvey
 		/// <summary>
 		/// Clear this local cache table of all its content.
 		/// </summary>
-		public KinveyDeleteResponse Clear(Expression expr)
+		public KinveyDeleteResponse Clear(Expression expr = null)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
 			try
 			{
-				int skipNumber = 0;
-				int takeNumber = 0;
-
-				Func<T, bool> func = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber);
-
-				if (func != null)
+				if (expr == null)
 				{
-					try
+					kdr.count = dbConnectionSync.DeleteAll<T>();
+				}
+				else { 
+					int skipNumber = 0;
+					int takeNumber = 0;
+					bool sortAscending = true;
+					LambdaExpression exprSort = null;
+
+					var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
+
+					if (lambdaExpr == null && skipNumber == 0 && takeNumber == 0)
 					{
-						List<T> matches = null;
+						kdr.count = dbConnectionSync.DeleteAll<T>();
+					}
+					else if (skipNumber == 0)
+					{
+						List<T> results;
 
-						if (skipNumber > 0 && takeNumber > 0)
+						var query = dbConnectionSync.Table<T>();
+						if (lambdaExpr != null)
 						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber).Take(takeNumber) select t).ToList();
-						}
-						else if (skipNumber > 0)
-						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func).Skip(skipNumber) select t).ToList();
-						}
-						else if (takeNumber > 0)
-						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func).Take(takeNumber) select t).ToList();
-						}
-						else
-						{
-							matches = (from t in dbConnectionSync.Table<T>().Where(func) select t).ToList();
+							query = query.Where(lambdaExpr);
 						}
 
+						if (takeNumber != 0)
+						{
+							query = query.Take(takeNumber);
+						}
+
+						if (exprSort != null)
+						{
+							ApplySort(ref query, sortAscending, exprSort);
+						}
+
+						results = query.ToList();
 
 						List<string> matchIDs = new List<string>();
-						foreach (var match in matches)
+						foreach (var match in results)
 						{
 							IPersistable entity = match as IPersistable;
 							matchIDs.Add(entity.ID);
@@ -547,15 +594,13 @@ namespace Kinvey
 
 						kdr = this.DeleteByIDs(matchIDs);
 					}
-					catch (Exception e)
+					else
 					{
-						throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_CLEAR_QUERY, "", e);
+						// Pagination appears to be happening here, so we should not delete any cached items because the complete pull is no finished.
+						// Do nothing here.					
 					}
 				}
-				else
-				{
-					kdr.count = dbConnectionSync.DeleteAll<T>();
-				}
+
 			}
 			catch (SQLiteException e)
 			{
@@ -565,6 +610,26 @@ namespace Kinvey
 			return kdr;
 		}
 
+		private void ApplySort(ref TableQuery<T> query, bool sortAscending, LambdaExpression exprSort)
+		{
+			Type retType = exprSort.ReturnType;
+			if (retType == typeof(string))
+			{
+				var funcSort = exprSort as Expression<Func<T, string>>;
+				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
+			else if (retType == typeof(int))
+			{
+				var funcSort = exprSort as Expression<Func<T, int>>;
+				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
+			else if (retType == typeof(uint))
+			{
+				var funcSort = exprSort as Expression<Func<T, uint>>;
+				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
+		}
+
 		public KinveyDeleteResponse DeleteByID(string id)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
@@ -572,6 +637,9 @@ namespace Kinvey
 			try
 			{
 				kdr.count = dbConnectionSync.Delete<T>(id);
+				var ids = new List<string>();
+				ids.Add(id);
+				kdr.IDs = ids;
 			}
 			catch (SQLiteException e)
 			{
@@ -594,6 +662,7 @@ namespace Kinvey
 				kdr.count += DeleteByID(ID).count;
 			}
 
+			kdr.IDs = new List<string>(IDs);
 			return kdr;
 		}
 

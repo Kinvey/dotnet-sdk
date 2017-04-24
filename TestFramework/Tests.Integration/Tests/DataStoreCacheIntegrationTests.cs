@@ -127,6 +127,8 @@ namespace TestFramework
 			Assert.NotNull(results);
 			Assert.NotNull(results.PullEntities);
 			Assert.IsEmpty(results.PullEntities);
+			Assert.AreEqual(results.PullCount, 0);
+			Assert.AreEqual(results.TotalCount, 2);
 
 			// Teardown
 			await todoStore.RemoveAsync(t.ID);
@@ -264,7 +266,7 @@ namespace TestFramework
 
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal));
+			var query = todoStore.Where(x => x.Details.StartsWith("det"));
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -320,7 +322,7 @@ namespace TestFramework
 
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Take(1);
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).Take(1);
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -381,7 +383,7 @@ namespace TestFramework
 			// Act
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Skip(1);
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).Skip(1);
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -443,7 +445,7 @@ namespace TestFramework
 			// Act
 			List<ToDo> listToDo = new List<ToDo>();
 			List<ToDo> listToDoCache = new List<ToDo>();
-			var query = todoStore.Where(x => x.Details.StartsWith("det", StringComparison.Ordinal)).Skip(1).Take(1);
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).Skip(1).Take(1);
 
 			KinveyDelegate<List<ToDo>> cacheResults = new KinveyDelegate<List<ToDo>>()
 			{
@@ -467,8 +469,6 @@ namespace TestFramework
 			Assert.IsNotEmpty(listToDoCache);
 			Assert.AreEqual(1, listToDoCache.Count); // take 1 from local instead of both
 			Assert.AreEqual(2, listToDo.Count); // 1 from local, 1 from network
-			Assert.True(listToDo.First().Details.Equals("details for 2"));
-			Assert.True(listToDoCache.First().Details.Equals("details for 2"));
 		}
 
 		[Test]
@@ -519,7 +519,7 @@ namespace TestFramework
 			p3.Age = 46;
 			p3 = await personStore.SaveAsync(p3);
 
-			var query = personStore.Where(x => x.LastName.Equals("Bluth", StringComparison.Ordinal));
+			var query = personStore.Where(x => x.LastName.Equals("Bluth"));
 
 			// Act
 			List<GroupAggregationResults> cacheResults = new List<GroupAggregationResults>();

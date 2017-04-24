@@ -75,11 +75,11 @@ namespace Kinvey
 				if (Query != null)
 				{
 					IQueryable<object> query = Query;
-					localCount = (uint)Cache.FindByQuery(query.Expression).Count;
+					localCount = (uint)Cache.CountByQuery(query.Expression);
 				}
 				else
 				{
-					localCount = (uint)Cache.FindAll().Count;
+					localCount = (uint)Cache.CountAll();
 				}
 
 				localDelegate?.onSuccess(localCount);

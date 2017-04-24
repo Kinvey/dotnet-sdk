@@ -30,12 +30,12 @@ namespace Kinvey
 			this.client = client;
 		}
 
-		public async Task<PushPayload> EnablePushAsync(string platform, string entityId){
-			return await EnablePushViaRest (platform, entityId).ExecuteAsync ();
+		public async Task<PushPayload> EnablePushAsync(string platform, string deviceId){
+			return await EnablePushViaRest (platform, deviceId).ExecuteAsync ();
 		}
 
-		public async Task<PushPayload> DisablePushAsync(string platform, string entityId){
-			return await DisablePushViaRest (platform, entityId).ExecuteAsync ();
+		public async Task<PushPayload> DisablePushAsync(string platform, string deviceId){
+			return await DisablePushViaRest (platform, deviceId).ExecuteAsync ();
 		}
 
 		public EnablePush EnablePushViaRest(string platform, string deviceId){
@@ -56,7 +56,7 @@ namespace Kinvey
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload (platform);
+			PushPayload input = new PushPayload (platform, deviceId);
 
 			RemovePush disable = new RemovePush (client, input, urlParameters);
 
@@ -93,10 +93,6 @@ namespace Kinvey
 
 			[JsonProperty]
 			private String deviceId {get; set;}
-
-			public PushPayload(string platform) {
-				this.platform = platform;
-			}
 
 			public PushPayload(string platform, string deviceId) {
 				this.platform = platform;

@@ -15,8 +15,8 @@ namespace TestFramework
 		[JsonProperty("due_date")]
 		public string DueDate { get; set; }
 
-		[JsonProperty("SenderID")]
-		public string SenderID { get; set; }
+		[JsonProperty("value")]
+		public int Value { get; set; }
 	}
 }
 

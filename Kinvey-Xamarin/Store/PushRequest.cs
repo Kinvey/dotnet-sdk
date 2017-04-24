@@ -20,18 +20,22 @@ namespace Kinvey
 {
 	public class PushRequest <T> : WriteRequest<T, PushDataStoreResponse<T>>
 	{
+		int limit;
+		int offset;
+
+		PushDataStoreResponse<T> response;
+
 		public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
 			: base (client, collection, cache, queue, policy)
 		{
+			limit = 10;
+			offset = 0;
+
+			response = new PushDataStoreResponse<T>();
 		}
 
 		public override async Task <PushDataStoreResponse<T>> ExecuteAsync()
 		{
-			PushDataStoreResponse<T> response = new PushDataStoreResponse<T>();
-
-			int limit = 3;
-			int offset = 0;
-
 			List<PendingWriteAction> pendingActions = SyncQueue.GetFirstN(limit, offset);
 
 			while (pendingActions != null && pendingActions.Count > 0)
@@ -39,8 +43,6 @@ namespace Kinvey
 				var tasks = new List<Task<T>>();
 				foreach (PendingWriteAction pwa in pendingActions)
 				{
-					try
-					{
 						if (String.Equals("POST", pwa.action))
 						{
 							tasks.Add(HandlePushPOST(pwa));
@@ -53,18 +55,19 @@ namespace Kinvey
 						{
 							tasks.Add(HandlePushDELETE(pwa));
 						}
-					}
-					catch (Exception e)
-					{
-						//Do nothing for now
-						response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
-						                                                EnumErrorCode.ERROR_JSON_RESPONSE,
-						                                                "",
-						                                               e));  // TODO provide correct exception
-					}
 				}
-
-				await Task.WhenAll(tasks.ToArray());
+				try
+				{
+					await Task.WhenAll(tasks.ToArray());
+				}
+				catch (Exception e)
+				{
+					//Do nothing for now
+					response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+																	EnumErrorCode.ERROR_JSON_RESPONSE,
+																	"",
+																   e));  // TODO provide correct exception
+				}
 
 				List<T> resultEntities = new List<T>();
 				int resultCount = 0;
@@ -94,50 +97,93 @@ namespace Kinvey
 
 		private async Task<T> HandlePushPOST(PendingWriteAction pwa)
 		{
-			int result = 0;
+			T entity = default(T);
 
-			string tempID = pwa.entityId;
-			T entity = Cache.FindByID(pwa.entityId);
+			try
+			{
+				int result = 0;
 
-			JObject obj = JObject.FromObject(entity);
-			obj["_id"] = null;
-			entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
+				string tempID = pwa.entityId;
 
-			NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest<T>(pwa.collection, entity);
-			entity = await request.ExecuteAsync();
+				entity = Cache.FindByID(pwa.entityId);
 
-			Cache.UpdateCacheSave(entity, tempID);
+				JObject obj = JObject.FromObject(entity);
+				obj["_id"] = null;
+				entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
 
-			result = SyncQueue.Remove(tempID);
+				NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest<T>(pwa.collection, entity);
+				entity = await request.ExecuteAsync();
 
+				Cache.UpdateCacheSave(entity, tempID);
+
+				result = SyncQueue.Remove(tempID);
+
+				if (result == 0)
+				{
+					offset++;
+				}
+			}
+			catch (KinveyException ke)
+			{
+				response.AddKinveyException(ke);
+				offset++;
+			}
 			return entity;
 		}
 
 		private async Task<T> HandlePushPUT(PendingWriteAction pwa)
 		{
-			int result = 0;
+			T entity = default(T);
 
-			string tempID = pwa.entityId;
-			T entity = Cache.FindByID(pwa.entityId);
+			try
+			{
+				int result = 0;
 
-			NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
-			entity = await request.ExecuteAsync();
+				string tempID = pwa.entityId;
+				entity = Cache.FindByID(pwa.entityId);
 
-			result = SyncQueue.Remove(tempID);
+				NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
+				entity = await request.ExecuteAsync();
+
+				result = SyncQueue.Remove(tempID);
+
+				if (result == 0)
+				{
+					offset++;
+				}
+			}
+			catch (KinveyException ke)
+			{
+				response.AddKinveyException(ke);
+				offset++;
+			}
 
 			return entity;
 		}
 
 		private async Task<T> HandlePushDELETE(PendingWriteAction pwa)
 		{
-			int result = 0;
-
-			NetworkRequest<KinveyDeleteResponse> request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(pwa.collection, pwa.entityId);
-			KinveyDeleteResponse kdr = await request.ExecuteAsync();
-
-			if (kdr.count == 1)
+			try
 			{
-				result = SyncQueue.Remove(pwa.entityId);
+				int result = 0;
+
+				NetworkRequest<KinveyDeleteResponse> request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(pwa.collection, pwa.entityId);
+				KinveyDeleteResponse kdr = await request.ExecuteAsync();
+
+				if (kdr.count == 1)
+				{
+					result = SyncQueue.Remove(pwa.entityId);
+
+					if (result == 0)
+					{
+						offset++;
+					}
+				}
+			}
+			catch (KinveyException ke)
+			{
+				response.AddKinveyException(ke);
+				offset++;
 			}
 
 			return default(T);

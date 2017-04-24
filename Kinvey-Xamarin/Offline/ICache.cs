@@ -36,6 +36,12 @@ namespace Kinvey
 		List<T> FindAll();
 
 		/// <summary>
+		/// Counts of all items in the cache.
+		/// </summary>
+		/// <returns>A count of all cache items.</returns>
+		int CountAll();
+
+		/// <summary>
 		/// Finds the by entity ID.
 		/// </summary>
 		/// <returns>The entity with the given ID.</returns>
@@ -95,11 +101,18 @@ namespace Kinvey
 		List<T> FindByQuery(Expression expr);
 
 		/// <summary>
+		/// Counts entities by query.
+		/// </summary>
+		/// <returns>Count of entities matching the given query</returns>
+		/// <param name="expr">Expression derived from QueryModel object.</param>
+		int CountByQuery(Expression expr);
+
+		/// <summary>
 		/// Deletes all the cached items.
 		/// </summary>
 		/// <returns>A KinveyDeleteResponse object.</returns>
 		/// <param name="expr">Expression derived from QueryModel object.</param>
-		KinveyDeleteResponse Clear(Expression expr);
+		KinveyDeleteResponse Clear(Expression expr = null);
 
 		/// <summary>
 		/// Deletes the cached item by ID.

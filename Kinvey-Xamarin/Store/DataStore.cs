@@ -39,7 +39,7 @@ namespace Kinvey
 
 		private ISyncQueue syncQueue = null;
 
-		private DataStoreType storeType = DataStoreType.SYNC;
+		private DataStoreType storeType = DataStoreType.CACHE;
 
 		private JObject customRequestProperties = new JObject();
 
@@ -61,8 +61,19 @@ namespace Kinvey
 		}
 
 		/// <summary>
+		/// Gets the type of the store. 
+		/// <seealso cref="DataStoreType"/>
+		/// </summary>
+		/// <value>The type of the store.</value>
+		public DataStoreType StoreType
+		{
+			get { return this.storeType; }
+
+		}
+
+		/// <summary>
 		/// Gets or sets the Kinvey client that is used for making data requests. 
-		/// <seealso cref="KinveyXamarin.Client"/>
+		/// <seealso cref="Client"/>
 		/// </summary>
 		/// <value>The Kinvey client.</value>
 		public AbstractClient KinveyClient
@@ -128,6 +139,16 @@ namespace Kinvey
 		}
 
 		#region Public interface
+		/// <summary>
+		/// Gets an instance of the <see cref="KinveyXamarin.DataStore{T}"/>.
+		/// </summary>
+		/// <returns>The DataStore instance.</returns>
+		/// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
+		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <see cref="KinveyXamarin.Client.SharedClient"/> is used.</param>
+		public static DataStore<T> Collection(string collectionName, AbstractClient client = null)
+		{
+			return new DataStore<T>(DataStoreType.CACHE, collectionName, client);
+		}
 
 		/// <summary>
 		/// Gets an instance of the <see cref="KinveyXamarin.DataStore{T}"/>.
@@ -414,6 +435,44 @@ namespace Kinvey
 		public int GetSyncCount(bool allCollections = false)
 		{
 			return syncQueue.Count(allCollections);
+		}
+
+		/// <summary>
+		/// Removes data from local storage. This does not affect the backend.
+		/// </summary>
+		/// <returns>Details of the clear operation, including the number of entities that were cleared.</returns>
+		/// <param name="query">Optional Query parameter.</param>
+		public KinveyDeleteResponse ClearCache(IQueryable<T> query = null)
+		{
+			var ret = cache.Clear(query?.Expression);
+			if (ret?.IDs != null)
+			{
+				syncQueue.Remove(ret.IDs);
+			}
+			else {
+				syncQueue.RemoveAll();
+			}
+			return ret;
+		}
+
+		/// <summary>
+		/// Removes pending write operations from local storage. This prevents changes made on the client from being persisted on the backend.
+		/// </summary>
+		/// <returns>The number of pending operations that were purged.</returns>
+		/// <param name="query">Optional Query parameter.</param>
+		public int Purge(IQueryable<T> query = null)
+		{
+			if (query!=null) 
+			{
+				var ids = new List<string>();
+				var entities = cache.FindByQuery(query.Expression);
+				foreach (var entity in entities) {					
+					ids.Add((entity as IPersistable).ID);
+				}
+				return syncQueue.Remove(ids);
+			}
+
+			return syncQueue.RemoveAll();
 		}
 
 		#endregion

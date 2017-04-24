@@ -55,6 +55,13 @@ namespace Kinvey
 				{
 					// no matter what, favor the current deletion
 					this.Remove(existingSyncItem.entityId);
+
+					// If the existing item that is being deleted is something that only existed locally,
+					// do not insert the DELETE action into the queue, since it is local-only
+					if (existingSyncItem.entityId.StartsWith("temp_", StringComparison.OrdinalIgnoreCase))
+					{
+						return 0;
+					}
 				}
 			}
 
@@ -125,6 +132,19 @@ namespace Kinvey
 			}
 
 			return dbConnection.Delete(item);
+		}
+
+		public int Remove(List<string> entityIDs) {
+			if (entityIDs == null) 
+			{
+				return RemoveAll();
+			}
+
+			int ret = 0;
+			foreach (var id in entityIDs) {
+				ret += this.Remove(id);
+			}
+			return ret;
 		}
 
 		public int RemoveAll () {
