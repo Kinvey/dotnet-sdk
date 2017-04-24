@@ -68,11 +68,11 @@ namespace Kinvey
 		/// <summary>
 		/// In live stream directed communication, sends a message of type {T} to the specified user.
 		/// </summary>
-		/// <param name="toUser">ID of the user that this message is being sent to.</param>
+		/// <param name="toUserID">ID of the user that this message is being sent to.</param>
 		/// <param name="message">Message to be sent.</param>
-		public async Task<bool> Send(string toUser, T message)
+		public async Task<bool> Send(string toUserID, T message)
 		{
-			return await Publish(toUser, message);
+			return await Publish(toUserID, message);
 		}
 
 		/// <summary>
