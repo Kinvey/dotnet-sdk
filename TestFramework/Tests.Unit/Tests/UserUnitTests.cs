@@ -47,5 +47,48 @@ namespace TestFramework
 
 			// Assert
 		}
+
+		[Test]
+		public async Task TestMICLoginAutomatedAuthFlowBad()
+		{
+			// Arrange
+			Mock<RestSharp.IRestClient> moqRestClient = new Mock<RestSharp.IRestClient>();
+			RestSharp.IRestResponse moqResponse = new RestSharp.RestResponse();
+
+			JObject moqResponseContent = new JObject();
+			moqResponseContent.Add("error", "MOCK RESPONSE ERROR");
+			moqResponseContent.Add("description", "Mock Gaetway Timeout error");
+			moqResponseContent.Add("debug", "Mock debug");
+			moqResponse.Content = moqResponseContent.ToString();
+
+			moqResponse.StatusCode = System.Net.HttpStatusCode.GatewayTimeout; // Status Code - 504
+
+			moqRestClient.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(moqResponse);
+
+			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+				.setFilePath(TestSetup.db_dir)
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
+				.SetRestClient(moqRestClient.Object);
+
+			Client c = cb.Build();
+			c.MICApiVersion = "v2";
+
+			string username = "testuser";
+			string password = "testpass";
+			string redirectURI = "kinveyAuthDemo://";
+
+			// Act
+			// Assert
+			Exception er = Assert.CatchAsync(async delegate ()
+			{
+				await User.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI, c);
+			});
+
+			Assert.NotNull(er);
+			KinveyException ke = er as KinveyException;
+			Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+			Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+			Assert.AreEqual(504, ke.StatusCode); // HttpStatusCode.GatewayTimeout
+		}
 	}
 }
