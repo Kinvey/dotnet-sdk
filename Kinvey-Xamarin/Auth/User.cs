@@ -536,7 +536,7 @@ namespace Kinvey
 			{
 				ct.ThrowIfCancellationRequested();
 
-				GetMICTempURLRequest  MICTempURLRequest = User.BuildMICTempURLRequest(uc);
+				GetMICTempURLRequest MICTempURLRequest = User.BuildMICTempURLRequest(uc);
 				ct.ThrowIfCancellationRequested();
 				JObject tempResult = await MICTempURLRequest.ExecuteAsync();
 
@@ -562,9 +562,15 @@ namespace Kinvey
 				currentCred.RedirectUri = uc.MICRedirectURI;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
 			}
+			catch (KinveyException ke)
+			{
+				throw ke;
+			}
 			catch(Exception e)
 			{
 				Logger.Log("Error in LoginWithAuthorizationCodeAPI: " + e.StackTrace);
+				var kinveyException = new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_GENERAL, "Unexpected error in MIC Automated Auth Flow", e);
+				throw kinveyException;
 			}
 		}
 
