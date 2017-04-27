@@ -25,7 +25,7 @@ namespace Kinvey
 	/// Each DataStore in your application represents a collection on your backend. The DataStore class manages the access of data between the Kinvey backend and the app.
 	/// The DataStore provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
 	/// </summary>
-	public class DataStore<T> : KinveyQueryable<T>  where T:class
+	public class DataStore<T> : KinveyQueryable<T> where T : class
 	{
 		#region Member variables
 
@@ -55,7 +55,8 @@ namespace Kinvey
 		/// Represents the name of the collection.
 		/// </summary>
 		/// <value>The name of the collection.</value>
-		public string CollectionName {
+		public string CollectionName
+		{
 			get { return this.collectionName; }
 			set { this.collectionName = value; }
 		}
@@ -80,6 +81,30 @@ namespace Kinvey
 		{
 			get { return this.client; }
 			set { this.client = value; }
+		}
+
+
+		private ICache<T> Cache { 
+			get 
+			{
+				if (this.cache == null) 
+				{ 
+					this.cache = this.client.CacheManager.GetCache<T>(collectionName);
+				}
+				return this.cache; 
+			}
+		}
+
+		private ISyncQueue SyncQueue
+		{
+			get
+			{
+				if (this.syncQueue == null)
+				{
+					this.syncQueue = this.client.CacheManager.GetSyncQueue(collectionName);
+				}
+				return this.syncQueue;
+			}
 		}
 
 		/// <summary>
@@ -130,8 +155,6 @@ namespace Kinvey
 				this.client = Client.SharedClient;
 			}
 
-			this.cache = this.client.CacheManager.GetCache<T> (collectionName);
-			this.syncQueue = this.client.CacheManager.GetSyncQueue (collectionName);
 			this.storeType = type;
 			this.customRequestProperties = this.client.GetCustomRequestProperties();
 			this.networkFactory = new NetworkFactory(this.client);
@@ -218,7 +241,7 @@ namespace Kinvey
 //		{
 //			List<string> entityIDs = new List<string>();
 //			entityIDs.Add(entityID);
-//			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
+//			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, Cache, storeType.ReadPolicy, entityIDs, null);
 //			List<T> listEntities = await findByIDsRequest.ExecuteAsync();
 //			return listEntities.FirstOrDefault();
 //		}
@@ -230,7 +253,7 @@ namespace Kinvey
 //		/// <param name="entityId">Entity identifier.</param>
 //		internal async Task<List<T>> FindByIDsAsync(List<string> entityIDs)
 //		{
-//			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, entityIDs, null);
+//			FindRequest<T> findByIDsRequest = new FindRequest<T>(client, collectionName, Cache, storeType.ReadPolicy, entityIDs, null);
 //			return await findByIDsRequest.ExecuteAsync();
 //		}
 
@@ -255,7 +278,7 @@ namespace Kinvey
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<List<T>> FindAsync(IQueryable<object> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, Cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
 			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync();
 		}
@@ -264,7 +287,7 @@ namespace Kinvey
 		/// Perfoms a find operation, based on a given Kinvey ID.
 		/// </summary>
 		/// <param name="entityID">The ID of the entity to be retrieved</param>
-		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
+		/// <param name="cacheResults">[optional] The intermediate Cache results, returned via delegate prior to the 
 		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
 		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
@@ -277,7 +300,7 @@ namespace Kinvey
 				listIDs.Add(entityID);
 			}
 
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, null, listIDs);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, Cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, null, listIDs);
 			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync();
 		}
@@ -291,7 +314,7 @@ namespace Kinvey
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<uint> GetCountAsync(IQueryable<T> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
 		{
-			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
+			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, Cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
 			ct.ThrowIfCancellationRequested();
 			return await getCountRequest.ExecuteAsync();
 		}
@@ -303,11 +326,11 @@ namespace Kinvey
 		/// <param name="groupField">Property name of field to be used in grouping.</param>
 		/// <param name="aggregateField">Property name of field to be used in aggregation.  This is not necessary when using the <see cref="KinveyXamarin.EnumReduceFunction.REDUCE_FUNCTION_COUNT"/> method.</param>
 		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
-		/// <param name="cacheDelegate">Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
+		/// <param name="cacheDelegate">Delegate used to return the sum aggregate value based on what is available in offline Cache.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<T> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
 		{
-			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
+			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, Cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
 			ct.ThrowIfCancellationRequested();
 			return await findByAggregateQueryRequest.ExecuteAsync();
 		}
@@ -322,7 +345,7 @@ namespace Kinvey
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<T> SaveAsync(T entity, CancellationToken ct = default(CancellationToken))
 		{
-			SaveRequest<T> request = new SaveRequest<T>(entity, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
+			SaveRequest<T> request = new SaveRequest<T>(entity, this.client, this.CollectionName, this.Cache, this.SyncQueue, this.storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();
 			return await request.ExecuteAsync();
 		}
@@ -336,7 +359,7 @@ namespace Kinvey
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<KinveyDeleteResponse> RemoveAsync(string entityID, CancellationToken ct = default(CancellationToken))
 		{
-			RemoveRequest<T> request = new RemoveRequest<T>(entityID, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			RemoveRequest<T> request = new RemoveRequest<T>(entityID, client, CollectionName, Cache, SyncQueue, storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();
 			return await request.ExecuteAsync();
 		}
@@ -362,7 +385,7 @@ namespace Kinvey
 			}
 
 			//TODO query
-			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, cache, DeltaSetFetchingEnabled, query);
+			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, Cache, DeltaSetFetchingEnabled, query);
 			ct.ThrowIfCancellationRequested();
 			return await pullRequest.ExecuteAsync();
 		}
@@ -380,7 +403,7 @@ namespace Kinvey
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_INVALID_PUSH_OPERATION, "");
 			}
 
-			PushRequest<T> pushRequest = new PushRequest<T>(client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+			PushRequest<T> pushRequest = new PushRequest<T>(client, CollectionName, Cache, SyncQueue, storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();
 			return await pushRequest.ExecuteAsync();
 		}
@@ -434,7 +457,7 @@ namespace Kinvey
 		/// <param name="allCollections">[optional] Flag to determine if count should be for all collections.  Default to false.</param>
 		public int GetSyncCount(bool allCollections = false)
 		{
-			return syncQueue.Count(allCollections);
+			return SyncQueue.Count(allCollections);
 		}
 
 		/// <summary>
@@ -444,13 +467,13 @@ namespace Kinvey
 		/// <param name="query">Optional Query parameter.</param>
 		public KinveyDeleteResponse ClearCache(IQueryable<T> query = null)
 		{
-			var ret = cache.Clear(query?.Expression);
+			var ret = Cache.Clear(query?.Expression);
 			if (ret?.IDs != null)
 			{
-				syncQueue.Remove(ret.IDs);
+				SyncQueue.Remove(ret.IDs);
 			}
 			else {
-				syncQueue.RemoveAll();
+				SyncQueue.RemoveAll();
 			}
 			return ret;
 		}
@@ -465,14 +488,14 @@ namespace Kinvey
 			if (query!=null) 
 			{
 				var ids = new List<string>();
-				var entities = cache.FindByQuery(query.Expression);
+				var entities = Cache.FindByQuery(query.Expression);
 				foreach (var entity in entities) {					
 					ids.Add((entity as IPersistable).ID);
 				}
-				return syncQueue.Remove(ids);
+				return SyncQueue.Remove(ids);
 			}
 
-			return syncQueue.RemoveAll();
+			return SyncQueue.RemoveAll();
 		}
 
 		#endregion
