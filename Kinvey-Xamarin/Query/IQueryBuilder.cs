@@ -35,6 +35,9 @@ namespace Kinvey
 		/// <param name="value">Value to be appended to the modifier portion of the mongo-style query string.</param>
 		void AddModifier(object value);
 
+
+		void AddQueryExpression(object value);
+
 		/// <summary>
 		/// Gets the full mongo-style query string.
 		/// </summary>

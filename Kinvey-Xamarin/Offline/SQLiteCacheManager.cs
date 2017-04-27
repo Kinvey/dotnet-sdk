@@ -140,7 +140,7 @@ namespace Kinvey
 //			return SQLiteHelper<T>.getInstance (platform, dbpath);
 //		}
 
-		public ICache<T> GetCache<T>(string collectionName) where T : class
+		public ICache<T> GetCache<T>(string collectionName) where T : class, IPersistable
 		{
 			if (!TableExists<CollectionTableMap>(DBConnectionSync))
 			{
