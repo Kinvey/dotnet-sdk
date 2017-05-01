@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>testdroidapp2</RootNamespace>
     <AssemblyName>testdroidapp2</AssemblyName>
-    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -83,17 +83,13 @@
       <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
       <Name>Kinvey-Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Kinvey-Xamarin\Kinvey-Xamarin.csproj">
-      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
-      <Name>Kinvey-Xamarin</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
-      <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
-      <Name>RestSharp.Portable</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Kinvey-Xamarin-Android\Kinvey-Xamarin-Android.csproj">
       <Project>{77977557-862E-4A14-A5D7-0096023BA682}</Project>
       <Name>Kinvey-Xamarin-Android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinvey.Core\Kinvey.Core.csproj">
+      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
+      <Name>Kinvey.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
