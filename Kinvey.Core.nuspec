@@ -4,7 +4,7 @@
     <id>Kinvey</id>
     <version>3.0.6</version>
     <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
-    <title>Kinvey-Xamarin</title>
+    <title>Kinvey.Core</title>
     <authors>Kinvey</authors>
     <owners>Kinvey</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -29,6 +29,6 @@
   <files>
     <file src="Kinvey-Utils/obj/Release/Kinvey-Utils.dll" target="lib"/>
     <file src="RestSharp.Portable/obj/Release/RestSharp.Portable.dll" target="lib"/>
-    <file src="Kinvey-Xamarin/obj/Release/Kinvey-Xamarin.dll" target="lib"/>
+    <file src="Kinvey.Core/obj/Release/Kinvey.Core.dll" target="lib"/>
   </files>
 </package>
