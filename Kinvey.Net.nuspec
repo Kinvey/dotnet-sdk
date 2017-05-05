@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Kinvey.Net</id>
+    <version>3.0.6</version>
+    <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
+    <title>Kinvey.Net</title>
+    <authors>Kinvey</authors>
+    <owners>Kinvey</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Build .NET apps which leverage the power of Kinvey's BaaS, with support for push notifications, users, data, and files, with caching and offline.  Check out http://devcenter.kinvey.com/xamarin for guides, tutorials, and sample apps.  </description>
+    <copyright>Copyright 2017</copyright>
+    <projectUrl>http://devcenter.kinvey.com/dotnet/</projectUrl>
+    <tags>Kinvey BaaS</tags>
+    <dependencies>
+      <dependency id="Microsoft.Bcl" version="1.1.0"/>
+      <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
+      <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
+      <dependency id="Microsoft.Net.Http" version="2.2.29"/>
+      <dependency id="modernhttpclient" version="2.4.2"/>
+      <dependency id="Newtonsoft.Json" version="8.0.2"/>
+      <dependency id="System.Data.SQLite" version="1.0.105"/>
+      <dependency id="Kinvey" version="3.0.6"/>
+      <dependency id="Xam.Plugin.DeviceInfo" version="2.1.2"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Kinvey.Net/obj/Release/Kinvey.Net.dll" target="lib"/>
+  </files>
+</package>
