@@ -95,14 +95,14 @@ namespace Kinvey
 		/// <param name="refreshToken">Refresh token</param>
 		/// <param name="redirectURI">Redirect URI</param>
 		public Credential(string userId,
-		                  string accessToken,
-		                  string authToken,
-		                  string userName,
-		                  Dictionary<string, JToken> attributes,
-		                  KinveyUserMetaData kmd,
-		                  string refreshToken,
-		                  string redirectURI,
-		                  string deviceID)
+						  string accessToken,
+						  string authToken,
+						  string userName,
+						  Dictionary<string, JToken> attributes,
+						  KinveyUserMetaData kmd,
+						  string refreshToken,
+						  string redirectURI,
+						  string deviceID)
 		{
 			this.userId = userId;
 			this.AccessToken = accessToken;
@@ -195,14 +195,14 @@ namespace Kinvey
 		public static Credential From(NativeCredential nc)
 		{
 			return new Credential(nc.UserID,
-			                      nc.Properties[Constants.STR_ACCESS_TOKEN],
-			                      nc.Properties[Constants.STR_AUTH_TOKEN],
-			                      nc.Properties[Constants.STR_USERNAME],
-			                      JsonConvert.DeserializeObject<Dictionary<string, JToken>>(nc.Properties[Constants.STR_ATTRIBUTES]),
-			                      JsonConvert.DeserializeObject<KinveyUserMetaData>(nc.Properties[Constants.STR_USER_KMD]),
-			                      nc.Properties[Constants.STR_REFRESH_TOKEN],
-			                      nc.Properties[Constants.STR_REDIRECT_URI],
-			                      null);
+								  nc.Properties[Constants.STR_ACCESS_TOKEN],
+								  nc.Properties[Constants.STR_AUTH_TOKEN],
+								  nc.Properties[Constants.STR_USERNAME],
+								  JsonConvert.DeserializeObject<Dictionary<string, JToken>>(nc.Properties[Constants.STR_ATTRIBUTES]),
+								  JsonConvert.DeserializeObject<KinveyUserMetaData>(nc.Properties[Constants.STR_USER_KMD]),
+								  nc.Properties[Constants.STR_REFRESH_TOKEN],
+								  nc.Properties[Constants.STR_REDIRECT_URI],
+								  null);
 		}
 
 		internal static Credential From(SQLCredential sqlcred)
@@ -210,6 +210,11 @@ namespace Kinvey
 			Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 			KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 			return new Credential(sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+		}
+
+		public static Credential From(Credential cred, string protectedAuthToken)
+		{
+			return new Credential(cred.userId, cred.AccessToken, protectedAuthToken, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID);
 		}
 	}
 }
