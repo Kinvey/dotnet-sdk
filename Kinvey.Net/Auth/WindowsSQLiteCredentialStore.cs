@@ -52,7 +52,7 @@ namespace Kinvey
 				byte[] origAuthToken = System.Text.Encoding.Unicode.GetBytes(credential.AuthToken);
 				byte[] encAuthToken = ProtectedData.Protect(origAuthToken, null, DataProtectionScope.CurrentUser);
 
-				Credential encryptedCredential = Credential.From(credential, System.Text.Encoding.Unicode.GetString(encAuthToken));
+				Credential encryptedCredential = Credential.From(credential, encAuthToken);
 				base.Store(userId, ssoGroupKey, encryptedCredential);
 			}
 			catch (System.Exception e)

@@ -46,6 +46,12 @@ namespace Kinvey
 		/// The access token.
 		/// </summary>
 		[DataMember]
+		public byte[] SecAuthToken { get; set; }
+
+		/// <summary>
+		/// The access token.
+		/// </summary>
+		[DataMember]
 		public string AccessToken { get; set; }
 
 		/// <summary>
@@ -212,9 +218,16 @@ namespace Kinvey
 			return new Credential(sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
 		}
 
-		public static Credential From(Credential cred, string protectedAuthToken)
+		public static Credential From(Credential cred, byte[] encryptedAuthToken)
 		{
-			return new Credential(cred.userId, cred.AccessToken, protectedAuthToken, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID);
+			var secCredential = new Credential(cred.userId, cred.AccessToken, null, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID);
+			secCredential.SecAuthToken = encryptedAuthToken;
+			return secCredential;
+		}
+
+		public static Credential From(Credential cred, string originalAuthToken)
+		{
+			return new Credential(cred.userId, cred.AccessToken, originalAuthToken, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID);
 		}
 	}
 }

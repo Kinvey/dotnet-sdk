@@ -76,6 +76,7 @@ namespace Kinvey
 			SQLCredential cred = new SQLCredential();
 			cred.UserID = credential.UserId;
 			cred.AuthToken = credential.AuthToken;
+			cred.SecAuthToken = credential.SecAuthToken;
 			cred.UserName = credential.UserName;
 			cred.Attributes = JsonConvert.SerializeObject(credential.Attributes);
 			cred.UserKMD = JsonConvert.SerializeObject(credential.UserKMD);

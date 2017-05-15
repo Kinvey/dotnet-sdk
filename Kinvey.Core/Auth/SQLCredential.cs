@@ -31,6 +31,12 @@ public class SQLCredential
 	public string AuthToken { get; set; }
 
 	/// <summary>
+	/// Gets or sets the auth token.
+	/// </summary>
+	/// <value>The auth token.</value>
+	public byte[] SecAuthToken { get; set; }
+
+	/// <summary>
 	/// Gets or sets the user ID.
 	/// </summary>
 	/// <value>The user Id.</value>
