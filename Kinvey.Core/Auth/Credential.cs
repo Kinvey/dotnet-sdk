@@ -215,7 +215,9 @@ namespace Kinvey
 		{
 			Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 			KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
-			return new Credential(sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+			var credential = new Credential(sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+			credential.SecAuthToken = sqlcred.SecAuthToken;
+			return credential;
 		}
 
 		public static Credential From(Credential cred, byte[] encryptedAuthToken)

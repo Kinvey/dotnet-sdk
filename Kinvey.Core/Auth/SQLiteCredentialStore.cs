@@ -117,6 +117,7 @@ namespace Kinvey
 					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				}
 				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+				cred.SecAuthToken = sqlcred.SecAuthToken;
 			}
 
 			return cred;

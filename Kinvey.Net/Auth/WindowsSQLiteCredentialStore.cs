@@ -26,9 +26,16 @@ namespace Kinvey
 			{
 				Credential credential = base.Load(userID, ssoGroupKey);
 
-				byte[] origAuthToken = ProtectedData.Unprotect(credential.SecAuthToken, null, DataProtectionScope.CurrentUser);
+				if (credential?.SecAuthToken != null)
+				{
+					byte[] origAuthToken = ProtectedData.Unprotect(credential.SecAuthToken, null, DataProtectionScope.CurrentUser);
 
-				decryptedCredential = Credential.From(credential, System.Text.Encoding.Unicode.GetString(origAuthToken));
+					decryptedCredential = Credential.From(credential, System.Text.Encoding.Unicode.GetString(origAuthToken));
+				}
+				else
+				{
+					decryptedCredential = credential;
+				}
 			}
 			catch (System.Exception e)
 			{
@@ -72,9 +79,16 @@ namespace Kinvey
 			{
 				Credential credential = base.GetStoredCredential(ssoGroupKey);
 
-				byte[] origAuthToken = ProtectedData.Unprotect(credential.SecAuthToken, null, DataProtectionScope.CurrentUser);
+				if (credential?.SecAuthToken != null)
+				{
+					byte[] origAuthToken = ProtectedData.Unprotect(credential.SecAuthToken, null, DataProtectionScope.CurrentUser);
 
-				decryptedCredential = Credential.From(credential, System.Text.Encoding.Unicode.GetString(origAuthToken));
+					decryptedCredential = Credential.From(credential, System.Text.Encoding.Unicode.GetString(origAuthToken));
+				}
+				else
+				{
+					decryptedCredential = credential;
+				}
 			}
 			catch (System.Exception e)
 			{
