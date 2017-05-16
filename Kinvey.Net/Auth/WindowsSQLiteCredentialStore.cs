@@ -35,6 +35,8 @@ namespace Kinvey
 				else
 				{
 					decryptedCredential = credential;
+
+					Store(decryptedCredential.UserId, null, decryptedCredential);
 				}
 			}
 			catch (System.Exception e)
@@ -88,6 +90,8 @@ namespace Kinvey
 				else
 				{
 					decryptedCredential = credential;
+
+					Store(decryptedCredential.UserId, null, decryptedCredential);
 				}
 			}
 			catch (System.Exception e)
