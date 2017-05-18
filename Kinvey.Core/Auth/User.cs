@@ -59,6 +59,12 @@ namespace Kinvey
         private String username;
 
 		/// <summary>
+		/// Holds the social identity information for the user
+		/// </summary>
+		[JsonProperty("_socialIdentity")]
+		private KinveyAuthSocialID socialIdentity;
+
+		/// <summary>
 		/// Used to get information regarding email verification.  The metadata object contains 
 		/// an instance of <see cref="KinveyXamarin.KMDEmailVerification"/> as well as an 
 		/// instance of <see cref="KMDPasswordReset"/> 
@@ -126,6 +132,15 @@ namespace Kinvey
 		{
 			get { return this.metadata; }
 			set { this.metadata = value; }
+		}
+
+		/// <summary>
+		/// The _socialIdentity object.
+		/// </summary>
+		public KinveyAuthSocialID AuthSocialID
+		{
+			get { return this.socialIdentity; }
+			set { this.socialIdentity = value; }
 		}
 
 		/// <summary>
@@ -220,6 +235,7 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			User u = new User(uc);
 
+			u.AuthSocialID = credential.AuthSocialID;
 			u.AccessToken = credential.AccessToken;
 			u.Attributes = credential.Attributes;
 			u.AuthToken = credential.AuthToken;
