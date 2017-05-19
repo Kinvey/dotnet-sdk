@@ -22,8 +22,6 @@
       <dependency id="Remotion.Linq" version="2.0.1"/>
       <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
-      <dependency id="Xam.Plugin.DeviceInfo" version="2.1.2"/>
-      <dependency id="PubnubPCL" version="3.8.5.0"/>
     </dependencies>
   </metadata>
   <files>
