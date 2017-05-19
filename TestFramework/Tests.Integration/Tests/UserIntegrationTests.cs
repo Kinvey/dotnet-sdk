@@ -587,6 +587,20 @@ namespace TestFramework
 		}
 
 		[Test]
+		public void TestResetPassword()
+		{
+			// Arrange
+			string email = "vinay@kinvey.com";
+
+			// Act
+			// Assert
+			Assert.DoesNotThrowAsync(async delegate ()
+			{
+				await User.ResetPasswordAsync(email);
+			});
+		}
+
+		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestUpdateUserAsync()
 		{
