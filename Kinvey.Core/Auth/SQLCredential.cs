@@ -19,6 +19,12 @@ using SQLite.Net.Attributes;
 public class SQLCredential
 {
 	/// <summary>
+	/// Gets or sets the Kinvey social identity info for this credential.
+	/// </summary>
+	/// <value>The credential Kinvey metadata.</value>
+	public string AuthSocialID { get; set; }
+
+	/// <summary>
 	/// Gets or sets the access token.
 	/// </summary>
 	/// <value>The access token.</value>

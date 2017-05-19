@@ -40,6 +40,14 @@ namespace Kinvey
 		/// </summary>
 		[Preserve]
 		[JsonProperty("audience")]
-		public String AuthAudience { get; set; }
+		public string AuthAudience { get; set; }
+
+		/// <summary>
+		/// Serialize this instance of <see cref="KinveyAuthMetaData"/> in the local cache.
+		/// </summary>
+		public string Serialize()
+		{
+			return JsonConvert.SerializeObject(this);
+		}
 	}
 }

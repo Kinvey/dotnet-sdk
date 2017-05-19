@@ -43,6 +43,12 @@ namespace Kinvey
 		private string userName;
 
 		/// <summary>
+		/// The _socialIdentity object.
+		/// </summary>
+		[DataMember]
+		public KinveyAuthSocialID AuthSocialID { get; set; }
+
+		/// <summary>
 		/// The access token.
 		/// </summary>
 		[DataMember]
@@ -96,6 +102,7 @@ namespace Kinvey
 		/// <param name="redirectURI">Redirect URI</param>
 		public Credential(string userId,
 		                  string accessToken,
+		                  KinveyAuthSocialID socialIdentity,
 		                  string authToken,
 		                  string userName,
 		                  Dictionary<string, JToken> attributes,
@@ -106,6 +113,7 @@ namespace Kinvey
 		{
 			this.userId = userId;
 			this.AccessToken = accessToken;
+			this.AuthSocialID = socialIdentity;
 			this.authToken = authToken;
 			this.userName = userName;
 			this.attributes = attributes;
@@ -180,7 +188,7 @@ namespace Kinvey
 		/// <param name="response">The response of a Kinvey login/create request.</param>
 		public static Credential From(KinveyAuthResponse response)
 		{
-			return new Credential(response.UserId, response.AccessToken, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null, null);
+			return new Credential(response.UserId, response.AccessToken, response.AuthSocialIdentity, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null, null);
 		}
 
 		/// <summary>
@@ -189,13 +197,14 @@ namespace Kinvey
 		/// <param name="user">User.</param>
 		public static Credential From(User user)
 		{
-			return new Credential(user.Id, user.AccessToken, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null, user.KinveyClient.DeviceID);
+			return new Credential(user.Id, user.AccessToken, user.AuthSocialID, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null, user.KinveyClient.DeviceID);
 		}
 
 		public static Credential From(NativeCredential nc)
 		{
 			return new Credential(nc.UserID,
 			                      nc.Properties[Constants.STR_ACCESS_TOKEN],
+			                      null, // TODO add _socialIdentity object here
 			                      nc.Properties[Constants.STR_AUTH_TOKEN],
 			                      nc.Properties[Constants.STR_USERNAME],
 			                      JsonConvert.DeserializeObject<Dictionary<string, JToken>>(nc.Properties[Constants.STR_ATTRIBUTES]),
@@ -209,7 +218,8 @@ namespace Kinvey
 		{
 			Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 			KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
-			return new Credential(sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+			KinveyAuthSocialID socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
+			return new Credential(sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
 		}
 	}
 }

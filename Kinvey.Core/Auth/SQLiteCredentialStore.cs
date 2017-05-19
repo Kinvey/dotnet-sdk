@@ -75,6 +75,7 @@ namespace Kinvey
 			Delete (userId, ssoGroupKey);
 			SQLCredential cred = new SQLCredential();
 			cred.UserID = credential.UserId;
+			cred.AuthSocialID = JsonConvert.SerializeObject(credential.AuthSocialID);
 			cred.AuthToken = credential.AuthToken;
 			cred.UserName = credential.UserName;
 			cred.Attributes = JsonConvert.SerializeObject(credential.Attributes);
@@ -115,7 +116,14 @@ namespace Kinvey
 				{
 					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				}
-				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+
+				KinveyAuthSocialID socialIdentity = null;
+				if (sqlcred.AuthSocialID != null)
+				{
+					socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
+				}
+
+				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
 			}
 
 			return cred;
