@@ -911,7 +911,7 @@ namespace Kinvey
 		/// <param name="userID">The user ID of the user whose password is reset.  This can either be the 
 		/// ID of the user, or the email address of the user.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> ResetPasswordAsync(string userID, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> ResetPasswordAsync(string userID, CancellationToken ct = default(CancellationToken))
 		{
 			ResetPasswordRequest resetPasswordRequest = buildResetPasswordRequest(userID);
 			ct.ThrowIfCancellationRequested();
@@ -1141,15 +1141,16 @@ namespace Kinvey
 			return update;
 		}
 
-		private ResetPasswordRequest buildResetPasswordRequest(string userID)
+		static private ResetPasswordRequest buildResetPasswordRequest(string userID, AbstractClient userClient = null)
 		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
 			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userID);
 
-			ResetPasswordRequest reset = new ResetPasswordRequest (client, userID, urlParameters);
+			ResetPasswordRequest reset = new ResetPasswordRequest(uc, userID, urlParameters);
 
-			client.InitializeRequest(reset);
+			uc.InitializeRequest(reset);
 
 			return reset;
 		}
