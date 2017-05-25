@@ -21,6 +21,7 @@
       <dependency id="Newtonsoft.Json" version="8.0.2"/>
       <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
+      <dependency id="SQLite.Net.Platform.XamarinAndroidN" version="3.1.1"/>
       <dependency id="Xamarin.GooglePlayServices.Gcm" version="27.0.0.0"/>
       <dependency id="Kinvey" version="3.0.8"/>
     </dependencies>
