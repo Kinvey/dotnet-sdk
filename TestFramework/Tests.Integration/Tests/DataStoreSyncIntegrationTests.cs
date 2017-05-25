@@ -948,6 +948,52 @@ namespace TestFramework
 			kinveyClient.ActiveUser.Logout();
 		}
 
+		[Test]
+		public async Task TestSyncStoreSyncWithQueryAsync()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+
+			PullDataStoreResponse<ToDo> todosBeforeSave = await todoStore.PullAsync();
+
+			// Assert
+			Assert.IsNotNull(todosBeforeSave);
+			Assert.IsEmpty(todosBeforeSave.PullEntities);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			ToDo anotherNewItem = new ToDo();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+
+			var query = from x in todoStore where x.Details.StartsWith("Another") select x;
+
+			SyncDataStoreResponse<ToDo> todosAfterSave = await todoStore.SyncAsync(query);
+
+			// Assert
+			Assert.NotNull(todosAfterSave);
+			Assert.AreEqual(1, todosAfterSave.PullResponse.PullCount);
+
+			// Teardown
+			PullDataStoreResponse<ToDo> todoCleanup = await todoStore.PullAsync();
+			foreach (var todo in todoCleanup.PullEntities)
+			{
+				await todoStore.RemoveAsync(todo.ID);
+			}
+			await todoStore.PushAsync();
+			kinveyClient.ActiveUser.Logout();
+		}
+
 
 		#region ORM Tests
 

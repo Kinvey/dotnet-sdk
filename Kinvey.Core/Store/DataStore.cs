@@ -403,7 +403,7 @@ namespace Kinvey
 			}
 
 			// first push
-			PushDataStoreResponse<T> pushResponse = await this.PushAsync();   //partial success
+			PushDataStoreResponse<T> pushResponse = await this.PushAsync(ct);   //partial success
 
 			ct.ThrowIfCancellationRequested();
 
@@ -412,7 +412,7 @@ namespace Kinvey
 
 			try
 			{
-				pullResponse = await this.PullAsync();
+				pullResponse = await this.PullAsync(query, ct);
 			}
 			catch (KinveyException e)
 			{
