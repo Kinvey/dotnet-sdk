@@ -51,6 +51,7 @@ namespace Kinvey
 		/// <value><c>true</c> if delta set fetching enabled; otherwise, <c>false</c>.</value>
 		public bool DeltaSetFetchingEnabled { get; set; }
 
+		public bool AutoPagination { get; set; }
 		/// <summary>
 		/// Represents the name of the collection.
 		/// </summary>
@@ -136,6 +137,7 @@ namespace Kinvey
 			this.customRequestProperties = this.client.GetCustomRequestProperties();
 			this.networkFactory = new NetworkFactory(this.client);
 			this.DeltaSetFetchingEnabled = false;
+			this.AutoPagination = false;
 		}
 
 		#region Public interface
@@ -361,8 +363,15 @@ namespace Kinvey
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE, "");
 			}
 
-			//TODO query
-			PullRequest<T> pullRequest = new PullRequest<T> (client, CollectionName, cache, DeltaSetFetchingEnabled, query);
+			if (AutoPagination)
+			{
+				var pagedPullRequest = new PagedPullRequest<T>(client, CollectionName, cache, DeltaSetFetchingEnabled, query);
+				ct.ThrowIfCancellationRequested();
+				return await pagedPullRequest.ExecuteAsync();
+
+			}
+
+			var	pullRequest = new PullRequest<T> (client, CollectionName, cache, DeltaSetFetchingEnabled, query);	
 			ct.ThrowIfCancellationRequested();
 			return await pullRequest.ExecuteAsync();
 		}
