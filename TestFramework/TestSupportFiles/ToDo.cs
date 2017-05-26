@@ -17,6 +17,9 @@ namespace TestFramework
 
 		[JsonProperty("value")]
 		public int Value { get; set; }
+
+		[JsonProperty("bool_value")]
+		public bool BoolVal { get; set; }
 	}
 }
 
