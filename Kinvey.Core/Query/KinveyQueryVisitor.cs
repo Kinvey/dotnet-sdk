@@ -197,8 +197,6 @@ namespace Kinvey
 					argument = argument.Replace("\"", "\\\"");
 					builderMongoQuery.Write(argument);
 					builderMongoQuery.Write("\"}");
-					argument = argument.ToLower();
-					builderMongoQuery.Write(argument);
 				}
 				else if (b.Method.Name.Equals("Equals"))
 				{
