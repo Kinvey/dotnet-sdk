@@ -121,6 +121,7 @@
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Book.cs" />
+    <Compile Include="ToDo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">

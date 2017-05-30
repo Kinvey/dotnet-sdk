@@ -112,31 +112,65 @@ namespace Kinvey
 			{
 				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
 				var member = equality.Left as MemberExpression;
+				var argument = equality.Right.ToString();
 
-				builderMongoQuery.Write ("\"" + mapPropertyToName[member.Member.Name] + "\"");
-				builderMongoQuery.Write (":");
-				builderMongoQuery.Write (equality.Right);
+				builderMongoQuery.Write("\"" + mapPropertyToName[member.Member.Name] + "\"");
+				builderMongoQuery.Write(":");
+
+				if (equality.Right.Type.Name.Equals("Boolean"))
+				{
+					// case where boolean value is explicitly checked with double equal sign (example below)
+					// 		var query = from e in todoStore
+					//					where e.BoolVal == true
+					//					select e;
+					argument = equality.Right.ToString().ToLower();
+				}
+
+				builderMongoQuery.Write(argument);
 			}
 			else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso"))
 			{
 				BinaryExpression and = whereClause.Predicate as BinaryExpression;
 				VisitWhereClause(new WhereClause(and.Right), queryModel, index);
-				builderMongoQuery.Write (",");
+				builderMongoQuery.Write(",");
 				VisitWhereClause(new WhereClause(and.Left), queryModel, index);
 			}
 			else if (whereClause.Predicate.NodeType.ToString().Equals("OrElse"))
 			{
 				BinaryExpression or = whereClause.Predicate as BinaryExpression;
 
-				builderMongoQuery.Write ("\"$or\":");
+				builderMongoQuery.Write("\"$or\":");
 				builderMongoQuery.Write("[");
-				builderMongoQuery.Write ("{");
-				VisitWhereClause (new WhereClause(or.Left), queryModel, index);
-				builderMongoQuery.Write ("},");
-				builderMongoQuery.Write ("{");
-				VisitWhereClause (new WhereClause(or.Right), queryModel, index);
-				builderMongoQuery.Write ("}");
-				builderMongoQuery.Write ("]");
+				builderMongoQuery.Write("{");
+				VisitWhereClause(new WhereClause(or.Left), queryModel, index);
+				builderMongoQuery.Write("},");
+				builderMongoQuery.Write("{");
+				VisitWhereClause(new WhereClause(or.Right), queryModel, index);
+				builderMongoQuery.Write("}");
+				builderMongoQuery.Write("]");
+			}
+			else if (whereClause.Predicate.NodeType == ExpressionType.MemberAccess &&
+					 whereClause.Predicate.Type == typeof(System.Boolean))
+			{
+				// Case where query is against boolean value, where value is not specified (example below)
+				// 		var query = from e in todoStore
+				//					where e.BoolVal
+				//					select e;
+
+				MemberExpression ma = whereClause.Predicate as MemberExpression;
+
+				string name = ma.Member.Name;
+				string propertyName = mapPropertyToName[name];
+
+				if (index > 0)
+				{
+					// multiple where clauses present, so separate with comma
+					builderMongoQuery.Write(",");
+				}
+
+				builderMongoQuery.Write("\"" + propertyName + "\"");
+				builderMongoQuery.Write(":");
+				builderMongoQuery.Write("true");
 			}
 			else if (whereClause.Predicate.NodeType == ExpressionType.Call)
 			{
@@ -178,6 +212,12 @@ namespace Kinvey
 					{
 						argument = argument.Replace("\"", "\\\"");
 						argument = "\"" + argument + "\"";
+					}
+					else if (argType.Name.Equals("Boolean"))
+					{
+						// Case where query is against boolean value, using the "Equals" expression (example below)
+						// 		var query = todoStore.Where(x => x.BoolVal.Equals(true));
+						argument = argument.ToLower();
 					}
 					builderMongoQuery.Write(argument);
 				}
