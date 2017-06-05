@@ -5,7 +5,7 @@ install:
  - echo `pwd`
  - mkdir packages/pubnubnetplatform.3.8.7
  - mv pubnub.zip packages/pubnubnetplatform.3.8.7/.
- - unzip packages/pubnub.zip
+ - unzip packages/pubnubnetplatform.3.8.7/pubnub.zip
  - echo `ls -l packages/pubnubnetplatform.3.8.7`
  - nuget restore Kinvey.sln
 script:
