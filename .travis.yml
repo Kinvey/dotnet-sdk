@@ -3,9 +3,9 @@ solution: Kinvey.sln
 install:
  - wget -O pubnub.zip https://www.nuget.org/api/v2/package/PubnubNetPlatform/3.8.7
  - echo `pwd`
- - echo `ls -l packages/pubnubnetplatform.3.8.7`
  - mv pubnub.zip packages/.
  - unzip packages/pubnub.zip
+ - echo `ls -l packages/pubnubnetplatform.3.8.7`
  - nuget restore Kinvey.sln
 script:
  - xbuild Kinvey.Core/Kinvey.Core.csproj 
