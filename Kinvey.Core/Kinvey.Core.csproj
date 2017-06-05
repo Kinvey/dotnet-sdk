@@ -189,7 +189,7 @@
       <HintPath>..\packages\Portable.BouncyCastle-Signed.1.7.0.2\lib\portable-net45+dnxcore50+wp80+win+wpa81+MonoTouch10+MonoAndroid10+xamarinmac20+xamarinios10\crypto.dll</HintPath>
     </Reference>
     <Reference Include="PubnubNetPlatform">
-      <HintPath>..\packages\pubnubnetplatform.3.8.7.0\lib\portable45-net45+win8+wp8+wpa81\PubnubNetPlatform.dll</HintPath>
+      <HintPath>..\packages\pubnubnetplatform.3.8.7\lib\portable45-net45+win8+wp8+wpa81\PubnubNetPlatform.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
