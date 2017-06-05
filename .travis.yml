@@ -3,7 +3,8 @@ solution: Kinvey.sln
 install:
  - wget -O pubnub.zip https://www.nuget.org/api/v2/package/PubnubNetPlatform/3.8.7
  - echo `pwd`
- - mv pubnub.zip packages/.
+ - mkdir packages/pubnubnetplatform.3.8.7
+ - mv pubnub.zip packages/pubnubnetplatform.3.8.7/.
  - unzip packages/pubnub.zip
  - echo `ls -l packages/pubnubnetplatform.3.8.7`
  - nuget restore Kinvey.sln
