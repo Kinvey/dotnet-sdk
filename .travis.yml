@@ -1,11 +1,13 @@
 language: csharp
 solution: Kinvey.sln
 install:
- - wget -O pubnub.zip https://www.nuget.org/api/v2/package/PubnubNetPlatform/3.8.7
+ - wget -O pubnubnetplatform.3.8.7.zip https://www.nuget.org/api/v2/package/PubnubNetPlatform/3.8.7
  - echo `pwd`
  - sudo mkdir packages/pubnubnetplatform.3.8.7
- - sudo mv pubnub.zip packages/pubnubnetplatform.3.8.7/.
- - sudo unzip packages/pubnubnetplatform.3.8.7/pubnub.zip
+ - echo `ls -l packages/`
+ - sudo mv pubnubnetplatform.3.8.7.zip packages/pubnubnetplatform.3.8.7/.
+ - echo `ls -l packages/pubnubnetplatform.3.8.7`
+ - sudo unzip packages/pubnubnetplatform.3.8.7/pubnubnetplatform.3.8.7.zip
  - echo `ls -l packages/pubnubnetplatform.3.8.7/lib`
  - nuget restore Kinvey.sln
 script:
