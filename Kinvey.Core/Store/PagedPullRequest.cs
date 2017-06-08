@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -23,26 +24,37 @@ namespace Kinvey
 	public class PagedPullRequest<T> : ReadRequest<T, PullDataStoreResponse<T>>
 	{
 		BlockingCollection<List<T>> workQueue = new BlockingCollection<List<T>>(10);
+		//ConcurrentBag<Task<List<T>>> pageQueue = new ConcurrentBag<Task<List<T>>>(20);
 
-		public PagedPullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<object> query)
+		int count;
+		bool isInitial;
+		bool isConsumerWorking = false;
+
+		public PagedPullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<object> query, int count, bool isInitial)
 			: base(client, collection, cache, query, ReadPolicy.FORCE_NETWORK, deltaSetFetchingEnabled)
 		{
-
+			this.count = count;
+			this.isInitial = isInitial;
 		}
 
 		public override async Task<PullDataStoreResponse<T>> ExecuteAsync()
 		{
 			int skipCount = 0, pageSize = 10000;
 
-			var count = await new GetCountRequest<T>(this.Client, this.Collection, this.Cache, ReadPolicy.FORCE_NETWORK, false, null, this.Query).ExecuteAsync();
+			if (count < 0) {
+				count = (int) await new GetCountRequest<T>(this.Client, this.Collection, this.Cache, ReadPolicy.FORCE_NETWORK, false, null, this.Query).ExecuteAsync();
+			}
 
-			Task consumer = Task.Run(() => FlushWorkQueue());
-
+			Task consumer = null;
+			//Semaphore maxThread = new Semaphore(20, 20);
 			var pageQueue = new List<Task<List<T>>>();
+
 			do
 			{
 				var skipTakeQuery = this.Query.Skip(skipCount).Take(pageSize);
+				//maxThread.WaitOne();
 				pageQueue.Add(new FindRequest<T>(Client, Collection, Cache, ReadPolicy.FORCE_NETWORK, false, null, skipTakeQuery, null).ExecuteAsync());
+				//maxThread.Release();
 				skipCount += pageSize;
 			} while (skipCount < count);
 
@@ -51,17 +63,10 @@ namespace Kinvey
 				Debug.WriteLine("Pagequeue size: " + pageQueue.Count);
 				var page = await Task.WhenAny(pageQueue);
 				pageQueue.Remove(page);
-				try
-				{
-					workQueue.Add(await page);
-				}
-				catch (OperationCanceledException e)
-				{
-					//log 
-				}
-				catch (Exception e) 
-				{ 
-					//return all exceptions once done
+				//maxThread.Release();
+				workQueue.Add(await page);
+				if (!isConsumerWorking) {
+					consumer = Task.Run(() => ConsumeWorkQueue());
 				}
 			}
 			workQueue.CompleteAdding();
@@ -69,15 +74,22 @@ namespace Kinvey
 			return new PullDataStoreResponse<T>();
 		}
 
-		private void FlushWorkQueue()
+		private void ConsumeWorkQueue()
 		{
-
+			isConsumerWorking = true;
 			while (true)
 			{
 				try
 				{
 					List<T> items = workQueue.Take();
-					Cache.RefreshCache(items);
+					if (this.isInitial)
+					{
+						Cache.Save(items);
+					}
+					else {
+						Cache.RefreshCache(items);
+					}
+
 					Debug.WriteLine(string.Format("Processing {0} items, workQueue size = {1}", items.Count, workQueue.Count));
 				}
 				catch (InvalidOperationException e)
@@ -86,6 +98,7 @@ namespace Kinvey
 					break;
 				}
 			}
+			isConsumerWorking = false;
 		}
 
 		public override Task<bool> Cancel()

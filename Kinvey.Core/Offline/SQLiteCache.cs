@@ -146,8 +146,16 @@ namespace Kinvey
 //			{
 //				return items;
 //			}
+			try
+			{
+				dbConnectionSync.InsertAll(items);
+			}
+			catch (SQLiteException e)
+			{
+				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY, "", e);
+			}
 
-			return default(List<T>);
+			return items;
 		}
 
 		public T UpdateCacheSave(T item, string tempID)

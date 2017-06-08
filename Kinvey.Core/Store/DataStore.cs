@@ -351,7 +351,7 @@ namespace Kinvey
 		/// <returns>Entities that were pulled from the backend.</returns>
 		/// <param name="query">Optional Query parameter.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
+		public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<T> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -365,7 +365,7 @@ namespace Kinvey
 
 			if (AutoPagination)
 			{
-				var pagedPullRequest = new PagedPullRequest<T>(client, CollectionName, cache, DeltaSetFetchingEnabled, query);
+				var pagedPullRequest = new PagedPullRequest<T>(client, CollectionName, cache, DeltaSetFetchingEnabled, query, count, isInitial);
 				ct.ThrowIfCancellationRequested();
 				return await pagedPullRequest.ExecuteAsync();
 
