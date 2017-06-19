@@ -631,6 +631,40 @@ namespace TestFramework
 		}
 
 		[Test]
+		public async Task TestSyncQueueAddWithID()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			ToDo newItem = new ToDo();
+			newItem.Name = "Task to save to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem.ID = "12345";
+			newItem = await todoStore.SaveAsync(newItem);
+
+			// Act
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			List<ToDo> t = await todoStore.FindAsync();
+
+			// Assert
+			Assert.NotNull(pwa);
+			Assert.IsNotNull(pwa.entityId);
+			Assert.IsNotEmpty(pwa.entityId);
+			Assert.True(String.Equals(collectionName, pwa.collection));
+			Assert.True(String.Equals("PUT", pwa.action));
+			Assert.NotNull(t);
+			Assert.AreEqual(1, t.Count);
+			Assert.AreEqual("12345", t.First().ID);
+			Assert.True(String.Equals(t.First().ID, pwa.entityId));
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestSyncQueueAddThenDelete()
 		{
 			// Setup

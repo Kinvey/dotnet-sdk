@@ -128,7 +128,7 @@ namespace Kinvey
 		{
 			try
 			{
-				dbConnectionSync.Update(item);
+				dbConnectionSync.InsertOrReplace(item);
 			}
 			catch (SQLiteException e)
 			{
