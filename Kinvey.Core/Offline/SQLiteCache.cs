@@ -628,6 +628,11 @@ namespace Kinvey
 				var funcSort = exprSort as Expression<Func<T, uint>>;
 				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
 			}
+			else if (retType == typeof(DateTime))
+			{
+				var funcSort = exprSort as Expression<Func<T, DateTime>>;
+				query = sortAscending? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
 		}
 
 		public KinveyDeleteResponse DeleteByID(string id)
