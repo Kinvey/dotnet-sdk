@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Kinvey;
 
 namespace TestFramework
@@ -14,6 +15,9 @@ namespace TestFramework
 
 		[JsonProperty("due_date")]
 		public string DueDate { get; set; }
+
+		[JsonProperty("new_date")]
+		public DateTime NewDate { get; set; }
 
 		[JsonProperty("value")]
 		public int Value { get; set; }
