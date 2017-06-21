@@ -390,6 +390,14 @@ namespace TestFramework
 			// Assert
 			Assert.Null(kinveyClient.ActiveUser);
 			Assert.IsEmpty(kinveyClient.CacheManager.GetSyncQueue(collectionName).GetFirstN(1, 0));
+
+			// Check that all state is cleared out properly in logout by verifying that re-login works correctly
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+			DataStore<ToDo> todoStoreRelogin = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+			Assert.DoesNotThrowAsync(async () => await todoStoreRelogin.FindAsync());
+
+			// Teardown
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]
