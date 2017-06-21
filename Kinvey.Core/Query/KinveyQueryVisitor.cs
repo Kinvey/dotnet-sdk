@@ -128,6 +128,78 @@ namespace Kinvey
 
 				builderMongoQuery.Write(argument);
 			}
+			else if (whereClause.Predicate.NodeType.ToString().Equals("GreaterThan"))
+			{
+				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
+				var member = equality.Left as MemberExpression;
+				var argument = equality.Right.ToString();
+
+				builderMongoQuery.Write("\"" + mapPropertyToName[member.Member.Name] + "\"");
+
+				if (equality.Right.Type.Name.Equals("DateTime"))
+				{
+					DateTime dt = DateTime.Parse(equality.Right.ToString());
+					argument = Newtonsoft.Json.JsonConvert.SerializeObject(dt);
+				}
+
+				builderMongoQuery.Write(":{\"$gt\":");
+				builderMongoQuery.Write(argument);
+				builderMongoQuery.Write("}");
+			}
+			else if (whereClause.Predicate.NodeType.ToString().Equals("LessThan"))
+			{
+				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
+				var member = equality.Left as MemberExpression;
+				var argument = equality.Right.ToString();
+
+				builderMongoQuery.Write("\"" + mapPropertyToName[member.Member.Name] + "\"");
+
+				if (equality.Right.Type.Name.Equals("DateTime"))
+				{
+					DateTime dt = DateTime.Parse(equality.Right.ToString());
+					argument = Newtonsoft.Json.JsonConvert.SerializeObject(dt);
+				}
+
+				builderMongoQuery.Write(":{\"$lt\":");
+				builderMongoQuery.Write(argument);
+				builderMongoQuery.Write("}");
+			}
+			else if (whereClause.Predicate.NodeType.ToString().Equals("LessThanOrEqual"))
+			{
+				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
+				var member = equality.Left as MemberExpression;
+				var argument = equality.Right.ToString();
+
+				builderMongoQuery.Write("\"" + mapPropertyToName[member.Member.Name] + "\"");
+
+				if (equality.Right.Type.Name.Equals("DateTime"))
+				{
+					DateTime dt = DateTime.Parse(equality.Right.ToString());
+					argument = Newtonsoft.Json.JsonConvert.SerializeObject(dt);
+				}
+
+				builderMongoQuery.Write(":{\"$lte\":");
+				builderMongoQuery.Write(argument);
+				builderMongoQuery.Write("}");
+			}
+			else if (whereClause.Predicate.NodeType.ToString().Equals("GreaterThanOrEqual"))
+			{
+				BinaryExpression equality = whereClause.Predicate as BinaryExpression;
+				var member = equality.Left as MemberExpression;
+				var argument = equality.Right.ToString();
+
+				builderMongoQuery.Write("\"" + mapPropertyToName[member.Member.Name] + "\"");
+
+				if (equality.Right.Type.Name.Equals("DateTime"))
+				{
+					DateTime dt = DateTime.Parse(equality.Right.ToString());
+				argument = Newtonsoft.Json.JsonConvert.SerializeObject(dt);
+				}
+
+				builderMongoQuery.Write(":{\"$gte\":");
+				builderMongoQuery.Write(argument);
+				builderMongoQuery.Write("}");
+			}
 			else if (whereClause.Predicate.NodeType.ToString().Equals("AndAlso"))
 			{
 				BinaryExpression and = whereClause.Predicate as BinaryExpression;
