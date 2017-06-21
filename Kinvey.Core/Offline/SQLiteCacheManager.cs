@@ -124,6 +124,7 @@ namespace Kinvey
 						string dropQuery = $"DROP TABLE IF EXISTS {collection.TableName}";
 						DBConnectionSync.Execute(dropQuery);
 						GetSyncQueue(collection.CollectionName).RemoveAll();
+						mapCollectionToCache.Remove(collection.CollectionName);
 					}
 
 					DBConnectionSync.DeleteAll<CollectionTableMap>();
