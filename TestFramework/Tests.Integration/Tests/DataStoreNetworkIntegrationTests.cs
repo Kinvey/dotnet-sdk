@@ -201,7 +201,7 @@ namespace TestFramework
 
 			// Act
 			ToDo entity = null;
-			entity = (await todoStore.FindByIDAsync(t.ID)).First();
+			entity = await todoStore.FindByIDAsync(t.ID);
 
 			// Assert
 			Assert.NotNull(entity);
