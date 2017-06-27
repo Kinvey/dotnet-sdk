@@ -78,4 +78,10 @@ public class SQLCredential
 	/// </summary>
 	/// <value>The attributes dictionary</value>
 	public string DeviceID { get; set; }
+
+	/// <summary>
+	/// Gets or sets the MIC ID associated with the auth service used.
+	/// </summary>
+	/// <value>The attributes dictionary</value>
+	public string MICClientID { get; set; }
 }

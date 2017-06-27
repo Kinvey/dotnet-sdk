@@ -324,7 +324,7 @@ namespace TestFramework
 		// MIC LOGIN TESTS
 		//
 		[Test]
-		public async Task TestMIC_LoginWithAuthorizationCodeLoginPage()
+		public void TestMIC_LoginWithMIC_NormalFlow()
 		{
 			// Arrange
 			string redirectURI = "http://test.redirect";
@@ -332,7 +332,7 @@ namespace TestFramework
 
 			// Act
 			string renderURL = null;
-			User.LoginWithAuthorizationCodeLoginPage(redirectURI, new KinveyMICDelegate<User>
+			User.LoginWithMIC(redirectURI, new KinveyMICDelegate<User>
 			{
 				onSuccess = (user) => { loggedInUser = user; },
 				onError = (e) => { Console.WriteLine("TEST MIC ERROR"); },
@@ -342,12 +342,38 @@ namespace TestFramework
 			// Assert
 			Assert.IsNotNull(renderURL);
 			Assert.IsNotEmpty(renderURL);
-			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id"));
+			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id=" + TestSetup.app_key, StringComparison.Ordinal));
+		}
+
+		[Test]
+		public void TestMIC_LoginWithMIC_NormalFlow_ClientID()
+		{
+			// Arrange
+			string redirectURI = "http://test.redirect";
+			User loggedInUser = null;
+
+			// Act
+			string renderURL = null;
+			string micID = "12345";
+
+			User.LoginWithMIC(redirectURI, new KinveyMICDelegate<User>
+			{
+				onSuccess = (user) => { loggedInUser = user; },
+				onError = (e) => { Console.WriteLine("TEST MIC ERROR"); },
+				onReadyToRender = (url) => { renderURL = url; }
+			}, micID);
+
+			System.Diagnostics.Debug.WriteLine("\tClientID: " + micID);
+
+			// Assert
+			Assert.IsNotNull(renderURL);
+			Assert.IsNotEmpty(renderURL);
+			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id=" + TestSetup.app_key + ":" + micID, StringComparison.Ordinal));
 		}
 
 		[Test]
 		[Ignore("Placeholder - Need configured backend to run test")]
-		public async Task TestMIC_LoginWithAuthorizationCodeAPI()
+		public async Task TestMIC_LoginWithMIC_HeadlessFlow()
 		{
 			// Arrange
 			string username = "testuser";
@@ -360,7 +386,32 @@ namespace TestFramework
 			localClient.MICApiVersion = "v2";
 
 			// Act
-			await User.LoginWithAuthorizationCodeAPIAsync(username, password, redirectURI);
+			await User.LoginWithMIC(username, password, redirectURI);
+
+			// Assert
+			Assert.NotNull(localClient.ActiveUser);
+
+			// Teardown
+			localClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		[Ignore("Placeholder - Need configured backend to run test")]
+		public async Task TestMIC_LoginWithMIC_HeadlessFlow_ClientID()
+		{
+			// Arrange
+			string username = "testuser";
+			string password = "testpass";
+			string redirectURI = "kinveyAuthDemo://";
+			string saml_app_key = "kid_ZkPDb_34T";
+			string saml_app_secret = "c3752d5079f34353ab89d07229efaf63";
+			Client.Builder localBuilder = new Client.Builder(saml_app_key, saml_app_secret);
+			Client localClient = localBuilder.Build();
+			localClient.MICApiVersion = "v2";
+
+			// Act
+			string micID = "12345";
+			await User.LoginWithMIC(username, password, redirectURI, micID);
 
 			// Assert
 			Assert.NotNull(localClient.ActiveUser);

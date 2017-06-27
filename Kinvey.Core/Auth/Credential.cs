@@ -82,6 +82,13 @@ namespace Kinvey
 		public string DeviceID { get; set; }
 
 		/// <summary>
+		/// Gets or sets the MIC Client identifier.
+		/// </summary>
+		/// <value>The MICC lient identifier.</value>
+		[DataMember]
+		public string MICClientID { get; set; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
 		/// </summary>
 		[Preserve]
@@ -109,7 +116,8 @@ namespace Kinvey
 		                  KinveyUserMetaData kmd,
 		                  string refreshToken,
 		                  string redirectURI,
-		                  string deviceID)
+		                  string deviceID,
+		                  string micClientID)
 		{
 			this.userId = userId;
 			this.AccessToken = accessToken;
@@ -121,6 +129,7 @@ namespace Kinvey
 			this.RefreshToken = refreshToken;
 			this.RedirectUri = redirectURI;
 			this.DeviceID = deviceID;
+			this.MICClientID = micClientID;
 		}
 		/// <summary>
 		/// Gets or sets the user _id.
@@ -188,7 +197,7 @@ namespace Kinvey
 		/// <param name="response">The response of a Kinvey login/create request.</param>
 		public static Credential From(KinveyAuthResponse response)
 		{
-			return new Credential(response.UserId, response.AccessToken, response.AuthSocialIdentity, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null, null);
+			return new Credential(response.UserId, response.AccessToken, response.AuthSocialIdentity, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null, null, null);
 		}
 
 		/// <summary>
@@ -197,7 +206,7 @@ namespace Kinvey
 		/// <param name="user">User.</param>
 		public static Credential From(User user)
 		{
-			return new Credential(user.Id, user.AccessToken, user.AuthSocialID, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null, user.KinveyClient.DeviceID);
+			return new Credential(user.Id, user.AccessToken, user.AuthSocialID, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null, user.KinveyClient.DeviceID, null);
 		}
 
 		public static Credential From(NativeCredential nc)
@@ -211,6 +220,7 @@ namespace Kinvey
 			                      JsonConvert.DeserializeObject<KinveyUserMetaData>(nc.Properties[Constants.STR_USER_KMD]),
 			                      nc.Properties[Constants.STR_REFRESH_TOKEN],
 			                      nc.Properties[Constants.STR_REDIRECT_URI],
+			                      null,
 			                      null);
 		}
 
@@ -219,7 +229,7 @@ namespace Kinvey
 			Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 			KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 			KinveyAuthSocialID socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
-			return new Credential(sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+			return new Credential(sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, userKMD, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID, sqlcred.MICClientID);
 		}
 	}
 }
