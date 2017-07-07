@@ -1517,6 +1517,144 @@ namespace TestFramework
 		}
 
 		[Test]
+		public async Task TestNetworkStoreFindByQueryMultipleWhereClausesEquals()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "todo again";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			var query = todoStore.Where(x => x.Details.Equals("details for 2")).Where(y => y.Name.Equals("todo again")).Where(z => z.DueDate.Equals("2016-04-22T19:56:00.963Z"));
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByQueryMultipleWhereClausesEqualSign()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "todo again";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			var query = todoStore.Where(x => x.Details == ("details for 2")).Where(y => y.Name == ("todo again")).Where(z => z.DueDate.Equals("2016-04-22T19:56:00.963Z"));
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestNetworkStoreFindByQueryMultipleWhereClausesFluentSyntaxEqualSign()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "todo again";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+
+			// Act
+			var query = from t in todoStore where t.Details == "details for 2" where t.Name == "todo again" where t.DueDate == "2016-04-22T19:56:00.963Z" select t;
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+		}
+
+		[Test]
 		public async Task TestNetworkStoreFindByQueryLogicalAndWithOr()
 		{
 			// Setup
