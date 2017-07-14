@@ -290,7 +290,7 @@ namespace Kinvey
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
 			ct.ThrowIfCancellationRequested();
 			var results = await findByQueryRequest.ExecuteAsync();
-			return results.FirstOrDefault();
+			return results?.FirstOrDefault();
 		}
 
 		#region Grouping/Aggregate Functions
