@@ -114,6 +114,12 @@ namespace Kinvey
 				var member = equality.Left as MemberExpression;
 				var argument = equality.Right.ToString();
 
+				if (index > 0)
+				{
+					// multiple where clauses present, so separate with comma
+					builderMongoQuery.Write(",");
+				}
+
 				builderMongoQuery.Write("\"" + mapPropertyToName[member.Member.Name] + "\"");
 				builderMongoQuery.Write(":");
 
