@@ -268,7 +268,7 @@ namespace Kinvey
 		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
 		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<T>> FindByIDAsync(string entityID, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
+		public async Task<T> FindByIDAsync(string entityID, KinveyDelegate<T> cacheResult = null, CancellationToken ct = default(CancellationToken))
 		{
 			List<string> listIDs = new List<string>();
 
@@ -277,9 +277,20 @@ namespace Kinvey
 				listIDs.Add(entityID);
 			}
 
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, null, listIDs);
+			var cacheDelegate = new KinveyDelegate<List<T>>
+			{
+				onSuccess = (listCacheResults) => {
+					cacheResult.onSuccess(listCacheResults.FirstOrDefault());
+				},
+				onError = (error) => {
+					cacheResult.onError(error);
+				}
+			};
+
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
 			ct.ThrowIfCancellationRequested();
-			return await findByQueryRequest.ExecuteAsync();
+			var results = await findByQueryRequest.ExecuteAsync();
+			return results?.FirstOrDefault();
 		}
 
 		#region Grouping/Aggregate Functions
