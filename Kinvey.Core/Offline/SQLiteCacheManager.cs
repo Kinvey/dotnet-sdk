@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -31,6 +32,15 @@ namespace Kinvey
 	/// </summary>
 	public class SQLiteCacheManager : ICacheManager
 	{
+
+		private class DebugTraceListener : ITraceListener
+		{
+			public void Receive(string message)
+			{
+				Debug.WriteLine(message);
+			}
+		}
+
 		//The version of the internal structure of the database.
 		private int databaseSchemaVersion = 1;
 
@@ -49,6 +59,7 @@ namespace Kinvey
 					//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
 					//dbConnection = new SQLiteAsyncConnection (connectionFactory);
 					_dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
+                    //_dbConnectionSync.TraceListener = new DebugTraceListener();
 				}
 
 				return _dbConnectionSync;
