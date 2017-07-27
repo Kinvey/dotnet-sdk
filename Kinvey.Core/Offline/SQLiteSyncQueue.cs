@@ -44,17 +44,17 @@ namespace Kinvey
 				else if (existingSyncItem.action == "PUT" && pending.action == "POST")
 				{
 					// highly unlikely, but favor the POST
-					this.Remove(existingSyncItem.entityId);
+					this.Remove(existingSyncItem);
 				}
 				else if (existingSyncItem.action == "DELETE" && (pending.action == "PUT" || pending.action == "POST"))
 				{
 					// odd case where an object has somehow been created/updated after a delete call, but favor the create/update
-					this.Remove(existingSyncItem.entityId);
+					this.Remove(existingSyncItem);
 				}
 				else if (pending.action == "DELETE")
 				{
 					// no matter what, favor the current deletion
-					this.Remove(existingSyncItem.entityId);
+					this.Remove(existingSyncItem);
 
 					// If the existing item that is being deleted is something that only existed locally,
 					// do not insert the DELETE action into the queue, since it is local-only
@@ -123,26 +123,20 @@ namespace Kinvey
 				               .Count();
 		}
 
-		public int Remove(string entityId)
+		public int Remove(PendingWriteAction pending)
 		{
-			PendingWriteAction item = GetByID(entityId);
-			if (item == null)
-			{
-				return 0;
-			}
-
-			return dbConnection.Delete(item);
+			return dbConnection.Delete(pending);
 		}
 
-		public int Remove(List<string> entityIDs) {
-			if (entityIDs == null) 
+		public int Remove(IEnumerable<PendingWriteAction> pendings) {
+			if (pendings == null) 
 			{
 				return RemoveAll();
 			}
 
 			int ret = 0;
-			foreach (var id in entityIDs) {
-				ret += this.Remove(id);
+			foreach (var pending in pendings) {
+				ret += this.Remove(pending);
 			}
 			return ret;
 		}

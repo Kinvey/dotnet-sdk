@@ -81,6 +81,7 @@
     <Compile Include="..\TestSupportFiles\TestSetup.cs">
       <Link>TestSupportFiles\TestSupportFiles\TestSetup.cs</Link>
     </Compile>
+    <Compile Include="Tests\DataStoreUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Kinvey-Utils\Kinvey-Utils.csproj">
