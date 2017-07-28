@@ -123,7 +123,7 @@ namespace Kinvey
 					socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
 				}
 
-				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID);
+				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID, sqlcred.MICClientID);
 			}
 
 			return cred;
