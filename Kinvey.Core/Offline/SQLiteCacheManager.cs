@@ -13,12 +13,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-
+using KinveyUtils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLite.Net;
@@ -37,7 +36,7 @@ namespace Kinvey
 		{
 			public void Receive(string message)
 			{
-				Debug.WriteLine(message);
+                Logger.Log(message);
 			}
 		}
 
@@ -59,7 +58,7 @@ namespace Kinvey
 					//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
 					//dbConnection = new SQLiteAsyncConnection (connectionFactory);
 					_dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
-                    //_dbConnectionSync.TraceListener = new DebugTraceListener();
+                    _dbConnectionSync.TraceListener = new DebugTraceListener();
 				}
 
 				return _dbConnectionSync;
