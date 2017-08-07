@@ -455,7 +455,7 @@ namespace Kinvey
 						if (refreshToken != null)
 						{
 							//use the refresh token for a new access token
-							JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri).ExecuteAsync();
+							JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, Client.ActiveUser.MICClientID).ExecuteAsync();
 
 							// log out the current user without removing the user record from the credential store
 							Client.ActiveUser.LogoutSoft();

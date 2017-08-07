@@ -458,7 +458,8 @@ namespace Kinvey
 			var ret = cache.Clear(query?.Expression);
 			if (ret?.IDs != null)
 			{
-				syncQueue.Remove(ret.IDs);
+                var pendings = ret.IDs.Select(entityId => syncQueue.GetByID(entityId));
+                syncQueue.Remove(pendings);
 			}
 			else {
 				syncQueue.RemoveAll();
@@ -477,10 +478,9 @@ namespace Kinvey
 			{
 				var ids = new List<string>();
 				var entities = cache.FindByQuery(query.Expression);
-				foreach (var entity in entities) {					
-					ids.Add((entity as IPersistable).ID);
-				}
-				return syncQueue.Remove(ids);
+                var pendings = entities.Select(entity => entity as IPersistable)
+                                       .Select(persistable => syncQueue.GetByID(persistable.ID));
+				return syncQueue.Remove(pendings);
 			}
 
 			return syncQueue.RemoveAll();

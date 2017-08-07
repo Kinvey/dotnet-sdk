@@ -31,9 +31,6 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="SQLite.Net">
       <HintPath>..\..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
     </Reference>
@@ -53,6 +50,9 @@
       <HintPath>..\..\packages\Moq.4.5.10\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Tests\ClientUnitTests.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="..\TestSupportFiles\TestSetup.cs">
       <Link>TestSupportFiles\TestSupportFiles\TestSetup.cs</Link>
     </Compile>
+    <Compile Include="Tests\DataStoreUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Kinvey-Utils\Kinvey-Utils.csproj">
