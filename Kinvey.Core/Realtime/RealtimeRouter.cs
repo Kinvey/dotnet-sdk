@@ -123,18 +123,29 @@ namespace Kinvey
 
 		internal bool Publish(string channel, object message, Func<KinveyException, System.Threading.Tasks.Task> errorCallback)
 		{
-			//Action<PubNubMessaging.Core.PubnubClientError> publishError = (error) => {
-			//	KinveyUtils.Logger.Log("RealtimeRouter: publish error");
-			//	KinveyUtils.Logger.Log("Publish Error: " + error);
-			//	KinveyUtils.Logger.Log("Publish Error Status Code: " + error.StatusCode);
-			//	KinveyUtils.Logger.Log("Publish Error Message: " + error.Message);
+            bool result = false;
 
-			//	var exception = HandleErrorMessage(error);
-			//	errorCallback.Invoke(exception);
-			//};
+            //Action<PubNubMessaging.Core.PubnubClientError> publishError = (error) => {
+            //	KinveyUtils.Logger.Log("RealtimeRouter: publish error");
+            //	KinveyUtils.Logger.Log("Publish Error: " + error);
+            //	KinveyUtils.Logger.Log("Publish Error Status Code: " + error.StatusCode);
+            //	KinveyUtils.Logger.Log("Publish Error Message: " + error.Message);
 
-			//return pubnubClient.Publish<string>(channel, message, PublishCallback, publishError);
-			return false;
+            //	var exception = HandleErrorMessage(error);
+            //	errorCallback.Invoke(exception);
+            //};
+
+            //return pubnubClient.Publish<string>(channel, message, PublishCallback, publishError);
+            //return false;
+
+
+            PubnubApi.PNPublishResult publishResult = pubnubClient.Publish().Channel(channel).Message(message).Sync();
+            if (publishResult?.Timetoken != 0L)
+            {
+                result = true;
+            }
+
+            return result;
 		}
 
 		internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate callback)
@@ -151,18 +162,14 @@ namespace Kinvey
 			RemoveChannel(channel);
 		}
 
-		internal void SubscribeStream(string streamName, KinveyRealtimeDelegate callback)
+		internal void SubscribeStream(string channelName, KinveyRealtimeDelegate callback)
 		{
-			string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
-			string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
-			AddChannel(channel, callback);
+            AddChannel(channelName, callback);
 		}
 
-		internal void UnsubscribeStream(string streamName)
+		internal void UnsubscribeStream(string channelName)
 		{
-			string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
-			string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
-			RemoveChannel(channel);
+            RemoveChannel(channelName);
 		}
 
 		#region Realtime Callbacks
