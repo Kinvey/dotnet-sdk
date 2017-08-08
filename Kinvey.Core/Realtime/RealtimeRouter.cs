@@ -74,12 +74,14 @@ namespace Kinvey
 
 							//instance.pubnubClient.Subscribe<string>(string.Empty, instance.ChannelGroup, instance.SubscribeCallback, instance.ConnectCallback, instance.PubnubClientSubscribeErrorCallback);
 							instance.subscribeCallback = new PubnubApi.SubscribeCallbackExt(
-								(pubnubObj, message) => { instance.SubscribeCallback(message.Message as string); },
+                                (pubnubObj, message) => { instance.SubscribeCallback(message.Channel, message.Message as string); },
 								(pubnubObj, presence) => { /* presence not currently supported */}, // TODO Support PubNub presence
 								(pubnubObj, status) => { instance.HandleStatusMessage(status); }
 							);
 
-							instance.ChannelGroup = channelGroup;
+                            instance.pubnubClient.AddListener(instance.subscribeCallback);
+
+                            instance.ChannelGroup = channelGroup;
 							instance.pubnubClient.Subscribe<string>().ChannelGroups(new string[] { instance.ChannelGroup }).Execute();
 
 							//FOR UNIQUE DEVICE GUID GENERATION --> Guid deviceGUID = pubnubClient.GenerateGuid(); string deviceID = deviceGUID.ToString();
@@ -137,50 +139,55 @@ namespace Kinvey
 
 		internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate callback)
 		{
-			string channel = Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
+            string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
+            string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
 			AddChannel(channel, callback);
 		}
 
 		internal void UnsubscribeCollection(string collectionName)
 		{
-			string channel = Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
+			string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
+			string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
 			RemoveChannel(channel);
 		}
 
 		internal void SubscribeStream(string streamName, KinveyRealtimeDelegate callback)
 		{
-			string channel = Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
+			string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
+			string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
 			AddChannel(channel, callback);
 		}
 
 		internal void UnsubscribeStream(string streamName)
 		{
-			string channel = Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
+			string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
+			string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_STREAM_CHANNEL_PREPEND + streamName;
 			RemoveChannel(channel);
 		}
 
 		#region Realtime Callbacks
 
-		void SubscribeCallback(string msgResult)
+		void SubscribeCallback(string channel, string msgResult)
 		{
 			// Message Format --> [message,timestamp,channelgroup,channel]
 			KinveyUtils.Logger.Log("Subscribe Callback: " + msgResult);
 
-			string msg = String.Empty;
-			string time = String.Empty;
-			string group = String.Empty;
-			string chan = String.Empty;
+			//string msg = String.Empty;
+			//string time = String.Empty;
+			//string group = String.Empty;
+			//string chan = String.Empty;
 
-			if (ParsePubnubMessage(msgResult, ref msg, ref time, ref group, ref chan))
+			//if (ParsePubnubMessage(msgResult, ref msg, ref time, ref group, ref chan))
 			{
-				KinveyUtils.Logger.Log("Subscribe Callback Message: " + msg);
-				KinveyUtils.Logger.Log("Subscribe Callback Timestamp: " + time);
-				KinveyUtils.Logger.Log("Subscribe Callback Channel Group: " + group);
-				KinveyUtils.Logger.Log("Subscribe Callback Channel: " + chan);
+				//KinveyUtils.Logger.Log("Subscribe Callback Message: " + msg);
+				//KinveyUtils.Logger.Log("Subscribe Callback Timestamp: " + time);
+				//KinveyUtils.Logger.Log("Subscribe Callback Channel Group: " + group);
+				//KinveyUtils.Logger.Log("Subscribe Callback Channel: " + chan);
 
-				var callback = mapChannelToCallback[chan].OnNext;
+				//var callback = mapChannelToCallback[chan].OnNext;
+				var callback = mapChannelToCallback[channel].OnNext;
 
-				callback.Invoke(msg);
+				callback.Invoke(msgResult);
 			}
 		}
 
@@ -302,36 +309,36 @@ namespace Kinvey
 			return arrMessage;
 		}
 
-		bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channelGroup, ref string channel)
-		{
-			bool result = false;
+		//bool ParsePubnubMessage(string input, ref string message, ref string timestamp, ref string channelGroup, ref string channel)
+		//{
+		//	bool result = false;
 
-			var arrMessage = PrepPubnubMessage(input);
-			if (arrMessage != null)
-			{
-				if (arrMessage.Length >= 3)
-				{
-					channel = arrMessage[arrMessage.Length - 1];
-					channel = GetChannelFromFullName(channel);
+		//	var arrMessage = PrepPubnubMessage(input);
+		//	if (arrMessage != null)
+		//	{
+		//		if (arrMessage.Length >= 3)
+		//		{
+		//			channel = arrMessage[arrMessage.Length - 1];
+		//			channel = GetChannelFromFullName(channel);
 
-					channelGroup = arrMessage[arrMessage.Length - 2];
-					timestamp = arrMessage[arrMessage.Length - 3];
+		//			channelGroup = arrMessage[arrMessage.Length - 2];
+		//			timestamp = arrMessage[arrMessage.Length - 3];
 
-					for (int i = 0; i < arrMessage.Length - 3; i++)
-					{
-						message += Constants.CHAR_COMMA + arrMessage[i];
-					}
+		//			for (int i = 0; i < arrMessage.Length - 3; i++)
+		//			{
+		//				message += Constants.CHAR_COMMA + arrMessage[i];
+		//			}
 
-					// Trim leading comma
-					char[] delimChars = { Constants.CHAR_COMMA };
-					message = message.TrimStart(delimChars);
+		//			// Trim leading comma
+		//			char[] delimChars = { Constants.CHAR_COMMA };
+		//			message = message.TrimStart(delimChars);
 
-					result = true;
-				}
-			}
+		//			result = true;
+		//		}
+		//	}
 
-			return result;
-		}
+		//	return result;
+		//}
 
 		string GetChannelFromFullName(string fullChannelName)
 		{
