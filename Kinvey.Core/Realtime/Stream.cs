@@ -216,7 +216,7 @@ namespace Kinvey
 			// Make KCS request for subscribe access to a user with the given subscribeID
 			var result = await RequestSubscribeAccess(subscribeID);
 
-			if (result != null)
+            if (result != default(JObject))
 			{
 				RealtimeDelegate = realtimeHandler;
 
@@ -235,7 +235,7 @@ namespace Kinvey
 
 								// Make KCS request for subscribe access to a user with the given subscribeID
 								result = await RequestSubscribeAccess(subscribeID);
-                                if (result != null)
+                                if (result != default(JObject))
 								{
 									// Re-request failed, unsubscribe stream
                                     RealtimeRouter.Instance.UnsubscribeStream(ChannelName);

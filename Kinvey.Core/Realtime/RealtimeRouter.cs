@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Kinvey
 {
@@ -120,11 +121,11 @@ namespace Kinvey
             }
         }
 
-        internal async System.Threading.Tasks.Task<bool> Publish(string channel, object message, Func<KinveyException, System.Threading.Tasks.Task> errorCallback)
+        internal async Task<bool> Publish(string channel, object message, Func<KinveyException, Task> errorCallback)
         {
-            var taskCompletionSource = new System.Threading.Tasks.TaskCompletionSource<bool>();
+            var taskCompletionSource = new TaskCompletionSource<bool>();
 
-            var task = System.Threading.Tasks.Task.Run(() => 
+            var task = Task.Run(() => 
 		        pubnubClient.Publish()
 		                    .Channel(channel)
 		                    .Message(message)
