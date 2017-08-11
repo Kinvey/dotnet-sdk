@@ -28,12 +28,11 @@ namespace Kinvey
 
         private Dictionary<string, string> mapPublishReceiverToChannel;
 
-        /// <summary>
-        /// Represents the name of the stream.
-        /// </summary>
-        public string StreamName { get; set; }
+        // Represents the name of the stream.
+        private string StreamName { get; set; }
 
-        private string ChannelName { get; set; }
+		// Represents the name of the channel used by the RealtimeRouter class.
+		private string ChannelName { get; set; }
 
 		private AbstractClient KinveyClient { get; set; }
 
@@ -186,7 +185,7 @@ namespace Kinvey
 			if (!String.IsNullOrEmpty(publishChannel))
 			{
 				var realtimeMessage = new RealtimeMessage<T>(KinveyClient.ActiveUser.Id, message);
-				result = RealtimeRouter.Instance.Publish(publishChannel, realtimeMessage, publishError);
+				result = await RealtimeRouter.Instance.Publish(publishChannel, realtimeMessage, publishError);
 			}
 
 			return result;
