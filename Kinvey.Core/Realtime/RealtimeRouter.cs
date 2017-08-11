@@ -69,7 +69,7 @@ namespace Kinvey
                             PNconfig.SubscribeKey = subscribeKey;
                             PNconfig.PublishKey = publishKey;
                             PNconfig.AuthKey = authKey;
-                            //PNconfig.Secure = true; // TODO Enable SSL
+                            PNconfig.Secure = true;
                             instance.pubnubClient = new PubnubApi.Pubnub(PNconfig);
 
                             instance.subscribeCallback = new PubnubApi.SubscribeCallbackExt(
