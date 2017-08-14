@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -229,8 +229,8 @@ namespace Kinvey
 			                      null,
 			                      null);
 		}
-    
-  	internal static Credential From(SQLCredential sqlcred)
+
+		internal static Credential From(SQLCredential sqlcred)
 		{
 			Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 			KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
@@ -242,17 +242,17 @@ namespace Kinvey
 
 			return credential;
 		}
-    
-		public static Credential From(Credential cred, byte[] encryptedAuthToken)
+
+        public static Credential From(Credential cred, byte[] encryptedAuthToken)
 		{
-			var secCredential = new Credential(cred.userId, cred.AccessToken, null, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID);
+            var secCredential = new Credential(cred.userId, cred.AccessToken, cred.AuthSocialID, null, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID, cred.MICClientID);
 			secCredential.SecAuthToken = encryptedAuthToken;
 			return secCredential;
 		}
-    
-		public static Credential From(Credential cred, string originalAuthToken)
+
+        public static Credential From(Credential cred, string originalAuthToken)
 		{
-			return new Credential(cred.userId, cred.AccessToken, originalAuthToken, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID);
+            return new Credential(cred.userId, cred.AccessToken, cred.AuthSocialID, originalAuthToken, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID, cred.MICClientID);
 		}
 	}
 }
