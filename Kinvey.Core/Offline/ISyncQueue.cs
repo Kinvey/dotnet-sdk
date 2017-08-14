@@ -30,8 +30,8 @@ namespace Kinvey
 		List<PendingWriteAction> GetFirstN(int limit, int offset);
 		PendingWriteAction GetByID(string entityId);
 
-		int Remove (string entityId);
-		int Remove(List<string> entityIDs);
+		int Remove(PendingWriteAction pending);
+        int Remove(IEnumerable<PendingWriteAction> pendings);
 		int RemoveAll ();
 	}
 }

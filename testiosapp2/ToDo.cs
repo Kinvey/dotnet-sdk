@@ -1,8 +1,7 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Kinvey;
 
-namespace TestFramework
+namespace testiosapp2
 {
 	[JsonObject(MemberSerialization.OptIn)]
 	public class ToDo : Entity
@@ -10,14 +9,11 @@ namespace TestFramework
 		[JsonProperty("name")]
 		public string Name { get; set; }
 
-		[JsonProperty ("details")]
+		[JsonProperty("details")]
 		public string Details { get; set; }
 
 		[JsonProperty("due_date")]
 		public string DueDate { get; set; }
-
-		[JsonProperty("new_date")]
-		public DateTime NewDate { get; set; }
 
 		[JsonProperty("value")]
 		public int Value { get; set; }

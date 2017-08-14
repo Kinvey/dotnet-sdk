@@ -1,10 +1,12 @@
 language: csharp
-solution: Kinvey-Xamarin.sln
+solution: Kinvey.sln
+install:
+ - wget -O pubnub.zip https://www.nuget.org/api/v2/package/PubnubNetPlatform/3.8.7
+ - mkdir packages/pubnubnetplatform.3.8.7
+ - mv pubnub.zip packages/pubnubnetplatform.3.8.7/.
+ - unzip packages/pubnubnetplatform.3.8.7/pubnub.zip -d packages/pubnubnetplatform.3.8.7/
+ - nuget restore Kinvey.sln
 script:
- - xbuild Kinvey-Xamarin/Kinvey-Xamarin.csproj 
+ - xbuild Kinvey.Core/Kinvey.Core.csproj 
  - xbuild TestFramework/Tests.Integration/Tests.Integration.csproj
- - mono TestFramework/Tools/Gaillard.SharpCover/bin/Debug/SharpCover.exe instrument config.json
  - mono packages/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll
-after_success:
-- mono TestFramework/Tools/Gaillard.SharpCover/bin/Debug/SharpCover.exe check
-- bash <(curl -s https://codecov.io/bash)

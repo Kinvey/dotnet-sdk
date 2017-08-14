@@ -25,7 +25,7 @@ namespace Kinvey
 		/// <summary>
 		/// The version of the SDK.
 		/// </summary>
-		public static string VERSION = "3.0.7";
+		public static string VERSION = "3.0.14";
 
 		// The kinvey API version.
         static string kinveyApiVersionKey = "X-Kinvey-API-Version";
@@ -35,31 +35,31 @@ namespace Kinvey
         static string userAgentKey = "user-agent";
 		string userAgent = "xamarin-kinvey-http/" + VERSION;
 
-		// The device info, which includes the OS and OS version, as well as the device model.
-		static string kinveyDeviceInfoKey = "X-Kinvey-Device-Info";
-		static string _kinveyDeviceInfo = null;
+		//// The device info, which includes the OS and OS version, as well as the device model.
+		//static string kinveyDeviceInfoKey = "X-Kinvey-Device-Info";
+		//static string _kinveyDeviceInfo = null;
 
-		static string KinveyDeviceInfo
-		{
-			get
-			{
-				if (_kinveyDeviceInfo == null)
-				{
-					try
-					{
-						_kinveyDeviceInfo = Plugin.DeviceInfo.CrossDeviceInfo.Current?.Platform + " " +
-											Plugin.DeviceInfo.CrossDeviceInfo.Current?.Version + " " +
-											Plugin.DeviceInfo.CrossDeviceInfo.Current?.Model;
-					}
-					catch (Exception e)
-					{
-						_kinveyDeviceInfo = String.Empty;
-					}
-				}
+		//static string KinveyDeviceInfo
+		//{
+		//	get
+		//	{
+		//		if (_kinveyDeviceInfo == null)
+		//		{
+		//			try
+		//			{
+		//				_kinveyDeviceInfo = Plugin.DeviceInfo.CrossDeviceInfo.Current?.Platform + " " +
+		//									Plugin.DeviceInfo.CrossDeviceInfo.Current?.Version + " " +
+		//									Plugin.DeviceInfo.CrossDeviceInfo.Current?.Model;
+		//			}
+		//			catch (Exception e)
+		//			{
+		//				_kinveyDeviceInfo = String.Empty;
+		//			}
+		//		}
 
-				return _kinveyDeviceInfo;
-			}
-		}
+		//		return _kinveyDeviceInfo;
+		//	}
+		//}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyHeaders"/> class.
@@ -68,7 +68,7 @@ namespace Kinvey
         {
 			Add(new HttpHeader { Name = userAgentKey, Value = new List<string> { userAgent } });
 			Add(new HttpHeader { Name = kinveyApiVersionKey, Value = new List<string> { kinveyApiVersion } });
-			Add(new HttpHeader { Name = kinveyDeviceInfoKey, Value = new List<string> { KinveyDeviceInfo } });
+			//Add(new HttpHeader { Name = kinveyDeviceInfoKey, Value = new List<string> { KinveyDeviceInfo } });
         }
     }
 }

@@ -11,7 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -34,5 +34,12 @@ namespace Kinvey
 		[Preserve]
 		[JsonProperty("kinveyAuth")]
 		public KinveyAuthMetaData AuthMetaData { get; set; }
+
+		/// <summary>
+		/// A name-value dictionary of custom attributes of the _socialIdentity object
+		/// </summary>
+		[Preserve]
+		[JsonExtensionData]
+		public Dictionary<string, JToken> Attributes;
 	}
 }

@@ -83,7 +83,7 @@ namespace Kinvey
 
 		internal LoginRequest BuildLoginRequestWithKinveyAuthToken(string userID, string authToken)
 		{
-			return BuildLoginRequest(new Credential(userID, null, authToken, null, null, null, null, null, Client.DeviceID));
+			return BuildLoginRequest(new Credential(userID, null, null, authToken, null, null, null, null, null, Client.DeviceID, null));
 		}
 
 		#endregion

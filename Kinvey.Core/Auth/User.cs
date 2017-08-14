@@ -59,6 +59,12 @@ namespace Kinvey
         private String username;
 
 		/// <summary>
+		/// Holds the social identity information for the user
+		/// </summary>
+		[JsonProperty("_socialIdentity")]
+		private KinveyAuthSocialID socialIdentity;
+
+		/// <summary>
 		/// Used to get information regarding email verification.  The metadata object contains 
 		/// an instance of <see cref="KinveyXamarin.KMDEmailVerification"/> as well as an 
 		/// instance of <see cref="KMDPasswordReset"/> 
@@ -129,6 +135,15 @@ namespace Kinvey
 		}
 
 		/// <summary>
+		/// The _socialIdentity object.
+		/// </summary>
+		public KinveyAuthSocialID AuthSocialID
+		{
+			get { return this.socialIdentity; }
+			set { this.socialIdentity = value; }
+		}
+
+		/// <summary>
 		/// Gets the kinvey client.
 		/// </summary>
 		/// <value>The kinvey client.</value>
@@ -137,6 +152,8 @@ namespace Kinvey
         {
             get { return this.client; }
         }
+
+		internal string MICClientID { get; set; }
 
 		/// <summary>
 		/// the auth request builder.
@@ -220,12 +237,14 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			User u = new User(uc);
 
+			u.AuthSocialID = credential.AuthSocialID;
 			u.AccessToken = credential.AccessToken;
 			u.Attributes = credential.Attributes;
 			u.AuthToken = credential.AuthToken;
 			u.Id = credential.UserId;
 			u.metadata = credential.UserKMD;
 			u.UserName = credential.UserName;
+			u.MICClientID = credential.MICClientID;
 			return u;
 		}
 
@@ -491,23 +510,46 @@ namespace Kinvey
 		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
 		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		[Obsolete("This method has been deprecated.  Please use LoginWithMIC() instead.")]
 		static public void LoginWithAuthorizationCodeLoginPage(string redirectURI, KinveyMICDelegate<User> MICDelegate, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			LoginWithMIC(redirectURI, MICDelegate, null, userClient, ct);
+		}
+
+		/// <summary>
+		/// Performs MIC Login authorization through a login page.
+		/// </summary>
+		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
+		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
+		/// <param name="clientID">[optional] Client ID configured during auth provider configuration, which is to be used during authentication.  Defaults to app key.</param>
+		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		static public void LoginWithMIC(string redirectURI, KinveyMICDelegate<User> MICDelegate, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			//return URL for login page
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code
 
 			AbstractClient uc = userClient ?? Client.SharedClient;
 
-			string appkey = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
+			string appKey = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
 			string hostname = uc.MICHostName;
 			if (uc.MICApiVersion != null && uc.MICApiVersion.Length > 0)
 			{
 				hostname += uc.MICApiVersion + "/";
 			}
 
+			string clientID = appKey;
+
+			// Check if a client ID for MIC authentication has been provided
+			//
+			if (!string.IsNullOrEmpty(micID))
+			{
+				clientID += ":" + micID;
+			}
+
 			ct.ThrowIfCancellationRequested();
 
-			string myURLToRender = hostname + "oauth/auth?client_id=" + appkey + "&redirect_uri=" + redirectURI + "&response_type=code";
+			string myURLToRender = hostname + "oauth/auth?client_id=" + clientID + "&redirect_uri=" + redirectURI + "&response_type=code";
 
 			//keep a reference to the redirect uri for later
 			uc.MICRedirectURI = redirectURI;
@@ -527,7 +569,20 @@ namespace Kinvey
 		/// <param name="password">Password for authentication</param>
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		[Obsolete("This method has been deprecated.  Please use LoginWithMIC() instead.")]
 		static public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		{
+			await LoginWithMIC(username, password, redirectURI, null, userClient, ct);
+		}
+
+		/// <summary>
+		/// Performs MIC Login authorization through an API.
+		/// </summary>
+		/// <param name="username">Username for authentication</param>
+		/// <param name="password">Password for authentication</param>
+		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		static public async Task LoginWithMIC(string username, string password, string redirectURI, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			uc.MICRedirectURI = redirectURI;
@@ -536,13 +591,28 @@ namespace Kinvey
 			{
 				ct.ThrowIfCancellationRequested();
 
-				GetMICTempURLRequest MICTempURLRequest = User.BuildMICTempURLRequest(uc);
+				string appKey = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
+
+				string clientID = appKey;
+
+				// Check if a client ID for MIC authentication has been provided
+				//
+				if (!string.IsNullOrEmpty(micID))
+				{
+					clientID += ":" + micID;
+				}
+
+				// Initiate grant reqeust
+				//
+				GetMICTempURLRequest MICTempURLRequest = User.BuildMICTempURLRequest(uc, clientID);
 				ct.ThrowIfCancellationRequested();
 				JObject tempResult = await MICTempURLRequest.ExecuteAsync();
 
 				string tempURL = tempResult["temp_login_uri"].ToString();
 
-				LoginToTempURLRequest MICLoginToTempURL = User.BuildMICLoginToTempURL(uc, username, password, tempURL);
+				// Initiate token request
+				//
+				LoginToTempURLRequest MICLoginToTempURL = User.BuildMICLoginToTempURL(uc, username, password, tempURL, clientID);
 				ct.ThrowIfCancellationRequested();
 				JObject accessResult = await MICLoginToTempURL.ExecuteAsync();
 
@@ -551,15 +621,20 @@ namespace Kinvey
 				string accessToken = accessResult["access_token"].ToString();
 
 				ct.ThrowIfCancellationRequested();
+
+				// Log into Kinvey
+				//
 				User u = await User.LoginMICWithAccessTokenAsync(accessToken);
 
 				ct.ThrowIfCancellationRequested();
 
-				//store the new refresh token
+				// Store the new access token and refresh token
+				//
 				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
 				currentCred.AccessToken = accessResult["access_token"].ToString();
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
+				currentCred.MICClientID = clientID;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
 			}
 			catch (KinveyException ke)
@@ -579,14 +654,25 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="token">Grant token passed back from MIC grant request</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task GetMICAccessTokenAsync(String token, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+		static public async Task GetMICAccessTokenAsync(String token, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 
 			try
 			{
+				string appKey = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
+
+				string clientID = appKey;
+
+				// Check if a client ID for MIC authentication has been provided
+				//
+				if (!string.IsNullOrEmpty(micID))
+				{
+					clientID += ":" + micID;
+				}
+
 				ct.ThrowIfCancellationRequested();
-				JObject result = await User.GetMICToken(uc, token).ExecuteAsync();
+				JObject result = await User.GetMICToken(uc, token, clientID).ExecuteAsync();
 				string accessToken = result["access_token"].ToString();
 
 				ct.ThrowIfCancellationRequested();
@@ -895,7 +981,7 @@ namespace Kinvey
 		/// <param name="userID">The user ID of the user whose password is reset.  This can either be the 
 		/// ID of the user, or the email address of the user.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> ResetPasswordAsync(string userID, CancellationToken ct = default(CancellationToken))
+		static public async Task<User> ResetPasswordAsync(string userID, CancellationToken ct = default(CancellationToken))
 		{
 			ResetPasswordRequest resetPasswordRequest = buildResetPasswordRequest(userID);
 			ct.ThrowIfCancellationRequested();
@@ -958,7 +1044,7 @@ namespace Kinvey
 		#region User class blocking private classes - used to build up requests
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
-		static private RetrieveMICAccessTokenRequest GetMICToken(AbstractClient cli, String code)
+		static private RetrieveMICAccessTokenRequest GetMICToken(AbstractClient cli, String code, string clientID)
 		{
 			//        grant_type: "authorization_code" - this is always set to this value
 			//        code: use the ‘code’ returned in the callback 
@@ -971,7 +1057,7 @@ namespace Kinvey
 			data.Add("grant_type", "authorization_code");
 			data.Add("code", code);
 			data.Add("redirect_uri", cli.MICRedirectURI);
-			data.Add("client_id", app_id);
+			data.Add("client_id", clientID);
 
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", app_id);
@@ -983,7 +1069,7 @@ namespace Kinvey
 		}
 
 		// Generates a request that uses the refresh token to retrieve a new MIC user token
-		internal RetrieveMICAccessTokenRequest UseRefreshToken(String refreshToken, string redirectUri)
+		internal RetrieveMICAccessTokenRequest UseRefreshToken(String refreshToken, string redirectUri, string clientID)
 		{
 			//        grant_type: "refresh_token" - this is always set to this value  - note the difference
 			//        refresh_token: use the refresh token 
@@ -994,7 +1080,7 @@ namespace Kinvey
 			data.Add("grant_type", "refresh_token");
 			data.Add("refresh_token", refreshToken);
 			data.Add("redirect_uri", redirectUri);
-			data.Add("client_id", ((KinveyClientRequestInitializer) client.RequestInitializer).AppKey);
+			data.Add("client_id", clientID);
 
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
@@ -1006,7 +1092,7 @@ namespace Kinvey
 		}
 
 		// Generates a request to get a temporary MIC URL (automated authorization grant flow)
-		static private GetMICTempURLRequest BuildMICTempURLRequest(AbstractClient cli)
+		static private GetMICTempURLRequest BuildMICTempURLRequest(AbstractClient cli, string clientID)
 		{
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
@@ -1017,11 +1103,12 @@ namespace Kinvey
 			data.Add("redirect_uri", Client.SharedClient.MICRedirectURI);//this.KinveyClient.MICRedirectURI);
 			data.Add("scope", "openid");
 
-			string app_id = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppKey;
-			data.Add("client_id", app_id);
+			string appKey = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppKey;
+
+			data.Add("client_id", clientID);
 
 			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", app_id);
+			urlParameters.Add("appKey", appKey);
 
 			if (cli.MICApiVersion != null && cli.MICApiVersion.Length > 0)
 			{
@@ -1036,25 +1123,25 @@ namespace Kinvey
 		}
 
 		// Generates a request to login a user to the temporary MIC URL (automated authorization grant flow)
-		static private LoginToTempURLRequest BuildMICLoginToTempURL(AbstractClient cli, String username, String password, String tempURL)
+		static private LoginToTempURLRequest BuildMICLoginToTempURL(AbstractClient cli, String username, String password, String tempURL, string clientID)
 		{
-			//    	client_id:  this is the app’s appKey (the KID)
+			//    	client_id:  provided by the developer when configuring authlink (defaults to the app’s appKey (the KID))
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this much exactly match one of the redirect URIs configured in the console.
 			//    	response_type:  this is always set to “code”
 			//    	username
 			//    	password
 
-			string app_id = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppKey;
+			string appKey = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppKey;
 
 			Dictionary<string, string> data = new Dictionary<string, string>();
-			data.Add("client_id", app_id);
+			data.Add("client_id", clientID);
 			data.Add("redirect_uri", cli.MICRedirectURI);
 			data.Add("response_type", "code");
 			data.Add("username", username);
 			data.Add("password", password);
 
 			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", app_id);
+			urlParameters.Add("appKey", appKey);
 
 			LoginToTempURLRequest loginTemp = new LoginToTempURLRequest(cli, tempURL, data, urlParameters);
 			loginTemp.RequireAppCredentials = true;
@@ -1125,15 +1212,16 @@ namespace Kinvey
 			return update;
 		}
 
-		private ResetPasswordRequest buildResetPasswordRequest(string userID)
+		static private ResetPasswordRequest buildResetPasswordRequest(string userID, AbstractClient userClient = null)
 		{
+			AbstractClient uc = userClient ?? Client.SharedClient;
 			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey);
 			urlParameters.Add("userID", userID);
 
-			ResetPasswordRequest reset = new ResetPasswordRequest (client, userID, urlParameters);
+			ResetPasswordRequest reset = new ResetPasswordRequest(uc, userID, urlParameters);
 
-			client.InitializeRequest(reset);
+			uc.InitializeRequest(reset);
 
 			return reset;
 		}
@@ -1230,6 +1318,7 @@ namespace Kinvey
 		private class LoginToTempURLRequest : AbstractKinveyClientRequest<JObject>
 		{
 			AbstractClient cli;
+			string clientID = null;
 
 			internal LoginToTempURLRequest(AbstractClient client, string tempURL, Object httpContent, Dictionary<string, string> urlProperties):
 				base(client, tempURL, "POST", "", httpContent, urlProperties)
@@ -1237,6 +1326,7 @@ namespace Kinvey
 				this.PayloadType = new URLEncodedPayload();
 				this.OverrideRedirect = true;
 				this.cli = client;
+				clientID = (httpContent as Dictionary<string, string>)["client_id"];
 			}
 
 			public override async Task<JObject> onRedirectAsync (string newLocation)
@@ -1248,7 +1338,7 @@ namespace Kinvey
 				}
 
 				String accesstoken = newLocation.Substring (codeIndex + 5); // TODO change "String" to "string" - use alias everywhere
-				return await User.GetMICToken(cli, accesstoken).ExecuteAsync();
+				return await User.GetMICToken(cli, accesstoken, clientID).ExecuteAsync();
 			}
 		}
 

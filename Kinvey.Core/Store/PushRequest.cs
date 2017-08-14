@@ -116,7 +116,7 @@ namespace Kinvey
 
 				Cache.UpdateCacheSave(entity, tempID);
 
-				result = SyncQueue.Remove(tempID);
+				result = SyncQueue.Remove(pwa);
 
 				if (result == 0)
 				{
@@ -145,7 +145,7 @@ namespace Kinvey
 				NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
 				entity = await request.ExecuteAsync();
 
-				result = SyncQueue.Remove(tempID);
+				result = SyncQueue.Remove(pwa);
 
 				if (result == 0)
 				{
@@ -172,7 +172,7 @@ namespace Kinvey
 
 				if (kdr.count == 1)
 				{
-					result = SyncQueue.Remove(pwa.entityId);
+					result = SyncQueue.Remove(pwa);
 
 					if (result == 0)
 					{

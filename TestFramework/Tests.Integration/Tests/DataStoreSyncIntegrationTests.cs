@@ -180,7 +180,7 @@ namespace TestFramework
 
 			// Act
 			ToDo entity = null;
-			entity = (await todoStore.FindByIDAsync(t.ID)).First();
+			entity = await todoStore.FindByIDAsync(t.ID);
 
 			// Assert
 			Assert.NotNull(entity);
@@ -276,6 +276,452 @@ namespace TestFramework
 			Assert.IsNotNull(listToDo);
 			Assert.IsNotEmpty(listToDo);
 			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityGreaterThan()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.Value = 1;
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.Value = 2;
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.Value = 2;
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.Value > 1);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityGreaterThanOrEqual()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.Value = 1;
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.Value = 2;
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.Value = 2;
+
+			//var endDate = new DateTime(2017, 1, 1, 0, 0, 0);
+			//string end_date = "2016-04-22T19:56:00.963Z";
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.Value >= 2);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityLessThan()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.Value = 1;
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.Value = 2;
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.Value = 2;
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.Value < 2);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityLessThanOrEqual()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.Value = 1;
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.Value = 2;
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.Value = 3;
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.Value <= 2);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectGreaterThan()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.NewDate = new DateTime(2016, 4, 21, 19, 56, 0);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.NewDate = new DateTime(2016, 4, 22, 19, 56, 0);
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.NewDate = new DateTime(2017, 4, 22, 19, 56, 0);
+
+			var endDate = new DateTime(2017, 1, 1, 0, 0, 0);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.NewDate > endDate);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectGreaterThanOrEqual()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.NewDate = new DateTime(2016, 4, 21, 19, 56, 0);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.NewDate = new DateTime(2016, 4, 22, 19, 56, 0);
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.NewDate = new DateTime(2017, 1, 1, 0, 0, 0);
+
+			var endDate = new DateTime(2017, 1, 1, 0, 0, 0);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.NewDate >= endDate);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(1, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectLessThan()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.NewDate = new DateTime(2016, 4, 21, 19, 56, 0);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.NewDate = new DateTime(2016, 4, 22, 19, 56, 0);
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.NewDate = new DateTime(2017, 1, 1, 0, 0, 1);
+
+			var endDate = new DateTime(2017, 1, 1, 0, 0, 0);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.NewDate < endDate);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(2, listToDo.Count);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectLessThanOrEqual()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.NewDate = new DateTime(2016, 4, 21, 19, 56, 0);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.NewDate = new DateTime(2016, 4, 22, 19, 56, 0);
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "another todo";
+			newItem3.Details = "details for 2";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.NewDate = new DateTime(2017, 1, 1, 0, 0, 0);
+
+			var endDate = new DateTime(2017, 1, 1, 0, 0, 0);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+
+			// Act
+			var query = todoStore.Where(x => x.NewDate <= endDate);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(3, listToDo.Count);
 		}
 
 		[Test]
@@ -631,6 +1077,40 @@ namespace TestFramework
 		}
 
 		[Test]
+		public async Task TestSyncQueueAddWithID()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			ToDo newItem = new ToDo();
+			newItem.Name = "Task to save to SyncQ";
+			newItem.Details = "A sync add test";
+			newItem.ID = "12345";
+			newItem = await todoStore.SaveAsync(newItem);
+
+			// Act
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			List<ToDo> t = await todoStore.FindAsync();
+
+			// Assert
+			Assert.NotNull(pwa);
+			Assert.IsNotNull(pwa.entityId);
+			Assert.IsNotEmpty(pwa.entityId);
+			Assert.True(String.Equals(collectionName, pwa.collection));
+			Assert.True(String.Equals("PUT", pwa.action));
+			Assert.NotNull(t);
+			Assert.AreEqual(1, t.Count);
+			Assert.AreEqual("12345", t.First().ID);
+			Assert.True(String.Equals(t.First().ID, pwa.entityId));
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem.ID);
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
 		public async Task TestSyncQueueAddThenDelete()
 		{
 			// Setup
@@ -946,6 +1426,180 @@ namespace TestFramework
 			}
 			await todoStore.PushAsync();
 			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestSyncStoreSyncWithQueryAsync()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+
+			PullDataStoreResponse<ToDo> todosBeforeSave = await todoStore.PullAsync();
+
+			// Assert
+			Assert.IsNotNull(todosBeforeSave);
+			Assert.IsEmpty(todosBeforeSave.PullEntities);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			ToDo anotherNewItem = new ToDo();
+			anotherNewItem.Name = "Another Next Task";
+			anotherNewItem.Details = "Another test";
+			anotherNewItem.DueDate = "2016-05-19T20:02:17.635Z";
+			ToDo t2 = await todoStore.SaveAsync(anotherNewItem);
+
+			var query = from x in todoStore where x.Details.StartsWith("Another") select x;
+
+			SyncDataStoreResponse<ToDo> todosAfterSave = await todoStore.SyncAsync(query);
+
+			// Assert
+			Assert.NotNull(todosAfterSave);
+			Assert.AreEqual(1, todosAfterSave.PullResponse.PullCount);
+
+			// Teardown
+			PullDataStoreResponse<ToDo> todoCleanup = await todoStore.PullAsync();
+			foreach (var todo in todoCleanup.PullEntities)
+			{
+				await todoStore.RemoveAsync(todo.ID);
+			}
+			await todoStore.PushAsync();
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryWithSortAscending()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.NewDate = new DateTime(2016, 4, 22, 19, 56, 00);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.NewDate = new DateTime(2017, 4, 22, 19, 56, 00);
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "z another todo";
+			newItem3.Details = "details for 3";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.NewDate = new DateTime(2016, 3, 22, 19, 56, 00);
+
+			ToDo newItem4 = new ToDo();
+			newItem4.Name = "c another todo";
+			newItem4.Details = "details for 4";
+			newItem4.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem4.NewDate = new DateTime(2016, 4, 21, 19, 56, 00);
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+			newItem4 = await todoStore.SaveAsync(newItem4);
+
+			// Act
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).OrderBy(x => x.Name);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem4.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(4, listToDo.Count);
+			Assert.True(String.Compare(newItem2.Name, listToDo.First().Name) == 0);
+		}
+
+		[Test]
+		public async Task TestSyncStoreFindByQueryWithSortDescending()
+		{
+			// Setup
+			if (kinveyClient.ActiveUser != null)
+			{
+				kinveyClient.ActiveUser.Logout();
+			}
+
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem1 = new ToDo();
+			newItem1.Name = "todo";
+			newItem1.Details = "details for 1";
+			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem1.NewDate = new DateTime(2016, 4, 22, 19, 56, 00);
+
+			ToDo newItem2 = new ToDo();
+			newItem2.Name = "another todo";
+			newItem2.Details = "details for 2";
+			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem2.NewDate = new DateTime(2017, 4, 22, 19, 56, 00);
+
+			ToDo newItem3 = new ToDo();
+			newItem3.Name = "z another todo";
+			newItem3.Details = "details for 3";
+			newItem3.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem3.NewDate = new DateTime(2016, 3, 22, 19, 56, 00);
+
+			ToDo newItem4 = new ToDo();
+			newItem4.Name = "c another todo";
+			newItem4.Details = "details for 4";
+			newItem4.DueDate = "2016-04-22T19:56:00.963Z";
+			newItem4.NewDate = new DateTime(2016, 4, 21, 19, 56, 00);
+
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+
+			newItem1 = await todoStore.SaveAsync(newItem1);
+			newItem2 = await todoStore.SaveAsync(newItem2);
+			newItem3 = await todoStore.SaveAsync(newItem3);
+			newItem4 = await todoStore.SaveAsync(newItem4);
+
+			// Act
+			var query = todoStore.Where(x => x.Details.StartsWith("det")).OrderByDescending(x => x.NewDate);
+
+			List<ToDo> listToDo = new List<ToDo>();
+
+			listToDo = await todoStore.FindAsync(query);
+
+			// Teardown
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem4.ID);
+			kinveyClient.ActiveUser.Logout();
+
+			// Assert
+			Assert.IsNotNull(listToDo);
+			Assert.IsNotEmpty(listToDo);
+			Assert.AreEqual(4, listToDo.Count);
+			Assert.True(String.Compare(newItem2.Name, listToDo.First().Name) == 0);
 		}
 
 

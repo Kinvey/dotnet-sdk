@@ -11,7 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -40,6 +40,21 @@ namespace Kinvey
 		/// </summary>
 		[Preserve]
 		[JsonProperty("audience")]
-		public String AuthAudience { get; set; }
+		public string AuthAudience { get; set; }
+
+		/// <summary>
+		/// A name-value dictionary of custom attributes of the kinveyAuth object
+		/// </summary>
+		[Preserve]
+		[JsonExtensionData]
+		public Dictionary<string, JToken> Attributes;
+
+		/// <summary>
+		/// Serialize this instance of <see cref="KinveyAuthMetaData"/> in the local cache.
+		/// </summary>
+		public string Serialize()
+		{
+			return JsonConvert.SerializeObject(this);
+		}
 	}
 }

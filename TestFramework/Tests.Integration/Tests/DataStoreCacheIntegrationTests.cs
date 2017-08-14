@@ -221,9 +221,39 @@ namespace TestFramework
 		}
 
 		[Test]
-		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestCacheStoreFindByIDAsync()
 		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+			ToDo t = await todoStore.SaveAsync(newItem);
+
+			// Act
+			ToDo networkEntity = null;
+			ToDo cacheEntity = null;
+
+			networkEntity = await todoStore.FindByIDAsync(t.ID, new KinveyDelegate<ToDo>
+			{
+				onSuccess = (result) => cacheEntity = result,
+				onError = (error) => Assert.Fail("TestCacheStoreFindByIDAsync: Cache find returned error")
+			});
+
+			// Assert
+			Assert.NotNull(networkEntity);
+			Assert.True(string.Equals(networkEntity.ID, t.ID));
+			Assert.NotNull(cacheEntity);
+			Assert.True(string.Equals(cacheEntity.ID, t.ID));
+			Assert.True(string.Equals(cacheEntity.ID, networkEntity.ID));
+
+			// Teardown
+			await todoStore.RemoveAsync(t.ID);
+			kinveyClient.ActiveUser.Logout();
 		}
 
 		[Test]

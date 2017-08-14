@@ -20,18 +20,19 @@ using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// </summary>
-	public class Stream<T>
-	{
-		KinveyStreamDelegate<T> RealtimeDelegate { get; set; }
+    /// <summary>
+    /// </summary>
+    public class Stream<T>
+    {
+        KinveyStreamDelegate<T> RealtimeDelegate { get; set; }
 
-		private Dictionary<string, string> mapPublishReceiverToChannel;
+        private Dictionary<string, string> mapPublishReceiverToChannel;
 
-		/// <summary>
-		/// Represents the name of the stream.
-		/// </summary>
-		public string StreamName { get; set; }
+        // Represents the name of the stream.
+        private string StreamName { get; set; }
+
+		// Represents the name of the channel used by the RealtimeRouter class.
+		private string ChannelName { get; set; }
 
 		private AbstractClient KinveyClient { get; set; }
 
@@ -184,7 +185,7 @@ namespace Kinvey
 			if (!String.IsNullOrEmpty(publishChannel))
 			{
 				var realtimeMessage = new RealtimeMessage<T>(KinveyClient.ActiveUser.Id, message);
-				result = RealtimeRouter.Instance.Publish(publishChannel, realtimeMessage, publishError);
+				result = await RealtimeRouter.Instance.Publish(publishChannel, realtimeMessage, publishError);
 			}
 
 			return result;
@@ -213,9 +214,9 @@ namespace Kinvey
 			}
 
 			// Make KCS request for subscribe access to a user with the given subscribeID
-			success = await RequestSubscribeAccess(subscribeID);
+			var result = await RequestSubscribeAccess(subscribeID);
 
-			if (success)
+            if (result != default(JObject))
 			{
 				RealtimeDelegate = realtimeHandler;
 
@@ -233,11 +234,11 @@ namespace Kinvey
 								attemptRetry = false;
 
 								// Make KCS request for subscribe access to a user with the given subscribeID
-								success = await RequestSubscribeAccess(subscribeID);
-								if (!success)
+								result = await RequestSubscribeAccess(subscribeID);
+                                if (result != default(JObject))
 								{
 									// Re-request failed, unsubscribe stream
-									RealtimeRouter.Instance.UnsubscribeStream(StreamName);
+                                    RealtimeRouter.Instance.UnsubscribeStream(ChannelName);
 								}
 								else
 								{
@@ -257,7 +258,9 @@ namespace Kinvey
 					OnStatus = (status) => RealtimeDelegate.OnStatus(status)
 				};
 
-				RealtimeRouter.Instance.SubscribeStream(StreamName, routerDelegate);
+                // Get stream name from subscribe request
+                ChannelName = result[Constants.STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME].ToString();
+				RealtimeRouter.Instance.SubscribeStream(ChannelName, routerDelegate);
 				attemptRetry = true;
 				success = true;
 			}
@@ -267,19 +270,19 @@ namespace Kinvey
 
 		internal async Task Unsubscribe(string subscribeID)
 		{
-			RealtimeRouter.Instance.UnsubscribeStream(StreamName);
+			RealtimeRouter.Instance.UnsubscribeStream(ChannelName);
 			RealtimeDelegate = null;
 
 			// Make KCS request to unsubscribe access to a substream for the given subscribeID
 			bool success = await RequestUnsubscribeAccess(subscribeID);
 		}
 
-		internal async Task<bool> RequestSubscribeAccess(string subscribeID, CancellationToken ct = default(CancellationToken))
+        internal async Task<JObject> RequestSubscribeAccess(string subscribeID, CancellationToken ct = default(CancellationToken))
 		{
 			StreamSubscribeAccessRequest requestSubscribe = BuildStreamSubscribeAccessRequest(subscribeID);
 			ct.ThrowIfCancellationRequested();
 			var result =  await requestSubscribe.ExecuteAsync();
-			return true;
+			return result;
 		}
 
 		internal async Task<bool> RequestUnsubscribeAccess(string subscribeID, CancellationToken ct = default(CancellationToken))

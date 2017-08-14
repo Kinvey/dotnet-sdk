@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey</id>
-    <version>3.0.7</version>
+    <version>3.0.14</version>
     <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
     <title>Kinvey.Core</title>
     <authors>Kinvey</authors>
@@ -19,11 +19,10 @@
       <dependency id="Microsoft.Net.Http" version="2.2.29"/>
       <dependency id="modernhttpclient" version="2.4.2"/>
       <dependency id="Newtonsoft.Json" version="8.0.2"/>
+      <dependency id="PubnubNetPlatform" version="3.8.7.0"/>
       <dependency id="Remotion.Linq" version="2.0.1"/>
       <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
       <dependency id="SQLite.Net-PCL" version="3.1.1"/>
-      <dependency id="Xam.Plugin.DeviceInfo" version="2.1.2"/>
-      <dependency id="PubnubPCL" version="3.8.5.0"/>
     </dependencies>
   </metadata>
   <files>

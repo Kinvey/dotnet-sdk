@@ -128,7 +128,7 @@ namespace Kinvey
 		{
 			try
 			{
-				dbConnectionSync.Update(item);
+				dbConnectionSync.InsertOrReplace(item);
 			}
 			catch (SQLiteException e)
 			{
@@ -627,6 +627,11 @@ namespace Kinvey
 			{
 				var funcSort = exprSort as Expression<Func<T, uint>>;
 				query = sortAscending ? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
+			}
+			else if (retType == typeof(DateTime))
+			{
+				var funcSort = exprSort as Expression<Func<T, DateTime>>;
+				query = sortAscending? query.OrderBy(funcSort) : query.OrderByDescending(funcSort);
 			}
 		}
 

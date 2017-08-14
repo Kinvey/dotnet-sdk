@@ -268,7 +268,7 @@ namespace Kinvey
 		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
 		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<T>> FindByIDAsync(string entityID, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
+		public async Task<T> FindByIDAsync(string entityID, KinveyDelegate<T> cacheResult = null, CancellationToken ct = default(CancellationToken))
 		{
 			List<string> listIDs = new List<string>();
 
@@ -277,9 +277,20 @@ namespace Kinvey
 				listIDs.Add(entityID);
 			}
 
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, null, listIDs);
+			var cacheDelegate = new KinveyDelegate<List<T>>
+			{
+				onSuccess = (listCacheResults) => {
+					cacheResult.onSuccess(listCacheResults.FirstOrDefault());
+				},
+				onError = (error) => {
+					cacheResult.onError(error);
+				}
+			};
+
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
 			ct.ThrowIfCancellationRequested();
-			return await findByQueryRequest.ExecuteAsync();
+			var results = await findByQueryRequest.ExecuteAsync();
+			return results?.FirstOrDefault();
 		}
 
 		#region Grouping/Aggregate Functions
@@ -403,7 +414,7 @@ namespace Kinvey
 			}
 
 			// first push
-			PushDataStoreResponse<T> pushResponse = await this.PushAsync();   //partial success
+			PushDataStoreResponse<T> pushResponse = await this.PushAsync(ct);   //partial success
 
 			ct.ThrowIfCancellationRequested();
 
@@ -412,7 +423,7 @@ namespace Kinvey
 
 			try
 			{
-				pullResponse = await this.PullAsync();
+				pullResponse = await this.PullAsync(query, ct);
 			}
 			catch (KinveyException e)
 			{
@@ -447,7 +458,8 @@ namespace Kinvey
 			var ret = cache.Clear(query?.Expression);
 			if (ret?.IDs != null)
 			{
-				syncQueue.Remove(ret.IDs);
+                var pendings = ret.IDs.Select(entityId => syncQueue.GetByID(entityId));
+                syncQueue.Remove(pendings);
 			}
 			else {
 				syncQueue.RemoveAll();
@@ -466,10 +478,9 @@ namespace Kinvey
 			{
 				var ids = new List<string>();
 				var entities = cache.FindByQuery(query.Expression);
-				foreach (var entity in entities) {					
-					ids.Add((entity as IPersistable).ID);
-				}
-				return syncQueue.Remove(ids);
+                var pendings = entities.Select(entity => entity as IPersistable)
+                                       .Select(persistable => syncQueue.GetByID(persistable.ID));
+				return syncQueue.Remove(pendings);
 			}
 
 			return syncQueue.RemoveAll();
