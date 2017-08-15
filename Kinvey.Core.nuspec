@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey</id>
-    <version>3.0.14</version>
+    <version>3.0.15</version>
     <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
     <title>Kinvey.Core</title>
     <authors>Kinvey</authors>
@@ -13,16 +13,42 @@
     <projectUrl>http://devcenter.kinvey.com/xamarin/</projectUrl>
     <tags>Kinvey BaaS</tags>
     <dependencies>
-      <dependency id="Microsoft.Bcl" version="1.1.0"/>
-      <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
-      <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
-      <dependency id="Microsoft.Net.Http" version="2.2.29"/>
-      <dependency id="modernhttpclient" version="2.4.2"/>
-      <dependency id="Newtonsoft.Json" version="8.0.2"/>
-      <dependency id="PubnubNetPlatform" version="3.8.7.0"/>
-      <dependency id="Remotion.Linq" version="2.0.1"/>
-      <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
-      <dependency id="SQLite.Net-PCL" version="3.1.1"/>
+      <group>
+        <dependency id="Microsoft.Bcl" version="1.1.0"/>
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
+        <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
+        <dependency id="Microsoft.Net.Http" version="2.2.29"/>
+        <dependency id="modernhttpclient" version="2.4.2"/>
+        <dependency id="Newtonsoft.Json" version="8.0.2"/>
+        <dependency id="PubnubPCL" version="4.0.2.2"/>
+        <dependency id="Remotion.Linq" version="2.0.1"/>
+        <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
+        <dependency id="SQLite.Net-PCL" version="3.1.1"/>
+      </group>
+      <group targetFramework="net46">
+        <dependency id="Microsoft.Bcl" version="1.1.0"/>
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
+        <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
+        <dependency id="Microsoft.Net.Http" version="2.2.29"/>
+        <dependency id="modernhttpclient" version="2.4.2"/>
+        <dependency id="Newtonsoft.Json" version="8.0.2"/>
+        <dependency id="Pubnub" version="4.0.2.2"/>
+        <dependency id="Remotion.Linq" version="2.0.1"/>
+        <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
+        <dependency id="SQLite.Net-PCL" version="3.1.1"/>
+      </group>
+      <group targetFramework="uap10.0">
+        <dependency id="Microsoft.Bcl" version="1.1.0"/>
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
+        <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
+        <dependency id="Microsoft.Net.Http" version="2.2.29"/>
+        <dependency id="modernhttpclient" version="2.4.2"/>
+        <dependency id="Newtonsoft.Json" version="8.0.2"/>
+        <dependency id="PubnubUWP" version="4.0.2.2"/>
+        <dependency id="Remotion.Linq" version="2.0.1"/>
+        <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
+        <dependency id="SQLite.Net-PCL" version="3.1.1"/>
+      </group>
     </dependencies>
   </metadata>
   <files>
