@@ -432,7 +432,7 @@ namespace Kinvey
 
 			try
 			{
-				pullResponse = await this.PullAsync(query, ct);
+				pullResponse = await this.PullAsync(query, -1, false, ct);
 			}
 			catch (KinveyException e)
 			{
