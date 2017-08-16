@@ -115,8 +115,9 @@ namespace Kinvey
 
 			if (!string.IsNullOrEmpty (queryString)) { 
 				REST_PATH = "appdata/{appKey}/{collectionName}/_count?query={querystring}";
-				urlParameters.Add ("querystring", queryString);
-			}
+				Dictionary<string, string> modifiers = ParseQueryForModifiers(queryString, ref REST_PATH, ref urlParameters);
+
+			} 
 
 			NetworkRequest<T> getCountQuery = new NetworkRequest<T>(client, "GET", REST_PATH, null, urlParameters);
 			client.InitializeRequest(getCountQuery);
