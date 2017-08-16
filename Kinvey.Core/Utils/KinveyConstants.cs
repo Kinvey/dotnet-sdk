@@ -52,5 +52,10 @@ namespace Kinvey
 		internal const string STR_REALTIME_CHANNEL_GROUP = "userChannelGroup";
 		internal const string STR_REALTIME_STREAM_NAME = "streamName";
 		internal const string STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME = "substreamChannelName";
+
+        // REST Method Strings
+        internal const string STR_REST_METHOD_POST = "POST";
+        internal const string STR_REST_METHOD_PUT = "PUT";
+        internal const string STR_REST_METHOD_DELETE = "DELETE";
 	}
 }
