@@ -58,7 +58,7 @@ namespace Kinvey
 					//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
 					//dbConnection = new SQLiteAsyncConnection (connectionFactory);
 					_dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
-                    _dbConnectionSync.TraceListener = new DebugTraceListener();
+                    //_dbConnectionSync.TraceListener = new DebugTraceListener();
 				}
 
 				return _dbConnectionSync;
