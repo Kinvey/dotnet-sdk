@@ -30,43 +30,65 @@ namespace Kinvey
 			this.Collection = collection;
 		}
 
-		public int Enqueue (PendingWriteAction pending)
-		{
-			PendingWriteAction existingSyncItem = GetByID(pending.entityId);
-			if (existingSyncItem != null)
-			{
-				// an entry for this entity already exists
-				if (existingSyncItem.action == "POST" && pending.action == "PUT")
-				{
-					// do not put in the sync queue, since a POST will already capture all the latest changes
-					return 0;
-				}
-				else if (existingSyncItem.action == "PUT" && pending.action == "POST")
-				{
-					// highly unlikely, but favor the POST
-					this.Remove(existingSyncItem);
-				}
-				else if (existingSyncItem.action == "DELETE" && (pending.action == "PUT" || pending.action == "POST"))
-				{
-					// odd case where an object has somehow been created/updated after a delete call, but favor the create/update
-					this.Remove(existingSyncItem);
-				}
-				else if (pending.action == "DELETE")
-				{
-					// no matter what, favor the current deletion
-					this.Remove(existingSyncItem);
+        public int Enqueue(PendingWriteAction pending)
+        {
+            // Check if a sync queue entry for this entity already exists
+            PendingWriteAction existingSyncItem = GetByID(pending.entityId);
+            if (existingSyncItem != null)
+            {
+                if (existingSyncItem.action == Constants.STR_REST_METHOD_PUT &&
+                    pending.action == Constants.STR_REST_METHOD_PUT)
+                {
+                    // If both the existing and pending actions are PUT, this means either this is an already created
+                    // item, or the item has been created with a custom ID on the client.  In either case, the existing
+                    // entry will capture the state of the entity.
+                    return 0;
+                }
+                else if (existingSyncItem.action == Constants.STR_REST_METHOD_POST &&
+                         pending.action == Constants.STR_REST_METHOD_PUT)
+                {
+                    // Do not enqueue in the case of an existing POST, since the POST
+                    // entry will already capture the current state of the entity.
+                    return 0;
+                }
+                else if (existingSyncItem.action == Constants.STR_REST_METHOD_PUT &&
+                         pending.action == Constants.STR_REST_METHOD_POST)
+                {
+                    // highly unlikely, but favor the POST
+                    this.Remove(existingSyncItem);
+                }
+                else if (existingSyncItem.action == Constants.STR_REST_METHOD_POST &&
+                         pending.action == Constants.STR_REST_METHOD_POST)
+                {
+                    // Should be imposssible to have this situation, favor the
+                    // existing POST by not enqueueing
+                    return 0;
+                }
+                else if (existingSyncItem.action == Constants.STR_REST_METHOD_DELETE &&
+                         (pending.action == Constants.STR_REST_METHOD_PUT || pending.action == Constants.STR_REST_METHOD_POST))
+                {
+                    // odd case where an object has somehow been created/updated
+                    // after a delete call, but favor the create/update
+                    this.Remove(existingSyncItem);
+                }
+                else if (pending.action == Constants.STR_REST_METHOD_DELETE)
+                {
+                    // no matter what, favor the current deletion
+                    this.Remove(existingSyncItem);
 
-					// If the existing item that is being deleted is something that only existed locally,
-					// do not insert the DELETE action into the queue, since it is local-only
-					if (existingSyncItem.entityId.StartsWith("temp_", StringComparison.OrdinalIgnoreCase))
-					{
-						return 0;
-					}
-				}
-			}
+                    // If the existing item that is being deleted is something that only existed locally,
+                    // do not insert the DELETE action into the queue, since it is local-only.
+                    // Note that this cannot be optimized for the case when a custom ID has been set on
+                    // the entity.
+                    if (existingSyncItem.entityId.StartsWith("temp_", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return 0;
+                    }
+                }
+            }
 
-			return dbConnection.Insert(pending);
-		}
+            return dbConnection.Insert(pending);
+        }
 
 		public List<PendingWriteAction> GetAll()
 		{

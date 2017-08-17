@@ -1002,6 +1002,44 @@ namespace TestFramework
 			kinveyClient.ActiveUser.Logout();
 		}
 
+        [Test]
+        public async Task TestSaveCustomIDAsync()
+        {
+            // Setup
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            ToDo newItem = new ToDo();
+            newItem.Name = "Next Task";
+            newItem.Details = "A test";
+            newItem.DueDate = "2016-04-19T20:02:17.635Z";
+            newItem.ID = "12345";
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+
+            // Act
+            ToDo savedToDo = await todoStore.SaveAsync(newItem);
+            PendingWriteAction pwaBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+            int countBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+            savedToDo.BoolVal = true;
+            savedToDo = await todoStore.SaveAsync(savedToDo);
+            PendingWriteAction pwaAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+            int countAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+
+            // Assert
+            Assert.NotNull(savedToDo);
+            Assert.True(string.Equals(savedToDo.Name, newItem.Name));
+            Assert.NotNull(pwaBefore);
+            Assert.NotNull(pwaAfter);
+            Assert.AreEqual(1, countAfter);
+            Assert.AreEqual(countBefore, countAfter);
+            Assert.True(string.Compare("12345", pwaBefore.entityId) == 0);
+            Assert.True(string.Compare("12345", pwaAfter.entityId) == 0);
+
+            // Teardown
+            await todoStore.RemoveAsync(savedToDo.ID);
+            kinveyClient.ActiveUser.Logout();
+        }
+
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]
 		public async Task TestSaveAsyncBad()
@@ -1034,6 +1072,42 @@ namespace TestFramework
 			Assert.AreEqual(1, kdr.count);
 
 			// Teardown
+			kinveyClient.ActiveUser.Logout();
+		}
+
+		[Test]
+		public async Task TestDeleteCustomIDAsync()
+		{
+			// Setup
+			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+			// Arrange
+			ToDo newItem = new ToDo();
+			newItem.Name = "Next Task";
+			newItem.Details = "A test";
+			newItem.DueDate = "2016-04-19T20:02:17.635Z";
+			newItem.ID = "12345";
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+
+			// Act
+			ToDo savedToDo = await todoStore.SaveAsync(newItem);
+			PendingWriteAction pwaBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			int countBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+			var kdr = await todoStore.RemoveAsync("12345");
+			PendingWriteAction pwaAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			int countAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+
+			// Assert
+			Assert.NotNull(pwaBefore);
+			Assert.NotNull(pwaAfter);
+			Assert.AreEqual(1, countBefore);
+			Assert.AreEqual(countBefore, countAfter);
+			Assert.AreEqual(1, kdr.count);
+			Assert.True(string.Compare("12345", pwaBefore.entityId) == 0);
+			Assert.True(string.Compare("12345", pwaAfter.entityId) == 0);
+
+			// Teardown
+			await todoStore.RemoveAsync(savedToDo.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
