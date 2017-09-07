@@ -29,7 +29,7 @@ namespace Kinvey
 
 		// The kinvey API version.
         static string kinveyApiVersionKey = "X-Kinvey-API-Version";
-        static string kinveyApiVersion = "3";
+        static string kinveyApiVersion = "4";
 
 		// The user agent.
         static string userAgentKey = "user-agent";
