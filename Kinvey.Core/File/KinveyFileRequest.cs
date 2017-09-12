@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using RestSharp;
@@ -32,16 +33,18 @@ namespace Kinvey
 		#region KinveyFileRequest upload methods
 
 		internal async Task uploadFileAsync(FileMetaData metadata, byte[] input)
-		{
-			await uploadFileAsync (metadata, new ByteArrayContent (input));
-		}
+        {
+            int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size);
+            await uploadFileAsync(metadata, new ByteArrayContent(input, startPosition, (int)metadata.size -startPosition));
+        }
 
 		internal async Task uploadFileAsync(FileMetaData metadata, Stream input)
 		{
-			if (input.CanSeek)
-			{
-				input.Position = 0;
-			}
+            if (input.CanSeek)
+            {
+                int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size);
+                input.Position = startPosition;
+            }
 
 			await uploadFileAsync(metadata, new StreamContent(input));
 		}
@@ -65,6 +68,74 @@ namespace Kinvey
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
+
+        internal async Task<int> CheckResumableStateAsync(string uploadURL, int contentSize)
+        {
+            int startByte = 0;
+
+            // Create empty HTTP PUT request to the GCS URI given from KCS
+            var httpClient = new HttpClient(new NativeMessageHandler());
+            Uri requestURI = new Uri(uploadURL);
+            var httpRequest = new System.Net.Http.HttpRequestMessage(HttpMethod.Put, requestURI);
+            var content = new StringContent("");
+            content.Headers.ContentLength = 0;
+            content.Headers.ContentRange = new ContentRangeHeaderValue(contentSize);
+            httpRequest.Content = content;
+            try
+            {
+                var httpResponse = await httpClient.SendAsync(httpRequest);
+            }
+            catch (Exception e)
+            {
+                string msg = e.Message;
+                var innerEx = e.InnerException as System.Net.WebException;
+                var actualResponse = innerEx.Response;
+                int status = (int)innerEx.Status;
+                if (actualResponse == null)
+                {
+                    // This is the Xamarin/Mono case, where the inner exception
+                    // does not give back the 308 response.  In this case, all
+                    // we can do for now is attempt the whole upload.
+                    // Do nothing for now.
+                }
+                else
+                {
+                    // Check response for status code
+                    switch (status)
+                    {
+                        case 200:
+                        case 201:
+                            // Already uploaded - no need to attempt upload
+                            break;
+                        
+                        case 308:
+                            // Resumable file upload case - check range header
+                            if (actualResponse.Headers.AllKeys.Contains("Range"))
+                            {
+                                // Parse Range header and set the start byte accordingly
+                                int lastByteSent = 0;
+                                foreach (string header in actualResponse.Headers.AllKeys)
+                                {
+                                    if (header.StartsWith("Range", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        // Example format: bytes=0-42
+                                        char[] delims = new char[] { '-' };
+                                        lastByteSent = Int32.Parse(header.Split(delims)[1]);
+                                        startByte = lastByteSent + 1;
+                                    }
+                                }
+                            }
+                            break;
+                        
+                        default:
+                            // Attempt full upload
+                            break;
+                    }
+                }
+            }
+
+            return startByte;
+        }
 
 		#endregion
 
