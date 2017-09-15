@@ -1485,16 +1485,10 @@ namespace Kinvey
 				{
 					KinveyAuthResponse auth = new KinveyAuthResponse();
 
-					auth.UserId =  u["_id"].ToString();
-
-					KinveyUserMetaData kmd = new KinveyUserMetaData();
-
-					kmd.Add("lmt", u["_kmd.lmt"]) ;
-					kmd.Add("authtoken", u["_kmd.authtoken"]);
-					kmd.Add("_kmd", u["_kmd"]);
-					auth.UserMetaData = kmd;
-					auth.username =  u["username"].ToString();
-					auth.Attributes = u.Attributes;
+                    auth.UserId = u.Id;
+                    auth.UserMetaData = u.Metadata;
+                    auth.username = u.UserName;
+                    auth.Attributes = u.Attributes;
 
 					string utype = user.type.ToString();
 				
