@@ -85,13 +85,14 @@ namespace Kinvey
             {
                 var httpResponse = await httpClient.SendAsync(httpRequest);
             }
-            catch (Exception e)
+            catch (System.Net.Http.HttpRequestException hre)
             {
-                string msg = e.Message;
-                var innerEx = e.InnerException as System.Net.WebException;
+                var innerEx = hre.InnerException as System.Net.WebException;
                 var actualResponse = innerEx.Response;
-                int status = (int)innerEx.Status;
-                if (actualResponse == null)
+                var status = innerEx.Status;
+                string innermsg = innerEx.Message;
+
+                if (actualResponse == null && string.Compare("Invalid status code: 308", innermsg) == 0)
                 {
                     // This is the Xamarin/Mono case, where the inner exception
                     // does not give back the 308 response.  In this case, all
@@ -100,36 +101,41 @@ namespace Kinvey
                 }
                 else
                 {
-                    // Check response for status code
-                    switch (status)
+                    try
                     {
-                        case 200:
-                        case 201:
-                            // Already uploaded - no need to attempt upload
-                            break;
-                        
-                        case 308:
-                            // Resumable file upload case - check range header
-                            if (actualResponse.Headers.AllKeys.Contains("Range"))
-                            {
-                                // Parse Range header and set the start byte accordingly
-                                int lastByteSent = 0;
-                                foreach (string header in actualResponse.Headers.AllKeys)
+                        // Check response for status code
+                        var resp = actualResponse as System.Net.HttpWebResponse;
+                        switch ((int)resp.StatusCode)
+                        {
+                            case 200:
+                            case 201:
+                                // Already uploaded - no need to attempt upload
+                                break;
+
+                            case 308:
+                                // Resumable file upload case - check range header
+                                if (actualResponse.Headers.AllKeys.Contains("Range"))
                                 {
-                                    if (header.StartsWith("Range", StringComparison.OrdinalIgnoreCase))
+                                    // Parse Range header and set the start byte accordingly
+                                    foreach (string header in actualResponse.Headers.AllKeys)
                                     {
-                                        // Example format: bytes=0-42
-                                        char[] delims = new char[] { '-' };
-                                        lastByteSent = Int32.Parse(header.Split(delims)[1]);
-                                        startByte = lastByteSent + 1;
+                                        if (header.StartsWith("Range", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            startByte = DetermineStartByteFromRange(header);
+                                        }
                                     }
                                 }
-                            }
-                            break;
-                        
-                        default:
-                            // Attempt full upload
-                            break;
+                                break;
+
+                            default:
+                                // Attempt full upload
+                                break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // Something went wrong in parsing the Range header, so
+                        // attempt the whole upload.
                     }
                 }
             }
@@ -137,7 +143,22 @@ namespace Kinvey
             return startByte;
         }
 
-		#endregion
+        static internal int DetermineStartByteFromRange(string rangeHeaderValue)
+        {
+            int startByte = 0;
+
+            // Parse Range header and set the start byte accordingly
+            int lastByteSent = 0;
+
+            // Example format: bytes=0-42
+            char[] delims = new char[] { '-' };
+            lastByteSent = Int32.Parse(rangeHeaderValue.Split(delims)[1]);
+            startByte = lastByteSent + 1;
+
+            return startByte;
+        }
+
+        #endregion
 
 		#region KinveyFileRequest download methods
 
