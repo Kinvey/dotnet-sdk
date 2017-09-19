@@ -544,7 +544,7 @@ namespace Kinvey
 			//
 			if (!string.IsNullOrEmpty(micID))
 			{
-				clientID += ":" + micID;
+				clientID += Constants.MIC_ID_SEPARATOR + micID;
 			}
 
 			ct.ThrowIfCancellationRequested();
@@ -599,7 +599,7 @@ namespace Kinvey
 				//
 				if (!string.IsNullOrEmpty(micID))
 				{
-					clientID += ":" + micID;
+					clientID += Constants.MIC_ID_SEPARATOR + micID;
 				}
 
 				// Initiate grant reqeust
@@ -668,7 +668,7 @@ namespace Kinvey
 				//
 				if (!string.IsNullOrEmpty(micID))
 				{
-					clientID += ":" + micID;
+					clientID += Constants.MIC_ID_SEPARATOR + micID;
 				}
 
 				ct.ThrowIfCancellationRequested();
