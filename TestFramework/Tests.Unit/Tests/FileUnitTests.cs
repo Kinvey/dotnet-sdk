@@ -59,5 +59,19 @@ namespace TestFramework
             // Assert
             Assert.That(startByte == 0);
         }
+
+        [Test]
+        public void TestDetermineStartByteFromRange()
+        {
+            // Arrange
+            string rangeHeader = "bytes=0-42";
+            int startByte = 0;
+
+            // Act
+            startByte = KinveyFileRequest.DetermineStartByteFromRange(rangeHeader);
+
+            // Assert
+            Assert.That(startByte == 43);
+        }
     }
 }
