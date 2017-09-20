@@ -114,17 +114,9 @@ namespace Kinvey
 
                             case 308:
                                 // Resumable file upload case - check range header
-                                if (actualResponse.Headers.AllKeys.Contains("Range"))
-                                {
-                                    // Parse Range header and set the start byte accordingly
-                                    foreach (string header in actualResponse.Headers.AllKeys)
-                                    {
-                                        if (header.StartsWith("Range", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            startByte = DetermineStartByteFromRange(header);
-                                        }
-                                    }
-                                }
+                                var rangeHeader = resp.Headers[System.Net.HttpRequestHeader.Range];
+                                startByte = DetermineStartByteFromRange(rangeHeader);
+
                                 break;
 
                             default:
@@ -147,20 +139,23 @@ namespace Kinvey
         {
             int startByte = 0;
 
-            // Parse Range header and set the start byte accordingly
-            int lastByteSent = 0;
+            if (rangeHeaderValue != null)
+            {
+                // Parse Range header and set the start byte accordingly
+                int lastByteSent = 0;
 
-            // Example format: bytes=0-42
-            char[] delims = new char[] { '-' };
-            lastByteSent = Int32.Parse(rangeHeaderValue.Split(delims)[1]);
-            startByte = lastByteSent + 1;
+                // Example format: bytes=0-42
+                char[] delims = new char[] { '-' };
+                lastByteSent = Int32.Parse(rangeHeaderValue.Split(delims)[1]);
+                startByte = lastByteSent + 1;
+            }
 
             return startByte;
         }
 
         #endregion
 
-		#region KinveyFileRequest download methods
+        #region KinveyFileRequest download methods
 
 		internal async Task downloadFileAsync(FileMetaData metadata, Stream stream)
 		{
@@ -187,7 +182,7 @@ namespace Kinvey
 			return response;
 		}
 
-		#endregion
+        #endregion
 	}
 }
 
