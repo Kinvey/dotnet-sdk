@@ -21,6 +21,7 @@ namespace Kinvey
 		internal const char CHAR_COMMA = ',';
 		internal const char CHAR_PERIOD = '.';
 		internal const char CHAR_QUOTATION_MARK = '"';
+		internal const char MIC_ID_SEPARATOR = CHAR_PERIOD;
 
 		// Const Strings
 		public const string STR_AMPERSAND = "&";
