@@ -84,6 +84,7 @@ namespace Kinvey
 			cred.RefreshToken = credential.RefreshToken;
 			cred.RedirectUri = credential.RedirectUri;
 			cred.DeviceID = credential.DeviceID;
+            cred.MICClientID = credential.MICClientID;
 			_dbConnection.Insert(cred);
 		}
 
