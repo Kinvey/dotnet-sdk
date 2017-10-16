@@ -99,6 +99,8 @@ namespace Kinvey
 			newCredential.DeviceID = deviceID;
             if (userId != null && credentialStore != null)
             {
+                var oldCred = credentialStore.Load(userId, ssoGroupKey);
+                newCredential.MICClientID = oldCred?.MICClientID;
 				credentialStore.Store(userId, ssoGroupKey, newCredential);
             }
             return newCredential;

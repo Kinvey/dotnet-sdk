@@ -446,16 +446,18 @@ namespace Kinvey
 					Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
 					string refreshToken = null;
 					string redirectUri = null;
+                    string micClientId = null;
 
 					if (cred != null)
 					{
 						refreshToken = cred.RefreshToken;
 						redirectUri = cred.RedirectUri;
+                        micClientId = cred.MICClientID;
 
 						if (refreshToken != null)
 						{
 							//use the refresh token for a new access token
-							JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, Client.ActiveUser.MICClientID).ExecuteAsync();
+                            JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, micClientId).ExecuteAsync();
 
 							// log out the current user without removing the user record from the credential store
 							Client.ActiveUser.LogoutSoft();
