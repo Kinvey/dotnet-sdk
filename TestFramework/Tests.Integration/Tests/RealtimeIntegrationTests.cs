@@ -145,7 +145,15 @@ namespace TestFramework
 			streamACL.Subscribers.Add(Client.SharedClient.ActiveUser.Id);
 			bool resultGrant = await stream.GrantStreamAccess(Client.SharedClient.ActiveUser.Id, streamACL);
 
-			// Realtime delegate setup
+            // Get stream access to verify ACL setting
+            var getStreamACL = await stream.GetStreamAccess(Client.SharedClient.ActiveUser.Id);
+            Assert.NotNull(getStreamACL);
+            Assert.NotNull(getStreamACL.Publishers);
+            Assert.True(0 == string.Compare("576974755b4be0ca4f00e737", getStreamACL.Publishers[0]));
+            Assert.NotNull(getStreamACL.Subscribers);
+            Assert.True(0 == string.Compare("576974755b4be0ca4f00e737", getStreamACL.Subscribers[0]));
+
+            // Realtime delegate setup
 			ToDo ent = null;
 			string sender = String.Empty;
 			KinveyStreamDelegate<ToDo> realtimeDelegate = new KinveyStreamDelegate<ToDo>
