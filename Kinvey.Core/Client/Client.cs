@@ -145,6 +145,8 @@ namespace Kinvey
 
 			private string ssoGroupKey;
 
+            private string instanceID;
+
 			/// <summary>
 			/// Initializes a new instance of the <see cref="T:KinveyXamarin.Client.Builder"/> class.
 			/// </summary>
@@ -154,6 +156,7 @@ namespace Kinvey
 				: base(new RestClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders()))
 			{
 				ssoGroupKey = appKey;
+                instanceID = string.Empty;
 			}
 
 			/// <summary>
@@ -186,8 +189,12 @@ namespace Kinvey
 				c.logger = this.log;
 				c.senderID = this.senderID;
 				c.SSOGroupKey = this.ssoGroupKey;
+                if (!string.IsNullOrEmpty(instanceID))
+                {
+                    c.MICHostName = $"{Constants.STR_PROTOCOL_HTTPS + instanceID + Constants.STR_HYPHEN + Constants.STR_HOSTNAME_AUTH}";
+                }
 
-				Logger.initialize (c.logger);
+                Logger.initialize (c.logger);
 
 				SharedClient = c;
 
@@ -285,6 +292,14 @@ namespace Kinvey
 				this.ssoGroupKey = ssoGroupKey;
 				return this;
 			}
-		}
+
+            public Builder SetInstanceID(string instanceID)
+            {
+                this.instanceID = instanceID;
+                string url = $"{Constants.STR_PROTOCOL_HTTPS + instanceID + Constants.STR_HYPHEN + Constants.STR_HOSTNAME_API}";
+                this.setBaseURL(url);
+                return this;
+            }
+        }
 	}
 }

@@ -126,6 +126,26 @@ namespace TestFramework
 			Assert.True(string.Equals(builder.BaseUrl, url));
 		}
 
+        [Test]
+        public void ClientBuilderSetInstanceID()
+        {
+            // Arrange
+            const string instanceID = "testInstanceID";
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+
+            // Act
+            builder.SetInstanceID(instanceID);
+            var client = builder.Build();
+
+            // Assert
+            Assert.False(string.IsNullOrEmpty(builder.BaseUrl));
+            Assert.False(string.Equals(builder.BaseUrl, AbstractClient.DefaultBaseUrl));
+            Assert.True(string.Equals(builder.BaseUrl, "https://testInstanceID-baas.kinvey.com/"));
+
+            Assert.False(string.Equals(client.MICHostName, "https://auth.kinvey.com/"));
+            Assert.True(string.Equals(client.MICHostName, "https://testInstanceID-auth.kinvey.com/"));
+        }
+
 		[Test]
 		public void ClientBuilderSetBaseURLBad()
 		{
