@@ -152,6 +152,14 @@ namespace Kinvey
             string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
             string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
             AddChannel(channel, callback);
+
+            // In the case of collection subscription, in addition to creating a
+            // channel for the collection, another channel should be created for
+            // this collection and the active user, since certain ACL rules may
+            // not allow collection-wide subscription, but may allow this user
+            // access to the update (see MLIBZ-2223 for more information).
+            string activeUserChannel = channel + Constants.CHAR_PERIOD + Constants.STR_REALTIME_USER_CHANNEL_PREPEND + Client.SharedClient.ActiveUser.Id;
+            AddChannel(activeUserChannel, callback);
         }
 
         internal void UnsubscribeCollection(string collectionName)
