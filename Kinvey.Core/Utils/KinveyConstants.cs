@@ -28,6 +28,7 @@ namespace Kinvey
 		public const string STR_EQUAL = "=";
 		internal const string STR_SQUARE_BRACKET_OPEN = "[";
 		internal const string STR_SQUARE_BRACKET_CLOSE = "]";
+        internal const string STR_HYPHEN = "-";
 
 		// Core Product Strings
 		internal const string STR_APP_KEY = "appKey";
@@ -58,5 +59,10 @@ namespace Kinvey
         internal const string STR_REST_METHOD_POST = "POST";
         internal const string STR_REST_METHOD_PUT = "PUT";
         internal const string STR_REST_METHOD_DELETE = "DELETE";
+
+        // Hostname Strings
+        internal const string STR_PROTOCOL_HTTPS = "https://";
+        internal const string STR_HOSTNAME_API = "baas.kinvey.com";
+        internal const string STR_HOSTNAME_AUTH = "auth.kinvey.com";
 	}
 }
