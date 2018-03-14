@@ -126,6 +126,102 @@ namespace TestFramework
 			kinveyClient.ActiveUser.Logout();
 		}
 
+        [Test]
+        public async Task TestRealtimeCollectionSubscriptionUserACL()
+        {
+            // Setup
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var autoEvent = new System.Threading.AutoResetEvent(false);
+            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+            DataStore<ToDo> store = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, Client.SharedClient);
+
+            // Act
+            ToDo ent = null;
+            var realtimeDelegate = new KinveyDataStoreDelegate<ToDo>
+            {
+                OnError = (err) => { },
+                OnNext = (entity) => {
+                    ent = entity;
+                    autoEvent.Set();
+                },
+                OnStatus = (status) => { }
+            };
+
+            bool result = await store.Subscribe(realtimeDelegate);
+
+            // save to collection to trigger realtime update
+            var todo = new ToDo();
+            todo.Name = "Test Todo";
+            todo.Details = "Test Todo Details";
+            var acl = new AccessControlList();
+            acl.GloballyReadable = false;
+            acl.Readers.Add(Client.SharedClient.ActiveUser.Id);
+            todo.ACL = acl;
+            todo = await store.SaveAsync(todo);
+
+            // Assert
+            Assert.True(result);
+            bool signal = autoEvent.WaitOne(10000);
+            Assert.True(signal);
+            Assert.NotNull(ent);
+            Assert.AreEqual(0, ent.Name.CompareTo("Test Todo"));
+            Assert.AreEqual(0, ent.Details.CompareTo("Test Todo Details"));
+
+            // Teardown
+            await store.RemoveAsync(todo.ID);
+            await store.Unsubscribe();
+            await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
+            kinveyClient.ActiveUser.Logout();
+        }
+
+        [Test]
+        public async Task TestRealtimeCollectionSubscriptionUserACLFilteredOut()
+        {
+            // Setup
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var autoEvent = new System.Threading.AutoResetEvent(false);
+            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+            DataStore<ToDo> store = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, Client.SharedClient);
+
+            // Act
+            ToDo ent = null;
+            var realtimeDelegate = new KinveyDataStoreDelegate<ToDo>
+            {
+                OnError = (err) => { },
+                OnNext = (entity) => {
+                    ent = entity;
+                    autoEvent.Set();
+                },
+                OnStatus = (status) => { }
+            };
+
+            bool result = await store.Subscribe(realtimeDelegate);
+
+            // save to collection to trigger realtime update
+            var todo = new ToDo();
+            todo.Name = "Test Todo";
+            todo.Details = "Test Todo Details";
+            var acl = new AccessControlList();
+            acl.GloballyReadable = false;
+            todo.ACL = acl;
+            todo = await store.SaveAsync(todo);
+
+            // Assert
+            Assert.True(result);
+            bool signal = autoEvent.WaitOne(10000);
+            Assert.False(signal);
+
+            // Teardown
+            await store.RemoveAsync(todo.ID);
+            await store.Unsubscribe();
+            await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
+            kinveyClient.ActiveUser.Logout();
+        }
+
 		[Test]
 		public async Task TestRealtimeUserCommunication()
 		{

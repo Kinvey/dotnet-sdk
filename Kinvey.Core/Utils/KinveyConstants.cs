@@ -48,6 +48,7 @@ namespace Kinvey
 		// Realtime Strings
 		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
 		internal const string STR_REALTIME_STREAM_CHANNEL_PREPEND = "s-";
+        internal const string STR_REALTIME_USER_CHANNEL_PREPEND = "u-";
 		internal const string STR_REALTIME_DEVICEID = "deviceId";
 		internal const string STR_REALTIME_SUBSCRIBE_KEY = "subscribeKey";
 		internal const string STR_REALTIME_PUBLISH_KEY = "publishKey";
