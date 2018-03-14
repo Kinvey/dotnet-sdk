@@ -158,7 +158,7 @@ namespace Kinvey
             // this collection and the active user, since certain ACL rules may
             // not allow collection-wide subscription, but may allow this user
             // access to the update (see MLIBZ-2223 for more information).
-            string activeUserChannel = channel + Constants.CHAR_PERIOD + Constants.STR_REALTIME_USER_CHANNEL_PREPEND + Client.SharedClient.ActiveUser.Id;
+            string activeUserChannel = BuildCollectionUserChannel(collectionName, Client.SharedClient.ActiveUser.Id);
             AddChannel(activeUserChannel, callback);
         }
 
@@ -207,6 +207,14 @@ namespace Kinvey
         void RemoveChannel(string channel)
         {
             mapChannelToCallback.Remove(channel);
+        }
+
+        string BuildCollectionUserChannel(string collectionName, string userId)
+        {
+            string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
+            string collectionChannel = Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
+            string userChannel = Constants.STR_REALTIME_USER_CHANNEL_PREPEND + userId;
+            return appKey + Constants.CHAR_PERIOD + collectionChannel + Constants.CHAR_PERIOD + userChannel;
         }
 
         KinveyException HandleStatusMessage(PubnubApi.PNStatus status)
