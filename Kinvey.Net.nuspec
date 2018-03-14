@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey.Net</id>
-    <version>3.0.0-Beta28</version>
+    <version>3.0.0-Beta29</version>
     <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
     <title>Kinvey.Net</title>
     <authors>Kinvey</authors>
@@ -20,7 +20,7 @@
       <dependency id="modernhttpclient" version="2.4.2"/>
       <dependency id="Newtonsoft.Json" version="8.0.2"/>
       <dependency id="System.Data.SQLite" version="1.0.105"/>
-      <dependency id="Kinvey" version="3.0.20"/>
+      <dependency id="Kinvey" version="3.0.21"/>
     </dependencies>
   </metadata>
   <files>
