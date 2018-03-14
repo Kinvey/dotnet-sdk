@@ -164,6 +164,10 @@ namespace Kinvey
 
         internal void UnsubscribeCollection(string collectionName)
         {
+            // Remove specifically-created active user channel (see MLIBZ-2223 for more information)
+            string activeUserChannel = BuildCollectionUserChannel(collectionName, Client.SharedClient.ActiveUser.Id);
+            RemoveChannel(activeUserChannel);
+
             string appKey = (KinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey;
             string channel = appKey + Constants.CHAR_PERIOD + Constants.STR_REALTIME_COLLECTION_CHANNEL_PREPEND + collectionName;
             RemoveChannel(channel);
