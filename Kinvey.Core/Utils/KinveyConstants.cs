@@ -44,6 +44,7 @@ namespace Kinvey
 		public const string STR_ATTRIBUTES = "Attributes";
 		public const string STR_USER_KMD = "UserKMD";
 		public const string STR_CREDENTIAL = "credential";
+        public const string STR_MIC_DEFAULT_VERSION = "v3";
 
 		// Realtime Strings
 		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
