@@ -342,7 +342,7 @@ namespace TestFramework
 			// Assert
 			Assert.IsNotNull(renderURL);
 			Assert.IsNotEmpty(renderURL);
-			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id=" + TestSetup.app_key, StringComparison.Ordinal));
+            Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + Constants.STR_MIC_DEFAULT_VERSION + "/oauth/auth?client_id=" + TestSetup.app_key, StringComparison.Ordinal));
 		}
 
 		[Test]
@@ -368,7 +368,7 @@ namespace TestFramework
 			// Assert
 			Assert.IsNotNull(renderURL);
 			Assert.IsNotEmpty(renderURL);
-			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id=" + TestSetup.app_key + "." + micID, StringComparison.Ordinal));
+            Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + Constants.STR_MIC_DEFAULT_VERSION + "/oauth/auth?client_id=" + TestSetup.app_key + "." + micID, StringComparison.Ordinal));
 		}
 
 		[Test]
