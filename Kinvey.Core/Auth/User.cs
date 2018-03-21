@@ -1045,7 +1045,7 @@ namespace Kinvey
 		#region User class blocking private classes - used to build up requests
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
-		static private RetrieveMICAccessTokenRequest GetMICToken(AbstractClient cli, String code, string clientID)
+		static internal RetrieveMICAccessTokenRequest GetMICToken(AbstractClient cli, String code, string clientID)
 		{
 			//        grant_type: "authorization_code" - this is always set to this value
 			//        code: use the ‘code’ returned in the callback 
@@ -1093,7 +1093,7 @@ namespace Kinvey
 		}
 
 		// Generates a request to get a temporary MIC URL (automated authorization grant flow)
-		static private GetMICTempURLRequest BuildMICTempURLRequest(AbstractClient cli, string clientID)
+		static internal GetMICTempURLRequest BuildMICTempURLRequest(AbstractClient cli, string clientID)
 		{
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
@@ -1297,7 +1297,7 @@ namespace Kinvey
 		}
 
 		// Request to get MIC temp URL (automated authorization grant flow)
-		private class GetMICTempURLRequest : AbstractKinveyClientRequest<JObject>
+		internal class GetMICTempURLRequest : AbstractKinveyClientRequest<JObject>
 		{
 			private const string REST_PATH = "oauth/auth";
 
