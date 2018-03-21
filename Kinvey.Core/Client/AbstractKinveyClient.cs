@@ -214,11 +214,11 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The Type of the response</typeparam>
-        public void InitializeRequest<T>(AbstractKinveyClientRequest<T> request)
+        public void InitializeRequest<T>(AbstractKinveyClientRequest<T> request, string clientID = null)
         {
             if (RequestInitializer != null) 
             {
-                RequestInitializer.Initialize(request);
+                RequestInitializer.Initialize(request, clientID);
             }
         }
 

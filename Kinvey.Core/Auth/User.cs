@@ -1065,7 +1065,7 @@ namespace Kinvey
 
 			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(cli, cli.MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials =  true;
-			cli.InitializeRequest(getToken);
+            cli.InitializeRequest(getToken, clientID);
 			return getToken;
 		}
 
@@ -1088,7 +1088,7 @@ namespace Kinvey
 
 			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(client, client.MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials = true;
-			client.InitializeRequest(getToken);
+            client.InitializeRequest(getToken, clientID);
 			return getToken;
 		}
 
