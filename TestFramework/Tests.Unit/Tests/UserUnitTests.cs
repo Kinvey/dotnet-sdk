@@ -90,5 +90,31 @@ namespace TestFramework
 			Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
 			Assert.AreEqual(504, ke.StatusCode); // HttpStatusCode.GatewayTimeout
 		}
+
+        [Test]
+        public async Task TestMICValidateAuthServiceID()
+        {
+            // Arrange
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+            Client client = builder.Build();
+            string appKey = ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey;
+            string micID = "12345";
+            string expectedClientId = TestSetup.app_key + "." + micID;
+
+            // Act
+
+            // Test AuthServiceID after setting a clientId
+            var requestWithClientID = User.GetMICToken(client, "fake_code", appKey + Constants.CHAR_PERIOD + micID);
+            string clientId = ((KinveyClientRequestInitializer)client.RequestInitializer).AuthServiceID;
+
+            // Test to verify that initializing a request other than `/oauth/token` will
+            // reset the AuthServiceID back to the default, which is AppKey.
+            var req = User.BuildMICTempURLRequest(client, null);
+            string shouldBeDefaultClientId = ((KinveyClientRequestInitializer)client.RequestInitializer).AuthServiceID;
+
+            // Assert
+            Assert.True(clientId == expectedClientId);
+            Assert.True(shouldBeDefaultClientId == appKey);
+        }
 	}
 }
