@@ -105,7 +105,8 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The response type of the request.</typeparam>
-        public void Initialize<T>(AbstractKinveyClientRequest<T> request)
+
+        public void Initialize<T>(AbstractKinveyClientRequest<T> request, string clientId = null)
         {
 			
 			if (!request.RequireAppCredentials)
@@ -124,7 +125,14 @@ namespace Kinvey
 			}
 			if (request.RequireAppCredentials)
             {
-                request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
+                if (string.IsNullOrEmpty(clientId))
+                {
+                    request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
+                }
+                else
+                {
+                    request.RequestAuth = new HttpBasicAuthenticator(clientId, AppSecret);
+                }
             }
             request.AppKey = appKey;
 
