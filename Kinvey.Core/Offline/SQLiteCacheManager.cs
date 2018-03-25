@@ -138,6 +138,12 @@ namespace Kinvey
 					}
 
 					DBConnectionSync.DeleteAll<CollectionTableMap>();
+
+                    // Remove _QueryCache table
+                    if (TableExists<QueryCacheItem>(DBConnectionSync))
+                    {
+                        DBConnectionSync.DeleteAll<QueryCacheItem>();
+                    }
 				}
 			}
 		}
@@ -207,7 +213,44 @@ namespace Kinvey
 			return collections;
 		}
 
-		public ISyncQueue GetSyncQueue(string collectionName) {
+        public QueryCacheItem GetQueryCacheItem(string collectionName, string query, string lastRequest)
+        {
+            QueryCacheItem result = null;
+
+            if (!TableExists<QueryCacheItem>(DBConnectionSync))
+            {
+                DBConnectionSync.CreateTable<QueryCacheItem>();
+            }
+            else
+            {
+                var items = DBConnectionSync.Table<QueryCacheItem>().Where(item => item.collectionName == collectionName && item.query == query);
+                if (items.Count() == 1)
+                {
+                    foreach(QueryCacheItem item in items)
+                    {
+                        result = item;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public bool SetQueryCacheItem(string collectionName, string query, string lastRequest)
+        {
+            bool success = false;
+
+            QueryCacheItem item = new QueryCacheItem(collectionName, query, lastRequest);
+            int result = DBConnectionSync.Insert(item);
+            if (result != 0)
+            {
+                success = true;
+            }
+
+            return success;
+        }
+
+        public ISyncQueue GetSyncQueue(string collectionName) {
 			if (!TableExists<PendingWriteAction>(DBConnectionSync)){
 				DBConnectionSync.CreateTable<PendingWriteAction> ();
 			}
