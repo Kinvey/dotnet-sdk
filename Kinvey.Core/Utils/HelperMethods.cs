@@ -73,6 +73,37 @@ namespace Kinvey
 			return string.Empty;
 		}
 
+        public static string GetRequestStartTime(IRestResponse response)
+        {
+            string XKinveyRequestStart = string.Empty;
+
+            if (response != null && response.Headers != null)
+            {
+                try
+                {
+                    var item = response.Headers
+                                       .Cast<Parameter>()
+                                       .SingleOrDefault(i => i.Name.ToLower().Equals(Constants.STR_HEADER_REQUEST_START_TIME))
+                                       .Value;
+
+                    Type valueType = item.GetType();
+                    if (valueType != null)
+                    {
+                        if (valueType.GetElementType() == typeof(string))
+                        {
+                            XKinveyRequestStart = item.ToString();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    return string.Empty;
+                }
+            }
+
+            return XKinveyRequestStart;
+        }
+
 		internal static bool IsDateMoreRecent(string checkDate, string origDate)
 		{
 			// First check if strings are equal, to potentially avoid

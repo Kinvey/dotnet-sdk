@@ -66,5 +66,8 @@ namespace Kinvey
         internal const string STR_PROTOCOL_HTTPS = "https://";
         internal const string STR_HOSTNAME_API = "baas.kinvey.com";
         internal const string STR_HOSTNAME_AUTH = "auth.kinvey.com";
+
+        // Request/Response Header Keys
+        internal const string STR_HEADER_REQUEST_START_TIME = "x-kinvey-request-start";
 	}
 }

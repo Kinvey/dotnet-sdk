@@ -21,7 +21,7 @@ namespace Kinvey
     /// JSON representation of the response from server-side delta set fetch.
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class DeltaSetResponse<T>
+    public class DeltaSetResponse<T> : IRequestStartTime
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeltaSetResponse{T}"/> class.

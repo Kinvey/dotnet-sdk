@@ -613,7 +613,14 @@ namespace Kinvey
 
 			try
 			{
-				return JsonConvert.DeserializeObject<T>(response.Content);
+                var result = JsonConvert.DeserializeObject<T>(response.Content);
+
+                if (typeof(T) == typeof(IRequestStartTime))
+                {
+                    (result as IRequestStartTime).LastRequestTime = HelperMethods.GetRequestStartTime(response);
+                }
+
+                return result;
 			}
 			catch(JsonException ex){
 				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
