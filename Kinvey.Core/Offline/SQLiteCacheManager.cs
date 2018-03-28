@@ -236,12 +236,16 @@ namespace Kinvey
             return result;
         }
 
-        public bool SetQueryCacheItem(string collectionName, string query, string lastRequest)
+        public bool SetQueryCacheItem(QueryCacheItem item)
         {
             bool success = false;
 
-            QueryCacheItem item = new QueryCacheItem(collectionName, query, lastRequest);
-            int result = DBConnectionSync.Insert(item);
+            if (!TableExists<QueryCacheItem>(DBConnectionSync))
+            {
+                DBConnectionSync.CreateTable<QueryCacheItem>();
+            }
+
+            int result = DBConnectionSync.InsertOrReplace(item);
             if (result != 0)
             {
                 success = true;

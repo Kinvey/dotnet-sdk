@@ -41,7 +41,7 @@ namespace Kinvey
 
         QueryCacheItem GetQueryCacheItem(string collectionName, string query, string lastRequestTime);
 
-        bool SetQueryCacheItem(string collectionName, string query, string lastRequestTime);
+        bool SetQueryCacheItem(QueryCacheItem item);
 
 		/// <summary>
 		/// Clears the storage.

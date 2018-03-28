@@ -273,6 +273,7 @@ namespace Kinvey
                 urlParameters.Add("query", query);
             }
 
+            REST_PATH += restPathParams;
             NetworkRequest<T> deltaSet = new NetworkRequest<T>(client, "GET", REST_PATH, null, urlParameters);
             client.InitializeRequest(deltaSet);
             return deltaSet;

@@ -615,7 +615,7 @@ namespace Kinvey
 			{
                 var result = JsonConvert.DeserializeObject<T>(response.Content);
 
-                if (typeof(T) == typeof(IRequestStartTime))
+                if ((result as IRequestStartTime) != null)
                 {
                     (result as IRequestStartTime).LastRequestTime = HelperMethods.GetRequestStartTime(response);
                 }

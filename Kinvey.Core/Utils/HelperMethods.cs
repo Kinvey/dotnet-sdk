@@ -93,6 +93,18 @@ namespace Kinvey
                         {
                             XKinveyRequestStart = item.ToString();
                         }
+                        else if (valueType.IsConstructedGenericType)
+                        {
+                            if (valueType.Name.Contains("List"))
+                            {
+                                var listRequestStartTime = ((System.Collections.Generic.List<string>)item);
+                                if (listRequestStartTime != null &&
+                                    listRequestStartTime.Count > 0)
+                                {
+                                    XKinveyRequestStart = listRequestStartTime.First();
+                                }
+                            }
+                        }
                     }
                 }
                 catch (Exception e)

@@ -231,7 +231,7 @@ namespace Kinvey
                         // 3 - Update the last request time for this combination
                         // of collection:query
                         queryCacheItem.lastRequest = results.LastRequestTime;
-                        Client.CacheManager.SetQueryCacheItem(queryCacheItem.collectionName, queryCacheItem.query, queryCacheItem.lastRequest);
+                        Client.CacheManager.SetQueryCacheItem(queryCacheItem);
 
                         // 4 - Return network results
                         return new NetworkReadResponse<T>(results.Changed, results.Changed.Count, true);
@@ -239,7 +239,10 @@ namespace Kinvey
                     else
                     {
                         // Perform regular GET
-                        return await PerformNetworkGet(mongoQuery);
+                        var getResult = await PerformNetworkGet(mongoQuery);
+                        queryCacheItem = new QueryCacheItem(Collection, mongoQuery, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"));
+                        Client.CacheManager.SetQueryCacheItem(queryCacheItem);
+                        return getResult;
                     }
 
 					//var localResults = PerformLocalFind();
@@ -268,7 +271,10 @@ namespace Kinvey
 					//}
 				}
 
-                return await PerformNetworkGet(mongoQuery);
+                var networkGetResult = await PerformNetworkGet(mongoQuery);
+                var qci = new QueryCacheItem(Collection, mongoQuery, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"));
+                Client.CacheManager.SetQueryCacheItem(qci);
+                return networkGetResult;
 
 			}
 			catch (KinveyException ke)
