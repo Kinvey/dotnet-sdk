@@ -42,7 +42,7 @@ namespace Kinvey
         /// delta set fetch.
         /// </summary>
         [JsonProperty("deleted")]
-        public List<string> Deleted { get; set; }
+        public List<Entity> Deleted { get; set; }
 
         public string LastRequestTime { get; set; }
     }

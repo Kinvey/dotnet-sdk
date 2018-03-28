@@ -223,7 +223,12 @@ namespace Kinvey
                         // With the _deltaset endpoint result from the server:
 
                         // 1 - Apply deleted set to local cache
-                        Cache.DeleteByIDs(results.Deleted);
+                        List<string> listDeletedIDs = new List<string>();
+                        foreach (var deletedItem in results.Deleted)
+                        {
+                            listDeletedIDs.Add(deletedItem.ID);
+                        }
+                        Cache.DeleteByIDs(listDeletedIDs);
 
                         // 2 - Apply changed set to local cache
                         Cache.RefreshCache(results.Changed);
