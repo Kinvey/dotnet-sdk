@@ -207,7 +207,9 @@ namespace Kinvey
     
         }
 
-		/// <summary>
+        public string RequestStartTime { get; set; }
+
+        /// <summary>
 		/// Gets or sets the request authenticator.
 		/// </summary>
 		/// <value>The request auth.</value>
@@ -615,10 +617,7 @@ namespace Kinvey
 			{
                 var result = JsonConvert.DeserializeObject<T>(response.Content);
 
-                if ((result as IRequestStartTime) != null)
-                {
-                    (result as IRequestStartTime).LastRequestTime = HelperMethods.GetRequestStartTime(response);
-                }
+                RequestStartTime = HelperMethods.GetRequestStartTime(response);
 
                 return result;
 			}

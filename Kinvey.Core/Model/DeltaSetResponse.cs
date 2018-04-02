@@ -21,7 +21,7 @@ namespace Kinvey
     /// JSON representation of the response from server-side delta set fetch.
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class DeltaSetResponse<T> : IRequestStartTime
+    public class DeltaSetResponse<T>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeltaSetResponse{T}"/> class.
@@ -43,7 +43,5 @@ namespace Kinvey
         /// </summary>
         [JsonProperty("deleted")]
         public List<Entity> Deleted { get; set; }
-
-        public string LastRequestTime { get; set; }
     }
 }

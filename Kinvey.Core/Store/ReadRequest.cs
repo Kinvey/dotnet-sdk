@@ -211,76 +211,53 @@ namespace Kinvey
 			{
 				string mongoQuery = this.BuildMongoQuery();
 
-                if (DeltaSetFetchingEnabled && !Cache.IsCacheEmpty())
+                if (DeltaSetFetchingEnabled)
 				{
-                    QueryCacheItem queryCacheItem = Client.CacheManager.GetQueryCacheItem(Collection, mongoQuery, null);
-                    if (queryCacheItem != null && !string.IsNullOrEmpty(queryCacheItem.lastRequest))
+                    if (!Cache.IsCacheEmpty())
                     {
-                        // Able to perform server-side delta set fetch
-                        NetworkRequest<DeltaSetResponse<T>> request = Client.NetworkFactory.BuildDeltaSetRequest<DeltaSetResponse<T>>(queryCacheItem.collectionName, queryCacheItem.lastRequest, queryCacheItem.query);
-                        DeltaSetResponse<T> results = await request.ExecuteAsync();
+                        QueryCacheItem queryCacheItem = Client.CacheManager.GetQueryCacheItem(Collection, mongoQuery, null);
 
-                        // With the _deltaset endpoint result from the server:
-
-                        // 1 - Apply deleted set to local cache
-                        List<string> listDeletedIDs = new List<string>();
-                        foreach (var deletedItem in results.Deleted)
+                        if (queryCacheItem != null && !string.IsNullOrEmpty(queryCacheItem.lastRequest))
                         {
-                            listDeletedIDs.Add(deletedItem.ID);
+                            // Able to perform server-side delta set fetch
+                            NetworkRequest<DeltaSetResponse<T>> request = Client.NetworkFactory.BuildDeltaSetRequest<DeltaSetResponse<T>>(queryCacheItem.collectionName, queryCacheItem.lastRequest, queryCacheItem.query);
+                            DeltaSetResponse<T> results = await request.ExecuteAsync();
+
+                            // With the _deltaset endpoint result from the server:
+
+                            // 1 - Apply deleted set to local cache
+                            List<string> listDeletedIDs = new List<string>();
+                            foreach (var deletedItem in results.Deleted)
+                            {
+                                listDeletedIDs.Add(deletedItem.ID);
+                            }
+                            Cache.DeleteByIDs(listDeletedIDs);
+
+                            // 2 - Apply changed set to local cache
+                            Cache.RefreshCache(results.Changed);
+
+                            // 3 - Update the last request time for this combination
+                            // of collection:query
+                            queryCacheItem.lastRequest = request.RequestStartTime;
+                            Client.CacheManager.SetQueryCacheItem(queryCacheItem);
+
+                            // 4 - Return network results
+                            return new NetworkReadResponse<T>(results.Changed, results.Changed.Count, true);
                         }
-                        Cache.DeleteByIDs(listDeletedIDs);
-
-                        // 2 - Apply changed set to local cache
-                        Cache.RefreshCache(results.Changed);
-
-                        // 3 - Update the last request time for this combination
-                        // of collection:query
-                        queryCacheItem.lastRequest = results.LastRequestTime;
-                        Client.CacheManager.SetQueryCacheItem(queryCacheItem);
-
-                        // 4 - Return network results
-                        return new NetworkReadResponse<T>(results.Changed, results.Changed.Count, true);
+                        else
+                        {
+                            // Perform regular GET and capture x-kinvey-request-start time
+                            return await PerformNetworkInitialDeltaGet(mongoQuery);
+                        }
                     }
                     else
                     {
-                        // Perform regular GET
-                        var getResult = await PerformNetworkGet(mongoQuery);
-                        queryCacheItem = new QueryCacheItem(Collection, mongoQuery, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"));
-                        Client.CacheManager.SetQueryCacheItem(queryCacheItem);
-                        return getResult;
+                        // Perform regular GET and capture x-kinvey-request-start time
+                        return await PerformNetworkInitialDeltaGet(mongoQuery);
                     }
-
-					//var localResults = PerformLocalFind();
-
-					//if (localResults?.Count > 0)
-					//{
-					//	#region DSF Step 1: Pull all entity IDs and LMTs of a collection in the backend
-					//	if (String.IsNullOrEmpty(mongoQuery))
-					//	{
-					//		mongoQuery = "{}";
-					//	}
-
-					//	var fieldsQuery = mongoQuery + "&fields=_id,_kmd.lmt";
-
-					//	List<DeltaSetFetchInfo> networkMetadata = await Client.NetworkFactory.buildGetRequest<DeltaSetFetchInfo>(Collection, fieldsQuery).ExecuteAsync();
-
-					//	#endregion
-
-					//	var delta = await RetrieveDeltaSet(localResults, networkMetadata, mongoQuery);
-					//	if (delta.Count > 0)
-					//	{
-					//		Cache.RefreshCache(delta);
-					//	}
-
-					//	return new NetworkReadResponse<T>(delta, networkMetadata.Count, true);
-					//}
 				}
 
-                var networkGetResult = await PerformNetworkGet(mongoQuery);
-                var qci = new QueryCacheItem(Collection, mongoQuery, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"));
-                Client.CacheManager.SetQueryCacheItem(qci);
-                return networkGetResult;
-
+                return await PerformNetworkGet(mongoQuery);
 			}
 			catch (KinveyException ke)
 			{
@@ -356,7 +333,19 @@ namespace Kinvey
             return new NetworkReadResponse<T>(results, results.Count, false);
         }
 
-		protected class NetworkReadResponse<T>
+        private async Task<NetworkReadResponse<T>> PerformNetworkInitialDeltaGet(string mongoQuery)
+        {
+            var getResult = Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery);
+            List<T> results = await getResult.ExecuteAsync();
+            Cache.Clear(Query?.Expression);
+            Cache.RefreshCache(results);
+            string lastRequestTime = getResult.RequestStartTime;
+            var qci = new QueryCacheItem(Collection, mongoQuery, lastRequestTime);
+            Client.CacheManager.SetQueryCacheItem(qci);
+            return new NetworkReadResponse<T>(results, results.Count, false);
+        }
+
+        protected class NetworkReadResponse<T>
 		{
 			public List<T> ResultSet;
 			public int TotalCount;

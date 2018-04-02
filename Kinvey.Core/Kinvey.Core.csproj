@@ -136,7 +136,6 @@
     <Compile Include="Realtime\KinveyStreamDelegate.cs" />
     <Compile Include="Offline\QueryCacheItem.cs" />
     <Compile Include="Model\DeltaSetResponse.cs" />
-    <Compile Include="Model\IRequestStartTime.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
