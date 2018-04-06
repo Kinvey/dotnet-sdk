@@ -183,7 +183,7 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="clientRequest">Client Request.</param>
 		/// <typeparam name="T">The type of the Client Request</typeparam>
-		public void Initialize<T>(AbstractKinveyClientRequest<T> clientRequest)
+		public void Initialize<T>(AbstractKinveyClientRequest<T> clientRequest, string clientId = null)
 		{
 			if (authToken != null)
 			{
