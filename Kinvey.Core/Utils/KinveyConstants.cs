@@ -66,5 +66,16 @@ namespace Kinvey
         internal const string STR_PROTOCOL_HTTPS = "https://";
         internal const string STR_HOSTNAME_API = "baas.kinvey.com";
         internal const string STR_HOSTNAME_AUTH = "auth.kinvey.com";
+
+        // Request Headers
+        internal const string STR_REQUEST_HEADER_DEVICE_INFO = "X-Kinvey-Device-Info";
+
+        // Device Strings
+        internal const string STR_DEVICE_INFO_PLATFORM_KEY = "devicePlatform";
+        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_IOS = "iOS";
+        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_ANDROID = "Android";
+        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_NET = "NET";
+        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_PCL = "PCL";
+        public enum DevicePlatform { PCL, iOS, Android, NET };
 	}
 }

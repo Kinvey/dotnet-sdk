@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using RestSharp;
+using Newtonsoft.Json;
 
 namespace Kinvey
 {
@@ -36,9 +37,10 @@ namespace Kinvey
 		string userAgent = "xamarin-kinvey-http/" + VERSION;
 
 		//// The device info, which includes the OS and OS version, as well as the device model.
-		//static string kinveyDeviceInfoKey = "X-Kinvey-Device-Info";
-		//static string _kinveyDeviceInfo = null;
+        //static string kinveyDeviceInfoKey = "X-Kinvey-Device-Info";
+        static string KinveyDeviceInfo { get; set; }
 
+		//static string _kinveyDeviceInfo = null;
 		//static string KinveyDeviceInfo
 		//{
 		//	get
@@ -64,11 +66,34 @@ namespace Kinvey
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyHeaders"/> class.
 		/// </summary>
-        public KinveyHeaders()
+        public KinveyHeaders(Constants.DevicePlatform devicePlatform)
         {
 			Add(new HttpHeader { Name = userAgentKey, Value = new List<string> { userAgent } });
 			Add(new HttpHeader { Name = kinveyApiVersionKey, Value = new List<string> { kinveyApiVersion } });
-			//Add(new HttpHeader { Name = kinveyDeviceInfoKey, Value = new List<string> { KinveyDeviceInfo } });
+
+            JsonObject deviceInfo = new JsonObject();
+
+            // Set the device platform
+            switch (devicePlatform)
+            {
+                case Constants.DevicePlatform.Android:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_ANDROID);
+                    break;
+                case Constants.DevicePlatform.iOS:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_IOS);
+                    break;
+                case Constants.DevicePlatform.NET:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_NET);
+                    break;
+                case Constants.DevicePlatform.PCL:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_PCL);
+                    break;
+            }
+
+            // Set the device info header
+            KinveyDeviceInfo = deviceInfo.ToString();
+
+            Add(new HttpHeader { Name = Constants.STR_REQUEST_HEADER_DEVICE_INFO, Value = new List<string> { KinveyDeviceInfo } });
         }
     }
 }

@@ -15,9 +15,21 @@ using System.Collections.Generic;
 using Foundation;
 using Security;
 using Newtonsoft.Json;
+using SQLite.Net.Platform.XamarinIOS;
 
 namespace Kinvey
 {
+
+    public class IOSClientBuilder : Client.Builder
+    {
+        public IOSClientBuilder(string appKey, string appSecret) :
+        base(appKey, appSecret, Constants.DevicePlatform.iOS)
+        {
+            this.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString());
+            this.setOfflinePlatform(new SQLitePlatformIOS());
+        }
+    }
+
 	/// <summary>
 	/// iOS native credential store.
 	/// </summary>
