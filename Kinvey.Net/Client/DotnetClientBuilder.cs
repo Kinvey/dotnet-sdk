@@ -2,9 +2,9 @@
 
 namespace Kinvey
 {
-    public class DotnetNativeClientBuilder : Client.Builder
+    public class DotnetClientBuilder : Client.Builder
     {
-        public DotnetNativeClientBuilder(string appKey, string appSecret) :
+        public DotnetClientBuilder(string appKey, string appSecret) :
         base(appKey, appSecret, Constants.DevicePlatform.NET)
         {
             this.setOfflinePlatform(new SQLitePlatformWin32());
