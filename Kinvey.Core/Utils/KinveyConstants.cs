@@ -70,12 +70,27 @@ namespace Kinvey
         // Request Headers
         internal const string STR_REQUEST_HEADER_DEVICE_INFO = "X-Kinvey-Device-Info";
 
-        // Device Strings
-        internal const string STR_DEVICE_INFO_PLATFORM_KEY = "devicePlatform";
-        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_IOS = "iOS";
-        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_ANDROID = "Android";
-        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_NET = "NET";
+        // X-Kinvey-Device-Info Strings
+        internal const string STR_DEVICE_INFO_HEADER_KEY = "hv";
+        internal const int STR_DEVICE_INFO_HEADER_VALUE = 1;
+
+        internal const string STR_DEVICE_INFO_MODEL_KEY = "md";
+
+        internal const string STR_DEVICE_INFO_OS_KEY = "os";
+        internal const string STR_DEVICE_INFO_OS_VALUE_IOS = "iOS";
+        internal const string STR_DEVICE_INFO_OS_VALUE_ANDROID = "Android";
+        internal const string STR_DEVICE_INFO_OS_VALUE_WINDOWS = "Windows";
+        internal const string STR_DEVICE_INFO_OS_VALUE_UNKNOWN = "Unknown";
+
+        internal const string STR_DEVICE_INFO_OSVERSION_KEY = "ov";
+
+        internal const string STR_DEVICE_INFO_PLATFORM_KEY = "sdk";
+        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_IOS = "Xamarin";
+        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_ANDROID = "Xamarin";
+        internal const string STR_DEVICE_INFO_PLATFORM_VALUE_NET = "Dotnet";
         internal const string STR_DEVICE_INFO_PLATFORM_VALUE_PCL = "PCL";
         public enum DevicePlatform { PCL, iOS, Android, NET };
-	}
+
+        internal const string STR_DEVICE_INFO_PLATFORMVERSION_KEY = "pv";
+    }
 }

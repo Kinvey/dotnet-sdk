@@ -73,22 +73,43 @@ namespace Kinvey
 
             JsonObject deviceInfo = new JsonObject();
 
-            // Set the device platform
+            // Set the X-Kinvey-Device-Info header version
+            deviceInfo.Add(Constants.STR_DEVICE_INFO_HEADER_KEY, Constants.STR_DEVICE_INFO_HEADER_VALUE);
+
+            // TODO
+            // Set the device model
+            deviceInfo.Add(Constants.STR_DEVICE_INFO_MODEL_KEY, string.Empty);
+
+            // Set the device OS and platform
             switch (devicePlatform)
             {
                 case Constants.DevicePlatform.Android:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_OS_KEY, Constants.STR_DEVICE_INFO_OS_VALUE_ANDROID);
                     deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_ANDROID);
                     break;
+
                 case Constants.DevicePlatform.iOS:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_OS_KEY, Constants.STR_DEVICE_INFO_OS_VALUE_IOS);
                     deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_IOS);
                     break;
+
                 case Constants.DevicePlatform.NET:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_OS_KEY, Constants.STR_DEVICE_INFO_OS_VALUE_WINDOWS);
                     deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_NET);
                     break;
+
                 case Constants.DevicePlatform.PCL:
+                    deviceInfo.Add(Constants.STR_DEVICE_INFO_OS_KEY, Constants.STR_DEVICE_INFO_OS_VALUE_UNKNOWN);
                     deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORM_KEY, Constants.STR_DEVICE_INFO_PLATFORM_VALUE_PCL);
                     break;
             }
+
+            // TODO
+            // Set the device os version
+            deviceInfo.Add(Constants.STR_DEVICE_INFO_OSVERSION_KEY, string.Empty);
+
+            // Set the device platform version (SDK version)
+            deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORMVERSION_KEY, VERSION);
 
             // Set the device info header
             KinveyDeviceInfo = deviceInfo.ToString();
