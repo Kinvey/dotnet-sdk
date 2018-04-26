@@ -544,7 +544,7 @@ namespace Kinvey
 			//
 			if (!string.IsNullOrEmpty(micID))
 			{
-				clientID += ":" + micID;
+				clientID += Constants.MIC_ID_SEPARATOR + micID;
 			}
 
 			ct.ThrowIfCancellationRequested();
@@ -599,7 +599,7 @@ namespace Kinvey
 				//
 				if (!string.IsNullOrEmpty(micID))
 				{
-					clientID += ":" + micID;
+					clientID += Constants.MIC_ID_SEPARATOR + micID;
 				}
 
 				// Initiate grant reqeust
@@ -668,7 +668,7 @@ namespace Kinvey
 				//
 				if (!string.IsNullOrEmpty(micID))
 				{
-					clientID += ":" + micID;
+					clientID += Constants.MIC_ID_SEPARATOR + micID;
 				}
 
 				ct.ThrowIfCancellationRequested();
@@ -685,6 +685,7 @@ namespace Kinvey
 				currentCred.AccessToken = result["access_token"].ToString();
 				currentCred.RefreshToken = result["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
+                currentCred.MICClientID = clientID;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
 
 				if (uc.MICDelegate != null)
@@ -1044,7 +1045,7 @@ namespace Kinvey
 		#region User class blocking private classes - used to build up requests
 
 		// Generates a request to exchange the OAuth2.0 authorization code for a MIC user token
-		static private RetrieveMICAccessTokenRequest GetMICToken(AbstractClient cli, String code, string clientID)
+		static internal RetrieveMICAccessTokenRequest GetMICToken(AbstractClient cli, String code, string clientID)
 		{
 			//        grant_type: "authorization_code" - this is always set to this value
 			//        code: use the ‘code’ returned in the callback 
@@ -1064,7 +1065,7 @@ namespace Kinvey
 
 			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(cli, cli.MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials =  true;
-			cli.InitializeRequest(getToken);
+            cli.InitializeRequest(getToken, clientID);
 			return getToken;
 		}
 
@@ -1087,12 +1088,12 @@ namespace Kinvey
 
 			RetrieveMICAccessTokenRequest getToken = new RetrieveMICAccessTokenRequest(client, client.MICHostName, data, urlParameters);
 			getToken.RequireAppCredentials = true;
-			client.InitializeRequest(getToken);
+            client.InitializeRequest(getToken, clientID);
 			return getToken;
 		}
 
 		// Generates a request to get a temporary MIC URL (automated authorization grant flow)
-		static private GetMICTempURLRequest BuildMICTempURLRequest(AbstractClient cli, string clientID)
+		static internal GetMICTempURLRequest BuildMICTempURLRequest(AbstractClient cli, string clientID)
 		{
 			//    	client_id:  this is the app’s appKey (the KID)
 			//    	redirect_uri:  the uri that the grant will redirect to on authentication, as set in the console. Note, this must exactly match one of the redirect URIs configured in the console.
@@ -1296,7 +1297,7 @@ namespace Kinvey
 		}
 
 		// Request to get MIC temp URL (automated authorization grant flow)
-		private class GetMICTempURLRequest : AbstractKinveyClientRequest<JObject>
+		internal class GetMICTempURLRequest : AbstractKinveyClientRequest<JObject>
 		{
 			private const string REST_PATH = "oauth/auth";
 
@@ -1485,16 +1486,10 @@ namespace Kinvey
 				{
 					KinveyAuthResponse auth = new KinveyAuthResponse();
 
-					auth.UserId =  u["_id"].ToString();
-
-					KinveyUserMetaData kmd = new KinveyUserMetaData();
-
-					kmd.Add("lmt", u["_kmd.lmt"]) ;
-					kmd.Add("authtoken", u["_kmd.authtoken"]);
-					kmd.Add("_kmd", u["_kmd"]);
-					auth.UserMetaData = kmd;
-					auth.username =  u["username"].ToString();
-					auth.Attributes = u.Attributes;
+                    auth.UserId = u.Id;
+                    auth.UserMetaData = u.Metadata;
+                    auth.username = u.UserName;
+                    auth.Attributes = u.Attributes;
 
 					string utype = user.type.ToString();
 				

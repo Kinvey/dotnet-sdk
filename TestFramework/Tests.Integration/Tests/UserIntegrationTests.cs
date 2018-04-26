@@ -342,7 +342,7 @@ namespace TestFramework
 			// Assert
 			Assert.IsNotNull(renderURL);
 			Assert.IsNotEmpty(renderURL);
-			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id=" + TestSetup.app_key, StringComparison.Ordinal));
+            Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + Constants.STR_MIC_DEFAULT_VERSION + "/oauth/auth?client_id=" + TestSetup.app_key, StringComparison.Ordinal));
 		}
 
 		[Test]
@@ -368,7 +368,7 @@ namespace TestFramework
 			// Assert
 			Assert.IsNotNull(renderURL);
 			Assert.IsNotEmpty(renderURL);
-			Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + "oauth/auth?client_id=" + TestSetup.app_key + ":" + micID, StringComparison.Ordinal));
+            Assert.True(renderURL.StartsWith(kinveyClient.MICHostName + Constants.STR_MIC_DEFAULT_VERSION + "/oauth/auth?client_id=" + TestSetup.app_key + "." + micID, StringComparison.Ordinal));
 		}
 
 		[Test]
@@ -659,16 +659,37 @@ namespace TestFramework
 			});
 		}
 
-		[Test]
-		[Ignore("Placeholder - No unit test yet")]
-		public async Task TestUpdateUserAsync()
-		{
-			// Arrange
+        [Test]
+        public async Task TestUpdateUserAsync()
+        {
+            // Setup
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            const string TEST_KEY = "test_key";
+            const string TEST_VALUE = "test_value";
 
-			// Act
+            // Arrange
+            kinveyClient.ActiveUser.Attributes.Remove(TEST_KEY);
+            kinveyClient.ActiveUser.Attributes.Add(TEST_KEY, TEST_VALUE);
+            Assert.That(kinveyClient.ActiveUser.Attributes.ContainsKey(TEST_KEY));
 
-			// Assert
-		}
+            // Act
+            // Assert
+            User u = null;
+            Assert.DoesNotThrowAsync(async delegate ()
+            {
+                u = await kinveyClient.ActiveUser.UpdateAsync();
+            });
+
+            Assert.That(u != null);
+            Assert.That(u.Attributes.ContainsKey(TEST_KEY));
+            Assert.That(kinveyClient.ActiveUser.Attributes.ContainsKey(TEST_KEY));
+            Assert.That(kinveyClient.ActiveUser.Attributes.Count == u.Attributes.Count);
+
+            // Teardown
+            kinveyClient.ActiveUser.Attributes.Remove(TEST_KEY);
+            await kinveyClient.ActiveUser.UpdateAsync();
+            kinveyClient.ActiveUser.Logout();
+        }
 
 		[Test]
 		[Ignore("Placeholder - No unit test yet")]

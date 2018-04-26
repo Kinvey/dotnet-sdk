@@ -82,6 +82,11 @@ namespace Kinvey
             get { return appSecret; }
         }
 
+        public string AuthServiceID
+        {
+            get; private set;
+        }
+
 		/// <summary>
 		/// Gets the headers.
 		/// </summary>
@@ -105,10 +110,12 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The response type of the request.</typeparam>
-        public void Initialize<T>(AbstractKinveyClientRequest<T> request)
+
+        public void Initialize<T>(AbstractKinveyClientRequest<T> request, string clientId = null)
         {
-			
-			if (!request.RequireAppCredentials)
+            AuthServiceID = clientId ?? AppKey;
+
+            if (!request.RequireAppCredentials)
 			{
 				if (credential == null ||
 					credential.UserId == null ||
@@ -122,10 +129,12 @@ namespace Kinvey
             {
                 credential.Initialize(request);
 			}
-			if (request.RequireAppCredentials)
+
+            if (request.RequireAppCredentials)
             {
-                request.RequestAuth = new HttpBasicAuthenticator(AppKey, AppSecret);
+                request.RequestAuth = new HttpBasicAuthenticator(AuthServiceID, AppSecret);
             }
+
             request.AppKey = appKey;
 
             foreach (var header in Headers)

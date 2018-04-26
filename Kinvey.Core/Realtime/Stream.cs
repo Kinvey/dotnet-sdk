@@ -64,7 +64,15 @@ namespace Kinvey
 			return (success != null);
 		}
 
-		#region Directed Communication
+        public async Task<StreamAccessControlList> GetStreamAccess(string userID, CancellationToken ct = default(CancellationToken))
+        {
+            GetStreamAccessRequest requestGetACL = BuildGetStreamAccessRequest(userID);
+            ct.ThrowIfCancellationRequested();
+            var streamACL = await requestGetACL.ExecuteAsync();
+            return streamACL;
+        }
+
+        #region Directed Communication
 
 		/// <summary>
 		/// In live stream directed communication, sends a message of type {T} to the specified user.
@@ -310,7 +318,20 @@ namespace Kinvey
 			return requestStreamGrantAccess;
 		}
 
-		private StreamPublishAccessRequest BuildStreamPublishAccessRequest(string receiverID)
+        private GetStreamAccessRequest BuildGetStreamAccessRequest(string userID)
+        {
+            var urlParameters = new Dictionary<string, string>();
+            urlParameters.Add(Constants.STR_APP_KEY, ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey);
+            urlParameters.Add(Constants.STR_REALTIME_STREAM_NAME, StreamName);
+            urlParameters.Add("userID", userID);
+
+            var requestStreamGetACL = new GetStreamAccessRequest(KinveyClient, urlParameters);
+            KinveyClient.InitializeRequest(requestStreamGetACL);
+
+            return requestStreamGetACL;
+        }
+
+        private StreamPublishAccessRequest BuildStreamPublishAccessRequest(string receiverID)
 		{
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add(Constants.STR_APP_KEY, ((KinveyClientRequestInitializer)KinveyClient.RequestInitializer).AppKey);
@@ -371,6 +392,15 @@ namespace Kinvey
 				base.HttpContent = streamACL;
 			}
 		}
+
+        // Build request to grant access to the stream
+        private class GetStreamAccessRequest : AbstractKinveyClientRequest<StreamAccessControlList>
+        {
+            private const string REST_PATH = "stream/{appKey}/{streamName}/{userID}";
+
+            internal GetStreamAccessRequest(AbstractClient client, Dictionary<string, string> urlProperties) :
+                base(client, "GET", REST_PATH, default(StreamAccessControlList), urlProperties) {}
+        }
 
 		// Build request to publish to the substream
 		private class StreamPublishAccessRequest : AbstractKinveyClientRequest<JObject>

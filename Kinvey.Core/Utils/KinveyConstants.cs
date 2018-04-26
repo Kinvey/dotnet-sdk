@@ -21,12 +21,14 @@ namespace Kinvey
 		internal const char CHAR_COMMA = ',';
 		internal const char CHAR_PERIOD = '.';
 		internal const char CHAR_QUOTATION_MARK = '"';
+		internal const char MIC_ID_SEPARATOR = CHAR_PERIOD;
 
 		// Const Strings
 		public const string STR_AMPERSAND = "&";
 		public const string STR_EQUAL = "=";
 		internal const string STR_SQUARE_BRACKET_OPEN = "[";
 		internal const string STR_SQUARE_BRACKET_CLOSE = "]";
+        internal const string STR_HYPHEN = "-";
 
 		// Core Product Strings
 		internal const string STR_APP_KEY = "appKey";
@@ -42,15 +44,27 @@ namespace Kinvey
 		public const string STR_ATTRIBUTES = "Attributes";
 		public const string STR_USER_KMD = "UserKMD";
 		public const string STR_CREDENTIAL = "credential";
+        public const string STR_MIC_DEFAULT_VERSION = "v3";
 
 		// Realtime Strings
 		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
 		internal const string STR_REALTIME_STREAM_CHANNEL_PREPEND = "s-";
+        internal const string STR_REALTIME_USER_CHANNEL_PREPEND = "u-";
 		internal const string STR_REALTIME_DEVICEID = "deviceId";
 		internal const string STR_REALTIME_SUBSCRIBE_KEY = "subscribeKey";
 		internal const string STR_REALTIME_PUBLISH_KEY = "publishKey";
 		internal const string STR_REALTIME_CHANNEL_GROUP = "userChannelGroup";
 		internal const string STR_REALTIME_STREAM_NAME = "streamName";
 		internal const string STR_REALTIME_PUBLISH_SUBSTREAM_CHANNEL_NAME = "substreamChannelName";
+
+        // REST Method Strings
+        internal const string STR_REST_METHOD_POST = "POST";
+        internal const string STR_REST_METHOD_PUT = "PUT";
+        internal const string STR_REST_METHOD_DELETE = "DELETE";
+
+        // Hostname Strings
+        internal const string STR_PROTOCOL_HTTPS = "https://";
+        internal const string STR_HOSTNAME_API = "baas.kinvey.com";
+        internal const string STR_HOSTNAME_AUTH = "auth.kinvey.com";
 	}
 }

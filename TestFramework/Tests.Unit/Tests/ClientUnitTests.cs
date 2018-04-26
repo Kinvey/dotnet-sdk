@@ -126,6 +126,26 @@ namespace TestFramework
 			Assert.True(string.Equals(builder.BaseUrl, url));
 		}
 
+        [Test]
+        public void ClientBuilderSetInstanceID()
+        {
+            // Arrange
+            const string instanceID = "testInstanceID";
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+
+            // Act
+            builder.SetInstanceID(instanceID);
+            var client = builder.Build();
+
+            // Assert
+            Assert.False(string.IsNullOrEmpty(builder.BaseUrl));
+            Assert.False(string.Equals(builder.BaseUrl, AbstractClient.DefaultBaseUrl));
+            Assert.True(string.Equals(builder.BaseUrl, "https://testInstanceID-baas.kinvey.com/"));
+
+            Assert.False(string.Equals(client.MICHostName, "https://auth.kinvey.com/"));
+            Assert.True(string.Equals(client.MICHostName, "https://testInstanceID-auth.kinvey.com/"));
+        }
+
 		[Test]
 		public void ClientBuilderSetBaseURLBad()
 		{
@@ -188,6 +208,37 @@ namespace TestFramework
 
 			// Assert
 		}
+
+        [Test]
+        public void ClientCheckDefaultMICAPIVersion()
+        {
+            // Arrange
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+
+            // Act
+            Client testClient = builder.Build();
+
+            // Assert
+            Assert.False(string.IsNullOrEmpty(testClient.MICApiVersion));
+            Assert.True(string.Equals(testClient.MICApiVersion, Constants.STR_MIC_DEFAULT_VERSION));
+        }
+
+        [Test]
+        public void ClientSetMICAPIVersion()
+        {
+            // Arrange
+            string testMICVersion = "v4";
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+
+            // Act
+            Client testClient = builder.Build();
+            testClient.MICApiVersion = testMICVersion;
+
+            // Assert
+            Assert.False(string.IsNullOrEmpty(testClient.MICApiVersion));
+            Assert.False(string.Equals(testClient.MICApiVersion, Constants.STR_MIC_DEFAULT_VERSION));
+            Assert.True(string.Equals(testClient.MICApiVersion, testMICVersion));
+        }
 	}
 }
 

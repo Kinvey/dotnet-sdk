@@ -25,5 +25,4 @@ using System.Runtime.CompilerServices;
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
 
-// Make internal methods visible to unit test framework
-[assembly: InternalsVisibleTo("Tests.Unit")]
+[assembly: InternalsVisibleToAttribute("Tests.Unit")]

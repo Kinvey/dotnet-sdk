@@ -51,7 +51,7 @@ namespace Kinvey
 
 		private string micHostName;
 
-		private string micApiVersion;
+        private string micApiVersion = Constants.STR_MIC_DEFAULT_VERSION;
 
 		/// <summary>
 		/// Gets or sets the host URL for MIC.

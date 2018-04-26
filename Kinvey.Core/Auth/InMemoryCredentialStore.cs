@@ -42,7 +42,12 @@ namespace Kinvey
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		public Credential Load(string userId, string ssoGroupKey)
         {
-            return store[userId];
+            if (store.ContainsKey(userId))
+            {
+                return store[userId];
+            }
+
+            return null;
         }
 
 		/// <summary>
