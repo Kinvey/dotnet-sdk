@@ -72,7 +72,7 @@ namespace Kinvey
 		/// <summary>
 		/// The kinvey headers.
 		/// </summary>
-        private static KinveyHeaders kinveyHeaders = new KinveyHeaders();
+        private static KinveyHeaders kinveyHeaders = new KinveyHeaders(Client.SharedClient.DevicePlatform);
 
 		public KinveyAuthRequest(){}
 

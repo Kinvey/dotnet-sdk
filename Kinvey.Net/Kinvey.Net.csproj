@@ -43,6 +43,7 @@
     <Reference Include="System.Data.SQLite.Linq">
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.105.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="SQLite.Net">
       <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
     </Reference>
@@ -61,10 +62,14 @@
   <ItemGroup>
     <Compile Include="MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Client\DotnetClientBuilder.cs" />
     <Compile Include="Auth\WindowsSQLiteCredentialStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Auth\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Client\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">

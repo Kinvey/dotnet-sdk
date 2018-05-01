@@ -48,7 +48,20 @@ namespace TestFramework
 			Assert.True(string.Equals(client.BaseUrl, url));
 		}
 
-		[Test]
+        [Test]
+        public void TestDotnetClientBuilder()
+        {
+            // Arrange
+            var builder = new DotnetClientBuilder(TestSetup.app_key, TestSetup.app_secret);
+
+            // Act
+            var client = builder.Build();
+
+            // Assert
+            Assert.That(Constants.DevicePlatform.NET == client.DevicePlatform);
+        }
+
+        [Test]
 		public void TestClientBuilderBasicBad()
 		{
 			// Arrange

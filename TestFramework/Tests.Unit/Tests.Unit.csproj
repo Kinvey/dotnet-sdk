@@ -97,6 +97,10 @@
       <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
       <Name>RestSharp.Portable</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Kinvey.Net\Kinvey.Net.csproj">
+      <Project>{4B9F3DCA-E3B6-4C05-B6C1-F54A67559C2D}</Project>
+      <Name>Kinvey.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\" />
