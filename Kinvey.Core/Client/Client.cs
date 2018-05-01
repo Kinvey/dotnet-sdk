@@ -64,6 +64,8 @@ namespace Kinvey
 			}
 		}
 
+        public Constants.DevicePlatform DevicePlatform { get; private set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.Client"/> class.  Use a Client.Builder to create one.
 		/// </summary>
@@ -147,16 +149,19 @@ namespace Kinvey
 
             private string instanceID;
 
+            private Constants.DevicePlatform devicePlatform;
+
 			/// <summary>
 			/// Initializes a new instance of the <see cref="T:KinveyXamarin.Client.Builder"/> class.
 			/// </summary>
 			/// <param name="appKey">App key from Kinvey</param>
 			/// <param name="appSecret">App secret from Kinvey</param>
-			public Builder(string appKey, string appSecret)
-				: base(new RestClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders()))
+            public Builder(string appKey, string appSecret, Constants.DevicePlatform devicePlatform = Constants.DevicePlatform.PCL)
+                : base(new RestClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders(devicePlatform)))
 			{
 				ssoGroupKey = appKey;
                 instanceID = string.Empty;
+                this.devicePlatform = devicePlatform;
 			}
 
 			/// <summary>
@@ -193,6 +198,7 @@ namespace Kinvey
                 {
                     c.MICHostName = $"{Constants.STR_PROTOCOL_HTTPS + instanceID + Constants.STR_HYPHEN + Constants.STR_HOSTNAME_AUTH}";
                 }
+                c.DevicePlatform = this.devicePlatform;
 
                 Logger.initialize (c.logger);
 
