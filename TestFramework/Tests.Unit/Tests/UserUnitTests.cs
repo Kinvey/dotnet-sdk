@@ -91,30 +91,60 @@ namespace TestFramework
 			Assert.AreEqual(504, ke.StatusCode); // HttpStatusCode.GatewayTimeout
 		}
 
-        [Test]
-        public async Task TestMICValidateAuthServiceID()
-        {
-            // Arrange
-            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
-            Client client = builder.Build();
-            string appKey = ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey;
-            string micID = "12345";
-            string expectedClientId = TestSetup.app_key + "." + micID;
+		[Test]
+		public async Task TestMICValidateAuthServiceID()
+		{
+			// Arrange
+			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+			Client client = builder.Build();
+			string appKey = ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey;
+			string micID = "12345";
+			string expectedClientId = TestSetup.app_key + "." + micID;
 
-            // Act
+			// Act
 
-            // Test AuthServiceID after setting a clientId
-            var requestWithClientID = User.GetMICToken(client, "fake_code", appKey + Constants.CHAR_PERIOD + micID);
-            string clientId = ((KinveyClientRequestInitializer)client.RequestInitializer).AuthServiceID;
+			// Test AuthServiceID after setting a clientId
+			var requestWithClientID = User.GetMICToken(client, "fake_code", appKey + Constants.CHAR_PERIOD + micID);
+			string clientId = ((KinveyClientRequestInitializer)client.RequestInitializer).AuthServiceID;
 
-            // Test to verify that initializing a request other than `/oauth/token` will
-            // reset the AuthServiceID back to the default, which is AppKey.
-            var req = User.BuildMICTempURLRequest(client, null);
-            string shouldBeDefaultClientId = ((KinveyClientRequestInitializer)client.RequestInitializer).AuthServiceID;
+			// Test to verify that initializing a request other than `/oauth/token` will
+			// reset the AuthServiceID back to the default, which is AppKey.
+			var req = User.BuildMICTempURLRequest(client, null);
+			string shouldBeDefaultClientId = ((KinveyClientRequestInitializer)client.RequestInitializer).AuthServiceID;
 
-            // Assert
-            Assert.True(clientId == expectedClientId);
-            Assert.True(shouldBeDefaultClientId == appKey);
-        }
+			// Assert
+			Assert.True(clientId == expectedClientId);
+			Assert.True(shouldBeDefaultClientId == appKey);
+		}
+
+		[Test]
+		public async Task TestMICRenderURLScopeID()
+		{
+			// Arrange
+			var builder = new DotnetClientBuilder(TestSetup.app_key, TestSetup.app_secret);
+			var client = builder.Build();
+			var autoEvent = new System.Threading.AutoResetEvent(false);
+			string urlToTestForScopeID = String.Empty;
+
+			var micDelegate = new KinveyMICDelegate<User>()
+			{
+				onError = (user) => { },
+				onSuccess = (error) => { },
+				onReadyToRender = (url) => {
+					urlToTestForScopeID = url;
+					autoEvent.Set();
+				}
+			};
+
+			// Act
+			User.LoginWithMIC("mytestredirectURI", micDelegate);
+
+			bool signal = autoEvent.WaitOne(5000);
+
+			// Assert
+			Assert.True(signal);
+			Assert.False(urlToTestForScopeID.Equals(string.Empty));
+			Assert.That(urlToTestForScopeID.Contains("scope=openid"));
+		}
 	}
 }
