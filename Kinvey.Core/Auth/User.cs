@@ -549,7 +549,7 @@ namespace Kinvey
 
 			ct.ThrowIfCancellationRequested();
 
-			string myURLToRender = hostname + "oauth/auth?client_id=" + clientID + "&redirect_uri=" + redirectURI + "&response_type=code";
+			string myURLToRender = hostname + "oauth/auth?client_id=" + clientID + "&redirect_uri=" + redirectURI + "&response_type=code" + "&scope=openid";
 
 			//keep a reference to the redirect uri for later
 			uc.MICRedirectURI = redirectURI;
