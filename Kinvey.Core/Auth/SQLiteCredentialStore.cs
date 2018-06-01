@@ -52,7 +52,7 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="userId">User identifier.</param>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		public Credential Load (string userId, string ssoGroupKey)
+		virtual public Credential Load (string userId, string ssoGroupKey)
 		{
 			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.UserID == userId).FirstOrDefault ();
 			Credential cred = null;
@@ -70,13 +70,14 @@ namespace Kinvey
 		/// <param name="userId">User identifier.</param>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		/// <param name="credential">Credential.</param>
-		public void Store (string userId, string ssoGroupKey, Credential credential)
+		virtual public void Store (string userId, string ssoGroupKey, Credential credential)
 		{
 			Delete (userId, ssoGroupKey);
 			SQLCredential cred = new SQLCredential();
 			cred.UserID = credential.UserId;
 			cred.AuthSocialID = JsonConvert.SerializeObject(credential.AuthSocialID);
 			cred.AuthToken = credential.AuthToken;
+			cred.SecAuthToken = credential.SecAuthToken;
 			cred.UserName = credential.UserName;
 			cred.Attributes = JsonConvert.SerializeObject(credential.Attributes);
 			cred.UserKMD = JsonConvert.SerializeObject(credential.UserKMD);
@@ -98,7 +99,7 @@ namespace Kinvey
 			_dbConnection.Delete<SQLCredential> (userId);
 		}
 
-		public Credential GetStoredCredential(string ssoGroupKey)
+		virtual public Credential GetStoredCredential(string ssoGroupKey)
 		{
 			Credential cred = null;
 
@@ -125,6 +126,7 @@ namespace Kinvey
 				}
 
 				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID, sqlcred.MICClientID);
+				cred.SecAuthToken = sqlcred.SecAuthToken;
 			}
 
 			return cred;

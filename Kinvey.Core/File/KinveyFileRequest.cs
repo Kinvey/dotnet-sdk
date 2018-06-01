@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using RestSharp;
@@ -32,16 +33,18 @@ namespace Kinvey
 		#region KinveyFileRequest upload methods
 
 		internal async Task uploadFileAsync(FileMetaData metadata, byte[] input)
-		{
-			await uploadFileAsync (metadata, new ByteArrayContent (input));
-		}
+        {
+            int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size);
+            await uploadFileAsync(metadata, new ByteArrayContent(input, startPosition, (int)metadata.size -startPosition));
+        }
 
 		internal async Task uploadFileAsync(FileMetaData metadata, Stream input)
 		{
-			if (input.CanSeek)
-			{
-				input.Position = 0;
-			}
+            if (input.CanSeek)
+            {
+                int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size);
+                input.Position = startPosition;
+            }
 
 			await uploadFileAsync(metadata, new StreamContent(input));
 		}
@@ -66,9 +69,93 @@ namespace Kinvey
 			return response;
 		}
 
-		#endregion
+        internal async Task<int> CheckResumableStateAsync(string uploadURL, int contentSize)
+        {
+            int startByte = 0;
 
-		#region KinveyFileRequest download methods
+            // Create empty HTTP PUT request to the GCS URI given from KCS
+            var httpClient = new HttpClient(new NativeMessageHandler());
+            Uri requestURI = new Uri(uploadURL);
+            var httpRequest = new System.Net.Http.HttpRequestMessage(HttpMethod.Put, requestURI);
+            var content = new StringContent("");
+            content.Headers.ContentLength = 0;
+            content.Headers.ContentRange = new ContentRangeHeaderValue(contentSize);
+            httpRequest.Content = content;
+            try
+            {
+                var httpResponse = await httpClient.SendAsync(httpRequest);
+            }
+            catch (System.Net.Http.HttpRequestException hre)
+            {
+                var innerEx = hre.InnerException as System.Net.WebException;
+                var actualResponse = innerEx.Response;
+                var status = innerEx.Status;
+                string innermsg = innerEx.Message;
+
+                if (actualResponse == null && string.Compare("Invalid status code: 308", innermsg) == 0)
+                {
+                    // This is the Xamarin/Mono case, where the inner exception
+                    // does not give back the 308 response.  In this case, all
+                    // we can do for now is attempt the whole upload.
+                    // Do nothing for now.
+                }
+                else
+                {
+                    try
+                    {
+                        // Check response for status code
+                        var resp = actualResponse as System.Net.HttpWebResponse;
+                        switch ((int)resp.StatusCode)
+                        {
+                            case 200:
+                            case 201:
+                                // Already uploaded - no need to attempt upload
+                                break;
+
+                            case 308:
+                                // Resumable file upload case - check range header
+                                var rangeHeader = resp.Headers[System.Net.HttpRequestHeader.Range];
+                                startByte = DetermineStartByteFromRange(rangeHeader);
+
+                                break;
+
+                            default:
+                                // Attempt full upload
+                                break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // Something went wrong in parsing the Range header, so
+                        // attempt the whole upload.
+                    }
+                }
+            }
+
+            return startByte;
+        }
+
+        static internal int DetermineStartByteFromRange(string rangeHeaderValue)
+        {
+            int startByte = 0;
+
+            if (rangeHeaderValue != null)
+            {
+                // Parse Range header and set the start byte accordingly
+                int lastByteSent = 0;
+
+                // Example format: bytes=0-42
+                char[] delims = new char[] { '-' };
+                lastByteSent = Int32.Parse(rangeHeaderValue.Split(delims)[1]);
+                startByte = lastByteSent + 1;
+            }
+
+            return startByte;
+        }
+
+        #endregion
+
+        #region KinveyFileRequest download methods
 
 		internal async Task downloadFileAsync(FileMetaData metadata, Stream stream)
 		{
@@ -95,7 +182,7 @@ namespace Kinvey
 			return response;
 		}
 
-		#endregion
+        #endregion
 	}
 }
 

@@ -300,8 +300,6 @@ Global
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
-		$1.DirectoryNamespaceAssociation = None
-		$1.ResourceNamePolicy = FileFormatDefault
 		$0.TextStylePolicy = $2
 		$2.inheritsSet = null
 		$2.scope = text/x-csharp
@@ -319,22 +317,11 @@ Global
 		$3.SpaceAroundUnsafeArrowOperator = True
 		$3.SpacesBeforeBrackets = False
 		$3.BlankLinesInsideRegion = 0
-		$3.inheritsSet = Mono
-		$3.inheritsScope = text/x-csharp
 		$3.scope = text/x-csharp
-		$3.NewLinesForBracesInProperties = True
-		$3.NewLinesForBracesInAccessors = True
-		$3.NewLinesForBracesInAnonymousMethods = True
-		$3.NewLinesForBracesInControlBlocks = True
-		$3.NewLinesForBracesInAnonymousTypes = True
-		$3.NewLinesForBracesInObjectCollectionArrayInitializers = True
-		$3.NewLineForElse = True
-		$3.NewLineForCatch = True
-		$3.NewLineForFinally = True
-		$3.SpacingAfterMethodDeclarationName = False
-		$3.SpaceAfterMethodCallName = False
-		$3.SpaceBeforeOpenSquareBracket = False
-		$3.IndentSwitchSection = True
+		$3.NewLinesForBracesInLambdaExpressionBody = False
+		$3.NewLineForMembersInObjectInit = False
+		$3.NewLineForMembersInAnonymousTypes = False
+		$3.NewLineForClausesInQuery = False
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2DEC54F1-9E2F-48C7-9F42-C9E9763E5FB3} = {2EF58001-786F-4585-B478-CFD3AEB6DB57}

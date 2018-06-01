@@ -29,8 +29,6 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="request">Request.</param>
 		/// <typeparam name="T">The response type of the request.</typeparam>
-        void Initialize<T>(AbstractKinveyClientRequest<T> request);
-
-
+        void Initialize<T>(AbstractKinveyClientRequest<T> request, string clientId = null);
     }
 }
