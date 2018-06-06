@@ -221,7 +221,41 @@ namespace Kinvey
                         {
                             // Able to perform server-side delta set fetch
                             NetworkRequest<DeltaSetResponse<T>> request = Client.NetworkFactory.BuildDeltaSetRequest<DeltaSetResponse<T>>(queryCacheItem.collectionName, queryCacheItem.lastRequest, queryCacheItem.query);
-                            DeltaSetResponse<T> results = await request.ExecuteAsync();
+                            DeltaSetResponse<T> results = null;
+                            try
+                            {
+                               results  = await request.ExecuteAsync();
+                            }
+                            catch (KinveyException ke)
+                            {
+                                // Regardless of the error, remove the QueryCacheItem if it exists
+                                Client.CacheManager.DeleteQueryCacheItem(queryCacheItem);
+
+                                switch (ke.StatusCode)
+                                {
+                                    case 400: // ResultSetSizeExceeded
+                                        if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED))
+                                        {
+                                            // This means that there are greater than 10k items in the delta set.
+                                            // Clear QueryCache table and perform regular GET.
+                                            return await PerformNetworkGet(mongoQuery);
+                                        }
+                                        break;
+
+                                    case 403: // MissingConfiguration
+                                        if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_MISSING_CONFIGURATION))
+                                        {
+                                            // This means that server-side delta sync
+                                            // is not enabled - should perform a regular GET
+                                            return await PerformNetworkGet(mongoQuery);
+                                        }
+                                        break;
+
+                                    default:
+                                        // This is not a delta sync specific error
+                                        throw ke;
+                                }
+                            }
 
                             // With the _deltaset endpoint result from the server:
 

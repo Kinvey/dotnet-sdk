@@ -254,6 +254,23 @@ namespace Kinvey
             return success;
         }
 
+        public bool DeleteQueryCacheItem(QueryCacheItem item)
+        {
+            bool success = false;
+
+            if (TableExists<QueryCacheItem>(DBConnectionSync))
+            {
+                int result = DBConnectionSync.Delete(item);
+
+                if (result != 0)
+                {
+                    success = true;
+                }
+            }
+
+            return success;
+        }
+
         public ISyncQueue GetSyncQueue(string collectionName) {
 			if (!TableExists<PendingWriteAction>(DBConnectionSync)){
 				DBConnectionSync.CreateTable<PendingWriteAction> ();

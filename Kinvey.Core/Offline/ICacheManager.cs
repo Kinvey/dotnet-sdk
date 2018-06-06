@@ -43,6 +43,8 @@ namespace Kinvey
 
         bool SetQueryCacheItem(QueryCacheItem item);
 
+        bool DeleteQueryCacheItem(QueryCacheItem item);
+
 		/// <summary>
 		/// Clears the storage.
 		/// </summary>
