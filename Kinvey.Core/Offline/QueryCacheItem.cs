@@ -19,8 +19,8 @@ namespace Kinvey
 {
     public class QueryCacheItem
     {
-        [PrimaryKey, AutoIncrement]
-        public int key { get; set; }
+        [PrimaryKey]
+        public int? key { get; set; }
 
         public string collectionName { get; set; }
 
