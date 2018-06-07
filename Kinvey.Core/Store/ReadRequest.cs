@@ -233,12 +233,21 @@ namespace Kinvey
 
                                 switch (ke.StatusCode)
                                 {
-                                    case 400: // ResultSetSizeExceeded
+                                    case 400: // ResultSetSizeExceeded or ParameterValueOutOfRange
                                         if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED))
                                         {
                                             // This means that there are greater than 10k items in the delta set.
                                             // Clear QueryCache table and perform regular GET.
                                             return await PerformNetworkGet(mongoQuery);
+                                        }
+                                        else if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE))
+                                        {
+                                            // This means that the last sync time for delta set is too far back, or
+                                            // the backend was enabled for delta set after the client was enabled
+                                            // and already attempted a GET.
+
+                                            // Perform regular GET and capture x-kinvey-request-start time
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
                                         }
                                         break;
 

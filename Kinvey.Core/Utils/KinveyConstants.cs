@@ -101,6 +101,7 @@ namespace Kinvey
         // Server-side Delta Sync Error Strings
         internal const string STR_ERROR_BACKEND_MISSING_CONFIGURATION = "MissingConfiguration";
         internal const string STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED = "ResultSetSizeExceeded";
+        internal const string STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE = "ParameterValueOutOfRange";
 
         #endregion
     }
