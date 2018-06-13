@@ -2227,9 +2227,124 @@ namespace TestFramework
             Assert.AreEqual(2, thirdResponse.PullCount);
         }
 
-        //[Test(Description = "with enabled deltaset should return correct number of items when deleting")]
+        [Test(Description = "with enabled deltaset should return correct number of items when deleting")]
+        public async Task TestDeltaSetPullReturnCorrectNumberOfDeletes()
+        {
+            // Arrange
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
 
-        //[Test(Description = "with enabled deltaset should return correct number of items when deleting and updating")]
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What is 2 + 5?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What is 3 + 5";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "Why is 6 afraid of 7?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var firstResponse = await store.PullAsync();
+
+            var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
+            await store.PushAsync();
+            var secondResponse = await store.PullAsync();
+            var firstStoreCount = (await store.FindAsync()).Count;
+
+            var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
+            var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
+            await store.PushAsync();
+            var thirdResponse = await store.PullAsync();
+
+            var localEntities = await store.FindAsync();
+            if (localEntities != null)
+            {
+                foreach (var localEntity in localEntities)
+                {
+                    await store.RemoveAsync(localEntity.ID);
+                }
+
+                await store.SyncAsync();
+            }
+
+            // Assert
+            Assert.AreEqual(3, firstResponse.PullCount);
+            Assert.AreEqual(0, secondResponse.PullCount);
+            Assert.AreEqual(1, firstDeleteResponse.count);
+            Assert.AreEqual(0, thirdResponse.PullCount);
+            Assert.AreEqual(2, secondDeleteResponse.count + thirdDeleteResponse.count);
+        }
+
+        [Test(Description = "with enabled deltaset should return correct number of items when deleting and updating")]
+        public async Task TestDeltaSetPullReturnCorrectNumberOfDeletesAndUpdates()
+        {
+            // Arrange
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What is 2 + 5?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What is 3 + 5";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "Why is 6 afraid of 7?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var firstResponse = await store.PullAsync();
+
+            var fc2Query = store.Where(y => y.Answer.Equals("8"));
+            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2.Answer = "14";
+            fc2 = await networkStore.SaveAsync(fc2);
+            var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
+            var secondResponse = await store.PullAsync();
+
+            var localEntities = await store.FindAsync();
+            if (localEntities != null)
+            {
+                foreach (var localEntity in localEntities)
+                {
+                    await store.RemoveAsync(localEntity.ID);
+                }
+
+                await store.SyncAsync();
+            }
+
+            // Assert
+            Assert.AreEqual(3, firstResponse.PullCount);
+            Assert.AreEqual(1, secondResponse.PullCount);
+            Assert.AreEqual(1, deleteResponse.count);
+        }
 
         //[Test(Description = "with enabled deltaset and tagged datastore should use the tagged cache collection")]
 
@@ -2574,9 +2689,122 @@ namespace TestFramework
             Assert.AreEqual(2, thirdResponse.PullResponse.PullCount);
         }
 
-        //[Test(Description = "with enabled deltaset should return correct number of items when deleting")]
+        [Test(Description = "with enabled deltaset should return correct number of items when deleting")]
+        public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletes()
+        {
+            // Arrange
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
 
-        //[Test(Description = "with enabled deltaset should return correct number of items when deleting and updating")]
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What is 2 + 5?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What is 3 + 5";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "Why is 6 afraid of 7?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var firstResponse = await store.SyncAsync();
+
+            var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
+            var secondResponse = await store.SyncAsync();
+            var firstStoreCount = (await store.FindAsync()).Count;
+
+            var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
+            var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
+            var thirdResponse = await store.SyncAsync();
+
+            var localEntities = await store.FindAsync();
+            if (localEntities != null)
+            {
+                foreach (var localEntity in localEntities)
+                {
+                    await store.RemoveAsync(localEntity.ID);
+                }
+
+                await store.SyncAsync();
+            }
+
+            // Assert
+            Assert.AreEqual(3, firstResponse.PullResponse.PullCount);
+            Assert.AreEqual(0, secondResponse.PullResponse.PullCount);
+            Assert.AreEqual(1, firstDeleteResponse.count);
+            Assert.AreEqual(0, thirdResponse.PullResponse.PullCount);
+            Assert.AreEqual(2, secondDeleteResponse.count + thirdDeleteResponse.count);
+        }
+
+        [Test(Description = "with enabled deltaset should return correct number of items when deleting and updating")]
+        public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletesAndUpdates()
+        {
+            // Arrange
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What is 2 + 5?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What is 3 + 5";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "Why is 6 afraid of 7?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var firstResponse = await store.SyncAsync();
+
+            var fc2Query = store.Where(y => y.Answer.Equals("8"));
+            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2.Answer = "14";
+            fc2 = await networkStore.SaveAsync(fc2);
+            var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
+            var secondResponse = await store.SyncAsync();
+
+            var localEntities = await store.FindAsync();
+            if (localEntities != null)
+            {
+                foreach (var localEntity in localEntities)
+                {
+                    await store.RemoveAsync(localEntity.ID);
+                }
+
+                await store.SyncAsync();
+            }
+
+            // Assert
+            Assert.AreEqual(3, firstResponse.PullResponse.PullCount);
+            Assert.AreEqual(1, secondResponse.PullResponse.PullCount);
+            Assert.AreEqual(1, deleteResponse.count);
+        }
 
         //[Test(Description = "with enabled deltaset and tagged datastore should use the tagged cache collection")]
 
@@ -2585,46 +2813,6 @@ namespace TestFramework
         //[Test(Description = "with enable deltaset and limit and skip should not use deltaset and should not override lastRunAt")]
 
         //[Test(Description = "with enable deltaset and limit and skip should not use deltaset and should not cause inconsistent data")]
-
-        #endregion
-
-        #region SSDS Find (with ForceNetwork where applicable)
-
-        //[Test(Description = "with forceNetwork should use deltaset")]
-
-        #endregion
-
-        #region SSDS Switching DataStore Type Tests
-
-        //[Test(Description = "when switching from sync to cache store")]
-
-        //[Test(Description = "when switching from sync to network store")]
-
-        #endregion
-
-        #region SSDS Clear Cache Tests
-
-        //[Test(Description = "should clear _QueryCache entries")]
-
-        #endregion
-
-        #region SSDS Error Handling
-
-        //[Test(Description = "should use regular GET when deltaset configuration is missing on the backend")]
-
-        //[Test(Description = "should use regular auto-pagination when deltaset configuration is missing on the backend and AP is on")]
-
-        //[Test(Description = "should use regular auto-pagination when there are more then 10000 items and AP is on")]
-
-        //[Test(Description = "should use regular GET when there are more then 10000 items and AP is off")]
-
-        //[Test(Description = "should use regular GET when lastRunAt value is old and AP is off")]
-
-        //[Test(Description = "should use regular GET when lastRunAt value is old and AP is on")]
-
-        //[Test(Description = "should not override lastRunAt value in _QueryCache when request returns general error")]
-
-        //[Test(Description = "should delete old items when lastRunAt is outdated")]
 
         #endregion
 
