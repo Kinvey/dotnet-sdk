@@ -207,7 +207,9 @@ namespace Kinvey
     
         }
 
-		/// <summary>
+        public string RequestStartTime { get; set; }
+
+        /// <summary>
 		/// Gets or sets the request authenticator.
 		/// </summary>
 		/// <value>The request auth.</value>
@@ -613,7 +615,11 @@ namespace Kinvey
 
 			try
 			{
-				return JsonConvert.DeserializeObject<T>(response.Content);
+                var result = JsonConvert.DeserializeObject<T>(response.Content);
+
+                RequestStartTime = HelperMethods.GetRequestStartTime(response);
+
+                return result;
 			}
 			catch(JsonException ex){
 				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);

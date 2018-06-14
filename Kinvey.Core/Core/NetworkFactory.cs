@@ -251,7 +251,36 @@ namespace Kinvey
 			return delete;
 		}
 
-		#endregion
+        public NetworkRequest<T> BuildDeltaSetRequest<T>(string collectionName, string lastRequestTime, string query = null)
+        {
+            string REST_PATH = "appdata/{appKey}/{collectionName}/_deltaset";
+            string restPathParams = string.Empty;
+
+            var urlParameters = new Dictionary<string, string>();
+            urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+            urlParameters.Add("collectionName", collectionName);
+
+            if (!string.IsNullOrEmpty(lastRequestTime))
+            {
+                restPathParams += string.IsNullOrEmpty(restPathParams) ? "?" : "&";
+                restPathParams += "since={lastRequestTime}";
+                urlParameters.Add("lastRequestTime", lastRequestTime);
+            }
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                restPathParams += string.IsNullOrEmpty(restPathParams) ? "?" : "&";
+                restPathParams += "query={query}";
+                urlParameters.Add("query", query);
+            }
+
+            REST_PATH += restPathParams;
+            NetworkRequest<T> deltaSet = new NetworkRequest<T>(client, "GET", REST_PATH, null, urlParameters);
+            client.InitializeRequest(deltaSet);
+            return deltaSet;
+        }
+
+        #endregion
 
 		#region Query processing
 

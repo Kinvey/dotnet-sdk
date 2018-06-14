@@ -473,7 +473,30 @@ namespace Kinvey
 			else {
 				syncQueue.RemoveAll();
 			}
-			return ret;
+
+            // Remove any associated entry from the QueryCache (for delta set sync)
+            string mongoQuery = null;
+            if (query != null)
+            {
+                StringQueryBuilder queryBuilder = new StringQueryBuilder();
+
+                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
+                var queryModel = (query.Provider as KinveyQueryProvider)?.qm;
+
+                queryBuilder.Write("{");
+                queryModel?.Accept(visitor);
+                queryBuilder.Write("}");
+
+                mongoQuery = queryBuilder.BuildQueryString();
+            }
+
+            var qci = client.CacheManager.GetQueryCacheItem(CollectionName, mongoQuery, null);
+            if (qci != null)
+            {
+                client.CacheManager.DeleteQueryCacheItem(qci);
+            }
+
+            return ret;
 		}
 
 		/// <summary>

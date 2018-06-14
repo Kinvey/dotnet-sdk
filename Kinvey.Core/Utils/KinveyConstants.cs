@@ -92,5 +92,17 @@ namespace Kinvey
         public enum DevicePlatform { PCL, iOS, Android, NET };
 
         internal const string STR_DEVICE_INFO_PLATFORMVERSION_KEY = "pv";
+
+        // Request/Response Header Keys
+        internal const string STR_HEADER_REQUEST_START_TIME = "x-kinvey-request-start";
+
+        #region Backend Error Strings
+
+        // Server-side Delta Sync Error Strings
+        internal const string STR_ERROR_BACKEND_MISSING_CONFIGURATION = "MissingConfiguration";
+        internal const string STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED = "ResultSetSizeExceeded";
+        internal const string STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE = "ParameterValueOutOfRange";
+
+        #endregion
     }
 }

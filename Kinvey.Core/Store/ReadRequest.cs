@@ -211,38 +211,96 @@ namespace Kinvey
 			{
 				string mongoQuery = this.BuildMongoQuery();
 
-				if (DeltaSetFetchingEnabled && !Cache.IsCacheEmpty())
+                if (DeltaSetFetchingEnabled)
 				{
-					var localResults = PerformLocalFind();
+                    if (!Cache.IsCacheEmpty())
+                    {
+                        QueryCacheItem queryCacheItem = Client.CacheManager.GetQueryCacheItem(Collection, mongoQuery, null);
 
-					if (localResults?.Count > 0)
-					{
-						#region DSF Step 1: Pull all entity IDs and LMTs of a collection in the backend
-						if (String.IsNullOrEmpty(mongoQuery))
-						{
-							mongoQuery = "{}";
-						}
+                        if (queryCacheItem != null && !string.IsNullOrEmpty(queryCacheItem.lastRequest))
+                        {
+                            // Able to perform server-side delta set fetch
+                            NetworkRequest<DeltaSetResponse<T>> request = Client.NetworkFactory.BuildDeltaSetRequest<DeltaSetResponse<T>>(queryCacheItem.collectionName, queryCacheItem.lastRequest, queryCacheItem.query);
+                            DeltaSetResponse<T> results = null;
+                            try
+                            {
+                               results  = await request.ExecuteAsync();
+                            }
+                            catch (KinveyException ke)
+                            {
+                                // Regardless of the error, remove the QueryCacheItem if it exists
+                                Client.CacheManager.DeleteQueryCacheItem(queryCacheItem);
 
-						var fieldsQuery = mongoQuery + "&fields=_id,_kmd.lmt";
+                                switch (ke.StatusCode)
+                                {
+                                    case 400: // ResultSetSizeExceeded or ParameterValueOutOfRange
+                                        if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED))
+                                        {
+                                            // This means that there are greater than 10k items in the delta set.
+                                            // Clear QueryCache table and perform regular GET.
+                                            return await PerformNetworkGet(mongoQuery);
+                                        }
+                                        else if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE))
+                                        {
+                                            // This means that the last sync time for delta set is too far back, or
+                                            // the backend was enabled for delta set after the client was enabled
+                                            // and already attempted a GET.
 
-						List<DeltaSetFetchInfo> networkMetadata = await Client.NetworkFactory.buildGetRequest<DeltaSetFetchInfo>(Collection, fieldsQuery).ExecuteAsync();
+                                            // Perform regular GET and capture x-kinvey-request-start time
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
+                                        }
+                                        break;
 
-						#endregion
+                                    case 403: // MissingConfiguration
+                                        if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_MISSING_CONFIGURATION))
+                                        {
+                                            // This means that server-side delta sync
+                                            // is not enabled - should perform a regular GET
+                                            return await PerformNetworkGet(mongoQuery);
+                                        }
+                                        break;
 
-						var delta = await RetrieveDeltaSet(localResults, networkMetadata, mongoQuery);
-						if (delta.Count > 0)
-						{
-							Cache.RefreshCache(delta);
-						}
+                                    default:
+                                        // This is not a delta sync specific error
+                                        throw ke;
+                                }
+                            }
 
-						return new NetworkReadResponse<T>(delta, networkMetadata.Count, true);
-					}
+                            // With the _deltaset endpoint result from the server:
+
+                            // 1 - Apply deleted set to local cache
+                            List<string> listDeletedIDs = new List<string>();
+                            foreach (var deletedItem in results.Deleted)
+                            {
+                                listDeletedIDs.Add(deletedItem.ID);
+                            }
+                            Cache.DeleteByIDs(listDeletedIDs);
+
+                            // 2 - Apply changed set to local cache
+                            Cache.RefreshCache(results.Changed);
+
+                            // 3 - Update the last request time for this combination
+                            // of collection:query
+                            queryCacheItem.lastRequest = request.RequestStartTime;
+                            Client.CacheManager.SetQueryCacheItem(queryCacheItem);
+
+                            // 4 - Return network results
+                            return new NetworkReadResponse<T>(results.Changed, results.Changed.Count, true);
+                        }
+                        else
+                        {
+                            // Perform regular GET and capture x-kinvey-request-start time
+                            return await PerformNetworkInitialDeltaGet(mongoQuery);
+                        }
+                    }
+                    else
+                    {
+                        // Perform regular GET and capture x-kinvey-request-start time
+                        return await PerformNetworkInitialDeltaGet(mongoQuery);
+                    }
 				}
 
-				var results = await RetrieveNetworkResults(mongoQuery);
-				Cache.Clear(Query?.Expression);
-				Cache.RefreshCache(results);				
-				return new NetworkReadResponse<T>(results, results.Count, false);
+                return await PerformNetworkGet(mongoQuery);
 			}
 			catch (KinveyException ke)
 			{
@@ -257,7 +315,7 @@ namespace Kinvey
 			}
 		}
 
-		protected async Task<List<T>> RetrieveNetworkResults(string mongoQuery) 
+        protected async Task<List<T>> RetrieveNetworkResults(string mongoQuery)
 		{
 			List<T> networkResults = default(List<T>);
 
@@ -310,7 +368,27 @@ namespace Kinvey
 			return query.ToString();
 		}
 
-		protected class NetworkReadResponse<T>
+        private async Task<NetworkReadResponse<T>> PerformNetworkGet(string mongoQuery)
+        {
+            var results = await RetrieveNetworkResults(mongoQuery);
+            Cache.Clear(Query?.Expression);
+            Cache.RefreshCache(results);
+            return new NetworkReadResponse<T>(results, results.Count, false);
+        }
+
+        private async Task<NetworkReadResponse<T>> PerformNetworkInitialDeltaGet(string mongoQuery)
+        {
+            var getResult = Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery);
+            List<T> results = await getResult.ExecuteAsync();
+            Cache.Clear(Query?.Expression);
+            Cache.RefreshCache(results);
+            string lastRequestTime = getResult.RequestStartTime;
+            var qci = new QueryCacheItem(Collection, mongoQuery, lastRequestTime);
+            Client.CacheManager.SetQueryCacheItem(qci);
+            return new NetworkReadResponse<T>(results, results.Count, false);
+        }
+
+        protected class NetworkReadResponse<T>
 		{
 			public List<T> ResultSet;
 			public int TotalCount;

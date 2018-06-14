@@ -134,6 +134,8 @@
     <Compile Include="Realtime\RealtimeMessage.cs" />
     <Compile Include="Store\KinveyDataStoreDelegate.cs" />
     <Compile Include="Realtime\KinveyStreamDelegate.cs" />
+    <Compile Include="Offline\QueryCacheItem.cs" />
+    <Compile Include="Model\DeltaSetResponse.cs" />
     <Compile Include="Store\PagedPullRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

@@ -39,6 +39,12 @@ namespace Kinvey
 
 		ISyncQueue GetSyncQueue (string collectionName);
 
+        QueryCacheItem GetQueryCacheItem(string collectionName, string query, string lastRequestTime);
+
+        bool SetQueryCacheItem(QueryCacheItem item);
+
+        bool DeleteQueryCacheItem(QueryCacheItem item);
+
 		/// <summary>
 		/// Clears the storage.
 		/// </summary>
