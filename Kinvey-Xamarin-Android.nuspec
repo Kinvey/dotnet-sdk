@@ -13,20 +13,21 @@
     <projectUrl>http://devcenter.kinvey.com/xamarin/</projectUrl>
     <tags>Kinvey BaaS</tags>
     <dependencies>
-      <dependency id="Microsoft.Bcl" version="1.1.0"/>
-      <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
-      <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
-      <dependency id="Microsoft.Net.Http" version="2.2.29"/>
-      <dependency id="modernhttpclient" version="2.4.2"/>
-      <dependency id="Newtonsoft.Json" version="8.0.2"/>
-      <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
-      <dependency id="SQLite.Net-PCL" version="3.1.1"/>
-      <dependency id="SQLite.Net.Platform.XamarinAndroidN" version="3.1.1"/>
-      <dependency id="Xamarin.GooglePlayServices.Gcm" version="27.0.0.0"/>
-      <dependency id="Kinvey" version="3.1.2"/>
+      <group targetFramework="monoandroid">
+        <dependency id="Microsoft.Bcl" version="1.1.10"/>
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168"/>
+        <dependency id="Microsoft.Bcl.Build" version="1.0.21"/>
+        <dependency id="Microsoft.Net.Http" version="2.2.29"/>
+        <dependency id="modernhttpclient" version="2.4.2"/>
+        <dependency id="Newtonsoft.Json" version="9.0.1"/>
+        <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
+        <dependency id="SQLite.Net-PCL" version="3.1.1"/>
+        <dependency id="Xamarin.GooglePlayServices.Gcm" version="27.0.0.0"/>
+        <dependency id="Kinvey" version="3.1.2"/>
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="Kinvey-Xamarin-Android/obj/Release/Kinvey-Xamarin-Android.dll" target="lib"/>
+    <file src="Kinvey-Xamarin-Android/obj/Release/Kinvey-Xamarin-Android.dll" target="lib\MonoAndroid"/>
   </files>
 </package>
