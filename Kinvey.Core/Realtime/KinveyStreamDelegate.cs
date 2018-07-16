@@ -11,28 +11,28 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
+//using System;
 
-namespace Kinvey
-{
-	public class KinveyStreamDelegate<T>
-	{
-		/// <summary>
-		/// This action is executed when there is a new or updated
-		/// entity available from the realtime service.
-		/// </summary>
-		public Action<string, T> OnNext;
+//namespace Kinvey
+//{
+//	public class KinveyStreamDelegate<T>
+//	{
+//		/// <summary>
+//		/// This action is executed when there is a new or updated
+//		/// entity available from the realtime service.
+//		/// </summary>
+//		public Action<string, T> OnNext;
 
-		/// <summary>
-		/// This action is executed when an exception occurs.  This can be
-		/// either on the device, or returned from the realtime service.
-		/// </summary>
-		public Action<Exception> OnError;
+//		/// <summary>
+//		/// This action is executed when an exception occurs.  This can be
+//		/// either on the device, or returned from the realtime service.
+//		/// </summary>
+//		public Action<Exception> OnError;
 
-		/// <summary>
-		/// This action is executed when there is a connection
-		/// status message available from the realtime service.
-		/// </summary>
-		public Action<KinveyRealtimeStatus> OnStatus;
-	}
-}
+//		/// <summary>
+//		/// This action is executed when there is a connection
+//		/// status message available from the realtime service.
+//		/// </summary>
+//		public Action<KinveyRealtimeStatus> OnStatus;
+//	}
+//}

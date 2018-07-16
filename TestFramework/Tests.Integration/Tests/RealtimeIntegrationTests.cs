@@ -229,73 +229,73 @@ namespace TestFramework
             Assert.IsNull(ent);
         }
 
-		[Test]
-		public async Task TestRealtimeUserCommunication()
-		{
-			// Setup
-			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+		//[Test]
+		//public async Task TestRealtimeUserCommunication()
+		//{
+		//	// Setup
+		//	await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			// Arrange
-			var autoEvent = new System.Threading.AutoResetEvent(false);
-			await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+		//	// Arrange
+		//	var autoEvent = new System.Threading.AutoResetEvent(false);
+		//	await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
 
-			// Create stream object corresponding to "meddevcmds" stream created on the backend
-			Stream<ToDo> stream = new Stream<ToDo>("todo_stream");
+		//	// Create stream object corresponding to "meddevcmds" stream created on the backend
+		//	Stream<ToDo> stream = new Stream<ToDo>("todo_stream");
 
-			// Grant stream access to active user for both publish and subscribe actions
-			var streamACL = new StreamAccessControlList();
-			streamACL.Publishers.Add(Client.SharedClient.ActiveUser.Id);
-			streamACL.Subscribers.Add(Client.SharedClient.ActiveUser.Id);
-			bool resultGrant = await stream.GrantStreamAccess(Client.SharedClient.ActiveUser.Id, streamACL);
+		//	// Grant stream access to active user for both publish and subscribe actions
+		//	var streamACL = new StreamAccessControlList();
+		//	streamACL.Publishers.Add(Client.SharedClient.ActiveUser.Id);
+		//	streamACL.Subscribers.Add(Client.SharedClient.ActiveUser.Id);
+		//	bool resultGrant = await stream.GrantStreamAccess(Client.SharedClient.ActiveUser.Id, streamACL);
 
-            // Get stream access to verify ACL setting
-            var getStreamACL = await stream.GetStreamAccess(Client.SharedClient.ActiveUser.Id);
-            Assert.NotNull(getStreamACL);
-            Assert.NotNull(getStreamACL.Publishers);
-            Assert.True(0 == string.Compare("576974755b4be0ca4f00e737", getStreamACL.Publishers[0]));
-            Assert.NotNull(getStreamACL.Subscribers);
-            Assert.True(0 == string.Compare("576974755b4be0ca4f00e737", getStreamACL.Subscribers[0]));
+  //          // Get stream access to verify ACL setting
+  //          var getStreamACL = await stream.GetStreamAccess(Client.SharedClient.ActiveUser.Id);
+  //          Assert.NotNull(getStreamACL);
+  //          Assert.NotNull(getStreamACL.Publishers);
+  //          Assert.True(0 == string.Compare("576974755b4be0ca4f00e737", getStreamACL.Publishers[0]));
+  //          Assert.NotNull(getStreamACL.Subscribers);
+  //          Assert.True(0 == string.Compare("576974755b4be0ca4f00e737", getStreamACL.Subscribers[0]));
 
-            // Realtime delegate setup
-			ToDo ent = null;
-			string sender = String.Empty;
-			KinveyStreamDelegate<ToDo> realtimeDelegate = new KinveyStreamDelegate<ToDo>
-			{
-				OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
-				OnNext = (senderID, message) => {
-					ent = message;
-					sender = senderID;
-					autoEvent.Set();
-				},
-				OnStatus = (status) => {
-					Console.WriteLine("Status: " + status.Status);
-					Console.WriteLine("Status Message: " + status.Message);
-					Console.WriteLine("Status Channel: " + status.Channel);
-					Console.WriteLine("Status Channel Group: " + status.ChannelGroup);
-				}
-			};
+  //          // Realtime delegate setup
+		//	ToDo ent = null;
+		//	string sender = String.Empty;
+		//	KinveyStreamDelegate<ToDo> realtimeDelegate = new KinveyStreamDelegate<ToDo>
+		//	{
+		//		OnError = (err) => Console.WriteLine("STREAM Error: " + err.Message),
+		//		OnNext = (senderID, message) => {
+		//			ent = message;
+		//			sender = senderID;
+		//			autoEvent.Set();
+		//		},
+		//		OnStatus = (status) => {
+		//			Console.WriteLine("Status: " + status.Status);
+		//			Console.WriteLine("Status Message: " + status.Message);
+		//			Console.WriteLine("Status Channel: " + status.Channel);
+		//			Console.WriteLine("Status Channel Group: " + status.ChannelGroup);
+		//		}
+		//	};
 
-			// Act
-			bool result = await stream.Listen(realtimeDelegate);
-			var streamTodo = new ToDo();
-			streamTodo.Name = "stream test";
-			streamTodo.Details = "Stream Details";
-			bool publishResult = await stream.Send(Client.SharedClient.ActiveUser.Id, streamTodo);
+		//	// Act
+		//	bool result = await stream.Listen(realtimeDelegate);
+		//	var streamTodo = new ToDo();
+		//	streamTodo.Name = "stream test";
+		//	streamTodo.Details = "Stream Details";
+		//	bool publishResult = await stream.Send(Client.SharedClient.ActiveUser.Id, streamTodo);
 
-			// Assert
-			Assert.True(result);
-			Assert.True(publishResult);
-			bool signal = autoEvent.WaitOne(10000);
-			Assert.True(signal);
-			Assert.NotNull(ent);
-			Assert.AreEqual(0, ent.Name.CompareTo("stream test"));
-			Assert.AreEqual(0, ent.Details.CompareTo("Stream Details"));
-			Assert.AreEqual(Client.SharedClient.ActiveUser.Id, sender);
+		//	// Assert
+		//	Assert.True(result);
+		//	Assert.True(publishResult);
+		//	bool signal = autoEvent.WaitOne(10000);
+		//	Assert.True(signal);
+		//	Assert.NotNull(ent);
+		//	Assert.AreEqual(0, ent.Name.CompareTo("stream test"));
+		//	Assert.AreEqual(0, ent.Details.CompareTo("Stream Details"));
+		//	Assert.AreEqual(Client.SharedClient.ActiveUser.Id, sender);
 
-			// Teardown
-			await stream.StopListening();
-			await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
-			kinveyClient.ActiveUser.Logout();
-		}
+		//	// Teardown
+		//	await stream.StopListening();
+		//	await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
+		//	kinveyClient.ActiveUser.Logout();
+		//}
 	}
 }
