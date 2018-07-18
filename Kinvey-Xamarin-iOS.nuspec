@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Kinvey-ios</id>
-    <version>3.1.2</version>
+    <version>3.1.3</version>
     <releaseNotes>Please visit http://devcenter.kinvey.com/xamarin/downloads for release notes</releaseNotes>
     <title>Kinvey-Xamarin-iOS</title>
     <authors>Kinvey</authors>
@@ -22,7 +22,7 @@
         <dependency id="Newtonsoft.Json" version="9.0.1"/>
         <dependency id="SQLite.Net.Async-PCL" version="3.1.1"/>
         <dependency id="SQLite.Net-PCL" version="3.1.1"/>
-        <dependency id="Kinvey" version="3.1.2"/>
+        <dependency id="Kinvey" version="3.1.3"/>
       </group>
     </dependencies>
   </metadata>
