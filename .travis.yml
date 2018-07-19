@@ -1,12 +1,5 @@
 language: csharp
-solution: Kinvey.sln
-install:
- - wget -O pubnub.zip https://www.nuget.org/api/v2/package/PubnubNetPlatform/3.8.7
- - mkdir packages/pubnubnetplatform.3.8.7
- - mv pubnub.zip packages/pubnubnetplatform.3.8.7/.
- - unzip packages/pubnubnetplatform.3.8.7/pubnub.zip -d packages/pubnubnetplatform.3.8.7/
- - nuget restore Kinvey.sln
+mono: none
+dotnet: latest
 script:
- - xbuild Kinvey.Core/Kinvey.Core.csproj 
- - xbuild TestFramework/Tests.Integration/Tests.Integration.csproj
- - mono packages/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll
+ - cd Kinvey.Tests; dotnet test
