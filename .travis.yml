@@ -8,4 +8,4 @@ script:
 - cd Kinvey.Tests; dotnet test
 - coverlet bin/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build"
 after_success:
-- bash <(curl -s https://codecov.io/bash) -J '^Kinvey$' -F $PLATFORM
+- bash <(curl -s https://codecov.io/bash)
