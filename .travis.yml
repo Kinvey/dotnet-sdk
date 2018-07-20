@@ -14,6 +14,8 @@ matrix:
       env:
         - PLATFORM=macOS
 before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt install tree; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install tree; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install dotnet-sdk; fi
@@ -23,6 +25,6 @@ before_script:
 script:
   - cd Kinvey.Tests; dotnet test
   - tree bin
-  - ~/.dotnet/tools/coverlet bin/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
+  - ~/.dotnet/tools/coverlet bin/$PLATFORM/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
 after_success:
   - bash <(curl -s https://codecov.io/bash) -n $PLATFORM
