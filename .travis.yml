@@ -17,6 +17,7 @@ before_script:
   - export PATH="$PATH:/home/travis/.dotnet/tools"
 script:
   - cd Kinvey.Tests; dotnet test
-  - coverlet bin/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
+  - echo $PATH
+  - cd Kinvey.Tests; coverlet bin/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
 after_success:
   - bash <(curl -s https://codecov.io/bash)
