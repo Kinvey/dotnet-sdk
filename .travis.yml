@@ -5,12 +5,14 @@ matrix:
       language: csharp
       mono: none
       dotnet: 2.1
-      env: PLATFORM=Linux
+      env:
+        - PLATFORM=Linux
     - name: "macOS"
       os: osx
       language: generic
       osx_image: xcode9.4
-      env: PLATFORM=macOS
+      env:
+        - PLATFORM=macOS
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install dotnet-sdk; fi
