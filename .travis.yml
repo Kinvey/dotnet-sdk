@@ -1,11 +1,16 @@
 language: csharp
 mono: none
 dotnet: 2.1
+os:
+  - linux
+  - osx
 before_script:
-- dotnet tool install --global coverlet.console
-- export PATH="$PATH:/home/travis/.dotnet/tools"
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update            ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install dotnet-sdk; fi
+  - dotnet tool install --global coverlet.console
+  - export PATH="$PATH:/home/travis/.dotnet/tools"
 script:
-- cd Kinvey.Tests; dotnet test
-- coverlet bin/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
+  - cd Kinvey.Tests; dotnet test
+  - coverlet bin/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
