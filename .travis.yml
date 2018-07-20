@@ -5,10 +5,12 @@ matrix:
       language: csharp
       mono: none
       dotnet: 2.1
+      env: PLATFORM=Linux
     - name: "macOS"
       os: osx
       language: generic
       osx_image: xcode9.4
+      env: PLATFORM=macOS
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install dotnet-sdk; fi
@@ -19,4 +21,4 @@ script:
   - cd Kinvey.Tests; dotnet test
   - ~/.dotnet/tools/coverlet bin/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -n $PLATFORM
