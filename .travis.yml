@@ -10,8 +10,10 @@ matrix:
       language: generic
       osx_image: xcode9.4
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update                 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install dotnet-sdk; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ls -la /; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="$PATH:/dotnet/bin"; fi
   - dotnet tool install --global coverlet.console
   - export PATH="$PATH:/home/travis/.dotnet/tools"
 script:
