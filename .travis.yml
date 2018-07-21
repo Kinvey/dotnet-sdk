@@ -14,8 +14,8 @@ matrix:
       env:
         - PLATFORM=macOS
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt install tree; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install tree; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install tree; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install dotnet-sdk; fi
