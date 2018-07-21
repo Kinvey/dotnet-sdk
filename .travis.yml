@@ -26,4 +26,4 @@ script:
   - cd Kinvey.Tests; dotnet test
   - ~/.dotnet/tools/coverlet bin/$PLATFORM/Debug/netcoreapp2.1/Kinvey.Tests.dll  --target "dotnet" --targetargs "test $PWD --no-build" --format opencover
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -F $PLATFORM
+  - bash <(curl -s https://codecov.io/bash) -n $PLATFORM
