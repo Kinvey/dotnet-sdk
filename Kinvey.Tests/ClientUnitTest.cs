@@ -1,11 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.Serialization.Json;
-using System.IO;
-using System.Text;
 
 namespace Kinvey.Tests
 {
@@ -51,19 +46,15 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestPing()
         {
-            var client = new Client(AppKey ?? "_kid_", AppSecret ?? "AppSecret");
+            var client = Client;
+
             EnvironmentInfo expectedEnvironmentInfo = new EnvironmentInfo();
-            var environmentInfoType = typeof(EnvironmentInfo);
-            var appNameProperty = environmentInfoType.GetProperty("AppName");
-            var versionProperty = environmentInfoType.GetProperty("Version");
-            var kinveyProperty = environmentInfoType.GetProperty("Kinvey");
-            var envNameProperty = environmentInfoType.GetProperty("EnvironmentName");
             if (UseMock)
             {
-                appNameProperty.SetValue(expectedEnvironmentInfo, "AppName");
-                versionProperty.SetValue(expectedEnvironmentInfo, "Version");
-                kinveyProperty.SetValue(expectedEnvironmentInfo, "Kinvey");
-                envNameProperty.SetValue(expectedEnvironmentInfo, "EnvironmentName");
+                expectedEnvironmentInfo.AppName = "AppName";
+                expectedEnvironmentInfo.Version = "Version";
+                expectedEnvironmentInfo.Kinvey = "Kinvey";
+                expectedEnvironmentInfo.EnvironmentName = "EnvironmentName";
 
                 client.HttpClient = MockHttpClient((request) => {
                     Assert.AreEqual(request.RequestUri.PathAndQuery, $"/appdata/{client.AppKey}");
@@ -72,10 +63,10 @@ namespace Kinvey.Tests
             }
             else
             {
-                appNameProperty.SetValue(expectedEnvironmentInfo, EnvironmentInfoAppName);
-                versionProperty.SetValue(expectedEnvironmentInfo, EnvironmentInfoVersion);
-                kinveyProperty.SetValue(expectedEnvironmentInfo, EnvironmentInfoKinvey);
-                envNameProperty.SetValue(expectedEnvironmentInfo, EnvironmentInfoEnvironmentName);
+                expectedEnvironmentInfo.AppName = EnvironmentInfoAppName;
+                expectedEnvironmentInfo.Version = EnvironmentInfoVersion;
+                expectedEnvironmentInfo.Kinvey = EnvironmentInfoKinvey;
+                expectedEnvironmentInfo.EnvironmentName = EnvironmentInfoEnvironmentName;
             }
 
             var environmentInfo = await client.PingAsync();
