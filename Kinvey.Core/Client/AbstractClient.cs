@@ -62,9 +62,13 @@ namespace Kinvey
 			get { return micHostName;}
 			set
 			{
-				if (!value.StartsWith("https", StringComparison.OrdinalIgnoreCase))
+                if (!value.ToLower().StartsWith("https", StringComparison.OrdinalIgnoreCase))
 				{
-					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS, value);
+                    if (!value.ToLower().StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase) &&
+                        !value.ToLower().StartsWith("http://127.0.0.1:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS, value);
+                    }
 				}
 
 				if (!value.EndsWith ("/", StringComparison.OrdinalIgnoreCase))

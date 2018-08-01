@@ -286,9 +286,11 @@ namespace Kinvey
 			/// </summary>
             private string baseUrl;
 
-			/// <summary>
-			/// The service path.
-			/// </summary>
+            private string micHostName;
+
+            /// <summary>
+            /// The service path.
+            /// </summary>
             private string servicePath;
 
 			/// <summary>
@@ -331,10 +333,16 @@ namespace Kinvey
                 set { this.baseUrl = NormalizeRootUrl(value); }
             }
 
-			/// <summary>
-			/// Gets or sets the service path.
-			/// </summary>
-			/// <value>The service path.</value>
+            public string MICHostName
+            {
+                get { return this.micHostName; }
+                set { this.micHostName = NormalizeRootUrl(value); }
+            }
+
+            /// <summary>
+            /// Gets or sets the service path.
+            /// </summary>
+            /// <value>The service path.</value>
             public string ServicePath
             {
                 get { return this.servicePath; }

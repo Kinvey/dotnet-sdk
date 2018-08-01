@@ -190,10 +190,11 @@ namespace Kinvey
 				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 //				c.offline_platform = this.offlinePlatform;
 //				c.filePath = this.filePath;
-				c.CacheManager = this.CacheManager;
+                c.CacheManager = this.CacheManager;
 				c.logger = this.log;
 				c.senderID = this.senderID;
 				c.SSOGroupKey = this.ssoGroupKey;
+                if (!string.IsNullOrEmpty(this.MICHostName)) c.MICHostName = this.MICHostName;
                 if (!string.IsNullOrEmpty(instanceID))
                 {
                     c.MICHostName = $"{Constants.STR_PROTOCOL_HTTPS + instanceID + Constants.STR_HYPHEN + Constants.STR_HOSTNAME_AUTH}";
@@ -235,13 +236,18 @@ namespace Kinvey
 				return this;
 			}
 
+            public Builder setMICHostName(string url)
+            {
+                this.MICHostName = url;
+                return this;
+            }
 
-			/// <summary>
-			/// Set any appended service url to the base url, if necessary.
-			/// </summary>
-			/// <returns>The service path.</returns>
-			/// <param name="servicePath">Service path.</param>
-			public Builder setServicePath(string servicePath){
+            /// <summary>
+            /// Set any appended service url to the base url, if necessary.
+            /// </summary>
+            /// <returns>The service path.</returns>
+            /// <param name="servicePath">Service path.</param>
+            public Builder setServicePath(string servicePath){
 				this.ServicePath = servicePath;
 				return this;
 			}
