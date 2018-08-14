@@ -96,6 +96,10 @@ namespace Kinvey
         // Request/Response Header Keys
         internal const string STR_HEADER_REQUEST_START_TIME = "x-kinvey-request-start";
 
+        // Query strings
+        internal const string STR_QUERY_MODIFIER_SKIP = "&skip=";
+        internal const string STR_QUERY_MODIFIER_LIMIT = "&limit=";
+
         #region Backend Error Strings
 
         // Server-side Delta Sync Error Strings

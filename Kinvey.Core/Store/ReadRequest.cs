@@ -211,7 +211,12 @@ namespace Kinvey
 			{
 				string mongoQuery = this.BuildMongoQuery();
 
-                if (DeltaSetFetchingEnabled)
+                bool isQueryModifierPresent = !string.IsNullOrEmpty(mongoQuery) ?
+                                                     mongoQuery.Contains(Constants.STR_QUERY_MODIFIER_SKIP) ||
+                                                     mongoQuery.Contains(Constants.STR_QUERY_MODIFIER_LIMIT) :
+                                                     false;
+
+                if (DeltaSetFetchingEnabled && !isQueryModifierPresent)
 				{
                     if (!Cache.IsCacheEmpty())
                     {
