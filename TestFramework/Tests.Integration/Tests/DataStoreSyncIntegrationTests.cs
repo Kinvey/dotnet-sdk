@@ -2810,7 +2810,157 @@ namespace TestFramework
 
         //[Test(Description = "with enabled deltaset and autopagination should use AP for first request and DS for the next")]
 
-        //[Test(Description = "with enable deltaset and limit and skip should not use deltaset and should not override lastRunAt")]
+        [Test(Description = "with enable deltaset and limit and skip should not use deltaset and should not override lastRunAt")]
+        public async Task TestDeltaSetSyncLimitAndSkipShouldNotUseDS()
+        {
+            // Arrange
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.CACHE);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What is 2 + 5?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What is 3 + 5";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "Why is 6 afraid of 7?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var firstResponse = await store.SyncAsync();
+
+            var fc2Query = store.Where(y => y.Question.StartsWith("W")).Skip(1).Take(1);
+            int pullCount1 = (await store.PullAsync(fc2Query)).PullCount;
+            int pullCount2 = (await store.PullAsync(fc2Query)).PullCount;
+
+            var localEntities = await store.FindAsync();
+            if (localEntities != null)
+            {
+                foreach (var localEntity in localEntities)
+                {
+                    await store.RemoveAsync(localEntity.ID);
+                }
+
+                await store.SyncAsync();
+            }
+
+            // Assert
+            Assert.AreEqual(1, pullCount1);
+            Assert.AreEqual(1, pullCount2);
+        }
+
+        [Test]
+        public async Task TestDeltaSetSyncSkipShouldNotUseDS()
+        {
+            // Arrange
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.CACHE);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What is 2 + 5?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What is 3 + 5";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "Why is 6 afraid of 7?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var firstResponse = await store.SyncAsync();
+
+            var fc2Query = store.Where(y => y.Question.StartsWith("W")).Skip(1);
+            int pullCount1 = (await store.PullAsync(fc2Query)).PullCount;
+            int pullCount2 = (await store.PullAsync(fc2Query)).PullCount;
+
+            var localEntities = await store.FindAsync();
+            if (localEntities != null)
+            {
+                foreach (var localEntity in localEntities)
+                {
+                    await store.RemoveAsync(localEntity.ID);
+                }
+
+                await store.SyncAsync();
+            }
+
+            // Assert
+            Assert.AreEqual(2, pullCount1);
+            Assert.AreEqual(2, pullCount2);
+        }
+
+        [Test]
+        public async Task TestDeltaSetSyncLimitShouldNotUseDS()
+        {
+            // Arrange
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.CACHE);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What is 2 + 5?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What is 3 + 5";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "Why is 6 afraid of 7?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var firstResponse = await store.SyncAsync();
+
+            var fc2Query = store.Where(y => y.Question.StartsWith("W")).Take(1);
+            int pullCount1 = (await store.PullAsync(fc2Query)).PullCount;
+            int pullCount2 = (await store.PullAsync(fc2Query)).PullCount;
+
+            await store.RemoveAsync(fc1.ID);
+            await store.RemoveAsync(fc2.ID);
+            await store.RemoveAsync(fc3.ID);
+
+            // Assert
+            Assert.AreEqual(1, pullCount1);
+            Assert.AreEqual(1, pullCount2);
+        }
 
         //[Test(Description = "with enable deltaset and limit and skip should not use deltaset and should not cause inconsistent data")]
 
