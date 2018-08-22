@@ -91,12 +91,12 @@ namespace Kinvey
 			if (resultOperator.ToString().Contains("Skip"))
 			{
 				SkipResultOperator skip = resultOperator as SkipResultOperator;
-				builderMongoQuery.AddModifier("&skip=" + skip.Count);
+                builderMongoQuery.AddModifier(Constants.STR_QUERY_MODIFIER_SKIP + skip.Count);
 			}
 			else if (resultOperator.ToString().Contains("Take"))
 			{
 				TakeResultOperator take = resultOperator as TakeResultOperator;
-				builderMongoQuery.AddModifier("&limit=" + take.Count);
+                builderMongoQuery.AddModifier(Constants.STR_QUERY_MODIFIER_LIMIT + take.Count);
 			}
 			else
 			{
