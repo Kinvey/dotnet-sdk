@@ -32,139 +32,173 @@ namespace Kinvey
 
         public int Enqueue(PendingWriteAction pending)
         {
-            // Check if a sync queue entry for this entity already exists
-            PendingWriteAction existingSyncItem = GetByID(pending.entityId);
-            if (existingSyncItem != null)
+            lock (dbConnection)
             {
-                if (existingSyncItem.action == Constants.STR_REST_METHOD_PUT &&
-                    pending.action == Constants.STR_REST_METHOD_PUT)
+                // Check if a sync queue entry for this entity already exists
+                PendingWriteAction existingSyncItem = GetByID(pending.entityId);
+                if (existingSyncItem != null)
                 {
-                    // If both the existing and pending actions are PUT, this means either this is an already created
-                    // item, or the item has been created with a custom ID on the client.  In either case, the existing
-                    // entry will capture the state of the entity.
-                    return 0;
-                }
-                else if (existingSyncItem.action == Constants.STR_REST_METHOD_POST &&
-                         pending.action == Constants.STR_REST_METHOD_PUT)
-                {
-                    // Do not enqueue in the case of an existing POST, since the POST
-                    // entry will already capture the current state of the entity.
-                    return 0;
-                }
-                else if (existingSyncItem.action == Constants.STR_REST_METHOD_PUT &&
-                         pending.action == Constants.STR_REST_METHOD_POST)
-                {
-                    // highly unlikely, but favor the POST
-                    this.Remove(existingSyncItem);
-                }
-                else if (existingSyncItem.action == Constants.STR_REST_METHOD_POST &&
-                         pending.action == Constants.STR_REST_METHOD_POST)
-                {
-                    // Should be imposssible to have this situation, favor the
-                    // existing POST by not enqueueing
-                    return 0;
-                }
-                else if (existingSyncItem.action == Constants.STR_REST_METHOD_DELETE &&
-                         (pending.action == Constants.STR_REST_METHOD_PUT || pending.action == Constants.STR_REST_METHOD_POST))
-                {
-                    // odd case where an object has somehow been created/updated
-                    // after a delete call, but favor the create/update
-                    this.Remove(existingSyncItem);
-                }
-                else if (pending.action == Constants.STR_REST_METHOD_DELETE)
-                {
-                    // no matter what, favor the current deletion
-                    this.Remove(existingSyncItem);
-
-                    // If the existing item that is being deleted is something that only existed locally,
-                    // do not insert the DELETE action into the queue, since it is local-only.
-                    // Note that this cannot be optimized for the case when a custom ID has been set on
-                    // the entity.
-                    if (existingSyncItem.entityId.StartsWith("temp_", StringComparison.OrdinalIgnoreCase))
+                    if (existingSyncItem.action == Constants.STR_REST_METHOD_PUT &&
+                        pending.action == Constants.STR_REST_METHOD_PUT)
                     {
+                        // If both the existing and pending actions are PUT, this means either this is an already created
+                        // item, or the item has been created with a custom ID on the client.  In either case, the existing
+                        // entry will capture the state of the entity.
                         return 0;
                     }
-                }
-            }
+                    else if (existingSyncItem.action == Constants.STR_REST_METHOD_POST &&
+                             pending.action == Constants.STR_REST_METHOD_PUT)
+                    {
+                        // Do not enqueue in the case of an existing POST, since the POST
+                        // entry will already capture the current state of the entity.
+                        return 0;
+                    }
+                    else if (existingSyncItem.action == Constants.STR_REST_METHOD_PUT &&
+                             pending.action == Constants.STR_REST_METHOD_POST)
+                    {
+                        // highly unlikely, but favor the POST
+                        this.Remove(existingSyncItem);
+                    }
+                    else if (existingSyncItem.action == Constants.STR_REST_METHOD_POST &&
+                             pending.action == Constants.STR_REST_METHOD_POST)
+                    {
+                        // Should be imposssible to have this situation, favor the
+                        // existing POST by not enqueueing
+                        return 0;
+                    }
+                    else if (existingSyncItem.action == Constants.STR_REST_METHOD_DELETE &&
+                             (pending.action == Constants.STR_REST_METHOD_PUT || pending.action == Constants.STR_REST_METHOD_POST))
+                    {
+                        // odd case where an object has somehow been created/updated
+                        // after a delete call, but favor the create/update
+                        this.Remove(existingSyncItem);
+                    }
+                    else if (pending.action == Constants.STR_REST_METHOD_DELETE)
+                    {
+                        // no matter what, favor the current deletion
+                        this.Remove(existingSyncItem);
 
-            return dbConnection.Insert(pending);
+                        // If the existing item that is being deleted is something that only existed locally,
+                        // do not insert the DELETE action into the queue, since it is local-only.
+                        // Note that this cannot be optimized for the case when a custom ID has been set on
+                        // the entity.
+                        if (existingSyncItem.entityId.StartsWith("temp_", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return 0;
+                        }
+                    }
+                }
+
+                return dbConnection.Insert(pending);
+            }
         }
 
 		public List<PendingWriteAction> GetAll()
 		{
-			List<PendingWriteAction> listPWA = new List<PendingWriteAction>();
+            lock (dbConnection)
+            {
+                List<PendingWriteAction> listPWA = new List<PendingWriteAction>();
 
-			var filter = dbConnection.Table<PendingWriteAction>().Where(blah => blah.collection == this.Collection);
-			foreach (PendingWriteAction pwa in filter)
-			{
-				listPWA.Add(pwa);
-			}
+                var filter = dbConnection.Table<PendingWriteAction>().Where(blah => blah.collection == this.Collection);
+                foreach (PendingWriteAction pwa in filter)
+                {
+                    listPWA.Add(pwa);
+                }
 
-			return listPWA;
+                return listPWA;
+            }
 		}
 
 		public List<PendingWriteAction> GetFirstN(int limit, int offset)
 		{
-			string query = $"SELECT * FROM PendingWriteAction WHERE collection == \"{this.Collection}\" LIMIT {limit} OFFSET {offset}";
-			return dbConnection.Query<PendingWriteAction>(query);
+            lock (dbConnection)
+            {
+                string query = $"SELECT * FROM PendingWriteAction WHERE collection == \"{this.Collection}\" LIMIT {limit} OFFSET {offset}";
+                return dbConnection.Query<PendingWriteAction>(query);
+            }
 		}
 
 		public PendingWriteAction GetByID(string entityId) {
-			return  dbConnection.Table<PendingWriteAction> ()
-				.Where (t => t.collection == this.Collection && t.entityId == entityId)
-				.FirstOrDefault();
+            lock (dbConnection)
+            {
+                return dbConnection.Table<PendingWriteAction>()
+                    .Where(t => t.collection == this.Collection && t.entityId == entityId)
+                    .FirstOrDefault();
+            }
 		}
 
 		public  PendingWriteAction Peek () {
-			return  dbConnection.Table<PendingWriteAction> ()
-				.Where (t => t.collection == this.Collection)
-				.OrderByDescending(u => u.key)
-				.FirstOrDefault();
+            lock (dbConnection)
+            {
+                return dbConnection.Table<PendingWriteAction>()
+                    .Where(t => t.collection == this.Collection)
+                    .OrderByDescending(u => u.key)
+                    .FirstOrDefault();
+            }
 		}
 
 		public PendingWriteAction Pop () {
-			try{
-				PendingWriteAction item = Peek ();
-				dbConnection.Delete <PendingWriteAction> (item.key);
-				return item;
-			} catch (Exception e){
-				return null;
-			}
+            lock (dbConnection)
+            {
+                try
+                {
+                    PendingWriteAction item = Peek();
+                    dbConnection.Delete<PendingWriteAction>(item.key);
+                    return item;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+            }
 		}
 
 		public int Count(bool allCollections)
 		{
-			if (allCollections)
-			{
-				return dbConnection.Table<PendingWriteAction>()
-								   .Count();
-			}
+            lock (dbConnection)
+            {
+                if (allCollections)
+                {
+                    return dbConnection.Table<PendingWriteAction>()
+                                       .Count();
+                }
 
-			return dbConnection.Table<PendingWriteAction>()
-				               .Where (t => t.collection == this.Collection)
-				               .Count();
+                return dbConnection.Table<PendingWriteAction>()
+                                   .Where(t => t.collection == this.Collection)
+                                   .Count();
+            }
 		}
 
 		public int Remove(PendingWriteAction pending)
 		{
-			return dbConnection.Delete(pending);
+            lock (dbConnection)
+            {
+                return dbConnection.Delete(pending);
+            }
 		}
 
 		public int Remove(IEnumerable<PendingWriteAction> pendings) {
-			if (pendings == null) 
-			{
-				return RemoveAll();
-			}
+            lock (dbConnection)
+            {
+                if (pendings == null)
+                {
+                    return RemoveAll();
+                }
 
-			int ret = 0;
-			foreach (var pending in pendings) {
-				ret += this.Remove(pending);
-			}
-			return ret;
+                int ret = 0;
+                foreach (var pending in pendings)
+                {
+                    ret += this.Remove(pending);
+                }
+                return ret;
+            }
 		}
 
 		public int RemoveAll () {
-			return  dbConnection.DeleteAll <PendingWriteAction> ();
+            lock (dbConnection)
+            {
+                return dbConnection.DeleteAll<PendingWriteAction>();
+            }
 		}
 	}
 }

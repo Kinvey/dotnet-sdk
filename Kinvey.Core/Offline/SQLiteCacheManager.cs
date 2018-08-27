@@ -26,56 +26,65 @@ using SQLite.Net.Interop;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// SQLite cache manager.
-	/// </summary>
-	public class SQLiteCacheManager : ICacheManager
-	{
+    /// <summary>
+    /// SQLite cache manager.
+    /// </summary>
+    public class SQLiteCacheManager : ICacheManager
+    {
 
-		private class DebugTraceListener : ITraceListener
-		{
-			public void Receive(string message)
-			{
+        private class DebugTraceListener : ITraceListener
+        {
+            public void Receive(string message)
+            {
                 Logger.Log(message);
-			}
-		}
+            }
+        }
 
-		//The version of the internal structure of the database.
-		private int databaseSchemaVersion = 1;
+        //The version of the internal structure of the database.
+        private int databaseSchemaVersion = 1;
 
-		// The asynchronous db connection.
-		private SQLiteAsyncConnection dbConnectionAsync;
+        // The asynchronous db connection.
+        private SQLiteAsyncConnection dbConnectionAsync;
 
-		// The asynchronous db connection.
-		private SQLiteConnection _dbConnectionSync;
-		private SQLiteConnection DBConnectionSync
-		{
-			get
-			{
-				//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
-				if (_dbConnectionSync == null)
-				{
-					//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
-					//dbConnection = new SQLiteAsyncConnection (connectionFactory);
-					_dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
-                    //_dbConnectionSync.TraceListener = new DebugTraceListener();
-				}
+        // The asynchronous db connection.
+        private SQLiteConnection _dbConnectionSync;
+        private SQLiteConnection DBConnectionSync
+        {
+            get
+            {
+                lock (this)
+                {
+                    //ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
+                    if (_dbConnectionSync == null)
+                    {
+                        //var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
+                        //dbConnection = new SQLiteAsyncConnection (connectionFactory);
+                        _dbConnectionSync = new SQLiteConnection(
+                            sqlitePlatform: platform,
+                            databasePath: dbpath,
+                            openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex,
+                            storeDateTimeAsTicks: false,
+                            resolver: new KinveyContractResolver()
+                        );
+                        //_dbConnectionSync.TraceListener = new DebugTraceListener();
+                    }
 
-				return _dbConnectionSync;
-			}
-		}
+                    return _dbConnectionSync;
+                }
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the platform.
-		/// </summary>
-		/// <value>The platform.</value>
-		public ISQLitePlatform platform { get; set; }
+        /// <summary>
+        /// Gets or sets the platform.
+        /// </summary>
+        /// <value>The platform.</value>
+        public ISQLitePlatform platform { get; set; }
 
-		/// <summary>
-		/// Gets or sets the database file path.
-		/// </summary>
-		/// <value>The dbpath.</value>
-		public string dbpath { get; set; }
+        /// <summary>
+        /// Gets or sets the database file path.
+        /// </summary>
+        /// <value>The dbpath.</value>
+        public string dbpath { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteCacheManager"/> class.
@@ -124,28 +133,31 @@ namespace Kinvey
 		/// </summary>
 		public void clearStorage()
 		{
-			if (TableExists<CollectionTableMap>(DBConnectionSync))
-			{
-				List<CollectionTableMap> collections = DBConnectionSync.Table<CollectionTableMap>().ToList();
-				if (collections != null)
-				{
-					foreach (var collection in collections)
-					{
-						string dropQuery = $"DROP TABLE IF EXISTS {collection.TableName}";
-						DBConnectionSync.Execute(dropQuery);
-						GetSyncQueue(collection.CollectionName).RemoveAll();
-						mapCollectionToCache.Remove(collection.CollectionName);
-					}
-
-					DBConnectionSync.DeleteAll<CollectionTableMap>();
-
-                    // Remove _QueryCache table
-                    if (TableExists<QueryCacheItem>(DBConnectionSync))
+            lock (DBConnectionSync)
+            {
+                if (TableExists<CollectionTableMap>(DBConnectionSync))
+                {
+                    List<CollectionTableMap> collections = DBConnectionSync.Table<CollectionTableMap>().ToList();
+                    if (collections != null)
                     {
-                        DBConnectionSync.DeleteAll<QueryCacheItem>();
+                        foreach (var collection in collections)
+                        {
+                            string dropQuery = $"DROP TABLE IF EXISTS {collection.TableName}";
+                            DBConnectionSync.Execute(dropQuery);
+                            GetSyncQueue(collection.CollectionName).RemoveAll();
+                            mapCollectionToCache.Remove(collection.CollectionName);
+                        }
+
+                        DBConnectionSync.DeleteAll<CollectionTableMap>();
+
+                        // Remove _QueryCache table
+                        if (TableExists<QueryCacheItem>(DBConnectionSync))
+                        {
+                            DBConnectionSync.DeleteAll<QueryCacheItem>();
+                        }
                     }
-				}
-			}
+                }
+            }
 		}
 
 		/// <summary>
@@ -159,24 +171,27 @@ namespace Kinvey
 
 		public ICache<T> GetCache<T>(string collectionName) where T : class
 		{
-			if (!TableExists<CollectionTableMap>(DBConnectionSync))
-			{
-				DBConnectionSync.CreateTable<CollectionTableMap>();
-			}
+            lock (DBConnectionSync)
+            {
+                if (!TableExists<CollectionTableMap>(DBConnectionSync))
+                {
+                    DBConnectionSync.CreateTable<CollectionTableMap>();
+                }
 
-			CollectionTableMap ctm = new CollectionTableMap();
-			ctm.CollectionName = collectionName;
-			ctm.TableName = typeof(T).Name;
+                CollectionTableMap ctm = new CollectionTableMap();
+                ctm.CollectionName = collectionName;
+                ctm.TableName = typeof(T).Name;
 
-			DBConnectionSync.InsertOrReplace(ctm);
+                DBConnectionSync.InsertOrReplace(ctm);
 
-			if (mapCollectionToCache.ContainsKey(collectionName))
-			{
-				return mapCollectionToCache[collectionName] as ICache<T>;
-			}
+                if (mapCollectionToCache.ContainsKey(collectionName))
+                {
+                    return mapCollectionToCache[collectionName] as ICache<T>;
+                }
 
-			mapCollectionToCache[collectionName] = new SQLiteCache<T> (collectionName, dbConnectionAsync, DBConnectionSync, platform);
-			return mapCollectionToCache[collectionName] as ICache<T>;
+                mapCollectionToCache[collectionName] = new SQLiteCache<T>(collectionName, dbConnectionAsync, DBConnectionSync, platform);
+                return mapCollectionToCache[collectionName] as ICache<T>;
+            }
 		}
 
 		/// <summary>
@@ -185,15 +200,18 @@ namespace Kinvey
 		/// <returns>The collection tables.</returns>
 		public List<string> getCollectionTables()
 		{
-			List<SQLTemplates.TableItem> result = DBConnectionSync.Table<SQLTemplates.TableItem>().OrderByDescending(t => t.name).ToList();
-			List<string> collections = new List<string>();
+            lock (DBConnectionSync)
+            {
+                List<SQLTemplates.TableItem> result = DBConnectionSync.Table<SQLTemplates.TableItem>().OrderByDescending(t => t.name).ToList();
+                List<string> collections = new List<string>();
 
-			foreach (SQLTemplates.TableItem item in result)
-			{
-				collections.Add(item.name);
-			}
+                foreach (SQLTemplates.TableItem item in result)
+                {
+                    collections.Add(item.name);
+                }
 
-			return collections;
+                return collections;
+            }
 		}
 
 		/// <summary>
@@ -215,68 +233,81 @@ namespace Kinvey
 
         public QueryCacheItem GetQueryCacheItem(string collectionName, string query, string lastRequest)
         {
-            QueryCacheItem result = null;
+            lock (DBConnectionSync)
+            {
+                QueryCacheItem result = null;
 
-            if (!TableExists<QueryCacheItem>(DBConnectionSync))
-            {
-                DBConnectionSync.CreateTable<QueryCacheItem>();
-            }
-            else
-            {
-                var items = DBConnectionSync.Table<QueryCacheItem>().Where(item => item.collectionName == collectionName && item.query == query);
-                if (items.Count() == 1)
+                if (!TableExists<QueryCacheItem>(DBConnectionSync))
                 {
-                    foreach(QueryCacheItem item in items)
+                    DBConnectionSync.CreateTable<QueryCacheItem>();
+                }
+                else
+                {
+                    var items = DBConnectionSync.Table<QueryCacheItem>().Where(item => item.collectionName == collectionName && item.query == query);
+                    if (items.Count() == 1)
                     {
-                        result = item;
+                        foreach (QueryCacheItem item in items)
+                        {
+                            result = item;
+                        }
                     }
                 }
-            }
 
-            return result;
+                return result;
+            }
         }
 
         public bool SetQueryCacheItem(QueryCacheItem item)
         {
-            bool success = false;
-
-            if (!TableExists<QueryCacheItem>(DBConnectionSync))
+            lock (DBConnectionSync)
             {
-                DBConnectionSync.CreateTable<QueryCacheItem>();
-            }
+                bool success = false;
 
-            int result = DBConnectionSync.InsertOrReplace(item);
-            if (result != 0)
-            {
-                success = true;
-            }
+                if (!TableExists<QueryCacheItem>(DBConnectionSync))
+                {
+                    DBConnectionSync.CreateTable<QueryCacheItem>();
+                }
 
-            return success;
-        }
-
-        public bool DeleteQueryCacheItem(QueryCacheItem item)
-        {
-            bool success = false;
-
-            if (TableExists<QueryCacheItem>(DBConnectionSync))
-            {
-                int result = DBConnectionSync.Delete(item);
-
+                int result = DBConnectionSync.InsertOrReplace(item);
                 if (result != 0)
                 {
                     success = true;
                 }
-            }
 
-            return success;
+                return success;
+            }
+        }
+
+        public bool DeleteQueryCacheItem(QueryCacheItem item)
+        {
+            lock (DBConnectionSync)
+            {
+                bool success = false;
+
+                if (TableExists<QueryCacheItem>(DBConnectionSync))
+                {
+                    int result = DBConnectionSync.Delete(item);
+
+                    if (result != 0)
+                    {
+                        success = true;
+                    }
+                }
+
+                return success;
+            }
         }
 
         public ISyncQueue GetSyncQueue(string collectionName) {
-			if (!TableExists<PendingWriteAction>(DBConnectionSync)){
-				DBConnectionSync.CreateTable<PendingWriteAction> ();
-			}
+            lock (DBConnectionSync)
+            {
+                if (!TableExists<PendingWriteAction>(DBConnectionSync))
+                {
+                    DBConnectionSync.CreateTable<PendingWriteAction>();
+                }
 
-			return new SQLiteSyncQueue(collectionName, DBConnectionSync);
+                return new SQLiteSyncQueue(collectionName, DBConnectionSync);
+            }
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)
