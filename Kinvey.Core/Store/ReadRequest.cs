@@ -242,8 +242,9 @@ namespace Kinvey
                                         if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED))
                                         {
                                             // This means that there are greater than 10k items in the delta set.
-                                            // Clear QueryCache table and perform regular GET.
-                                            return await PerformNetworkGet(mongoQuery);
+                                            // Clear QueryCache table, perform a regular GET
+                                            // and capture x-kinvey-request-start time
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
                                         }
                                         else if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE))
                                         {
@@ -260,8 +261,9 @@ namespace Kinvey
                                         if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_MISSING_CONFIGURATION))
                                         {
                                             // This means that server-side delta sync
-                                            // is not enabled - should perform a regular GET
-                                            return await PerformNetworkGet(mongoQuery);
+                                            // is not enabled - should perform a regular
+                                            // GET and capture x-kinvey-request-start time
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
                                         }
                                         break;
 
