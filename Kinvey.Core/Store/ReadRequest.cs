@@ -218,10 +218,10 @@ namespace Kinvey
 
                 if (DeltaSetFetchingEnabled && !isQueryModifierPresent)
 				{
+                    QueryCacheItem queryCacheItem = Client.CacheManager.GetQueryCacheItem(Collection, mongoQuery, null);
+
                     if (!Cache.IsCacheEmpty())
                     {
-                        QueryCacheItem queryCacheItem = Client.CacheManager.GetQueryCacheItem(Collection, mongoQuery, null);
-
                         if (queryCacheItem != null && !string.IsNullOrEmpty(queryCacheItem.lastRequest))
                         {
                             // Able to perform server-side delta set fetch
@@ -303,7 +303,7 @@ namespace Kinvey
                     else
                     {
                         // Perform regular GET and capture x-kinvey-request-start time
-                        return await PerformNetworkInitialDeltaGet(mongoQuery);
+                        return await PerformNetworkInitialDeltaGet(mongoQuery, queryCacheItem);
                     }
 				}
 
@@ -383,15 +383,25 @@ namespace Kinvey
             return new NetworkReadResponse<T>(results, results.Count, false);
         }
 
-        private async Task<NetworkReadResponse<T>> PerformNetworkInitialDeltaGet(string mongoQuery)
+        private async Task<NetworkReadResponse<T>> PerformNetworkInitialDeltaGet(string mongoQuery, QueryCacheItem queryCacheItem = null)
         {
             var getResult = Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery);
             List<T> results = await getResult.ExecuteAsync();
             Cache.Clear(Query?.Expression);
             Cache.RefreshCache(results);
             string lastRequestTime = getResult.RequestStartTime;
-            var qci = new QueryCacheItem(Collection, mongoQuery, lastRequestTime);
-            Client.CacheManager.SetQueryCacheItem(qci);
+
+            if (queryCacheItem != null && !string.IsNullOrEmpty(queryCacheItem.lastRequest))
+            {
+                queryCacheItem.lastRequest = getResult.RequestStartTime;
+            }
+            else
+            {
+                queryCacheItem = new QueryCacheItem(Collection, mongoQuery, lastRequestTime);
+            }
+
+            Client.CacheManager.SetQueryCacheItem(queryCacheItem);
+
             return new NetworkReadResponse<T>(results, results.Count, false);
         }
 
