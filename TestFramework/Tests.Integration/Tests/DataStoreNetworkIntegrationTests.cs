@@ -20,6 +20,7 @@ using Moq;
 using NUnit.Framework;
 
 using Kinvey;
+using System.Net.Http;
 
 namespace TestFramework
 {
@@ -120,10 +121,12 @@ namespace TestFramework
 			// Setup
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient>();
-			RestSharp.IRestResponse resp = new RestSharp.RestResponse();
-			resp.Content = "MOCK RESPONSE";
-			moqRC.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(resp);
+			var moqRC = new Mock<HttpClient>();
+            var resp = new HttpResponseMessage
+            {
+                Content = new StringContent("MOCK RESPONSE")
+            };
+            moqRC.Setup(m => m.SendAsync(It.IsAny<HttpRequestMessage>())).ReturnsAsync(resp);
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
@@ -144,7 +147,7 @@ namespace TestFramework
 
 			Assert.NotNull(er);
 			KinveyException ke = er as KinveyException;
-			Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+			Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
 
 			// Teardown
 			c.ActiveUser.Logout();

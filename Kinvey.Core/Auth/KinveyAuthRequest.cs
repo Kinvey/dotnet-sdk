@@ -18,8 +18,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
-using RestSharp;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Net;
 
 namespace Kinvey
 {
@@ -58,7 +59,7 @@ namespace Kinvey
 		/// <summary>
 		/// The authenticator of the request, create/login use appkey authentication.
 		/// </summary>
-        private HttpBasicAuthenticator appKeyAuthentication;
+        private IAuthenticator appKeyAuthentication;
 		/// <summary>
 		/// The payload of the request.
 		/// </summary>
@@ -86,7 +87,7 @@ namespace Kinvey
 		/// <param name="password">Password.</param>
 		/// <param name="user">User.</param>
 		/// <param name="create">If set to <c>true</c> create.</param>
-		public KinveyAuthRequest(AbstractKinveyClient client, HttpBasicAuthenticator auth, string appKey, string username, string password, Dictionary<string, JToken> customFieldsAndValues, User user, bool create)
+        public KinveyAuthRequest(AbstractKinveyClient client, IAuthenticator auth, string appKey, string username, string password, Dictionary<string, JToken> customFieldsAndValues, User user, bool create)
 			
 		{
             this.client = client;
@@ -135,7 +136,7 @@ namespace Kinvey
 		/// <param name="identity">The third party identity.</param>
 		/// <param name="user">User.</param>
 		/// <param name="create">If set to <c>true</c> create.</param>
-		public KinveyAuthRequest(AbstractKinveyClient client, HttpBasicAuthenticator auth, string appKey, ThirdPartyIdentity identity, User user, bool create)
+        public KinveyAuthRequest(AbstractKinveyClient client, IAuthenticator auth, string appKey, ThirdPartyIdentity identity, User user, bool create)
 
 		{
 			this.client = client;
@@ -164,68 +165,79 @@ namespace Kinvey
 		/// Builds the rest request.
 		/// </summary>
 		/// <returns>The rest request.</returns>
-        private RestRequest BuildRestRequest() 
+        private HttpRequestMessage BuildRestRequest() 
         {
-		
-			RestRequest restRequest = new RestRequest();
+
+            HttpRequestMessage request = new HttpRequestMessage();
+            string body = null;
             if (this.requestPayload != null)
             {
-				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.requestPayload), ParameterType.RequestBody);
-            }else if (this.identity != null) {
-				restRequest.AddParameter("application/json", JsonConvert.SerializeObject(this.identity, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore}), ParameterType.RequestBody);
-			}
-
-            restRequest.Resource = "user/{appKey}/" + (this.create ? "" : "login");
-
-			restRequest.Method = Method.POST;
-
-            foreach (var parameter in uriTemplateParameters)
-            {
-                restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
+                body = JsonConvert.SerializeObject(this.requestPayload);
             }
+            else if (this.identity != null)
+            {
+                body = JsonConvert.SerializeObject(this.identity, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+			}
+            if (body != null)
+            {
+                request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            }
+
+            var userEndpoint = this.create ? "" : "login";
+            request.RequestUri = new Uri(new Uri(client.BaseUrl), $"user/{uriTemplateParameters["appKey"]}/{userEndpoint}");
+
+            request.Method = HttpMethod.Post;
 
             foreach (var header in kinveyHeaders)
             {
-				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
+                request.Headers.Add(header.Key, header.Value.FirstOrDefault());
             }
 
-			appKeyAuthentication.Authenticate (restRequest);
+            appKeyAuthentication.Authenticate(request);
 
-
-            return restRequest;    
+            return request;    
         }
 
 		/// <summary>
 		/// Initializes the rest client.
 		/// </summary>
 		/// <returns>The rest client.</returns>
-        private IRestClient InitializeRestClient()
+        private HttpClient InitializeHttpClient()
         {
-			IRestClient restClient = this.client.RestClient;
-			restClient.BaseUrl = client.BaseUrl;
-			return restClient;
+            var httpClient = this.client.HttpClient;
+            return httpClient;
         }
 
 		/// <summary>
 		/// Executes the request async without parsing it.
 		/// </summary>
 		/// <returns>The unparsed async.</returns>
-		public async Task<RestResponse> ExecuteUnparsedAsync()
+		public async Task<HttpResponseMessage> ExecuteUnparsedAsync()
 		{
-			IRestClient client = InitializeRestClient();
-			RestRequest request = BuildRestRequest();
+			var client = InitializeHttpClient();
+			var request = BuildRestRequest();
 
-			var response = await client.ExecuteAsync(request);
-
-			if ((int) response.StatusCode == 404 && this.create == false) { //if user is not found, create a new user
+            var response = await client.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.NotFound && this.create == false)
+            { //if user is not found, create a new user
 				this.create = true;
 				return await ExecuteUnparsedAsync ();
-			} else if (response.ErrorException != null || (int)response.StatusCode < 200 || (int) response.StatusCode >= 300 )
-			{
-				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
 			}
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                throw new KinveyException(
+                    EnumErrorCategory.ERROR_BACKEND,
+                    EnumErrorCode.ERROR_JSON_RESPONSE,
+                    response,
+                    ex
+                );
+            }
 
-			return (RestResponse)response;
+            return response;
 		}
 		/// <summary>
 		/// Executes this request async and parses the result.
@@ -235,15 +247,22 @@ namespace Kinvey
 		{
 			try
 			{
-				return JsonConvert.DeserializeObject<KinveyAuthResponse>((await ExecuteUnparsedAsync()).Content);
+                var response = await ExecuteUnparsedAsync();
+                var responseBody = await response.Content.ReadAsStringAsync();
+				return JsonConvert.DeserializeObject<KinveyAuthResponse>(responseBody);
 			}
 			catch (KinveyException JSONException)
 			{
 				throw JSONException;
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				throw new KinveyException(EnumErrorCategory.ERROR_USER,	EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT, "Error deserializing response content.");
+				throw new KinveyException(
+                    EnumErrorCategory.ERROR_USER,
+                    EnumErrorCode.ERROR_USER_LOGIN_ATTEMPT,
+                    "Error deserializing response content.",
+                    ex
+                );
 			}
 		}
 
@@ -255,7 +274,7 @@ namespace Kinvey
 
 			private readonly AbstractKinveyClient client;
 
-            private readonly HttpBasicAuthenticator appKeyAuthentication;
+            private readonly IAuthenticator appKeyAuthentication;
 
             private bool create = false;
 
@@ -325,7 +344,16 @@ namespace Kinvey
             {
 				if (identity == null)
 				{
-					return new KinveyAuthRequest(Client, AppKeyAuthentication, AppKey, Username, Password, CustomFieldsAndValues, KinveyUser, this.create);
+					return new KinveyAuthRequest(
+                        Client,
+                        AppKeyAuthentication,
+                        AppKey,
+                        Username,
+                        Password,
+                        CustomFieldsAndValues,
+                        KinveyUser,
+                        this.create
+                    );
 				}
 				else
 				{
@@ -398,7 +426,7 @@ namespace Kinvey
 			/// Gets the app key authentication.
 			/// </summary>
 			/// <value>The app key authentication.</value>
-            public HttpBasicAuthenticator AppKeyAuthentication
+            public IAuthenticator AppKeyAuthentication
             {
                 get { return appKeyAuthentication; }
             }

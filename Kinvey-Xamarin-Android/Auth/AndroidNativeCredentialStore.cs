@@ -69,9 +69,14 @@ namespace Kinvey
 					credential = Credential.From(nc);
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_LOAD_CREDENTIAL, "", e);
+				throw new KinveyException(
+                    EnumErrorCategory.ERROR_USER,
+                    EnumErrorCode.ERROR_USER_LOAD_CREDENTIAL,
+                    "",
+                    e
+                );
 			}
 
 			return credential;

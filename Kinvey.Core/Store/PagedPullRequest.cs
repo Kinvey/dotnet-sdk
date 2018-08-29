@@ -92,7 +92,7 @@ namespace Kinvey
 
 					Debug.WriteLine(string.Format("Processing {0} items, workQueue size = {1}", items.Count, workQueue.Count));
 				}
-				catch (InvalidOperationException e)
+				catch (InvalidOperationException)
 				{
 					Debug.WriteLine(string.Format("Work queue has been closed."));
 					break;

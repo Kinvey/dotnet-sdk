@@ -178,7 +178,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await downloadRequest.ExecuteAsync();
 			ct.ThrowIfCancellationRequested();
-			await downloadRequest.downloadFileAsync(fmd, content);
+			content = await downloadRequest.downloadFileBytesAsync(fmd);
 			return fmd;
 		}
 

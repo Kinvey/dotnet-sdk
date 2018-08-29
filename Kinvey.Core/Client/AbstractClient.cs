@@ -12,7 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
-using RestSharp;
+using System.Net.Http;
 
 namespace Kinvey
 {
@@ -135,7 +135,7 @@ namespace Kinvey
 		/// <param name="servicePath">Service path.</param>
 		/// <param name="initializer">Initializer.</param>
 		/// <param name="store">Store.</param>
-        protected AbstractClient(IRestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
+        protected AbstractClient(HttpClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
             : base(client, rootUrl, servicePath, initializer)
         {
             this.store = store;
@@ -234,7 +234,7 @@ namespace Kinvey
 			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient.Builder"/> class.
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
-            public Builder(RestClient transport)
+            public Builder(HttpClient transport)
                 : base(transport, DefaultBaseUrl, DefaultServicePath)
 			{
 			}
@@ -244,7 +244,7 @@ namespace Kinvey
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
 			/// <param name="clientRequestInitializer">Kinvey client request initializer.</param>
-			public Builder(IRestClient transport, KinveyClientRequestInitializer clientRequestInitializer)
+			public Builder(HttpClient transport, KinveyClientRequestInitializer clientRequestInitializer)
                 : base(transport, DefaultBaseUrl, DefaultServicePath, clientRequestInitializer)
 			{
 			}
@@ -255,7 +255,7 @@ namespace Kinvey
 			/// <param name="transport">The REST client used to make network requests.</param>
 			/// <param name="baseUrl">Base URL.</param>
 			/// <param name="clientRequestInitializer">Kinvey client request initializer.</param>
-			public Builder(RestClient transport, string baseUrl, KinveyClientRequestInitializer clientRequestInitializer)
+			public Builder(HttpClient transport, string baseUrl, KinveyClientRequestInitializer clientRequestInitializer)
                 : base(transport, baseUrl, DefaultServicePath, clientRequestInitializer)
 			{
 			}

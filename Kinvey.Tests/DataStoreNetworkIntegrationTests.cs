@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Moq;
+using Moq.Protected;
 
 using Kinvey;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,6 +28,7 @@ using System.Text;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Net.Http;
 
 namespace Kinvey.Tests
 {
@@ -468,22 +470,35 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestNetworkStoreFindAsyncBad()
 		{
-			// Setup
+		    // Setup
             if (MockData)
             {
                 MockResponses(1);
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient>();
-			RestSharp.IRestResponse resp = new RestSharp.RestResponse();
-			resp.Content = "MOCK RESPONSE";
-			moqRC.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(resp);
+            var moqRC = new Mock<HttpClientHandler>(MockBehavior.Strict);
+            HttpRequestMessage request = null;
+            moqRC
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent("MOCK RESPONSE"),
+                    RequestMessage = request
+                })
+                .Verifiable();
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.SetRestClient(moqRC.Object);
+                .SetRestClient(new HttpClient(moqRC.Object));
 
 			Client c = cb.Build();
 
@@ -499,7 +514,7 @@ namespace Kinvey.Tests
 
 			Assert.IsNotNull(er);
 			KinveyException ke = er as KinveyException;
-			Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
 
 			// Teardown
 			c.ActiveUser.Logout();

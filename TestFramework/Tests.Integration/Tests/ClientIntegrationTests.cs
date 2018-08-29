@@ -69,7 +69,7 @@ namespace TestFramework
 
 			// Act
 			builder.setFilePath("")
-				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
+				.setLogger(Console.WriteLine);
 
 			// Assert
 			Client client = builder.Build();
@@ -193,11 +193,13 @@ namespace TestFramework
 				await User.LoginAsync(TestSetup.user, TestSetup.pass);
 			}
 
-			// Act
-			JObject obj = new JObject();
-			obj.Add("input", 1);
+            // Act
+            JObject obj = new JObject
+            {
+                { "input", 1 }
+            };
 
-			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+            CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
 			var result = await ce.ExecuteCustomEndpoint("test", obj);
 			string outputstr = result[1].DueDate;
 			int output = int.Parse(outputstr);
@@ -225,11 +227,13 @@ namespace TestFramework
 				await User.LoginAsync(TestSetup.user, TestSetup.pass);
 			}
 
-			// Act
-			JObject obj = new JObject();
-			obj.Add("input", 1);
+            // Act
+            JObject obj = new JObject
+            {
+                { "input", 1 }
+            };
 
-			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+            CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
 			Exception e = Assert.CatchAsync(async delegate
 			{
 				await ce.ExecuteCustomEndpoint("test_bad", obj);

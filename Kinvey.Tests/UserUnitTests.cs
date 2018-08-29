@@ -15,8 +15,12 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Moq.Protected;
 using Newtonsoft.Json.Linq;
 using Kinvey;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading;
 
 namespace Kinvey.Tests
 {
@@ -28,23 +32,33 @@ namespace Kinvey.Tests
 		public async Task TestMICLoginAutomatedAuthFlowBad()
 		{
 			// Arrange
-			Mock<RestSharp.IRestClient> moqRestClient = new Mock<RestSharp.IRestClient>();
-			RestSharp.IRestResponse moqResponse = new RestSharp.RestResponse();
+			var moqRestClient = new Mock<HttpClientHandler>();
+			var moqResponse = new HttpResponseMessage();
 
-			JObject moqResponseContent = new JObject();
-			moqResponseContent.Add("error", "MOCK RESPONSE ERROR");
-			moqResponseContent.Add("description", "Mock Gaetway Timeout error");
-			moqResponseContent.Add("debug", "Mock debug");
-			moqResponse.Content = moqResponseContent.ToString();
+            JObject moqResponseContent = new JObject
+            {
+                { "error", "MOCK RESPONSE ERROR" },
+                { "description", "Mock Gaetway Timeout error" },
+                { "debug", "Mock debug" }
+            };
+            moqResponse.Content = new StringContent(JsonConvert.SerializeObject(moqResponseContent));
 
 			moqResponse.StatusCode = System.Net.HttpStatusCode.GatewayTimeout; // Status Code - 504
 
-			moqRestClient.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(moqResponse);
+            moqRestClient
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(moqResponse)
+                .Verifiable();
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.SetRestClient(moqRestClient.Object);
+                .SetRestClient(new HttpClient(moqRestClient.Object));
 
 			Client c = cb.Build();
 			c.MICApiVersion = "v2";
