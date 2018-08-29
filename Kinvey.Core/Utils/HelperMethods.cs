@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using RestSharp;
 
@@ -32,9 +33,10 @@ namespace Kinvey
 				{
 					var item = response.Headers
 						.Cast<Parameter>()
-						.SingleOrDefault(i => i.Name.ToLower().Equals ("x-kinvey-request-id"))
+						.SingleOrDefault(i => i.Name.ToLower().Equals ("x-kinvey-request-id"))?
 						.Value;
-
+                    
+                    if (item == null) return string.Empty;
 					Type valueType = item.GetType();
 					if (valueType != null)
 					{
@@ -83,27 +85,16 @@ namespace Kinvey
                 {
                     var item = response.Headers
                                        .Cast<Parameter>()
-                                       .SingleOrDefault(i => i.Name.ToLower().Equals(Constants.STR_HEADER_REQUEST_START_TIME))
+                                       .SingleOrDefault(i => i.Name.ToLower().Equals(Constants.STR_HEADER_REQUEST_START_TIME))?
                                        .Value;
-
-                    Type valueType = item.GetType();
-                    if (valueType != null)
+                    if (item == null) return string.Empty;
+                    if (item is IEnumerable<string>)
                     {
-                        if (valueType.GetElementType() == typeof(string))
+                        var values = item as IEnumerable<string>;
+                        var requestStart = values.FirstOrDefault();
+                        if (requestStart != null)
                         {
-                            XKinveyRequestStart = item.ToString();
-                        }
-                        else if (valueType.IsConstructedGenericType)
-                        {
-                            if (valueType.Name.Contains("List"))
-                            {
-                                var listRequestStartTime = ((System.Collections.Generic.List<string>)item);
-                                if (listRequestStartTime != null &&
-                                    listRequestStartTime.Count > 0)
-                                {
-                                    XKinveyRequestStart = listRequestStartTime.First();
-                                }
-                            }
+                            XKinveyRequestStart = requestStart;
                         }
                     }
                 }
