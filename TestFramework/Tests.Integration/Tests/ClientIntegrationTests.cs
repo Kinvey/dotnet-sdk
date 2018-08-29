@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Kinvey;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net;
 
 namespace TestFramework
 {

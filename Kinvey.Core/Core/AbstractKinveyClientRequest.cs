@@ -364,7 +364,7 @@ namespace Kinvey
             var client = InitializeRestClient();
             var request = BuildRestRequest();
 
-            RequestAuth.Authenticate(client, request);
+            RequestAuth.Authenticate(request);
 
 			var req = client.SendAsync(request);
 			var response = req.Result;
@@ -372,14 +372,16 @@ namespace Kinvey
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
                                       .Select(x => x.Value)
                                       .SingleOrDefault();
-            if (contentType != null && contentType.Count() > 0 && !contentType.First().Contains( "application/json")) {
-				var kinveyException = new KinveyException(
+            if (contentType != null && contentType.Any() && !contentType.First().Contains( "application/json")) {
+                var kinveyException = new KinveyException(
                     EnumErrorCategory.ERROR_REQUIREMENT,
                     EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER,
                     contentType.FirstOrDefault()
-                );
-				kinveyException.RequestID = HelperMethods.getRequestID(response);
-				throw kinveyException;
+                )
+                {
+                    RequestID = HelperMethods.getRequestID(response)
+                };
+                throw kinveyException;
 			}
 
             lastResponseCode = response.StatusCode;
@@ -453,9 +455,9 @@ namespace Kinvey
 			var httClient = InitializeRestClient();
 			var request = BuildRestRequest();
 
-            RequestAuth.Authenticate(httClient, request);
+            RequestAuth.Authenticate(request);
 
-			var response = await httClient.SendAsync(request);
+            var response = await httClient.SendAsync(request);
             var contentType = response.Headers
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
                                       .Select(x => x.Value)

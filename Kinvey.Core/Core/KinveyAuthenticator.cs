@@ -24,8 +24,6 @@ namespace Kinvey
 {
     public interface IAuthenticator
     {
-        void Authenticate(HttpClient client, HttpRequestMessage request);
-
         void Authenticate(HttpRequestMessage request);
     }
 
@@ -54,28 +52,11 @@ namespace Kinvey
 		/// <summary>
 		/// Authenticate the specified request.
 		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="request">Request.</param>
-		public void Authenticate(HttpClient client, HttpRequestMessage request)
-        {
-            if (client.DefaultRequestHeaders.Authorization == null)
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AuthHeaderScheme, authToken);
-			}
-            Authenticate(request);
-		}
-
-		/// <summary>
-		/// Authenticate the specified request.
-		/// </summary>
 		/// <param name="request">Request.</param>
 		public void Authenticate(HttpRequestMessage request)
         {
-            if (request.Headers.Authorization == null)
-			{
-                request.Headers.Authorization = new AuthenticationHeaderValue(AuthHeaderScheme, authToken);
-			}
-		}
+            request.Headers.Authorization = new AuthenticationHeaderValue(AuthHeaderScheme, authToken);
+        }
 
 
     }

@@ -41,8 +41,8 @@ namespace TestFramework
 		[Test]
 		public async Task TestUserBasic()
 		{
-			// Arrange
-			Mock<HttpClient> moqRC = new Mock<HttpClient>();
+            // Arrange
+            Mock<HttpClient> moqRC = new Mock<HttpClient>();
             var resp = new HttpResponseMessage
             {
                 Content = new StringContent("MOCK RESPONSE")

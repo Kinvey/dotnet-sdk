@@ -30,20 +30,7 @@ namespace TestFramework
                 client.ActiveUser.Logout();
 
             {
-                var moqResponse = new HttpResponseMessage();
-
-                JObject moqResponseContent = new JObject
-                {
-                    ["_id"] = new Guid().ToString(),
-                    ["username"] = new Guid().ToString(),
-                    ["_kmd"] = new JObject
-                    {
-                        ["authtoken"] = new Guid().ToString()
-                    },
-                };
-
-                moqResponse.Content = new StringContent(JsonConvert.SerializeObject(moqResponseContent));
-                moqResponse.StatusCode = System.Net.HttpStatusCode.OK; // Status Code - 504
+                HttpRequestMessage request = null;
                 moqRestClient
                     .Protected()
                     .Setup<Task<HttpResponseMessage>>(
@@ -51,7 +38,21 @@ namespace TestFramework
                         ItExpr.IsAny<HttpRequestMessage>(),
                         ItExpr.IsAny<CancellationToken>()
                     )
-                    .ReturnsAsync(moqResponse)
+                    .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                    .ReturnsAsync(() => new HttpResponseMessage
+                    {
+                        RequestMessage = request,
+                        StatusCode = System.Net.HttpStatusCode.OK, // Status Code - 504
+                        Content = new StringContent(JsonConvert.SerializeObject(new JObject
+                        {
+                            ["_id"] = new Guid().ToString(),
+                            ["username"] = new Guid().ToString(),
+                            ["_kmd"] = new JObject
+                            {
+                                ["authtoken"] = new Guid().ToString()
+                            },
+                        })),
+                    })
                     .Verifiable();
             }
 
@@ -66,15 +67,7 @@ namespace TestFramework
             Assert.AreEqual(1, dataStore.GetSyncCount());
 
 			{
-                var moqResponse = new HttpResponseMessage
-                {
-                    StatusCode = System.Net.HttpStatusCode.OK, // Status Code - 504
-                    Content = new StringContent(JsonConvert.SerializeObject(new JObject
-                    {
-                        ["_id"] = new Guid().ToString(),
-                        ["FirstName"] = person.FirstName
-                    })),
-                };
+                HttpRequestMessage request = null;
                 moqRestClient
                     .Protected()
                     .Setup<Task<HttpResponseMessage>>(
@@ -82,7 +75,17 @@ namespace TestFramework
                         ItExpr.IsAny<HttpRequestMessage>(),
                         ItExpr.IsAny<CancellationToken>()
                     )
-                    .ReturnsAsync(moqResponse)
+                    .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                    .ReturnsAsync(() => new HttpResponseMessage
+                    {
+                        RequestMessage = request,
+                        StatusCode = System.Net.HttpStatusCode.OK, // Status Code - 504
+                        Content = new StringContent(JsonConvert.SerializeObject(new JObject
+                        {
+                            ["_id"] = new Guid().ToString(),
+                            ["FirstName"] = person.FirstName
+                        })),
+                    })
                     .Verifiable();
 			}
 
@@ -100,24 +103,25 @@ namespace TestFramework
 			var person3 = dataStore.SaveAsync(person).Result;
 
 			{
-				var moqResponse = new HttpResponseMessage();
-
-                JObject moqResponseContent = new JObject
-                {
-                    ["_id"] = new Guid().ToString(),
-                    ["LastName"] = person.LastName
-                };
-
-                moqResponse.Content = new StringContent(JsonConvert.SerializeObject(moqResponseContent));
-				moqResponse.StatusCode = System.Net.HttpStatusCode.OK; // Status Code - 504
-				moqRestClient
+                HttpRequestMessage request = null;
+                moqRestClient
                     .Protected()
                     .Setup<Task<HttpResponseMessage>>(
                         "SendAsync",
                         ItExpr.IsAny<HttpRequestMessage>(),
                         ItExpr.IsAny<CancellationToken>()
                     )
-                    .ReturnsAsync(moqResponse)
+                    .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                    .ReturnsAsync(() => new HttpResponseMessage
+                    {
+                        RequestMessage = request,
+                        StatusCode = System.Net.HttpStatusCode.OK, // Status Code - 504
+                        Content = new StringContent(JsonConvert.SerializeObject(new JObject
+                        {
+                            ["_id"] = new Guid().ToString(),
+                            ["LastName"] = person.LastName
+                        })),
+                    })
                     .Verifiable();
 			}
 

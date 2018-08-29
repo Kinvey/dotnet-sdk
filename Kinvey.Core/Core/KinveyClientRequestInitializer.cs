@@ -150,9 +150,9 @@ namespace Kinvey
     public class HttpBasicAuthenticator : IAuthenticator
     {
 
-        private string username;
-        private string password;
-        private string base64;
+        private readonly string username;
+        private readonly string password;
+        private readonly string base64;
 
         public HttpBasicAuthenticator(string username, string password)
         {
@@ -160,12 +160,6 @@ namespace Kinvey
             this.password = password;
             var bytes = Encoding.UTF8.GetBytes($"{username}:{password}");
             base64 = Convert.ToBase64String(bytes);
-        }
-
-        public void Authenticate(HttpClient client, HttpRequestMessage request)
-        {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64);
-            Authenticate(request);
         }
 
         public void Authenticate(HttpRequestMessage request)
