@@ -218,10 +218,10 @@ namespace Kinvey
 
                 if (DeltaSetFetchingEnabled && !isQueryModifierPresent)
 				{
+                    QueryCacheItem queryCacheItem = Client.CacheManager.GetQueryCacheItem(Collection, mongoQuery, null);
+
                     if (!Cache.IsCacheEmpty())
                     {
-                        QueryCacheItem queryCacheItem = Client.CacheManager.GetQueryCacheItem(Collection, mongoQuery, null);
-
                         if (queryCacheItem != null && !string.IsNullOrEmpty(queryCacheItem.lastRequest))
                         {
                             // Able to perform server-side delta set fetch
@@ -242,8 +242,9 @@ namespace Kinvey
                                         if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED))
                                         {
                                             // This means that there are greater than 10k items in the delta set.
-                                            // Clear QueryCache table and perform regular GET.
-                                            return await PerformNetworkGet(mongoQuery);
+                                            // Clear QueryCache table, perform a regular GET
+                                            // and capture x-kinvey-request-start time
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
                                         }
                                         else if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE))
                                         {
@@ -260,8 +261,9 @@ namespace Kinvey
                                         if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_MISSING_CONFIGURATION))
                                         {
                                             // This means that server-side delta sync
-                                            // is not enabled - should perform a regular GET
-                                            return await PerformNetworkGet(mongoQuery);
+                                            // is not enabled - should perform a regular
+                                            // GET and capture x-kinvey-request-start time
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
                                         }
                                         break;
 
@@ -301,7 +303,7 @@ namespace Kinvey
                     else
                     {
                         // Perform regular GET and capture x-kinvey-request-start time
-                        return await PerformNetworkInitialDeltaGet(mongoQuery);
+                        return await PerformNetworkInitialDeltaGet(mongoQuery, queryCacheItem);
                     }
 				}
 
@@ -381,15 +383,25 @@ namespace Kinvey
             return new NetworkReadResponse<T>(results, results.Count, false);
         }
 
-        private async Task<NetworkReadResponse<T>> PerformNetworkInitialDeltaGet(string mongoQuery)
+        private async Task<NetworkReadResponse<T>> PerformNetworkInitialDeltaGet(string mongoQuery, QueryCacheItem queryCacheItem = null)
         {
             var getResult = Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery);
             List<T> results = await getResult.ExecuteAsync();
             Cache.Clear(Query?.Expression);
             Cache.RefreshCache(results);
             string lastRequestTime = getResult.RequestStartTime;
-            var qci = new QueryCacheItem(Collection, mongoQuery, lastRequestTime);
-            Client.CacheManager.SetQueryCacheItem(qci);
+
+            if (queryCacheItem != null && !string.IsNullOrEmpty(queryCacheItem.lastRequest))
+            {
+                queryCacheItem.lastRequest = getResult.RequestStartTime;
+            }
+            else
+            {
+                queryCacheItem = new QueryCacheItem(Collection, mongoQuery, lastRequestTime);
+            }
+
+            Client.CacheManager.SetQueryCacheItem(queryCacheItem);
+
             return new NetworkReadResponse<T>(results, results.Count, false);
         }
 

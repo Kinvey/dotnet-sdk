@@ -36,8 +36,7 @@ namespace TestFramework
 		{
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
                 .setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-                .setLogger(delegate (string msg) { System.Diagnostics.Debug.WriteLine(msg); });
+				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
 
 			kinveyClient = builder.Build();
 		}
