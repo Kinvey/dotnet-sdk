@@ -32,7 +32,7 @@ matrix:
       script:
         - msbuild Kinvey.Core/Kinvey.Core.csproj
         - msbuild TestFramework/Tests.Integration/Tests.Integration.csproj
-        - mono packages/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll
+        - mono packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll
 script:
   - cd Kinvey.Tests; dotnet build
   - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover

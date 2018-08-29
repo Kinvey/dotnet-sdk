@@ -12,11 +12,9 @@
     <PackageReference Include="SQLite.Net.Async-PCL" Version="3.1.1" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Pubnub" Version="4.0.21" />
-    <PackageReference Include="modernhttpclient" Version="2.4.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinvey.Utils\Kinvey.Utils.csproj" />
-    <ProjectReference Include="..\RestSharp\RestSharp.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Auth\Credential.cs" />
