@@ -25,11 +25,15 @@ matrix:
       language: csharp
       solution: Kinvey.sln
       dotnet: 2.1
+      before_install:
+        - sudo apt update
+        - sudo apt install -y nodejs npm
+        - npm install -g gnomon
       before_script:
         - nuget restore Kinvey.sln
         - msbuild TestFramework/Tests.Integration/Tests.Integration.csproj
       script:
-        - coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover
+        - (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon
       after_success:
         - bash <(curl -s https://codecov.io/bash) -F Mono
 install:
