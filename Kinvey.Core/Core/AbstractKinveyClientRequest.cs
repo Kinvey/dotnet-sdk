@@ -365,9 +365,10 @@ namespace Kinvey
             var request = BuildRestRequest();
 
             RequestAuth.Authenticate(request);
-
-			var req = client.SendAsync(request);
+            Logger.Log(request);
+            var req = client.SendAsync(request);
 			var response = req.Result;
+            Logger.Log(response);
             var contentType = response.Headers
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
                                       .Select(x => x.Value)
@@ -456,8 +457,9 @@ namespace Kinvey
 			var request = BuildRestRequest();
 
             RequestAuth.Authenticate(request);
-
+            Logger.Log(request);
             var response = await httClient.SendAsync(request);
+            Logger.Log(response);
             var contentType = response.Headers
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
                                       .Select(x => x.Value)

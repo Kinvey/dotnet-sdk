@@ -21,6 +21,7 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Net;
+using KinveyUtils;
 
 namespace Kinvey
 {
@@ -216,8 +217,9 @@ namespace Kinvey
 		{
 			var client = InitializeHttpClient();
 			var request = BuildRestRequest();
-
+            Logger.Log(request);
             var response = await client.SendAsync(request);
+            Logger.Log(response);
             if (response.StatusCode == HttpStatusCode.NotFound && this.create == false)
             { //if user is not found, create a new user
 				this.create = true;

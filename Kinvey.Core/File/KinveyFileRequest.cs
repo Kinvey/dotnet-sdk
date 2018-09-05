@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using KinveyUtils;
 
 namespace Kinvey
 {
@@ -81,7 +82,9 @@ namespace Kinvey
             httpRequest.Content = content;
             try
             {
+                Logger.Log(httpRequest);
                 var httpResponse = await httpClient.SendAsync(httpRequest);
+                Logger.Log(httpResponse);
             }
             catch (System.Net.Http.HttpRequestException hre)
             {
@@ -177,9 +180,10 @@ namespace Kinvey
 			var client = new HttpClient();
 
             var request = new HttpRequestMessage(HttpMethod.Get, downloadURL);
-
-			var response = await client.SendAsync(request);
-			return response;
+            Logger.Log(request);
+            var response = await client.SendAsync(request);
+            Logger.Log(response);
+            return response;
 		}
 
         #endregion
