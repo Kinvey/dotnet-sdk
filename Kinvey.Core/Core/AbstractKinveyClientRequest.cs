@@ -278,7 +278,7 @@ namespace Kinvey
 
 
 			if (this.HttpContent == null && requestMethod.Equals (HttpMethod.Post)) {
-                request.Content = new StringContent("");
+                request.Content = new StringContent(string.Empty);
 			} else if (this.HttpContent == null ) {
 				//don't add a request body
 			}
@@ -592,9 +592,10 @@ namespace Kinvey
                 return JsonConvert.DeserializeObject<T>(task.Result);
             }
 			catch(JsonException ex){
-				KinveyException kinveyException = new KinveyException (EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
-				kinveyException.RequestID = HelperMethods.getRequestID(response);
-				throw kinveyException;
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message)
+                {
+                    RequestID = HelperMethods.getRequestID(response)
+                };
 			}
             catch(ArgumentException ex)
             {
