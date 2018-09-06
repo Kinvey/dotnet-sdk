@@ -14,10 +14,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using RestSharp;
 
 namespace Kinvey
 {
@@ -59,9 +59,11 @@ namespace Kinvey
 		/// Parse the specified response into an error.
 		/// </summary>
 		/// <param name="response">Response.</param>
-        public static KinveyJsonError parse(IRestResponse response)
+        public static KinveyJsonError parse(HttpResponseMessage response)
         {
-            return JsonConvert.DeserializeObject<KinveyJsonError>(response.Content);
+            var task = response.Content.ReadAsStringAsync();
+            task.Wait();
+            return JsonConvert.DeserializeObject<KinveyJsonError>(task.Result);
         }
     }
 }

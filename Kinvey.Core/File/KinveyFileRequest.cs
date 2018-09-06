@@ -15,11 +15,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using RestSharp;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using ModernHttpClient;
+using KinveyUtils;
 
 namespace Kinvey
 {
@@ -56,7 +55,7 @@ namespace Kinvey
 			MediaTypeHeaderValue mt = new MediaTypeHeaderValue(metadata.mimetype);
 			input.Headers.ContentType = mt;
 
-			var httpClient = new HttpClient(new NativeMessageHandler());
+			var httpClient = new HttpClient();
 			Uri requestURI = new Uri(uploadURL);
 
 			foreach (var header in metadata.headers)
@@ -74,7 +73,7 @@ namespace Kinvey
             int startByte = 0;
 
             // Create empty HTTP PUT request to the GCS URI given from KCS
-            var httpClient = new HttpClient(new NativeMessageHandler());
+            var httpClient = new HttpClient();
             Uri requestURI = new Uri(uploadURL);
             var httpRequest = new System.Net.Http.HttpRequestMessage(HttpMethod.Put, requestURI);
             var content = new StringContent("");
@@ -83,7 +82,9 @@ namespace Kinvey
             httpRequest.Content = content;
             try
             {
+                Logger.Log(httpRequest);
                 var httpResponse = await httpClient.SendAsync(httpRequest);
+                Logger.Log(httpResponse);
             }
             catch (System.Net.Http.HttpRequestException hre)
             {
@@ -124,7 +125,7 @@ namespace Kinvey
                                 break;
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         // Something went wrong in parsing the Range header, so
                         // attempt the whole upload.
@@ -159,27 +160,30 @@ namespace Kinvey
 
 		internal async Task downloadFileAsync(FileMetaData metadata, Stream stream)
 		{
-			IRestResponse response = await downloadFileAsync(metadata);
-			MemoryStream ms = new MemoryStream(response.RawBytes);
-			ms.CopyTo(stream);
+			var response = await downloadFileAsync(metadata);
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                await responseStream.CopyToAsync(stream);
+            }
 		}
 
-		internal async Task downloadFileAsync(FileMetaData metadata, byte[] output)
+		internal async Task<byte[]> downloadFileBytesAsync(FileMetaData metadata)
 		{
-			IRestResponse response = await downloadFileAsync(metadata);
-			output = response.RawBytes;
+			var response = await downloadFileAsync(metadata);
+            var output = await response.Content.ReadAsByteArrayAsync();
+            return output;
 		}
 
-		private async Task<IRestResponse> downloadFileAsync(FileMetaData metadata)
+		private async Task<HttpResponseMessage> downloadFileAsync(FileMetaData metadata)
 		{
 			string downloadURL = metadata.downloadURL;
-			RestClient client = new RestClient(downloadURL);
+			var client = new HttpClient();
 
-			RestRequest request = new RestRequest();
-			request.Method = Method.GET;
-
-			IRestResponse response = await client.ExecuteAsync(request);
-			return response;
+            var request = new HttpRequestMessage(HttpMethod.Get, downloadURL);
+            Logger.Log(request);
+            var response = await client.SendAsync(request);
+            Logger.Log(response);
+            return response;
 		}
 
         #endregion

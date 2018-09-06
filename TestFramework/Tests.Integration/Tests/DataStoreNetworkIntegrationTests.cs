@@ -17,9 +17,12 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Moq;
+using Moq.Protected;
 using NUnit.Framework;
 
 using Kinvey;
+using System.Net.Http;
+using System.Threading;
 
 namespace TestFramework
 {
@@ -120,15 +123,27 @@ namespace TestFramework
 			// Setup
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient>();
-			RestSharp.IRestResponse resp = new RestSharp.RestResponse();
-			resp.Content = "MOCK RESPONSE";
-			moqRC.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(resp);
+			var moqRC = new Mock<HttpClientHandler>();
+            HttpRequestMessage request = null;
+            moqRC
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    RequestMessage = request,
+                    Content = new StringContent("MOCK RESPONSE"),
+                })
+                .Verifiable();
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.SetRestClient(moqRC.Object);
+                .SetRestClient(new HttpClient(moqRC.Object));
 
 			Client c = cb.Build();
 
@@ -144,7 +159,7 @@ namespace TestFramework
 
 			Assert.NotNull(er);
 			KinveyException ke = er as KinveyException;
-			Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+			Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
 
 			// Teardown
 			c.ActiveUser.Logout();

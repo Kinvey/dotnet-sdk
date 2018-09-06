@@ -14,22 +14,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using RestSharp;
 
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Authenticator for kinvey style authentication.
-	/// </summary>
-	public class KinveyAuthenticator : IAuthenticator
+    public interface IAuthenticator
+    {
+        void Authenticate(HttpRequestMessage request);
+    }
+
+    /// <summary>
+    /// Authenticator for kinvey style authentication.
+    /// </summary>
+    public class KinveyAuthenticator : IAuthenticator
     {
 		/// <summary>
-		/// The auth header format.
+		/// The auth header scheme.
 		/// </summary>
-        private static readonly string AuthHeaderFormat = "Kinvey {0}";
+        private static readonly string AuthHeaderScheme = "Kinvey";
 		/// <summary>
 		/// The auth token.
 		/// </summary>
@@ -46,31 +52,11 @@ namespace Kinvey
 		/// <summary>
 		/// Authenticate the specified request.
 		/// </summary>
-		/// <param name="client">Client.</param>
 		/// <param name="request">Request.</param>
-		public void Authenticate(IRestClient client, IRestRequest request) {
-
-			if (!request.Parameters.Any(p => p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))
-			{
-				
-				var authHeader = string.Format(AuthHeaderFormat, authToken);
-				request.AddParameter("Authorization", authHeader, ParameterType.HttpHeader);
-			}
-		}
-
-		/// <summary>
-		/// Authenticate the specified request.
-		/// </summary>
-		/// <param name="request">Request.</param>
-		public void Authenticate(IRestRequest request) {
-
-			if (!request.Parameters.Any(p => p.Name.Equals("Authorization", StringComparison.OrdinalIgnoreCase)))
-			{
-
-				var authHeader = string.Format(AuthHeaderFormat, authToken);
-				request.AddParameter("Authorization", authHeader, ParameterType.HttpHeader);
-			}
-		}
+		public void Authenticate(HttpRequestMessage request)
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue(AuthHeaderScheme, authToken);
+        }
 
 
     }

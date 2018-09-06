@@ -146,7 +146,7 @@ namespace Kinvey
                     dbConnection.Delete<PendingWriteAction>(item.key);
                     return item;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }

@@ -159,7 +159,7 @@ namespace Kinvey.Tests
 			// Assert
 			Assert.IsNotNull(pr.kinvey);
             Assert.IsFalse(pr.kinvey == string.Empty);
-            Assert.IsTrue(pr.kinvey.StartsWith("hello"));
+            Assert.IsTrue(pr.kinvey.StartsWith("hello", StringComparison.Ordinal));
 			Assert.IsNotNull(pr.version);
             Assert.IsFalse(pr.version == string.Empty);
 		}

@@ -2,9 +2,12 @@
 using System;
 using System.Threading.Tasks;
 using Moq;
+using Moq.Protected;
 using Kinvey;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace TestFramework
 {
@@ -14,12 +17,12 @@ namespace TestFramework
         [Test]
         public void TestSync()
         {
-            Mock<RestSharp.IRestClient> moqRestClient = new Mock<RestSharp.IRestClient>();
+            var moqRestClient = new Mock<HttpClientHandler>();
 
             Client.Builder clientBuilder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
                 .setFilePath(TestSetup.db_dir)
                 .setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-                .SetRestClient(moqRestClient.Object);
+                .SetRestClient(new HttpClient(moqRestClient.Object));
 
             Client client = clientBuilder.Build();
 
@@ -27,19 +30,30 @@ namespace TestFramework
                 client.ActiveUser.Logout();
 
             {
-                RestSharp.IRestResponse moqResponse = new RestSharp.RestResponse();
-
-                JObject moqResponseContent = new JObject();
-                moqResponseContent["_id"] = new Guid().ToString();
-                moqResponseContent["username"] = new Guid().ToString();
-
-                var kmd = new JObject();
-                kmd["authtoken"] = new Guid().ToString();
-                moqResponseContent["_kmd"] = kmd;
-
-                moqResponse.Content = moqResponseContent.ToString();
-                moqResponse.StatusCode = System.Net.HttpStatusCode.OK; // Status Code - 504
-                moqRestClient.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(moqResponse);
+                HttpRequestMessage request = null;
+                moqRestClient
+                    .Protected()
+                    .Setup<Task<HttpResponseMessage>>(
+                        "SendAsync",
+                        ItExpr.IsAny<HttpRequestMessage>(),
+                        ItExpr.IsAny<CancellationToken>()
+                    )
+                    .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                    .ReturnsAsync(() => new HttpResponseMessage
+                    {
+                        RequestMessage = request,
+                        StatusCode = System.Net.HttpStatusCode.OK, // Status Code - 504
+                        Content = new StringContent(JsonConvert.SerializeObject(new JObject
+                        {
+                            ["_id"] = new Guid().ToString(),
+                            ["username"] = new Guid().ToString(),
+                            ["_kmd"] = new JObject
+                            {
+                                ["authtoken"] = new Guid().ToString()
+                            },
+                        })),
+                    })
+                    .Verifiable();
             }
 
             var user = User.LoginAsync(client).Result;
@@ -53,15 +67,26 @@ namespace TestFramework
             Assert.AreEqual(1, dataStore.GetSyncCount());
 
 			{
-				RestSharp.IRestResponse moqResponse = new RestSharp.RestResponse();
-
-				JObject moqResponseContent = new JObject();
-				moqResponseContent["_id"] = new Guid().ToString();
-                moqResponseContent["FirstName"] = person.FirstName;
-
-				moqResponse.Content = moqResponseContent.ToString();
-				moqResponse.StatusCode = System.Net.HttpStatusCode.OK; // Status Code - 504
-				moqRestClient.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(moqResponse);
+                HttpRequestMessage request = null;
+                moqRestClient
+                    .Protected()
+                    .Setup<Task<HttpResponseMessage>>(
+                        "SendAsync",
+                        ItExpr.IsAny<HttpRequestMessage>(),
+                        ItExpr.IsAny<CancellationToken>()
+                    )
+                    .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                    .ReturnsAsync(() => new HttpResponseMessage
+                    {
+                        RequestMessage = request,
+                        StatusCode = System.Net.HttpStatusCode.OK, // Status Code - 504
+                        Content = new StringContent(JsonConvert.SerializeObject(new JObject
+                        {
+                            ["_id"] = new Guid().ToString(),
+                            ["FirstName"] = person.FirstName
+                        })),
+                    })
+                    .Verifiable();
 			}
 
             var syncResultTask = dataStore.SyncAsync();
@@ -78,15 +103,26 @@ namespace TestFramework
 			var person3 = dataStore.SaveAsync(person).Result;
 
 			{
-				RestSharp.IRestResponse moqResponse = new RestSharp.RestResponse();
-
-				JObject moqResponseContent = new JObject();
-				moqResponseContent["_id"] = new Guid().ToString();
-				moqResponseContent["LastName"] = person.LastName;
-
-				moqResponse.Content = moqResponseContent.ToString();
-				moqResponse.StatusCode = System.Net.HttpStatusCode.OK; // Status Code - 504
-				moqRestClient.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(moqResponse);
+                HttpRequestMessage request = null;
+                moqRestClient
+                    .Protected()
+                    .Setup<Task<HttpResponseMessage>>(
+                        "SendAsync",
+                        ItExpr.IsAny<HttpRequestMessage>(),
+                        ItExpr.IsAny<CancellationToken>()
+                    )
+                    .Callback<HttpRequestMessage, CancellationToken>((req, token) => request = req)
+                    .ReturnsAsync(() => new HttpResponseMessage
+                    {
+                        RequestMessage = request,
+                        StatusCode = System.Net.HttpStatusCode.OK, // Status Code - 504
+                        Content = new StringContent(JsonConvert.SerializeObject(new JObject
+                        {
+                            ["_id"] = new Guid().ToString(),
+                            ["LastName"] = person.LastName
+                        })),
+                    })
+                    .Verifiable();
 			}
 
             var syncResult2 = dataStore.SyncAsync().Result;
