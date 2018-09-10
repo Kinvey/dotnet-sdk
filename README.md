@@ -34,5 +34,5 @@ See [LICENSE](LICENSE.txt) for details.
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on reporting bugs and making contributions.
 
-[badge-status]: https://travis-ci.org/Kinvey/dotnet-sdk.svg?branch=develop
+[badge-status]: https://travis-ci.org/Kinvey/dotnet-sdk.svg?branch=master
 [badge-nuget]: https://img.shields.io/nuget/vpre/Kinvey.svg
