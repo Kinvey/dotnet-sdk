@@ -57,7 +57,6 @@ namespace Kinvey.Tests
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
                 .SetRestClient(new HttpClient(moqRestClient.Object));
 
 			Client c = cb.Build();

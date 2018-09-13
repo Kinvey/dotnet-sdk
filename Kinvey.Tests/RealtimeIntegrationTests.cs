@@ -31,9 +31,8 @@ namespace Kinvey.Tests
             base.Setup();
 
 			string appKey = "kid_Zy0JOYPKkZ", appSecret = "d83de70e64d540e49acd6cfce31415df"; // UnitTestFramework
-			Client.Builder builder = ClientBuilder
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            Client.Builder builder = ClientBuilder
+                .setFilePath(TestSetup.db_dir);
 
             if (MockData) builder.setBaseURL("http://localhost:8080");
 

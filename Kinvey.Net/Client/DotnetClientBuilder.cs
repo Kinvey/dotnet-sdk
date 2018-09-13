@@ -1,4 +1,4 @@
-﻿using SQLite.Net.Platform.Win32;
+﻿
 
 namespace Kinvey
 {
@@ -7,7 +7,6 @@ namespace Kinvey
         public DotnetClientBuilder(string appKey, string appSecret) :
         base(appKey, appSecret, Constants.DevicePlatform.NET)
         {
-            this.setOfflinePlatform(new SQLitePlatformWin32());
         }
     }
 }

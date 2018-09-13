@@ -48,8 +48,7 @@ namespace Kinvey.Tests
             System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
             System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 
-            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir);
 
             if (MockData)
             {
@@ -497,7 +496,6 @@ namespace Kinvey.Tests
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
                 .SetRestClient(new HttpClient(moqRC.Object));
 
 			Client c = cb.Build();

@@ -13,7 +13,7 @@
 
 using System;
 using System.Collections.Generic;
-using SQLite.Net.Interop;
+using SQLite;
 using System.Threading.Tasks;
 using KinveyUtils;
 using Newtonsoft.Json;
@@ -133,12 +133,6 @@ namespace Kinvey
 			/// <value>The file path.</value>
 			private string filePath {get; set;}
 
-			/// <summary>
-			///a reference to the sqlite implementation -- going to be platform dependent
-			/// </summary>
-			/// <value>The offline platform.</value>
-			private ISQLitePlatform offlinePlatform {get; set;}
-
 			private ICacheManager CacheManager {get; set; }
 
 			/// <summary>
@@ -173,16 +167,16 @@ namespace Kinvey
 			/// </summary>
 			public virtual Client Build()
 			{
-				if (this.filePath != null && offlinePlatform != null)
+				if (this.filePath != null)
 				{
 					if (this.Store == null)
 					{
-						this.Store = new SQLiteCredentialStore (offlinePlatform, filePath);
+						this.Store = new SQLiteCredentialStore (filePath);
 					}
 
 					if (this.CacheManager == null)
 					{
-						this.CacheManager = new SQLiteCacheManager (offlinePlatform, filePath);
+						this.CacheManager = new SQLiteCacheManager (filePath);
 					}
 				}
 
@@ -263,16 +257,6 @@ namespace Kinvey
 			/// <param name="path">Path.</param>
 			public Builder setFilePath(string path){
 				this.filePath = path;
-				return this;
-			}
-				
-			/// <summary>
-			/// Set the sqlite implementation to use for offline.
-			/// </summary>
-			/// <returns>The offline platform.</returns>
-			/// <param name="platform">Platform.</param>
-			public Builder setOfflinePlatform(ISQLitePlatform platform){
-				this.offlinePlatform = platform;
 				return this;
 			}
 

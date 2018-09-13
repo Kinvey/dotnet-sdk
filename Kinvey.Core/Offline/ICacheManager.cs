@@ -12,18 +12,12 @@
 // contents is a violation of applicable laws.
 
 using System;
-using SQLite.Net.Interop;
+using SQLite;
 
 namespace Kinvey
 {
 	public interface ICacheManager
 	{
-		/// <summary>
-		/// Gets or sets the platform.
-		/// </summary>
-		/// <value>The platform.</value>
-		ISQLitePlatform platform {get; set;}
-
 		/// <summary>
 		/// Gets or sets the dbpath.
 		/// </summary>
@@ -35,7 +29,7 @@ namespace Kinvey
 		/// </summary>
 		/// <returns>The cache.</returns>
 		/// <param name="collectionName">Collection name.</param>
-		ICache<T> GetCache <T>(string collectionName) where T:class;
+		ICache<T> GetCache <T>(string collectionName) where T : new();
 
 		ISyncQueue GetSyncQueue (string collectionName);
 

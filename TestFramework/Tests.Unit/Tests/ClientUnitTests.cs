@@ -81,8 +81,7 @@ namespace TestFramework
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
-			builder.setFilePath("")
-				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
+			builder.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
 			// Assert
 			Client client = builder.Build();

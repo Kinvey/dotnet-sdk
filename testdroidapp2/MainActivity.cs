@@ -3,7 +3,6 @@ using Android.Widget;
 using Android.OS;
 using System;
 using System.Threading.Tasks;
-using SQLite.Net.Platform.XamarinAndroid;
 using Kinvey;
 
 namespace testdroidapp2
@@ -39,7 +38,6 @@ namespace testdroidapp2
 			Client.Builder builder = new Client.Builder("kid_b1d6IY_x7l", "079412ee99f4485d85e6e362fb987de8")
 			//Client.Builder builder = new Client.Builder ("kid_ZkPDb_34T", "c3752d5079f34353ab89d07229efaf63") // MIC-SAML-TEST
 				.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal))
-				.setOfflinePlatform(new SQLitePlatformAndroid())
 				.setCredentialStore(new AndroidNativeCredentialStore(this.ApplicationContext))
 				.SetSSOGroupKey("com.kinvey")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });

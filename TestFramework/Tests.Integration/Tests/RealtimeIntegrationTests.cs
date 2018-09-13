@@ -29,9 +29,8 @@ namespace TestFramework
 		public void Setup()
 		{
 			string appKey = "kid_Zy0JOYPKkZ", appSecret = "d83de70e64d540e49acd6cfce31415df"; // UnitTestFramework
-			Client.Builder builder = new Client.Builder(appKey, appSecret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            Client.Builder builder = new Client.Builder(appKey, appSecret)
+                .setFilePath(TestSetup.db_dir);
 
 			kinveyClient = builder.Build();
 		}

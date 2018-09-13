@@ -20,9 +20,7 @@ using System.Threading.Tasks;
 using KinveyUtils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SQLite.Net;
-using SQLite.Net.Async;
-using SQLite.Net.Interop;
+using SQLite;
 
 namespace Kinvey
 {
@@ -32,7 +30,7 @@ namespace Kinvey
     public class SQLiteCacheManager : ICacheManager
     {
 
-        private class DebugTraceListener : ITraceListener
+        private class DebugTraceListener
         {
             public void Receive(string message)
             {
@@ -60,11 +58,9 @@ namespace Kinvey
                         //var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
                         //dbConnection = new SQLiteAsyncConnection (connectionFactory);
                         _dbConnectionSync = new SQLiteConnection(
-                            sqlitePlatform: platform,
                             databasePath: dbpath,
                             openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex,
-                            storeDateTimeAsTicks: false,
-                            resolver: new KinveyContractResolver()
+                            storeDateTimeAsTicks: false
                         );
                         //_dbConnectionSync.TraceListener = new DebugTraceListener();
                     }
@@ -75,12 +71,6 @@ namespace Kinvey
         }
 
         /// <summary>
-        /// Gets or sets the platform.
-        /// </summary>
-        /// <value>The platform.</value>
-        public ISQLitePlatform platform { get; set; }
-
-        /// <summary>
         /// Gets or sets the database file path.
         /// </summary>
         /// <value>The dbpath.</value>
@@ -89,9 +79,8 @@ namespace Kinvey
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteCacheManager"/> class.
 		/// </summary>
-		public SQLiteCacheManager(ISQLitePlatform platform, string filePath)
+		public SQLiteCacheManager(string filePath)
 		{
-			this.platform = platform;
 			this.dbpath = Path.Combine (filePath, "kinveyOffline.sqlite");
 		}
 
@@ -169,7 +158,7 @@ namespace Kinvey
 //			return SQLiteHelper<T>.getInstance (platform, dbpath);
 //		}
 
-		public ICache<T> GetCache<T>(string collectionName) where T : class
+		public ICache<T> GetCache<T>(string collectionName) where T : new()
 		{
             lock (DBConnectionSync)
             {
@@ -189,7 +178,7 @@ namespace Kinvey
                     return mapCollectionToCache[collectionName] as ICache<T>;
                 }
 
-                mapCollectionToCache[collectionName] = new SQLiteCache<T>(collectionName, dbConnectionAsync, DBConnectionSync, platform);
+                mapCollectionToCache[collectionName] = new SQLiteCache<T>(collectionName, dbConnectionAsync, DBConnectionSync);
                 return mapCollectionToCache[collectionName] as ICache<T>;
             }
 		}
@@ -317,28 +306,5 @@ namespace Kinvey
 			return cmd.ExecuteScalar<string> () != null;
 		}
 
-
-		/// <summary>
-		/// Kinvey contract resolver - this resolver is used to replace the default SQLite resolver,
-		/// so that any class that can be serialized / deserialized as a JSON string can be stored in SQL
-		/// </summary>
-		class KinveyContractResolver:ContractResolver{
-
-			public KinveyContractResolver () : base(t =>  true, Deserialize){
-				
-			}
-
-			public static object Deserialize(Type t, object [] obj){
-				//if (t == typeof(ISerializable<string>)) {
-				if (t.GetTypeInfo().ImplementedInterfaces.Contains(typeof (ISerializable<string>)) &&
-				    obj != null &&
-				    obj.Count() > 0)
-				{
-					return JsonConvert.DeserializeObject (obj[0].ToString(), t);
-				}
-
-				return Activator.CreateInstance(t, obj);
-			} 
-		}
 	}
 }

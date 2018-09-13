@@ -16,5 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kinvey\Kinvey.csproj" />
+    <ProjectReference Include="..\sqlite-net\nuget\SQLite-net-std\SQLite-net-std.csproj" />
   </ItemGroup>
 </Project>

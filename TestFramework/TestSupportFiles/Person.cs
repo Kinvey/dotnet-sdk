@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SQLite.Net.Attributes;
+using SQLite;
 using Kinvey;
 
 namespace TestFramework
@@ -8,18 +8,21 @@ namespace TestFramework
 	public class Person : IPersistable
 	{
 		[JsonProperty("_id")]
-		[Preserve]
-		[PrimaryKey, Column("_id")]
+        [Kinvey.Preserve]
+        [SQLite.Preserve]
+        [PrimaryKey, Column("_id")]
 		public string ID { get; set; }
 
 		[JsonProperty("_acl")]
-		[Preserve]
-		[Column("_acl")]
+        [Kinvey.Preserve]
+        [SQLite.Preserve]
+        [Column("_acl")]
 		public AccessControlList ACL { get; set; }
 
 		[JsonProperty("_kmd")]
-		[Preserve]
-		[Column("_kmd")]
+        [Kinvey.Preserve]
+        [SQLite.Preserve]
+        [Column("_kmd")]
 		public KinveyMetaData KMD { get; set; }
 
 		[JsonProperty]

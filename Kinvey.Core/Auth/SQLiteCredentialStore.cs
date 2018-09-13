@@ -12,8 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System.IO;
-using SQLite.Net.Interop;
-using SQLite.Net;
+using SQLite;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -35,12 +34,12 @@ namespace Kinvey
 		/// </summary>
 		/// <param name="platform">Platform.</param>
 		/// <param name="filepath">Filepath.</param>
-		public SQLiteCredentialStore (ISQLitePlatform platform, string filepath)
+		public SQLiteCredentialStore (string filepath)
 		{
 			string dbPath = Path.Combine (filepath, "kinvey_tokens.sqlite");
 			if (_dbConnection == null)
 			{
-				_dbConnection = new SQLiteConnection (platform, dbPath);
+				_dbConnection = new SQLiteConnection (dbPath);
 				_dbConnection.CreateTable<SQLCredential>();
 			}
 		}

@@ -34,8 +34,7 @@ namespace Kinvey.Tests
 		public void Setup()
         {
             Client.Builder builder = ClientBuilder
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+                .setFilePath(TestSetup.db_dir);
 
             if (MockData)
             {

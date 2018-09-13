@@ -1,0 +1,3 @@
+[submodule "sqlite-net"]
+	path = sqlite-net
+	url = https://github.com/heyzooi/sqlite-net.git
