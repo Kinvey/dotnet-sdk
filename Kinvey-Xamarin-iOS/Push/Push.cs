@@ -3,10 +3,9 @@ using Kinvey;
 using UIKit;
 using System.Threading;
 using Foundation;
-using KinveyUtils;
 using System.Text.RegularExpressions;
 
-namespace KinveyXamariniOS
+namespace Kinvey
 {
 	public class Push : AbstractPush
 	{

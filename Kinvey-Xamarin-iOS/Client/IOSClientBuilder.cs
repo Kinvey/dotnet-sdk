@@ -2,12 +2,30 @@
 
 namespace Kinvey
 {
-    public class IOSClientBuilder : Client.Builder
+    public partial class Client
     {
-        public IOSClientBuilder(string appKey, string appSecret) :
-        base(appKey, appSecret, Constants.DevicePlatform.iOS)
+
+        public static string DefaultFilePath
         {
-            this.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString());
+            get
+            {
+                return NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString();
+            }
+        }
+
+        public partial class Builder
+        {
+            public Builder(
+                string appKey,
+                string appSecret
+            ) : this(
+                appKey,
+                appSecret,
+                DefaultFilePath,
+                Constants.DevicePlatform.iOS
+            )
+            {
+            }
         }
     }
 }

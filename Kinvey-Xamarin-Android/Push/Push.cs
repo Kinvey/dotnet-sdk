@@ -1,13 +1,12 @@
 ﻿using System;
 using Kinvey;
-using KinveyUtils;
 using Android.Content;
 using Android.App;
 using Android.Gms.Gcm;
 using System.Threading;
 using Android.Preferences;
 
-namespace KinveyXamarinAndroid
+namespace Kinvey
 {
 	public class Push : AbstractPush
 	{

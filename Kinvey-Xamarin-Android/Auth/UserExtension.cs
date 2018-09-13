@@ -14,7 +14,7 @@
 using Kinvey;
 using Android.Content;
 
-namespace KinveyXamarinAndroid
+namespace Kinvey
 {
 	public static class UserExtension
 	{

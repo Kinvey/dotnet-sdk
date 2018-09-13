@@ -2,7 +2,6 @@
 using UIKit;
 
 using Kinvey;
-using KinveyXamariniOS;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;

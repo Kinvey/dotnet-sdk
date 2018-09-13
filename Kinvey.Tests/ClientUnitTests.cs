@@ -43,7 +43,7 @@ namespace Kinvey.Tests
         public void TestDotnetClientBuilder()
         {
             // Arrange
-            var builder = new DotnetClientBuilder(TestSetup.app_key, TestSetup.app_secret);
+            var builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
             // Act
             var client = builder.Build();

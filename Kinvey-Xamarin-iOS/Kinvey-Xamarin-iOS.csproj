@@ -55,7 +55,6 @@
     <Folder Include="Client\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Push\PushExtension.cs" />
     <Compile Include="Push\Push.cs" />

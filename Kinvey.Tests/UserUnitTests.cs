@@ -110,7 +110,7 @@ namespace Kinvey.Tests
 		public async Task TestMICRenderURLScopeID()
 		{
 			// Arrange
-			var builder = new DotnetClientBuilder(TestSetup.app_key, TestSetup.app_secret);
+			var builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 			var client = builder.Build();
 			var autoEvent = new System.Threading.AutoResetEvent(false);
 			string urlToTestForScopeID = String.Empty;

@@ -1,7 +1,7 @@
 ﻿using System;
 using Kinvey;
 
-namespace KinveyXamariniOS
+namespace Kinvey
 {
 	public static class PushExtension
 	{
