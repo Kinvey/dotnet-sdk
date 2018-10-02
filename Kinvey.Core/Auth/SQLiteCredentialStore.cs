@@ -36,10 +36,10 @@ namespace Kinvey
 		/// <param name="filepath">Filepath.</param>
 		public SQLiteCredentialStore (string filepath)
 		{
-			string dbPath = Path.Combine (filepath, "kinvey_tokens.sqlite");
 			if (_dbConnection == null)
 			{
-				_dbConnection = new SQLiteConnection (dbPath);
+                var dbPath = Path.Combine(filepath, "kinvey_tokens.sqlite");
+                _dbConnection = new SQLiteConnection (dbPath);
 				_dbConnection.CreateTable<SQLCredential>();
 			}
 		}

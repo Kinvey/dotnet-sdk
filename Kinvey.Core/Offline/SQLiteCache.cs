@@ -33,7 +33,7 @@ namespace Kinvey
 	/// This class is responsible for breaking apart a request, and determing what actions to take
 	/// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
 	/// </summary>
-	public class SQLiteCache <T> : ICache <T> where T : new()
+	public class SQLiteCache <T> : ICache <T> where T : class, new()
     {
 
 		private string collectionName;

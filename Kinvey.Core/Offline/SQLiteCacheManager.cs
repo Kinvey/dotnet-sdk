@@ -158,7 +158,7 @@ namespace Kinvey
 //			return SQLiteHelper<T>.getInstance (platform, dbpath);
 //		}
 
-		public ICache<T> GetCache<T>(string collectionName) where T : new()
+		public ICache<T> GetCache<T>(string collectionName) where T : class, new()
 		{
             lock (DBConnectionSync)
             {
