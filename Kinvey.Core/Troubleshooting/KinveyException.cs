@@ -178,19 +178,25 @@ namespace Kinvey
 					description = "If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)";
 				break;
 
-				case EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE:
+				case EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS:
 					error = "MIC Hostname must use the https protocol, trying to set: ";
 					debug = "";
 					description = "";
 					break;
 
-				case EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS:
+				case EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE:
 					error = "Redirect does not contain `code=`, was: ";
 					debug = "";
 					description = "";
 					break;
 
-				case EnumErrorCode.ERROR_MIC_CREDENTIAL_SAVE:
+                case EnumErrorCode.ERROR_MIC_REDIRECT_ERROR:
+                    error = "Redirect contains an `error=`, was: ";
+                    debug = "";
+                    description = "";
+                    break;
+
+                case EnumErrorCode.ERROR_MIC_CREDENTIAL_SAVE:
 					error = "Could not save account to KeyChain.";
 					debug = "";
 					description = "";

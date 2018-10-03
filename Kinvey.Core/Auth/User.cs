@@ -1316,7 +1316,7 @@ namespace Kinvey
 		}
 
 		// Request to login to temp URL (automated autorization grant flow)
-		private class LoginToTempURLRequest : AbstractKinveyClientRequest<JObject>
+		internal class LoginToTempURLRequest : AbstractKinveyClientRequest<JObject>
 		{
 			AbstractClient cli;
 			string clientID = null;
@@ -1333,10 +1333,26 @@ namespace Kinvey
 			public override async Task<JObject> onRedirectAsync (string newLocation)
 			{
 				// TODO clean up this code - a lot of assumptions made here
-				int codeIndex = newLocation.IndexOf("code=");
-				if (codeIndex == -1){
-					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE, newLocation);
-				}
+				int codeIndex = newLocation.IndexOf(Constants.STR_MIC_REDIRECT_CODE);
+				if (codeIndex == -1)
+                {
+                    int errorIndex = newLocation.IndexOf(Constants.STR_MIC_REDIRECT_ERROR);
+
+                    if (errorIndex == -1)
+                    {
+                        throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE, newLocation);
+                    }
+                    else
+                    {
+                        // Error response looks like:
+                        // <redirect_uri>?error=<error code>&error_description=<error description text>
+                        var ex = new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_MIC_REDIRECT_ERROR, newLocation);
+                        ex.Description = newLocation.Substring(newLocation.IndexOf(Constants.STR_MIC_REDIRECT_ERROR_DESCRIPTION) + Constants.STR_MIC_REDIRECT_ERROR_DESCRIPTION.Length);
+                        var errorstring = newLocation.Substring((newLocation.IndexOf(Constants.STR_MIC_REDIRECT_ERROR) + Constants.STR_MIC_REDIRECT_ERROR.Length));
+                        ex.Error += errorstring.Substring(0, errorstring.IndexOf(Constants.CHAR_AMPERSAND));
+                        throw ex;
+                    }
+                }
 
 				String accesstoken = newLocation.Substring (codeIndex + 5); // TODO change "String" to "string" - use alias everywhere
 				return await User.GetMICToken(cli, accesstoken, clientID).ExecuteAsync();
