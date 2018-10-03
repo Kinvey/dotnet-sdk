@@ -179,7 +179,7 @@ namespace TestFramework
             Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
             Client client = builder.Build();
             var loginRequest = new User.LoginToTempURLRequest(client, string.Empty, new System.Collections.Generic.Dictionary<string, string>(){{ "client_id", "none" }}, null);
-            string redirectUri = $"myredirecturi/error={error}&error_description={errorDescription}"; //error=<error code>&error_description=<error description text>
+            string redirectUri = $"myredirecturi://?error={error}&error_description={errorDescription}";
 
             // Act
             // Assert
