@@ -162,19 +162,25 @@ namespace Kinvey
 			return fmd;
 		}
 
-		#endregion
+        #endregion
 
-		#region File class download APIs
+        #region File class download APIs
 
-		/// <summary>
-		/// Download the File associated with the id of the provided metadata.  The file is copied into the byte[], with delegates returning either errors or the FileMetaData from Kinvey.
-		/// </summary>
-		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
-		/// <param name="content">Content.</param>
-		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
-		{
-			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
+        [Obsolete("This method has been deprecated (2018-Oct-03).  Please use DownloadAsync() instead.")]
+        public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
+        {
+            return await DownloadAsync(metadata, content, ct);
+        }
+
+        /// <summary>
+        /// Download the File associated with the id of the provided metadata.  The file is copied into the byte[], with delegates returning either errors or the FileMetaData from Kinvey.
+        /// </summary>
+        /// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
+        /// <param name="content">Content.</param>
+        /// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+        public async Task<FileMetaData> DownloadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
+        {
+            DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
 			FileMetaData fmd = await downloadRequest.ExecuteAsync();
 			ct.ThrowIfCancellationRequested();
@@ -182,13 +188,19 @@ namespace Kinvey
 			return fmd;
 		}
 
-		/// <summary>
-		/// Download the File associated with the id of the provided metadata.  The file is streamed into the stream, with delegates returning either errors or the FileMetaData from Kinvey.
-		/// </summary>
-		/// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
-		/// <param name="content">Where the contents of the file will be streamed.</param>
-		/// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
-		public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
+        [Obsolete("This method has been deprecated (2018-Oct-03).  Please use DownloadAsync() instead.")]
+        public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
+        {
+            return await DownloadAsync(metadata, content, ct);
+        }
+
+        /// <summary>
+        /// Download the File associated with the id of the provided metadata.  The file is streamed into the stream, with delegates returning either errors or the FileMetaData from Kinvey.
+        /// </summary>
+        /// <param name="metadata">The FileMetaData representing the file to download.  This must contain an id.</param>
+        /// <param name="content">Where the contents of the file will be streamed.</param>
+        /// <param name="ct">[optional] The cancellation token.  If cancellation is requested, an OperationCancelledException will be thrown.</param>
+        public async Task<FileMetaData> DownloadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
 		{
 			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();

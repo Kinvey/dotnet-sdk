@@ -229,7 +229,7 @@ namespace TestFramework
 			byte[] downloadContent = new byte[downloadMetaData.size];
 
 			// Act
-			FileMetaData downloadFMD = await kinveyClient.File().downloadAsync(downloadMetaData, downloadContent);
+			FileMetaData downloadFMD = await kinveyClient.File().DownloadAsync(downloadMetaData, downloadContent);
 			System.IO.File.WriteAllBytes(downloadByteArrayFilePath, content);
 
 			// Assert
@@ -263,7 +263,7 @@ namespace TestFramework
 			MemoryStream downloadStreamContent = new MemoryStream();
 
 			// Act
-			FileMetaData downloadFMD = await kinveyClient.File().downloadAsync(downloadMetaData, downloadStreamContent);
+			FileMetaData downloadFMD = await kinveyClient.File().DownloadAsync(downloadMetaData, downloadStreamContent);
 			FileStream fs = new FileStream(downloadStreamFilePath, FileMode.Create);
 			downloadStreamContent.WriteTo(fs);
 			downloadStreamContent.Close();
@@ -291,7 +291,7 @@ namespace TestFramework
 			// Assert
 			Assert.CatchAsync(async delegate ()
 			{
-				await kinveyClient.File().downloadAsync(fileMetaData, content);
+				await kinveyClient.File().DownloadAsync(fileMetaData, content);
 			});
 
 			// Teardown
