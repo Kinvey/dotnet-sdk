@@ -12,7 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
-using RestSharp;
+using System.Net.Http;
 
 namespace Kinvey
 {
@@ -124,26 +124,26 @@ namespace Kinvey
 			this.description = errorInfo.Item3;
 		}
 
-		public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, IRestResponse responseJSON)
-			: base(responseJSON.ErrorMessage, responseJSON.ErrorException)
+        public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, HttpResponseMessage response, Exception innerException)
+            : base(innerException.Message, innerException)
 		{
 			this.errorCategory = errorCategory;
 			this.errorCode = errorCode;
 
 			Tuple<string, string, string> errorInfo = InfoFromErrorCode(errorCategory, errorCode);
 
-			StatusCode = (int)responseJSON?.StatusCode;
+			StatusCode = (int) response.StatusCode;
 
 			try
 			{
-				KinveyJsonError errorJSON = KinveyJsonError.parse(responseJSON);
+				KinveyJsonError errorJSON = KinveyJsonError.parse(response);
 				this.error = errorJSON.Error ?? errorInfo.Item1;
 				this.debug = errorJSON.Debug ?? errorInfo.Item2;
 				this.description = errorJSON.Description ?? errorInfo.Item3;
-				this.requestID = HelperMethods.getRequestID(responseJSON);
+				this.requestID = HelperMethods.getRequestID(response);
 
 			}
-			catch (Exception e) { 
+			catch (Exception) { 
 				//Catch any exceptions thrown while parsing an unknown responseJSON
 			}
 		}
@@ -178,19 +178,25 @@ namespace Kinvey
 					description = "If the exception is caused by `Path <somekey>`, then <somekey> might be a different type than is expected (int instead of of string)";
 				break;
 
-				case EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE:
+				case EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS:
 					error = "MIC Hostname must use the https protocol, trying to set: ";
 					debug = "";
 					description = "";
 					break;
 
-				case EnumErrorCode.ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS:
+				case EnumErrorCode.ERROR_MIC_MISSING_REDIRECT_CODE:
 					error = "Redirect does not contain `code=`, was: ";
 					debug = "";
 					description = "";
 					break;
 
-				case EnumErrorCode.ERROR_MIC_CREDENTIAL_SAVE:
+                case EnumErrorCode.ERROR_MIC_REDIRECT_ERROR:
+                    error = "Redirect contains an `error=`, was: ";
+                    debug = "";
+                    description = "";
+                    break;
+
+                case EnumErrorCode.ERROR_MIC_CREDENTIAL_SAVE:
 					error = "Could not save account to KeyChain.";
 					debug = "";
 					description = "";

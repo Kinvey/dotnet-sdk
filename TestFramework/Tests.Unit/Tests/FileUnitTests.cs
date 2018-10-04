@@ -14,9 +14,12 @@
 using System;
 using System.Threading.Tasks;
 using Moq;
+using Moq.Protected;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Kinvey;
+using System.Net.Http;
+using System.Threading;
 
 namespace TestFramework
 {
@@ -39,16 +42,23 @@ namespace TestFramework
         public async Task TestFileCheckResumableStatus()
         {
             // Arrange
-            var moqRestClient = new Mock<RestSharp.IRestClient>();
+            var moqRestClient = new Mock<HttpClientHandler>();
 
             var response = new Mock<System.Net.WebResponse>();
             //response.Setup(r => (r as System.Net.HttpWebResponse).StatusCode).Returns((System.Net.HttpStatusCode)308);
             var innerException = new System.Net.WebException("MOCK EXCEPTION", null, System.Net.WebExceptionStatus.ProtocolError, response.Object);
             var ex = new Exception("MOCK RESUMABLE EXCEPTION", innerException);
-            moqRestClient.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ThrowsAsync(ex);
+            moqRestClient
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ThrowsAsync(ex);
 
             Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.SetRestClient(moqRestClient.Object);
+                .SetRestClient(new HttpClient(moqRestClient.Object));
 
             Client c = cb.Build();
 

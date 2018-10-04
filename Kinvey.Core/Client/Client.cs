@@ -13,11 +13,11 @@
 
 using System;
 using System.Collections.Generic;
-using RestSharp;
 using SQLite.Net.Interop;
 using System.Threading.Tasks;
 using KinveyUtils;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace Kinvey
 {
@@ -74,7 +74,7 @@ namespace Kinvey
 		/// <param name="servicePath">The service path, appended to the rootURL.</param>
 		/// <param name="initializer">The request initializer, maintaining headers and authentication.</param>
 		/// <param name="store">The credential store, where the current user's credentials will be stored.</param>
-		protected Client(IRestClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
+		protected Client(HttpClient client, string rootUrl, string servicePath, KinveyClientRequestInitializer initializer, ICredentialStore store)
 			: base(client, rootUrl, servicePath, initializer, store) {}
 
 
@@ -95,12 +95,16 @@ namespace Kinvey
 		/// <returns>The <see cref="KinveyXamarin.PingResponse"/> object, from which the version can be accessed. </returns>
 		public async Task<PingResponse> PingAsync()
 		{
-			var urlParameters = new Dictionary<string, string>();
-			urlParameters.Add("appKey", ((KinveyClientRequestInitializer) RequestInitializer).AppKey);
+            var urlParameters = new Dictionary<string, string>
+            {
+                { "appKey", ((KinveyClientRequestInitializer)RequestInitializer).AppKey }
+            };
 
-			PingRequest ping = new PingRequest(this, urlParameters);
-			ping.RequireAppCredentials = true;
-			InitializeRequest(ping);
+            var ping = new PingRequest(this, urlParameters)
+            {
+                RequireAppCredentials = true
+            };
+            InitializeRequest(ping);
 
 			return await ping.ExecuteAsync();
 		}
@@ -157,7 +161,7 @@ namespace Kinvey
 			/// <param name="appKey">App key from Kinvey</param>
 			/// <param name="appSecret">App secret from Kinvey</param>
             public Builder(string appKey, string appSecret, Constants.DevicePlatform devicePlatform = Constants.DevicePlatform.PCL)
-                : base(new RestClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders(devicePlatform)))
+                : base(new HttpClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders(devicePlatform)))
 			{
 				ssoGroupKey = appKey;
                 instanceID = string.Empty;
@@ -187,7 +191,7 @@ namespace Kinvey
 					this.Store = new InMemoryCredentialStore();
 				}
 
-				Client c =  new Client(this.HttpRestClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
+				Client c =  new Client(this.HttpClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
 //				c.offline_platform = this.offlinePlatform;
 //				c.filePath = this.filePath;
                 c.CacheManager = this.CacheManager;
@@ -293,11 +297,11 @@ namespace Kinvey
 				return this;
 			}
 
-			public Builder SetRestClient(IRestClient client)
-			{
-				this.HttpRestClient = client;
-				return this;
-			}
+            public Builder SetRestClient(HttpClient client)
+            {
+                this.HttpClient = client;
+                return this;
+            }
 
 			public Builder SetSSOGroupKey(string ssoGroupKey)
 			{

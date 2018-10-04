@@ -18,10 +18,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
-using RestSharp;
 using System.Net.Http;
 using KinveyUtils;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Net;
 
 namespace Kinvey
 {
@@ -44,7 +45,7 @@ namespace Kinvey
 		/// <summary>
 		/// The request headers.
 		/// </summary>
-        private List<RestSharp.HttpHeader> requestHeaders = new List<HttpHeader>();
+        private List<KeyValuePair<string, IEnumerable<string>>> requestHeaders = new List<KeyValuePair<string, IEnumerable<string>>>();
 		/// <summary>
 		/// The URI template.
 		/// </summary>
@@ -56,11 +57,11 @@ namespace Kinvey
 		/// <summary>
 		/// The last response headers, in case the request is repeated.
 		/// </summary>
-        private List<Parameter> lastResponseHeaders = new List<Parameter>();
+        private List<KeyValuePair<string, IEnumerable<string>>> lastResponseHeaders = new List<KeyValuePair<string, IEnumerable<string>>>();
 		/// <summary>
 		/// The last response code.
 		/// </summary>
-        private int lastResponseCode = -1;
+        private HttpStatusCode lastResponseCode;
 		/// <summary>
 		/// The last response message.
 		/// </summary>
@@ -163,7 +164,7 @@ namespace Kinvey
 		/// Gets or sets the request headers.
 		/// </summary>
 		/// <value>The request headers.</value>
-        public List<HttpHeader> RequestHeaders
+        public List<KeyValuePair<string, IEnumerable<string>>> RequestHeaders
         {
             get { return this.requestHeaders; }
             set { this.requestHeaders = value; }
@@ -183,7 +184,7 @@ namespace Kinvey
 		/// Gets the last response headers.
 		/// </summary>
 		/// <value>The last response headers.</value>
-        public List<Parameter> LastResponseHeaders
+        public List<KeyValuePair<string, IEnumerable<string>>> LastResponseHeaders
         {
             get { return this.lastResponseHeaders; }
         }
@@ -192,7 +193,7 @@ namespace Kinvey
 		/// Gets the last response code.
 		/// </summary>
 		/// <value>The last response code.</value>
-        public int LastResponseCode
+        public HttpStatusCode LastResponseCode
         {
             get { return this.lastResponseCode; }
         }
@@ -247,39 +248,55 @@ namespace Kinvey
 		/// Builds the rest request.
 		/// </summary>
 		/// <returns>The rest request.</returns>
-		public RestRequest BuildRestRequest() 
+		public HttpRequestMessage BuildRestRequest() 
         {
-			RestRequest restRequest = new RestRequest (uriTemplate);
+            var uri = uriTemplate;
+            foreach (var keyValuePair in uriResourceParameters)
+            {
+                uri = uri.Replace($"{{{keyValuePair.Key}}}", keyValuePair.Value);
+            }
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(new Uri(client.BaseUrl), uri)
+            };
 
             switch (requestMethod)
             {
                 case "GET":
-					restRequest.Method = Method.GET;
+                    request.Method = HttpMethod.Get;
                     break;
 				case "POST":
-					restRequest.Method = Method.POST;
+                    request.Method = HttpMethod.Post;
                     break;
 				case "PUT":
-					restRequest.Method = Method.PUT;
+                    request.Method = HttpMethod.Put;
 					break;
 				case "DELETE":
-					restRequest.Method = Method.DELETE;
+                    request.Method = HttpMethod.Delete;
 					break;
             }
 
 
 			if (this.HttpContent == null && requestMethod.Equals (HttpMethod.Post)) {
-				restRequest.AddBody (new object ());
+                request.Content = new StringContent(string.Empty);
 			} else if (this.HttpContent == null ) {
 				//don't add a request body
 			}
             else
             {
-				restRequest.AddParameter(PayloadType.getContentType(), PayloadType.getHttpContent(HttpContent), ParameterType.RequestBody);
+                request.Content = new StringContent(PayloadType.getHttpContent(HttpContent), Encoding.UTF8, PayloadType.getContentType());
             }
 
-            foreach (var header in requestHeaders){
-				restRequest.AddHeader(header.Name, header.Value.FirstOrDefault());
+            foreach (var header in requestHeaders)
+            {
+                if (header.Value.Count() > 1)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+                else
+                {
+                    request.Headers.Add(header.Key, header.Value.FirstOrDefault());
+                }
             }
 
 			// check to see if Kinvey content type needs to be added for GCS Upload
@@ -288,48 +305,51 @@ namespace Kinvey
 				string mimetype = ((FileMetaData)this.requestContent).mimetype;
 
 				if (!string.IsNullOrEmpty(mimetype)) {
-					restRequest.AddHeader("X-Kinvey-Content-Type", mimetype);
+                    request.Headers.Add("X-Kinvey-Content-Type", mimetype);
 				}
 			}
 
-			if (client.GetClientAppVersion () != null && client.GetClientAppVersion ().Length > 0) {
-				restRequest.AddHeader ("X-Kinvey-Client-App-Version", client.GetClientAppVersion ());
+			if (!string.IsNullOrEmpty(client.GetClientAppVersion())) {
+                request.Headers.Add("X-Kinvey-Client-App-Version", client.GetClientAppVersion ());
 			}
 			if (client.GetCustomRequestProperties () != null && client.GetCustomRequestProperties ().Count > 0) {
 				string jsonHeaders = JsonConvert.SerializeObject (this.customRequestHeaders);
 				if (Encoding.UTF8.GetByteCount(jsonHeaders) < 2000){
-					restRequest.AddHeader ("X-Kinvey-Custom-Request-Properties", jsonHeaders);
+					request.Headers.Add("X-Kinvey-Custom-Request-Properties", jsonHeaders);
 				}else{
 					throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CUSTOM_REQUEST_PROPERTY_LIMIT, "");
 				}
 
 			}
-
-			foreach (var parameter in uriResourceParameters)
-			{
-				restRequest.AddParameter(parameter.Key, parameter.Value, ParameterType.UrlSegment);
-			}
-
-
 				
-			auth.Authenticate (restRequest);
-            return restRequest;           
+			auth.Authenticate (request);
+            return request;           
         }
 
 		/// <summary>
 		/// Initializes the rest client.
 		/// </summary>
 		/// <returns>The rest client.</returns>
-        private IRestClient InitializeRestClient()
+        private HttpClient InitializeRestClient()
         {
-            IRestClient restClient = this.client.RestClient;
-			restClient.BaseUrl = this.baseURL;
+            HttpClient httpClient;
+            if (OverrideRedirect)
+            {
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    AllowAutoRedirect = false
+                };
+                httpClient = new HttpClient(httpClientHandler)
+                {
+                    BaseAddress = new Uri(this.baseURL)
+                };
+            }
+            else
+            {
+                httpClient = this.client.HttpClient;
+            }
 
-			if (OverrideRedirect) {
-				restClient.FollowRedirects = false;
-			}
-
-            return restClient;
+            return httpClient;
         }
 
 		#endregion
@@ -339,25 +359,35 @@ namespace Kinvey
 		/// Executes the request without any parsing.
 		/// </summary>
 		/// <returns>The unparsed.</returns>
-        public RestResponse ExecuteUnparsed()
+        public HttpResponseMessage ExecuteUnparsed()
         {
-            IRestClient client = InitializeRestClient();
-            RestRequest request = BuildRestRequest();
+            var client = InitializeRestClient();
+            var request = BuildRestRequest();
 
-            client.Authenticator = RequestAuth;
-
-			var req = client.ExecuteAsync(request);
+            RequestAuth.Authenticate(request);
+            Logger.Log(request);
+            var req = client.SendAsync(request);
 			var response = req.Result;
-
-			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
-				kinveyException.RequestID = HelperMethods.getRequestID(response);
-				throw kinveyException;
+            Logger.Log(response);
+            var contentType = response.Headers
+                                      .Where(x => x.Key.ToLower().Equals("content-type"))
+                                      .Select(x => x.Value)
+                                      .SingleOrDefault();
+            if (contentType != null && contentType.Any() && !contentType.First().Contains( "application/json")) {
+                var kinveyException = new KinveyException(
+                    EnumErrorCategory.ERROR_REQUIREMENT,
+                    EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER,
+                    contentType.FirstOrDefault()
+                )
+                {
+                    RequestID = HelperMethods.getRequestID(response)
+                };
+                throw kinveyException;
 			}
 
-            lastResponseCode = (int)response.StatusCode;
-            lastResponseMessage = response.StatusDescription;
-            lastResponseHeaders = new List<Parameter>();
+            lastResponseCode = response.StatusCode;
+            lastResponseMessage = response.StatusCode.ToString();
+            lastResponseHeaders = new List<KeyValuePair<string, IEnumerable<string>>>();
             foreach (var header in response.Headers)
             {
                 lastResponseHeaders.Add(header);
@@ -402,38 +432,58 @@ namespace Kinvey
 //			}
 
 
-			if (response.ErrorException != null || ((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302)
+			try
             {
-				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
-			}
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                throw new KinveyException(
+                    EnumErrorCategory.ERROR_BACKEND,
+                    EnumErrorCode.ERROR_JSON_RESPONSE,
+                    ex.Message,
+                    ex
+                );
+            }
 
 
-            return (RestResponse) response;
+            return response;
         }
 
 
-		public async Task<RestResponse> ExecuteUnparsedAsync()
+		public async Task<HttpResponseMessage> ExecuteUnparsedAsync()
 		{
-			IRestClient client = InitializeRestClient();
-			RestRequest request = BuildRestRequest();
+			var httClient = InitializeRestClient();
+			var request = BuildRestRequest();
 
-			client.Authenticator = RequestAuth;
+            RequestAuth.Authenticate(request);
+            Logger.Log(request);
+            var response = await httClient.SendAsync(request);
+            Logger.Log(response);
+            var contentType = response.Headers
+                                      .Where(x => x.Key.ToLower().Equals("content-type"))
+                                      .Select(x => x.Value)
+                                      .FirstOrDefault()?
+                                      .FirstOrDefault();
 
-			var response = await client.ExecuteAsync(request);
-
-			if (response.ContentType != null && !response.ContentType.ToString().Contains( "application/json")) {
-				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER, response.ContentType.ToString());
-				kinveyException.RequestID = HelperMethods.getRequestID(response);
-				throw kinveyException;
+            if (contentType != null && !contentType.Contains( "application/json")) {
+                var kinveyException = new KinveyException(
+                    EnumErrorCategory.ERROR_REQUIREMENT,
+                    EnumErrorCode.ERROR_REQUIREMENT_CONTENT_TYPE_HEADER,
+                    contentType
+                ) {
+                    RequestID = HelperMethods.getRequestID(response)
+                };
+                throw kinveyException;
 			}
 
-			lastResponseCode = (int)response.StatusCode;
-			lastResponseMessage = response.StatusDescription;
-			lastResponseHeaders = new List<Parameter>();
+			lastResponseCode = response.StatusCode;
+            lastResponseMessage = response.StatusCode.ToString();
+            lastResponseHeaders = new List<KeyValuePair<string, IEnumerable<string>>>();
 
 			foreach (var header in response.Headers)
 			{
-				lastResponseHeaders.Add(header);
+                lastResponseHeaders.Add(header);
 			}
 
 			//process refresh token needed
@@ -498,13 +548,22 @@ namespace Kinvey
 				}
 			}
 
-			if (response.ErrorException != null)
-			{
-				throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
-			}
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                throw new KinveyException(
+                    EnumErrorCategory.ERROR_BACKEND,
+                    EnumErrorCode.ERROR_JSON_RESPONSE,
+                    response,
+                    ex
+                );
+            }
 
 
-			return (RestResponse) response;
+			return response;
 		}
 
 
@@ -528,12 +587,15 @@ namespace Kinvey
             }
             try
             {
-				return JsonConvert.DeserializeObject<T>(response.Content);
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                return JsonConvert.DeserializeObject<T>(task.Result);
             }
 			catch(JsonException ex){
-				KinveyException kinveyException = new KinveyException (EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
-				kinveyException.RequestID = HelperMethods.getRequestID(response);
-				throw kinveyException;
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message)
+                {
+                    RequestID = HelperMethods.getRequestID(response)
+                };
 			}
             catch(ArgumentException ex)
             {
@@ -553,23 +615,12 @@ namespace Kinvey
 
 			if (OverrideRedirect)
 			{
-				string newLoc = String.Empty;
-				foreach (Parameter param in response.Headers)
+				string newLoc = string.Empty;
+                foreach (var header in response.Headers)
 				{
-					if (param.Name.Equals("Location"))
-					{
-						int i = response.Headers.IndexOf(param);
-						Parameter p = response.Headers[i];
-						var obj = p.Value as List<string>;
-						if (obj == null)
-						{
-							var obj2 = p.Value as string[];
-							newLoc = obj2.FirstOrDefault();
-						}
-						else
-						{
-							newLoc = obj.FirstOrDefault();
-						}
+                    if (header.Key.ToLower().Equals("location"))
+                    {
+                        newLoc = header.Value.FirstOrDefault();
 						break;
 					}
 				}
@@ -582,7 +633,7 @@ namespace Kinvey
 				return default(T);
 			}
 
-			string path = response?.ResponseUri?.AbsolutePath;
+			string path = response.RequestMessage.RequestUri.AbsolutePath;
 
 			if (path != null &&
 			    path.Contains(Constants.STR_PATH_CUSTOM_ENDPOINT) &&
@@ -591,8 +642,20 @@ namespace Kinvey
 				// Seems like only Custom Endpoint/BL would result in having a successful response
 				// without having a successful status code.  The BL executed successfully, but did
 				// produce a successsful outcome.
-				var ke =  new KinveyException(EnumErrorCategory.ERROR_CUSTOM_ENDPOINT, EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR, response);
-				throw ke;
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    var ke = new KinveyException(
+                        EnumErrorCategory.ERROR_CUSTOM_ENDPOINT,
+                        EnumErrorCode.ERROR_CUSTOM_ENDPOINT_ERROR,
+                        response,
+                        ex
+                    );
+                    throw ke;
+                }
 			}
 
 			if (path != null &&
@@ -602,29 +665,62 @@ namespace Kinvey
 				// Appears as though there is a stream error.  A stream error could result in having a successful response
 				// without having a successful status code, such as a 401.  The request was successful, but the response
 				// indicates that there is an issue with what was being requested
-				var ke = new KinveyException(EnumErrorCategory.ERROR_REALTIME, EnumErrorCode.ERROR_REALTIME_ERROR, response);
-				throw ke;
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    var ke = new KinveyException(
+                        EnumErrorCategory.ERROR_REALTIME,
+                        EnumErrorCode.ERROR_REALTIME_ERROR,
+                        response,
+                        ex
+                    );
+                    throw ke;
+                }
       }
 
       if (((int)response.StatusCode) < 200 || ((int)response.StatusCode) > 302)
 			{
-				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, response);
-				kinveyException.RequestID = HelperMethods.getRequestID(response);
-				throw kinveyException;
+				try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    var kinveyException = new KinveyException(
+                        EnumErrorCategory.ERROR_BACKEND,
+                        EnumErrorCode.ERROR_JSON_RESPONSE,
+                        response,
+                        ex
+                    ) {
+                        RequestID = HelperMethods.getRequestID(response)
+                    };
+                    throw kinveyException;
+                }
 			}
 
 			try
 			{
-                var result = JsonConvert.DeserializeObject<T>(response.Content);
+                var json = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<T>(json);
 
                 RequestStartTime = HelperMethods.GetRequestStartTime(response);
 
                 return result;
 			}
-			catch(JsonException ex){
-				KinveyException kinveyException = new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message);
-				kinveyException.RequestID = HelperMethods.getRequestID(response);
-				throw kinveyException;
+            catch(JsonException ex)
+            {
+                KinveyException kinveyException = new KinveyException(
+                    EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+                    EnumErrorCode.ERROR_JSON_PARSE,
+                    ex.Message,
+                    ex
+                ) {
+                    RequestID = HelperMethods.getRequestID(response)
+                };
+                throw kinveyException;
 			}
 			catch(ArgumentException ex)
 			{
@@ -650,7 +746,7 @@ namespace Kinvey
 		public abstract class RequestPayloadType{
 
 			public abstract string getContentType ();
-			public abstract Object getHttpContent(object HttpContent);
+			public abstract string getHttpContent(object HttpContent);
 		}
 
 		public class JSONPayload : RequestPayloadType{
@@ -658,7 +754,7 @@ namespace Kinvey
 				return "application/json";
 
 			}
-			public override Object getHttpContent(object HttpContent){
+			public override string getHttpContent(object HttpContent){
 				return JsonConvert.SerializeObject(HttpContent);
 			}
 		}
@@ -667,7 +763,7 @@ namespace Kinvey
 			public override string getContentType (){
 				return "application/x-www-form-urlencoded";
 			}
-			public override Object getHttpContent(object HttpContent){
+			public override string getHttpContent(object HttpContent){
 //				return new object();
 				var dict = HttpContent as Dictionary<string, string>;
 

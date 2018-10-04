@@ -170,9 +170,6 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net45+win8+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="ModernHttpClient">
-      <HintPath>..\packages\modernhttpclient.2.4.2\lib\Portable-Net45+WinRT45+WP8+WPA81\ModernHttpClient.dll</HintPath>
-    </Reference>
     <Reference Include="Remotion.Linq">
       <HintPath>..\packages\Remotion.Linq.2.0.1\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
     </Reference>
@@ -193,10 +190,6 @@
     <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
       <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
       <Name>Kinvey-Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RestSharp.Portable\RestSharp.Portable.csproj">
-      <Project>{BA2352E1-CB07-4795-A2EB-F70720B2BBC9}</Project>
-      <Name>RestSharp.Portable</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

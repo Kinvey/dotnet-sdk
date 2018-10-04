@@ -13,20 +13,20 @@
 
 using System;
 using System.Collections.Generic;
-using RestSharp;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
 	/// <summary>
 	/// Default Kinvey specific headers added to every request.
 	/// </summary>
-    public class KinveyHeaders : List<HttpHeader>
+    public class KinveyHeaders : List<KeyValuePair<string, IEnumerable<string>>>
     {
 		/// <summary>
 		/// The version of the SDK.
 		/// </summary>
-		public static string VERSION = "3.1.4";
+		public static string VERSION = "3.1.5";
 
 		// The kinvey API version.
         static string kinveyApiVersionKey = "X-Kinvey-API-Version";
@@ -68,10 +68,14 @@ namespace Kinvey
 		/// </summary>
         public KinveyHeaders(Constants.DevicePlatform devicePlatform)
         {
-			Add(new HttpHeader { Name = userAgentKey, Value = new List<string> { userAgent } });
-			Add(new HttpHeader { Name = kinveyApiVersionKey, Value = new List<string> { kinveyApiVersion } });
+            Add(new KeyValuePair<string, IEnumerable<string>>(
+                userAgentKey, new List<string> { userAgent }
+            ));
+            Add(new KeyValuePair<string, IEnumerable<string>>(
+                kinveyApiVersionKey, new List<string> { kinveyApiVersion }
+            ));
 
-            JsonObject deviceInfo = new JsonObject();
+            JObject deviceInfo = new JObject();
 
             // Set the X-Kinvey-Device-Info header version
             deviceInfo.Add(Constants.STR_DEVICE_INFO_HEADER_KEY, Constants.STR_DEVICE_INFO_HEADER_VALUE);
@@ -112,9 +116,11 @@ namespace Kinvey
             deviceInfo.Add(Constants.STR_DEVICE_INFO_PLATFORMVERSION_KEY, VERSION);
 
             // Set the device info header
-            KinveyDeviceInfo = deviceInfo.ToString();
+            KinveyDeviceInfo = JsonConvert.SerializeObject(deviceInfo);
 
-            Add(new HttpHeader { Name = Constants.STR_REQUEST_HEADER_DEVICE_INFO, Value = new List<string> { KinveyDeviceInfo } });
+            Add(new KeyValuePair<string, IEnumerable<string>>(
+                Constants.STR_REQUEST_HEADER_DEVICE_INFO, new List<string> { KinveyDeviceInfo }
+            ));
         }
     }
 }

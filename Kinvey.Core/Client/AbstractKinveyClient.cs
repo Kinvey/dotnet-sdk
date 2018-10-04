@@ -11,9 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using RestSharp;
 using Newtonsoft.Json.Linq;
 using KinveyUtils;
+using System.Net.Http;
 
 namespace Kinvey
 {
@@ -40,7 +40,7 @@ namespace Kinvey
 		/// <summary>
 		/// The rest client.
 		/// </summary>
-		private IRestClient restClient;
+		private HttpClient httpClient;
 
 		private string clientAppVersion = null;
 
@@ -141,8 +141,8 @@ namespace Kinvey
 		/// <param name="restClient">The REST client to be used for network requests.</param>
 		/// <param name="rootUrl">The root URL of the backend service</param>
 		/// <param name="servicePath">The service path</param>
-        protected AbstractKinveyClient(IRestClient restClient, string rootUrl, string servicePath)
-            : this(restClient, rootUrl, servicePath, null)
+        protected AbstractKinveyClient(HttpClient httpClient, string rootUrl, string servicePath)
+            : this(httpClient, rootUrl, servicePath, null)
 		{
 		}
 
@@ -153,9 +153,9 @@ namespace Kinvey
 		/// <param name="rootUrl">The root URL of the backend service</param>
 		/// <param name="servicePath">The service path</param>
 		/// <param name="initializer">Kinvey request initializer</param>
-		protected AbstractKinveyClient(IRestClient restClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
+		protected AbstractKinveyClient(HttpClient httpClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
         {
-            this.restClient = restClient;
+            this.httpClient = httpClient;
             this.kinveyRequestInitializer = initializer;
             this.rootUrl = NormalizeRootUrl(rootUrl);
             this.servicePath = NormalizeServicePath(servicePath);
@@ -204,9 +204,9 @@ namespace Kinvey
 		/// Gets the rest client.
 		/// </summary>
 		/// <value>The rest client.</value>
-        public IRestClient RestClient
+        public HttpClient HttpClient
         {
-            get { return this.restClient; }
+            get { return this.httpClient; }
         }
 
 		/// <summary>
@@ -279,7 +279,7 @@ namespace Kinvey
 			/// <summary>
 			/// The rest client.
 			/// </summary>
-            private IRestClient restClient;
+            private HttpClient httpClient;
 
 			/// <summary>
 			/// The base URL.
@@ -305,9 +305,9 @@ namespace Kinvey
 			/// <param name="defaultRootUrl">Default root URL.</param>
 			/// <param name="defaultServicePath">Default service path.</param>
 			/// <param name="kinveyRequestInitializer">[optional] Kinvey request initializer.</param>
-			public Builder(IRestClient transport, string defaultRootUrl, string defaultServicePath, KinveyClientRequestInitializer kinveyRequestInitializer = null)
+			public Builder(HttpClient transport, string defaultRootUrl, string defaultServicePath, KinveyClientRequestInitializer kinveyRequestInitializer = null)
             {
-                this.restClient = transport;
+                this.httpClient = transport;
                 BaseUrl = defaultRootUrl;
                 ServicePath = defaultServicePath;
                 this.kinveyRequestInitializer = kinveyRequestInitializer;
@@ -317,10 +317,10 @@ namespace Kinvey
 			/// Gets the http rest client.
 			/// </summary>
 			/// <value>The http rest client.</value>
-            public IRestClient HttpRestClient
+            public HttpClient HttpClient
             {
-                get { return this.restClient; }
-				set { this.restClient = value; }
+                get { return this.httpClient; }
+				set { this.httpClient = value; }
             }
 
 			/// <summary>

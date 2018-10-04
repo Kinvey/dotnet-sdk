@@ -14,7 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RestSharp;
+using System.Net.Http;
 
 namespace Kinvey
 {
@@ -25,48 +25,20 @@ namespace Kinvey
 		/// </summary>
 		/// <returns>The request ID.</returns>
 		/// <param name="response">Response object.</param>
-		public static string getRequestID(IRestResponse response)
+		public static string getRequestID(HttpResponseMessage response)
 		{
 			if (response != null && response.Headers != null)
 			{
 				try
 				{
-					var item = response.Headers
-						.Cast<Parameter>()
-						.SingleOrDefault(i => i.Name.ToLower().Equals ("x-kinvey-request-id"))?
-						.Value;
-                    
-                    if (item == null) return string.Empty;
-					Type valueType = item.GetType();
-					if (valueType != null)
-					{
-						if (valueType.IsArray)
-						{
-							if (valueType.GetElementType() == typeof(string))
-							{
-								string[] arrRequestID = ((string[])item);
-								if (arrRequestID != null &&
-									arrRequestID.Length > 0)
-								{
-									return arrRequestID[0];
-								}
-							}
-						}
-						else if (valueType.IsConstructedGenericType)
-						{
-							if (valueType.Name.Contains("List"))
-							{
-								var listRequestID = ((System.Collections.Generic.List<string>)item);
-								if (listRequestID != null &&
-								    listRequestID.Count > 0)
-								{
-									return listRequestID.First();
-								}
-							}
-						}
-					}
+                    var keyValue = response.Headers
+                                           .SingleOrDefault(i => i.Key.ToLower().Equals("x-kinvey-request-id"));
+
+                    if (keyValue.Value == null) return string.Empty;
+                    var item = keyValue.Value;
+                    return item.First();
 				}
-				catch(Exception e)
+				catch(Exception)
 				{
 					return string.Empty;
 				}
@@ -75,7 +47,7 @@ namespace Kinvey
 			return string.Empty;
 		}
 
-        public static string GetRequestStartTime(IRestResponse response)
+        public static string GetRequestStartTime(HttpResponseMessage response)
         {
             string XKinveyRequestStart = string.Empty;
 
@@ -83,22 +55,14 @@ namespace Kinvey
             {
                 try
                 {
-                    var item = response.Headers
-                                       .Cast<Parameter>()
-                                       .SingleOrDefault(i => i.Name.ToLower().Equals(Constants.STR_HEADER_REQUEST_START_TIME))?
-                                       .Value;
-                    if (item == null) return string.Empty;
-                    if (item is IEnumerable<string>)
-                    {
-                        var values = item as IEnumerable<string>;
-                        var requestStart = values.FirstOrDefault();
-                        if (requestStart != null)
-                        {
-                            XKinveyRequestStart = requestStart;
-                        }
-                    }
+                    var keyValuePair = response.Headers
+                                       .SingleOrDefault(i => i.Key.ToLower().Equals(Constants.STR_HEADER_REQUEST_START_TIME));
+                    if (keyValuePair.Value == null) return string.Empty;
+                    var item = keyValuePair.Value;
+                    var requestStart = item.FirstOrDefault();
+                    if (requestStart != null) XKinveyRequestStart = requestStart;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return string.Empty;
                 }

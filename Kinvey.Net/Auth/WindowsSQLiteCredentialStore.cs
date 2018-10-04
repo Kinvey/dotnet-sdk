@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using Newtonsoft.Json;
 using SQLite.Net.Interop;
 
 namespace Kinvey

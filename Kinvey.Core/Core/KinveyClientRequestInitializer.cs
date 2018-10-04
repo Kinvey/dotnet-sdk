@@ -14,48 +14,49 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using RestSharp;
 
 namespace Kinvey
 {
     public class KinveyClientRequestInitializer : IKinveyRequestInitializer
     {
-		/// <summary>
-		/// The app key.
-		/// </summary>
+        /// <summary>
+        /// The app key.
+        /// </summary>
         private readonly string appKey;
-		/// <summary>
-		/// The app secret.
-		/// </summary>
+        /// <summary>
+        /// The app secret.
+        /// </summary>
         private readonly string appSecret;
 
-		/// <summary>
-		/// The credential to use to authenticate the request
-		/// </summary>
+        /// <summary>
+        /// The credential to use to authenticate the request
+        /// </summary>
         private Credential credential;
 
-		/// <summary>
-		/// the kinvey headers
-		/// </summary>
+        /// <summary>
+        /// the kinvey headers
+        /// </summary>
         private readonly KinveyHeaders headers;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyClientRequestInitializer"/> class.
-		/// </summary>
-		/// <param name="appKey">App key.</param>
-		/// <param name="appSecret">App secret.</param>
-		/// <param name="headers">Headers.</param>
-        public KinveyClientRequestInitializer(string appKey, string appSecret, KinveyHeaders headers) : this(appKey, appSecret, headers, default(Credential)) {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyXamarin.KinveyClientRequestInitializer"/> class.
+        /// </summary>
+        /// <param name="appKey">App key.</param>
+        /// <param name="appSecret">App secret.</param>
+        /// <param name="headers">Headers.</param>
+        public KinveyClientRequestInitializer(string appKey, string appSecret, KinveyHeaders headers) : this(appKey, appSecret, headers, default(Credential)) { }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyClientRequestInitializer"/> class.
-		/// </summary>
-		/// <param name="appKey">App key.</param>
-		/// <param name="appSecret">App secret.</param>
-		/// <param name="headers">Headers.</param>
-		/// <param name="credential">Credential.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyXamarin.KinveyClientRequestInitializer"/> class.
+        /// </summary>
+        /// <param name="appKey">App key.</param>
+        /// <param name="appSecret">App secret.</param>
+        /// <param name="headers">Headers.</param>
+        /// <param name="credential">Credential.</param>
         public KinveyClientRequestInitializer(string appKey, string appSecret, KinveyHeaders headers, Credential credential)
         {
             this.appKey = appKey;
@@ -64,19 +65,19 @@ namespace Kinvey
             this.credential = credential;
         }
 
-		/// <summary>
-		/// Gets the app key.
-		/// </summary>
-		/// <value>The app key.</value>
+        /// <summary>
+        /// Gets the app key.
+        /// </summary>
+        /// <value>The app key.</value>
         public string AppKey
         {
             get { return appKey; }
         }
 
-		/// <summary>
-		/// Gets the app secret.
-		/// </summary>
-		/// <value>The app secret.</value>
+        /// <summary>
+        /// Gets the app secret.
+        /// </summary>
+        /// <value>The app secret.</value>
         public string AppSecret
         {
             get { return appSecret; }
@@ -87,48 +88,48 @@ namespace Kinvey
             get; private set;
         }
 
-		/// <summary>
-		/// Gets the headers.
-		/// </summary>
-		/// <value>The headers.</value>
+        /// <summary>
+        /// Gets the headers.
+        /// </summary>
+        /// <value>The headers.</value>
         public KinveyHeaders Headers
         {
-            get { return headers;}
+            get { return headers; }
         }
 
-		/// <summary>
-		/// Sets the kinvey credential.
-		/// </summary>
-		/// <value>The kinvey credential.</value>
+        /// <summary>
+        /// Sets the kinvey credential.
+        /// </summary>
+        /// <value>The kinvey credential.</value>
         public Credential KinveyCredential
         {
             set { this.credential = value; }
         }
 
-		/// <summary>
-		/// Initialize the specified request.
-		/// </summary>
-		/// <param name="request">Request.</param>
-		/// <typeparam name="T">The response type of the request.</typeparam>
+        /// <summary>
+        /// Initialize the specified request.
+        /// </summary>
+        /// <param name="request">Request.</param>
+        /// <typeparam name="T">The response type of the request.</typeparam>
 
         public void Initialize<T>(AbstractKinveyClientRequest<T> request, string clientId = null)
         {
             AuthServiceID = clientId ?? AppKey;
 
             if (!request.RequireAppCredentials)
-			{
-				if (credential == null ||
-					credential.UserId == null ||
-					credential.AuthToken == null)
-				{
-					throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_NO_ACTIVE, "");
-				}
-			}
+            {
+                if (credential == null ||
+                    credential.UserId == null ||
+                    credential.AuthToken == null)
+                {
+                    throw new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_USER_NO_ACTIVE, "");
+                }
+            }
 
             if (credential != null && !request.RequireAppCredentials)
             {
                 credential.Initialize(request);
-			}
+            }
 
             if (request.RequireAppCredentials)
             {
@@ -139,10 +140,31 @@ namespace Kinvey
 
             foreach (var header in Headers)
             {
-                request.RequestHeaders.Add(new HttpHeader() { Name = header.Name, Value = header.Value });
+                request.RequestHeaders.Add(header);
             }
 
         }
 
+    }
+
+    public class HttpBasicAuthenticator : IAuthenticator
+    {
+
+        private readonly string username;
+        private readonly string password;
+        private readonly string base64;
+
+        public HttpBasicAuthenticator(string username, string password)
+        {
+            this.username = username;
+            this.password = password;
+            var bytes = Encoding.UTF8.GetBytes($"{username}:{password}");
+            base64 = Convert.ToBase64String(bytes);
+        }
+
+        public void Authenticate(HttpRequestMessage request)
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", base64);
+        }
     }
 }

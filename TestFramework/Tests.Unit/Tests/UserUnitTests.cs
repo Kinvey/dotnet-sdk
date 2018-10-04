@@ -14,9 +14,13 @@
 using System;
 using System.Threading.Tasks;
 using Moq;
+using Moq.Protected;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Kinvey;
+using System.Net.Http;
+using System.Threading;
+using Newtonsoft.Json;
 
 namespace TestFramework
 {
@@ -37,11 +41,21 @@ namespace TestFramework
 		[Test]
 		public async Task TestUserBasic()
 		{
-			// Arrange
-			Mock<RestSharp.IRestClient> moqRC = new Mock<RestSharp.IRestClient>();
-			RestSharp.IRestResponse resp = new RestSharp.RestResponse();
-			resp.Content = "MOCK RESPONSE";
-			moqRC.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(resp);
+            // Arrange
+            Mock<HttpClient> moqRC = new Mock<HttpClient>();
+            var resp = new HttpResponseMessage
+            {
+                Content = new StringContent("MOCK RESPONSE")
+            };
+            moqRC
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(resp)
+                .Verifiable();
 
 			// Act
 
@@ -52,23 +66,32 @@ namespace TestFramework
 		public async Task TestMICLoginAutomatedAuthFlowBad()
 		{
 			// Arrange
-			Mock<RestSharp.IRestClient> moqRestClient = new Mock<RestSharp.IRestClient>();
-			RestSharp.IRestResponse moqResponse = new RestSharp.RestResponse();
+            var moqRestClient = new Mock<HttpClientHandler>();
+            var moqResponse = new HttpResponseMessage
+            {
+                StatusCode = System.Net.HttpStatusCode.GatewayTimeout, // Status Code - 504
+                Content = new StringContent(JsonConvert.SerializeObject(new JObject
+                {
+                    { "error", "MOCK RESPONSE ERROR" },
+                    { "description", "Mock Gaetway Timeout error" },
+                    { "debug", "Mock debug" }
+                })),
+            };
 
-			JObject moqResponseContent = new JObject();
-			moqResponseContent.Add("error", "MOCK RESPONSE ERROR");
-			moqResponseContent.Add("description", "Mock Gaetway Timeout error");
-			moqResponseContent.Add("debug", "Mock debug");
-			moqResponse.Content = moqResponseContent.ToString();
-
-			moqResponse.StatusCode = System.Net.HttpStatusCode.GatewayTimeout; // Status Code - 504
-
-			moqRestClient.Setup(m => m.ExecuteAsync(It.IsAny<RestSharp.IRestRequest>())).ReturnsAsync(moqResponse);
+            moqRestClient
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(moqResponse)
+                .Verifiable();
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
 				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
-				.SetRestClient(moqRestClient.Object);
+                .SetRestClient(new HttpClient(moqRestClient.Object));
 
 			Client c = cb.Build();
 			c.MICApiVersion = "v2";
@@ -146,5 +169,30 @@ namespace TestFramework
 			Assert.False(urlToTestForScopeID.Equals(string.Empty));
 			Assert.That(urlToTestForScopeID.Contains("scope=openid"));
 		}
-	}
+
+        [Test]
+        public async Task TestMICOnRedirectErrorParsing()
+        {
+            // Arrange
+            var error = "12345";
+            var errorDescription = "test error description";
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+            Client client = builder.Build();
+            var loginRequest = new User.LoginToTempURLRequest(client, string.Empty, new System.Collections.Generic.Dictionary<string, string>(){{ "client_id", "none" }}, null);
+            string redirectUri = $"myredirecturi://?error={error}&error_description={errorDescription}";
+
+            // Act
+            // Assert
+            Exception e = Assert.CatchAsync(async delegate {
+                await loginRequest.onRedirectAsync(redirectUri);
+            });
+
+            Assert.True(e.GetType() == typeof(KinveyException));
+            var ke = e as KinveyException;
+            Assert.AreEqual(ke.ErrorCategory, EnumErrorCategory.ERROR_USER);
+            Assert.AreEqual(ke.ErrorCode, EnumErrorCode.ERROR_MIC_REDIRECT_ERROR);
+            Assert.True(ke.Error.EndsWith(error));
+            Assert.AreEqual(ke.Description, errorDescription);
+        }
+    }
 }
