@@ -149,10 +149,15 @@ namespace Kinvey
 		/// </summary>
 		ERROR_MIC_MISSING_REDIRECT_CODE,
 
-		/// <summary>
-		/// MIC Error - Hostname URL missing 'HTTPS' protocol.
-		/// </summary>
-		ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS,
+        /// <summary>
+        /// MIC Error - Error in Redirect URI.
+        /// </summary>
+        ERROR_MIC_REDIRECT_ERROR,
+
+        /// <summary>
+        /// MIC Error - Hostname URL missing 'HTTPS' protocol.
+        /// </summary>
+        ERROR_MIC_HOSTNAME_REQUIREMENT_HTTPS,
 
 		/// <summary>
 		/// MIC Error - Credential could not be saved from the credential store.
