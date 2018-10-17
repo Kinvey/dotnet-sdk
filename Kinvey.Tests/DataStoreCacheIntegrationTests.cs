@@ -49,8 +49,8 @@ namespace Kinvey.Tests
 		public void Tear()
 		{
 			kinveyClient.ActiveUser?.Logout();
-			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+			//System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+			//System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
         [TestMethod]

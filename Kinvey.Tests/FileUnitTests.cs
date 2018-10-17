@@ -32,8 +32,8 @@ namespace Kinvey.Tests
         [TestCleanup]
         public void Tear()
         {
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            //System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+            //System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
         }
 
         [TestMethod]

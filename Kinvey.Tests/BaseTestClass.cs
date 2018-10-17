@@ -81,15 +81,15 @@ namespace Kinvey.Tests
         [TestInitialize]
         public virtual void Setup()
         {
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            //System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+            //System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
         }
 
         [TestCleanup]
         public virtual void Tear()
         {
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            //System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+           // System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
         }
 
         protected static void MockUserLogin(HttpListenerContext context, IEnumerable<JObject> users)
