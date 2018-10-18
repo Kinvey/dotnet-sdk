@@ -59,7 +59,7 @@ namespace Kinvey.Tests
 
 			// Act
 			// Assert
-            Assert.ThrowsException<NullReferenceException>(delegate ()
+            Assert.ThrowsException<KinveyException>(delegate ()
 			{
 				DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.NETWORK);
 			});

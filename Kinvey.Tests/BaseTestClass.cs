@@ -78,18 +78,58 @@ namespace Kinvey.Tests
         private static readonly string REQUEST_START_HEADER = "X-Kinvey-Request-Start";
         private static readonly string DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffK";
 
+        public void Delete(string fileName)
+        {
+            var fileInfo = new FileInfo(fileName);
+            while (fileInfo.Exists)
+            {
+                try
+                {
+                    fileInfo.Delete();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    fileInfo.Refresh();
+                }
+            }
+        }
+
         [TestInitialize]
         public virtual void Setup()
         {
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            Delete(TestSetup.SQLiteOfflineStoreFilePath);
+            Delete(TestSetup.SQLiteCredentialStoreFilePath);
         }
 
         [TestCleanup]
         public virtual void Tear()
         {
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            try
+            {
+                var client = Client.SharedClient;
+                if (client != null)
+                {
+                    var user = client.ActiveUser;
+                    if (user != null)
+                    {
+                        user.Logout();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //do nothing
+            }
+            finally
+            {
+                Client.SharedClient = null;
+            }
+            Delete(TestSetup.SQLiteOfflineStoreFilePath);
+            Delete(TestSetup.SQLiteCredentialStoreFilePath);
         }
 
         protected static void MockUserLogin(HttpListenerContext context, IEnumerable<JObject> users)
