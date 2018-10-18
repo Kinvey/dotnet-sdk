@@ -195,9 +195,8 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestCustomEndpoint()
 		{
-			// Arrange
-            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Arrange
+            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir);
 
             if (MockData) builder.setBaseURL("http://localhost:8080");
 
@@ -230,10 +229,9 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestCustomEndpointBad()
 		{
-			// Arrange
-			Client.Builder builder = ClientBuilder
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Arrange
+            Client.Builder builder = ClientBuilder
+                .setFilePath(TestSetup.db_dir);
 
             if (MockData)
             {

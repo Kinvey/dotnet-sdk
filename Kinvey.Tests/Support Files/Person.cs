@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SQLite.Net.Attributes;
+using SQLite;
 using Kinvey;
 
 namespace Kinvey.Tests
@@ -33,10 +33,5 @@ namespace Kinvey.Tests
 
 		[JsonProperty]
 		public int Age { get; set; }
-
-		public string Serialize()
-		{
-			return JsonConvert.SerializeObject(this);
-		}
 	}
 }

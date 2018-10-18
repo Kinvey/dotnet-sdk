@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SQLite.Net.Attributes;
+using SQLite;
 using Kinvey;
 
 namespace Kinvey.Tests

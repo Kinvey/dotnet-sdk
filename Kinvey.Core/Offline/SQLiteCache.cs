@@ -16,12 +16,10 @@ using System.Net;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using SQLite.Net.Async;
-using SQLite.Net;
+using SQLite;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
-using SQLite.Net.Interop;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -35,8 +33,8 @@ namespace Kinvey
 	/// This class is responsible for breaking apart a request, and determing what actions to take
 	/// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
 	/// </summary>
-	public class SQLiteCache <T> : ICache <T> where T:class
-	{
+	public class SQLiteCache <T> : ICache <T> where T : class, new()
+    {
 
 		private string collectionName;
 
@@ -44,29 +42,26 @@ namespace Kinvey
 
 		private SQLiteConnection dbConnectionSync;
 
-		private ISQLitePlatform platform;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteOfflineStore"/> class.
 		/// </summary>
 		/// <param name="collection">Collection.</param>
 		/// <param name="connection">Connection.</param>
-		public SQLiteCache(string collection, SQLiteAsyncConnection connectionAsync, SQLiteConnection connectionSync, ISQLitePlatform platform)
+		public SQLiteCache(string collection, SQLiteAsyncConnection connectionAsync, SQLiteConnection connectionSync)
 		{
 			this.collectionName = collection;
 //			this.dbConnectionAsync = connectionAsync;
 			this.dbConnectionSync = connectionSync;
-			this.platform = platform;
 
 			//dropTable();
 			createTable();
 		}
 
 		// Creates an SQLite table, which manages the local representation of the connection.
-		private int createTable()
+		private void createTable()
 		{
 			//dbConnection.CreateTableAsync<T> ();
-			int retVal = dbConnectionSync.CreateTable<T>();
+			dbConnectionSync.CreateTable<T>();
 
 			//set primary key
 //			IEnumerable<PropertyInfo> props = platform.ReflectionService.GetPublicInstanceProperties (typeof (T));
@@ -87,8 +82,6 @@ namespace Kinvey
 //					}
 //				}
 //			}
-
-			return retVal;
 		}
 
 
@@ -101,7 +94,7 @@ namespace Kinvey
 
 		public bool IsCacheEmpty()
 		{
-			return dbConnectionSync.Table<T>().Count() == 0;
+            return dbConnectionSync.Table<T>().Count() == 0;
 		}
 
 		#region SQLite Cache CRUD APIs
@@ -185,7 +178,7 @@ namespace Kinvey
 
 		public List<T> FindAll()
 		{
-			return dbConnectionSync.Table<T>().ToList();
+            return dbConnectionSync.Table<T>().ToList();
 		}
 
 		public int CountAll() 
@@ -199,7 +192,7 @@ namespace Kinvey
 			T item = default(T);
 			try
 			{
-				item = dbConnectionSync.Get<T>(ID);
+                item = dbConnectionSync.Get<T>(ID);
 			}
 			catch (Exception e)
 			{
@@ -533,7 +526,12 @@ namespace Kinvey
 		{
 			try
 			{
-				dbConnectionSync.InsertOrReplaceAll(items);
+                dbConnectionSync.RunInTransaction(() => {
+                    foreach (var item in items)
+                    {
+                        dbConnectionSync.InsertOrReplace(item);
+                    }
+                });
 			}
 			catch (SQLiteException e)
 			{

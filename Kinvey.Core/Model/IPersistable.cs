@@ -11,15 +11,13 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using SQLite.Net;
-
 namespace Kinvey
 {
 	/// <summary>
 	/// Persistable interface which model objects can choose to implement as an alternative
 	/// to subclassing from <see cref="Entity"/>
 	/// </summary>
-	public interface IPersistable : ISerializable<string>
+	public interface IPersistable
 	{
 		/// <summary>
 		/// ID field which maps back to Kinvey _id

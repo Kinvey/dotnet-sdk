@@ -8,13 +8,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="SQLite.Net-PCL" Version="3.1.1" />
-    <PackageReference Include="SQLite.Net.Async-PCL" Version="3.1.1" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Pubnub" Version="4.0.21" />
+    <PackageReference Include="Pubnub" Version="4.0.22" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.11" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinvey.Utils\Kinvey.Utils.csproj" />
+    <ProjectReference Include="..\sqlite-net\nuget\SQLite-net-std\SQLite-net-std.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Auth\Credential.cs" />

@@ -36,8 +36,7 @@ namespace Kinvey.Tests
             base.Setup();
 
             Client.Builder builder = ClientBuilder
-                .setFilePath(TestSetup.db_dir)
-                .setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+                .setFilePath(TestSetup.db_dir);
 
             if (MockData) builder.setBaseURL("http://localhost:8080");
             if (MockData) builder.setMICHostName("http://localhost:8081");
@@ -747,8 +746,7 @@ namespace Kinvey.Tests
         {
             // Setup
             Client.Builder builder1 = ClientBuilder
-                .setFilePath(TestSetup.db_dir)
-                .setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+                .setFilePath(TestSetup.db_dir);
 
             if (MockData) builder1.setBaseURL("http://localhost:8080");
 
@@ -761,8 +759,7 @@ namespace Kinvey.Tests
 
             // Act
             Client.Builder builder2 = ClientBuilder
-                .setFilePath(TestSetup.db_dir)
-                .setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+                .setFilePath(TestSetup.db_dir);
 
             if (MockData) builder2.setBaseURL("http://localhost:8080");
 

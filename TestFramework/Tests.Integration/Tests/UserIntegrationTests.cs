@@ -33,9 +33,8 @@ namespace TestFramework
 		[SetUp]
 		public void Setup()
 		{
-			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+                .setFilePath(TestSetup.db_dir);
 
 			kinveyClient = builder.Build();
 		}
@@ -825,20 +824,18 @@ namespace TestFramework
 		[Test]
 		public async Task TestUserInitFromCredential()
 		{
-			// Setup
-			Client.Builder builder1 = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Setup
+            Client.Builder builder1 = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+                .setFilePath(TestSetup.db_dir);
 
 			Client kinveyClient1 = builder1.Build();
 
 			// Arrange
 			User activeUser = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient1);
 
-			// Act
-			Client.Builder builder2 = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Act
+            Client.Builder builder2 = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+                .setFilePath(TestSetup.db_dir);
 
 			Client kinveyClient2 = builder2.Build();
 

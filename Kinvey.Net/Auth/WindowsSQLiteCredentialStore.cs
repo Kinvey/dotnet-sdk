@@ -1,12 +1,11 @@
 ﻿using System.Security.Cryptography;
-using SQLite.Net.Interop;
 
 namespace Kinvey
 {
 	public class WindowsSQLiteCredentialStore : SQLiteCredentialStore
 	{
-		public WindowsSQLiteCredentialStore(ISQLitePlatform platform, string filepath)
-			: base(platform, filepath)
+		public WindowsSQLiteCredentialStore(string filepath)
+			: base(filepath)
 		{
 		}
 

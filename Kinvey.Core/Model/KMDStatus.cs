@@ -12,8 +12,8 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using SQLite.Net;
 
 namespace Kinvey
 {
@@ -22,7 +22,8 @@ namespace Kinvey
 	/// entities stored in Kinvey that have verified through email
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
-	public class KMDStatus : ISerializable<string>
+    [DataContract]
+	public class KMDStatus
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KMDPasswordReset"/> class.
@@ -52,6 +53,7 @@ namespace Kinvey
 		/// </summary>
 		[Preserve]
 		[JsonProperty("val")]
+        [DataMember(Name = "val")]
 		public String Value { get; set; }
 
 		/// <summary>
@@ -61,15 +63,8 @@ namespace Kinvey
 		/// </summary>
 		[Preserve]
 		[JsonProperty("lastChange")]
-		public String LastChange { get; set; }
-
-		/// <summary>
-		/// Serialize this instance of <see cref="KinveyXamarin.KMDPasswordReset"/> in the local cache.
-		/// </summary>
-		public string Serialize()
-		{
-			return JsonConvert.SerializeObject(this);
-		}
+        [DataMember(Name = "lastChange")]
+        public String LastChange { get; set; }
 	}
 
 	public enum EnumUserStatus

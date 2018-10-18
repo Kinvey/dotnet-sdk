@@ -12,8 +12,8 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using SQLite.Net;
 
 namespace Kinvey
 {
@@ -21,7 +21,8 @@ namespace Kinvey
 	/// JSON representation of the _kmd field present on every entity stored in Kinvey
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
-	public class KinveyMetaData : ISerializable<string>
+    [DataContract]
+	public class KinveyMetaData
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyMetaData"/> class.
@@ -42,6 +43,7 @@ namespace Kinvey
 		/// <value>The last modified time.</value>
 		[Preserve]
 		[JsonProperty("lmt")]
+        [DataMember(Name = "lmt")]
 		public String lastModifiedTime{get; set;}
 
 		/// <summary>
@@ -50,12 +52,8 @@ namespace Kinvey
 		/// <value>The entity creation time.</value>
 		[Preserve]
 		[JsonProperty("ect")]
-		public String entityCreationTime{get; set;}
-
-
-		public string Serialize(){
-			return JsonConvert.SerializeObject (this);
-		}
+        [DataMember(Name = "ect")]
+        public String entityCreationTime{get; set;}
 
 	}
 }

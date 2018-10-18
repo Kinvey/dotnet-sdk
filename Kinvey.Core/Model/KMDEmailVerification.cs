@@ -12,8 +12,8 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using SQLite.Net;
 
 namespace Kinvey
 {
@@ -22,7 +22,8 @@ namespace Kinvey
 	/// entities stored in Kinvey that have verified through email
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
-	public class KMDEmailVerification : ISerializable<string>
+    [DataContract]
+	public class KMDEmailVerification
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyXamarin.KMDEmailVerification"/> class.
@@ -37,6 +38,7 @@ namespace Kinvey
 		/// </summary>
 		[Preserve]
 		[JsonProperty("status")]
+        [DataMember(Name = "status")]
 		public String Status { get; set; }
 
 		/// <summary>
@@ -44,28 +46,23 @@ namespace Kinvey
 		/// </summary>
 		[Preserve]
 		[JsonProperty("lastStateChangeAt")]
-		public String LastStateChangeAt { get; set; }
+        [DataMember(Name = "lastStateChangeAt")]
+        public String LastStateChangeAt { get; set; }
 
 		/// <summary>
 		/// Gets or sets the last time when email verification was confirmed.
 		/// </summary>
 		[Preserve]
 		[JsonProperty("lastConfirmedAt")]
-		public String LastConfirmedAt { get; set; }
+        [DataMember(Name = "lastConfirmedAt")]
+        public String LastConfirmedAt { get; set; }
 
 		/// <summary>
 		/// Gets or sets the email address of the user used for email verification.
 		/// </summary>
 		[Preserve]
 		[JsonProperty("emailAddress")]
-		public String EmailAddress { get; set; }
-
-		/// <summary>
-		/// Serialize this instance of <see cref="KinveyXamarin.KMDEmailVerification"/> in the local cache.
-		/// </summary>
-		public string Serialize()
-		{
-			return JsonConvert.SerializeObject(this);
-		}
+        [DataMember(Name = "emailAddress")]
+        public String EmailAddress { get; set; }
 	}
 }

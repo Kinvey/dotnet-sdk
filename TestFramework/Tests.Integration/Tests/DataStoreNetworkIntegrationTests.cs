@@ -36,9 +36,8 @@ namespace TestFramework
 		[SetUp]
 		public void Setup()
 		{
-			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+                .setFilePath(TestSetup.db_dir);
 
 			kinveyClient = builder.Build();
 		}
@@ -142,7 +141,6 @@ namespace TestFramework
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
 				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric())
                 .SetRestClient(new HttpClient(moqRC.Object));
 
 			Client c = cb.Build();

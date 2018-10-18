@@ -49,7 +49,7 @@ namespace Kinvey
 		                            ReadPolicy policy,
 		                            bool deltaSetFetchingEnabled,
 		                            KinveyDelegate<List<GroupAggregationResults>> cacheDelegate,
-		                            IQueryable<object> query,
+                                    IQueryable<object> query,
 									string groupField,
 									string aggregateField)
 			: base(client, collection, cache, query, policy, deltaSetFetchingEnabled)

@@ -25,7 +25,7 @@ namespace Kinvey
 	/// Each DataStore in your application represents a collection on your backend. The DataStore class manages the access of data between the Kinvey backend and the app.
 	/// The DataStore provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
 	/// </summary>
-	public class DataStore<T> : KinveyQueryable<T>  where T:class
+	public class DataStore<T> : KinveyQueryable<T>  where T : class, new()
 	{
 		#region Member variables
 
@@ -292,7 +292,7 @@ namespace Kinvey
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
 			ct.ThrowIfCancellationRequested();
 			var results = await findByQueryRequest.ExecuteAsync();
-			return results?.FirstOrDefault();
+			return results.FirstOrDefault();
 		}
 
 		#region Grouping/Aggregate Functions
@@ -302,7 +302,7 @@ namespace Kinvey
 		/// </summary>
 		/// <returns>The async task which returns the count.</returns>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<uint> GetCountAsync(IQueryable<T> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
+		public async Task<uint> GetCountAsync(IQueryable<object> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
 		{
 			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
 			ct.ThrowIfCancellationRequested();
@@ -318,7 +318,7 @@ namespace Kinvey
 		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
 		/// <param name="cacheDelegate">Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<T> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
+		public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<object> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
 		{
 			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
 			ct.ThrowIfCancellationRequested();
@@ -362,7 +362,7 @@ namespace Kinvey
 		/// <returns>Entities that were pulled from the backend.</returns>
 		/// <param name="query">Optional Query parameter.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<T> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
+		public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<object> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -415,7 +415,7 @@ namespace Kinvey
 		/// <returns>DataStoreResponse indicating errors, if any.</returns>
 		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<SyncDataStoreResponse<T>> SyncAsync(IQueryable<T> query = null, CancellationToken ct = default(CancellationToken))
+		public async Task<SyncDataStoreResponse<T>> SyncAsync(IQueryable<object> query = null, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{

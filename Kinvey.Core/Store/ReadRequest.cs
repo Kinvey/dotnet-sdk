@@ -176,7 +176,7 @@ namespace Kinvey
 			{
 				if (Query != null)
 				{
-					IQueryable<object> query = Query;
+					var query = Query;
 					cacheHits = Cache.FindByQuery(query.Expression);
 				}
 				else if (EntityIDs?.Count > 0)

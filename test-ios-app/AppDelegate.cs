@@ -3,7 +3,6 @@ using UIKit;
 
 using Kinvey;
 using KinveyXamariniOS;
-using SQLite.Net.Platform.XamarinIOS;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -50,7 +49,6 @@ namespace testiosapp
 
 			Client.Builder cb = new Client.Builder(appKey, appSecret)
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
-				.setOfflinePlatform(new SQLitePlatformIOS())
 				//.setCredentdialStore(new IOSNativeCredentialStore())
 				//.SetSSOGroupKey("KinveyOrg")
 				.setLogger(delegate (string msg) { Console.WriteLine(msg); });

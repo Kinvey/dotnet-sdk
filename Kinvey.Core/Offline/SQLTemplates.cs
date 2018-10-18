@@ -13,7 +13,7 @@
 
 using System;
 using System.Collections.Generic;
-using SQLite.Net.Attributes;
+using SQLite;
 using Newtonsoft.Json.Linq; 
 
 namespace Kinvey
