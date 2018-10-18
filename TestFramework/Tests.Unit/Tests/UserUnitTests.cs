@@ -168,5 +168,30 @@ namespace TestFramework
 			Assert.False(urlToTestForScopeID.Equals(string.Empty));
 			Assert.That(urlToTestForScopeID.Contains("scope=openid"));
 		}
-	}
+
+        [Test]
+        public async Task TestMICOnRedirectErrorParsing()
+        {
+            // Arrange
+            var error = "12345";
+            var errorDescription = "test error description";
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+            Client client = builder.Build();
+            var loginRequest = new User.LoginToTempURLRequest(client, string.Empty, new System.Collections.Generic.Dictionary<string, string>(){{ "client_id", "none" }}, null);
+            string redirectUri = $"myredirecturi://?error={error}&error_description={errorDescription}";
+
+            // Act
+            // Assert
+            Exception e = Assert.CatchAsync(async delegate {
+                await loginRequest.onRedirectAsync(redirectUri);
+            });
+
+            Assert.True(e.GetType() == typeof(KinveyException));
+            var ke = e as KinveyException;
+            Assert.AreEqual(ke.ErrorCategory, EnumErrorCategory.ERROR_USER);
+            Assert.AreEqual(ke.ErrorCode, EnumErrorCode.ERROR_MIC_REDIRECT_ERROR);
+            Assert.True(ke.Error.EndsWith(error));
+            Assert.AreEqual(ke.Description, errorDescription);
+        }
+    }
 }

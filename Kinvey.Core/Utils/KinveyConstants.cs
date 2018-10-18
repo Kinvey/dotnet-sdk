@@ -45,8 +45,11 @@ namespace Kinvey
 		public const string STR_USER_KMD = "UserKMD";
 		public const string STR_CREDENTIAL = "credential";
         public const string STR_MIC_DEFAULT_VERSION = "v3";
+        public const string STR_MIC_REDIRECT_CODE = "code=";
+        public const string STR_MIC_REDIRECT_ERROR = "error=";
+        public const string STR_MIC_REDIRECT_ERROR_DESCRIPTION = "error_description=";
 
-		// Realtime Strings
+        // Realtime Strings
 		internal const string STR_REALTIME_COLLECTION_CHANNEL_PREPEND = "c-";
 		internal const string STR_REALTIME_STREAM_CHANNEL_PREPEND = "s-";
         internal const string STR_REALTIME_USER_CHANNEL_PREPEND = "u-";
