@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:pages="clr-namespace:Kinvey.TestLocalLibApp.Pages;assembly=Kinvey.TestLocalLibApp"
+            x:Class="Kinvey.TestLocalLibApp.Pages.ContractsPage"
+            Appearing="ContractsPage_OnAppearing">  
+    <pages:BasePage.Content>
+        <StackLayout>
+            <Label x:Name="UserLabel" Text="Hello!" 
+               HorizontalOptions="Center"/>
+
+            <Label Text="Contracts" Margin="0, 20, 0, 0"
+                   HorizontalOptions="Center"/>
+
+            <ListView x:Name="ContractsList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Title}" Detail="{Binding Number}"></TextCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button Text="Add contract" Clicked="AddContractButton_OnClicked"/>
+        </StackLayout>
+    </pages:BasePage.Content>
+</pages:BasePage>
+

@@ -96,6 +96,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsAppBuilder .cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -144,9 +145,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.5"/>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.5" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Kinvey\Kinvey.csproj">
+      <Project>{bcf7f3a3-8069-49ce-b9e8-3f4d9a5ff234}</Project>
+      <Name>Kinvey</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp.csproj">
       <Project>{55509FAD-BE3D-4067-A33A-E93006099189}</Project>
       <Name>Kinvey.TestLocalLibApp</Name>

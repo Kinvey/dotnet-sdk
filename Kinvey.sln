@@ -55,7 +55,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinvey.TestLocalLibApp.iOS"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinvey.TestLocalLibApp.UWP", "Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp.UWP\Kinvey.TestLocalLibApp.UWP.csproj", "{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinvey.TestLocalLibApp", "Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp.csproj", "{8083DFAC-EBC8-428A-9685-0C433F4AAF48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kinvey.TestLocalLibApp", "Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp.csproj", "{8083DFAC-EBC8-428A-9685-0C433F4AAF48}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -1261,6 +1261,7 @@ Global
 		{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}.Debug|ARM.Build.0 = Debug|ARM
 		{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}.Debug|ARM.Deploy.0 = Debug|ARM
 		{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}.Debug|iPhone.ActiveCfg = Debug|x86
+		{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}.Debug|iPhone.Deploy.0 = Debug|x86
 		{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}.Debug|iPhoneSimulator.ActiveCfg = Debug|x86
 		{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}.Debug|x64.ActiveCfg = Debug|x64
 		{BC57659A-94A1-4A0E-AF5A-08F9DD3F0995}.Debug|x64.Build.0 = Debug|x64

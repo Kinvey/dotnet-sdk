@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Kinvey.TestLocalLibApp.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,12 +11,14 @@ namespace Kinvey.TestLocalLibApp
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new ContractsPage();
         }
 
         protected override void OnStart()
         {
-            // Handle when your app starts
+            //Creating and building of client.
+            var builder = new Client.Builder(Constants.Settings.AppKey, Constants.Settings.AppSecret);
+            builder.Build();
         }
 
         protected override void OnSleep()
