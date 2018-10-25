@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kinvey.TestLocalLibApp.Interfaces;
+﻿using Kinvey.TestLocalLibApp.Interfaces;
+using Kinvey.TestLocalLibApp.UWP;
+using Xamarin.Forms;
+
+
+[assembly: Dependency(typeof(WindowsAppBuilder))]
 
 namespace Kinvey.TestLocalLibApp.UWP
 {

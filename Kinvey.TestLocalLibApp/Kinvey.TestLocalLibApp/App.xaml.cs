@@ -1,4 +1,5 @@
-﻿using Kinvey.TestLocalLibApp.Pages;
+﻿using Kinvey.TestLocalLibApp.Interfaces;
+using Kinvey.TestLocalLibApp.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,7 +18,7 @@ namespace Kinvey.TestLocalLibApp
         protected override void OnStart()
         {
             //Creating and building of client.
-            var builder = new Client.Builder(Constants.Settings.AppKey, Constants.Settings.AppSecret);
+            var builder = DependencyService.Get<IBuilder>().GetBuilder();
             builder.Build();
         }
 
