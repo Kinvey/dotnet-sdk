@@ -52,14 +52,15 @@ task:
   env:
     DOTNET_ROOT: /root/.dotnet
     PATH: $PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
-  git_submodule_update_init_script: git submodule update --init --recursive
-  check_version_script: mono --version
   apt_update_script: apt update
+  install_git_script: apt install git -y
   install_node_script: apt install nodejs npm -y; ln -s nodejs /usr/bin/node
   install_icu_devtools_script: apt install icu-devtools -y
   install_gnomon_script: npm install -g gnomon
   install_dotnet_script: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.1
   install_coverlet_script: dotnet tool install --global coverlet.console
+  git_submodule_update_init_script: git submodule update --init --recursive
+  check_version_script: mono --version
   nuget_restore_script: nuget restore Kinvey.sln
   build_script: msbuild TestFramework/Tests.Integration/Tests.Integration.csproj
   test_script: (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon --real-time=1000
