@@ -30,7 +30,7 @@ matrix:
         - sudo apt install -y nodejs npm
         - npm install -g gnomon
       before_script:
-        - nuget restore Kinvey.sln
+        - cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
         - msbuild TestFramework/Tests.Integration/Tests.Integration.csproj
       script:
         - (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon --real-time=1000
