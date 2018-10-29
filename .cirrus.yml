@@ -4,6 +4,7 @@ task:
     image: high-sierra-xcode-9.4.1
   env:
     PATH: $PATH:/usr/local/share/dotnet
+  git_submodule_update_init_script: git submodule update --init --recursive
   install_dotnet_sdk_script: brew cask install dotnet-sdk
   check_version_script: dotnet --version
   test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
@@ -14,6 +15,7 @@ task:
     image: high-sierra-xcode-9.4.1
   env:
     PATH: $PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+  git_submodule_update_init_script: git submodule update --init --recursive
   install_mono_sdk_script: brew cask install mono-mdk
   check_version_script: mono --version
 
@@ -36,6 +38,7 @@ task:
   name: Linux .Net
   container:
     image: microsoft/dotnet
+  git_submodule_update_init_script: git submodule update --init --recursive
   check_version_script: dotnet --version
   apt_update_script: apt update
   install_sqlite_script: apt install libsqlite3-dev sqlite3 -y
@@ -49,6 +52,7 @@ task:
   env:
     DOTNET_ROOT: /root/.dotnet
     PATH: $PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
+  git_submodule_update_init_script: git submodule update --init --recursive
   check_version_script: mono --version
   apt_update_script: apt update
   install_node_script: apt install nodejs npm -y; ln -s nodejs /usr/bin/node
