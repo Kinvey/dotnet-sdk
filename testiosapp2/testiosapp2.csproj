@@ -84,14 +84,14 @@
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
     <Reference Include="System.Json" />
-    <Reference Include="Remotion.Linq">
-      <HintPath>..\packages\Remotion.Linq.2.0.1\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\packages\Remotion.Linq.2.2.0\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -121,17 +121,9 @@
     <Compile Include="ToDo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
-      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
-      <Name>Kinvey-Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinvey-Xamarin-iOS\Kinvey-Xamarin-iOS.csproj">
-      <Project>{77548067-6F95-461C-A4D1-A051E20D30C5}</Project>
-      <Name>Kinvey-Xamarin-iOS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinvey.Core\Kinvey.Core.csproj">
-      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
-      <Name>Kinvey.Core</Name>
+    <ProjectReference Include="..\Kinvey.iOS\Kinvey.iOS.csproj">
+      <Project>{54C9E523-785C-48CF-B77C-B28842DC0ABF}</Project>
+      <Name>Kinvey.iOS</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

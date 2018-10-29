@@ -8,14 +8,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>testdroidapp</RootNamespace>
     <AssemblyName>testdroidapp</AssemblyName>
-    <TargetFrameworkVersion>v5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -74,17 +74,9 @@
     <Folder Include="Resources\xml\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
-      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
-      <Name>Kinvey-Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinvey.Core\Kinvey.Core.csproj">
-      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
-      <Name>Kinvey.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinvey-Xamarin-Android\Kinvey-Xamarin-Android.csproj">
-      <Project>{77977557-862E-4A14-A5D7-0096023BA682}</Project>
-      <Name>Kinvey-Xamarin-Android</Name>
+    <ProjectReference Include="..\Kinvey.Android\Kinvey.Android.csproj">
+      <Project>{405FED46-66D9-4EB4-8C6E-16636329FD77}</Project>
+      <Name>Kinvey.Android</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

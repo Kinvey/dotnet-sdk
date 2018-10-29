@@ -15,7 +15,7 @@ using System;
 using Foundation;
 using Kinvey;
 
-namespace KinveyXamariniOS
+namespace Kinvey
 {
 	public static class UserExtension
 	{

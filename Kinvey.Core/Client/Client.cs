@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using SQLite;
 using System.Threading.Tasks;
-using KinveyUtils;
 using Newtonsoft.Json;
 using System.Net.Http;
 
@@ -26,7 +25,7 @@ namespace Kinvey
 	/// Once the Client is created and a user is logged in, all of Kinvey's features can be accessed through their respective accessors.
 	/// This implementation is thread safe.
 	/// </summary>
-	public class Client : AbstractClient
+	public partial class Client : AbstractClient
 	{
 		/// <summary>
 		/// Gets or sets the logger, this action is performed when writing to the logs.
@@ -124,16 +123,35 @@ namespace Kinvey
 		/// Builder for creating a new instance of a client.  Use this class to easily create a new client, as it uses the builder pattern so methods can be chained together.
 		/// Once the builder is configured, call `.build()` to return an instance of a client.
 		/// </summary>
-		public new class Builder : AbstractClient.Builder
+		public new partial class Builder : AbstractClient.Builder
 		{
 
-			/// <summary>
-			/// A reference to the local file system -- going to be platform dependent
-			/// </summary>
-			/// <value>The file path.</value>
-			private string filePath {get; set;}
+#pragma warning disable IDE1006 // Naming Styles
+            /// <summary>
+            /// A reference to the local file system -- going to be platform dependent
+            /// </summary>
+            /// <value>The file path.</value>
+            [Obsolete("This property has been deprecated. Please use FilePath instead.")]
+            private string filePath
+            {
+                get
+                {
+                    return FilePath;
+                }
+                set
+                {
+                    FilePath = value;
+                }
+            }
+#pragma warning restore IDE1006 // Naming Styles
 
-			private ICacheManager CacheManager {get; set; }
+            /// <summary>
+            /// A reference to the local file system -- going to be platform dependent
+            /// </summary>
+            /// <value>The file path.</value>
+            public string FilePath { get; set; }
+
+            private ICacheManager CacheManager {get; set; }
 
 			/// <summary>
 			/// Gets or sets the log Action -- going to be platform dependent
@@ -154,9 +172,10 @@ namespace Kinvey
 			/// </summary>
 			/// <param name="appKey">App key from Kinvey</param>
 			/// <param name="appSecret">App secret from Kinvey</param>
-            public Builder(string appKey, string appSecret, Constants.DevicePlatform devicePlatform = Constants.DevicePlatform.PCL)
+            protected Builder(string appKey, string appSecret, string filePath, Constants.DevicePlatform devicePlatform = Constants.DevicePlatform.PCL)
                 : base(new HttpClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders(devicePlatform)))
 			{
+                FilePath = filePath;
 				ssoGroupKey = appKey;
                 instanceID = string.Empty;
                 this.devicePlatform = devicePlatform;
@@ -167,16 +186,16 @@ namespace Kinvey
 			/// </summary>
 			public virtual Client Build()
 			{
-				if (this.filePath != null)
+				if (this.FilePath != null)
 				{
 					if (this.Store == null)
 					{
-						this.Store = new SQLiteCredentialStore (filePath);
+						this.Store = new SQLiteCredentialStore (FilePath);
 					}
 
 					if (this.CacheManager == null)
 					{
-						this.CacheManager = new SQLiteCacheManager (filePath);
+						this.CacheManager = new SQLiteCacheManager (FilePath);
 					}
 				}
 
@@ -220,19 +239,20 @@ namespace Kinvey
 			/// <param name="store">Store.</param>
 			public Builder setCredentialStore(ICredentialStore store){
 				this.Store = store;
-				return this;
+                return this;
 			}
-				
 
-			/// <summary>
-			///Set the base url to use for this client, if it is a custom one.
-			/// </summary>
-			/// <returns>This builder..</returns>
-			/// <param name="url">URL.</param>
-			public Builder setBaseURL(string url){
-				this.BaseUrl = url;
-				return this;
-			}
+
+            /// <summary>
+            ///Set the base url to use for this client, if it is a custom one.
+            /// </summary>
+            /// <returns>This builder..</returns>
+            /// <param name="url">URL.</param>
+            public Builder setBaseURL(string url)
+            {
+                this.BaseUrl = url;
+                return this;
+            }
 
             public Builder setMICHostName(string url)
             {
@@ -245,27 +265,42 @@ namespace Kinvey
             /// </summary>
             /// <returns>The service path.</returns>
             /// <param name="servicePath">Service path.</param>
-            public Builder setServicePath(string servicePath){
-				this.ServicePath = servicePath;
-				return this;
-			}
-				
-			/// <summary>
-			/// Set the directory to use for offline.
-			/// </summary>
-			/// <returns>The file path.</returns>
-			/// <param name="path">Path.</param>
-			public Builder setFilePath(string path){
-				this.filePath = path;
-				return this;
-			}
+            public Builder setServicePath(string servicePath)
+            {
+                this.ServicePath = servicePath;
+                return this;
+            }
 
-			/// <summary>
-			/// Sets the logger action -- the ClientLogger class uses this to write to logs.
-			/// </summary>
-			/// <returns>The logger.</returns>
-			/// <param name="log">Log.</param>
-			public Builder setLogger(Action<string> log){
+#pragma warning disable IDE1006 // Naming Styles
+            /// <summary>
+            /// Set the directory to use for offline.
+            /// </summary>
+            /// <returns>The file path.</returns>
+            /// <param name="filePath">Path.</param>
+            [Obsolete("This method has been deprecated. Please use SetFilePath() instead.")]
+            public Builder setFilePath(string filePath)
+            {
+                return SetFilePath(filePath);
+            }
+#pragma warning restore IDE1006 // Naming Styles
+
+            /// <summary>
+            /// Set the directory to use for offline.
+            /// </summary>
+            /// <returns>The file path.</returns>
+            /// <param name="filePath">Path.</param>
+            public Builder SetFilePath(string filePath)
+            {
+                FilePath = filePath;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the logger action -- the ClientLogger class uses this to write to logs.
+            /// </summary>
+            /// <returns>The logger.</returns>
+            /// <param name="log">Log.</param>
+            public Builder setLogger(Action<string> log){
 				this.log = log;
 				return this;
 			}
