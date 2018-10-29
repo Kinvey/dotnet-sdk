@@ -21,7 +21,7 @@ namespace Kinvey.TestNugetPackageLibApp.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new Kinvey.TestNugetPackageLibApp.App());
+            LoadApplication(new TestNugetPackageLibApp.App());
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using Kinvey.Kinvey.TestApp.Shared.Interfaces;
+using Kinvey.TestApp.Shared.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,12 +13,14 @@ namespace Kinvey.TestNugetPackageLibApp
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new ContractsPage();
         }
 
         protected override void OnStart()
         {
             // Handle when your app starts
+            var builder = DependencyService.Get<IBuilder>().GetBuilder();
+            builder.Build();
         }
 
         protected override void OnSleep()

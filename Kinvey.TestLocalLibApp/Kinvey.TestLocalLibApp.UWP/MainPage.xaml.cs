@@ -21,7 +21,7 @@ namespace Kinvey.TestLocalLibApp.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new Kinvey.TestLocalLibApp.App());
+            LoadApplication(new TestLocalLibApp.App());
         }
     }
 }
