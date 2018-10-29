@@ -1,5 +1,5 @@
-﻿using Kinvey.TestLocalLibApp.Interfaces;
-using Kinvey.TestLocalLibApp.Pages;
+﻿using Kinvey.Kinvey.TestApp.Shared.Interfaces;
+using Kinvey.TestApp.Shared.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

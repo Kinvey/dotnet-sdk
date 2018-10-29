@@ -1,14 +1,13 @@
 ﻿using System;
-using Kinvey.TestLocalLibApp.Models;
-using Xamarin.Forms;
+using Kinvey.Kinvey.TestApp.Shared.Models;
 using Xamarin.Forms.Xaml;
 
-namespace Kinvey.TestLocalLibApp.Pages
+namespace Kinvey.TestApp.Shared.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class AddContract : BasePage
     {
-		public AddContract ()
+		public AddContract()
 		{
 			InitializeComponent ();
 		}
@@ -20,13 +19,13 @@ namespace Kinvey.TestLocalLibApp.Pages
                 //Showing notification popup if number or title are empty
                 if (string.IsNullOrEmpty(NumberEntryCell.Text) || string.IsNullOrEmpty(TitleEntryCell.Text))
 	            {
-	                await DisplayMessage(Constants.Exceptions.RequiredFieldsTitle, Constants.Exceptions.RequiredFieldsMessage);
+	                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.RequiredFieldsTitle, Kinvey.TestApp.Shared.Constants.Exceptions.RequiredFieldsMessage);
 	                return;
 	            }
 
 	            // Getting an instance of  DataStore.
-                var dataStore = DataStore<Contract>.Collection(Constants.Settings.ContractsCollection,
-	                DataStoreType.CACHE);
+                var dataStore = DataStore<Contract>.Collection(Kinvey.TestApp.Shared.Constants.Settings.ContractsCollection,
+                    DataStoreType.CACHE);
 
 	            var contract = new Contract { Number = NumberEntryCell.Text, Title = TitleEntryCell.Text };
                 // Save an entity. The entity will be saved to the device and your backend. 
@@ -40,7 +39,7 @@ namespace Kinvey.TestLocalLibApp.Pages
 	        catch (Exception ex)
 	        {
 	            //Popup with exception message.
-                await DisplayMessage(Constants.Exceptions.GeneralExceptionTitle, ex.Message);
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, ex.Message);
 	        }
         }
 

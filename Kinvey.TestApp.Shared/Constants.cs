@@ -1,15 +1,15 @@
-﻿namespace Kinvey.TestLocalLibApp
+﻿namespace Kinvey.Kinvey.TestApp.Shared
 {
     public static class Constants
     {
         public static class Settings
         {
             //Put your credentials here.
-            public const string AppKey = "";
-            public const string AppSecret = "";
-            public const string User = "";
-            public const string Password = "";
-            public const string ContractsCollection = "";
+            public const string AppKey = "kid_S112cy0jX";
+            public const string AppSecret = "eddf74fe0d554d94b5ce856437e20b93";
+            public const string User = "roman.ogolikhin@softteco.com";
+            public const string Password = "qwertYUIOP1z";
+            public const string ContractsCollection = "contracts";
         }
 
         public static class Exceptions

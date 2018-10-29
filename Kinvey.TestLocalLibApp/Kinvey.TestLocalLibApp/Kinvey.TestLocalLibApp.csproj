@@ -17,18 +17,5 @@
     <ProjectReference Include="..\..\Kinvey\Kinvey.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Pages\ContractsPage.xaml.cs">
-      <DependentUpon>ContractsPage.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Pages\AddContract.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\BasePage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
+  <Import Project="..\..\Kinvey.TestApp.Shared\Kinvey.TestApp.Shared.projitems" Label="Shared" />
 </Project>

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <pages:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            xmlns:pages="clr-namespace:Kinvey.TestLocalLibApp.Pages;assembly=Kinvey.TestLocalLibApp"
-            x:Class="Kinvey.TestLocalLibApp.Pages.ContractsPage"
+            xmlns:pages="clr-namespace:Kinvey.TestApp.Shared.Pages"
+            x:Class="Kinvey.TestApp.Shared.Pages.ContractsPage"
             Appearing="ContractsPage_OnAppearing">  
     <pages:BasePage.Content>
         <StackLayout>

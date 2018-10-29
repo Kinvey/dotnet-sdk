@@ -1,5 +1,5 @@
-﻿using Kinvey.TestLocalLibApp.iOS;
-using Kinvey.TestLocalLibApp.Interfaces;
+﻿using Kinvey.Kinvey.TestApp.Shared.Interfaces;
+using Kinvey.TestLocalLibApp.iOS;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(IosAppBuilder))]
@@ -10,7 +10,7 @@ namespace Kinvey.TestLocalLibApp.iOS
     {
         public Client.Builder GetBuilder()
         {
-            return new Client.Builder(Constants.Settings.AppKey, Constants.Settings.AppSecret);
+            return new Client.Builder(Kinvey.TestApp.Shared.Constants.Settings.AppKey, Kinvey.TestApp.Shared.Constants.Settings.AppSecret);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kinvey.TestLocalLibApp.Models;
+using Kinvey.Kinvey.TestApp.Shared.Models;
 
-namespace Kinvey.TestLocalLibApp.Pages
+namespace Kinvey.TestApp.Shared.Pages
 {
     public partial class ContractsPage : BasePage
     {
@@ -21,7 +21,7 @@ namespace Kinvey.TestLocalLibApp.Pages
                 if (!Client.SharedClient.IsUserLoggedIn())
                 {
                     //If not. Login. 
-                    user = await User.LoginAsync(Constants.Settings.User, Constants.Settings.Password);
+                    user = await User.LoginAsync(Kinvey.TestApp.Shared.Constants.Settings.User, Kinvey.TestApp.Shared.Constants.Settings.Password);
                 }
                 else
                 {
@@ -33,7 +33,7 @@ namespace Kinvey.TestLocalLibApp.Pages
                 UserLabel.Text = $"Hello {user.UserName} !";
 
                 // Getting an instance of  DataStore.
-                var dataStore = DataStore<Contract>.Collection(Constants.Settings.ContractsCollection,
+                var dataStore = DataStore<Contract>.Collection(Kinvey.TestApp.Shared.Constants.Settings.ContractsCollection,
                     DataStoreType.CACHE);
 
                 var contracts = new List<Contract>();
@@ -42,7 +42,7 @@ namespace Kinvey.TestLocalLibApp.Pages
                 var cacheDelegate = new KinveyDelegate<List<Contract>>
                 {
                     onSuccess = results => contracts.AddRange(results),
-                    onError = async ex => await DisplayMessage(Constants.Exceptions.GeneralExceptionTitle, ex.Message)
+                    onError = async ex => await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, ex.Message)
                 };
                 // The method will return the network results.
                 await dataStore.FindAsync(cacheResults: cacheDelegate);
@@ -53,7 +53,7 @@ namespace Kinvey.TestLocalLibApp.Pages
             catch (Exception ex)
             {
                 //Popup with exception message.
-                await DisplayMessage(Constants.Exceptions.GeneralExceptionTitle, ex.Message);
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, ex.Message);
             }
         }
 

@@ -1,5 +1,5 @@
-﻿using Kinvey.TestLocalLibApp.Droid;
-using Kinvey.TestLocalLibApp.Interfaces;
+﻿using Kinvey.Kinvey.TestApp.Shared.Interfaces;
+using Kinvey.TestLocalLibApp.Droid;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(AndroidAppBuilder))]
@@ -10,7 +10,7 @@ namespace Kinvey.TestLocalLibApp.Droid
     {
         public Client.Builder GetBuilder()
         {
-            return new Client.Builder(Constants.Settings.AppKey, Constants.Settings.AppSecret);
+            return new Client.Builder(Kinvey.TestApp.Shared.Constants.Settings.AppKey, Kinvey.TestApp.Shared.Constants.Settings.AppSecret);
         }
     }
 }

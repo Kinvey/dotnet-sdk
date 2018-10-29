@@ -1,4 +1,4 @@
-﻿namespace Kinvey.TestLocalLibApp.Interfaces
+﻿namespace Kinvey.Kinvey.TestApp.Shared.Interfaces
 {
     public interface IBuilder
     {

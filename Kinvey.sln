@@ -57,11 +57,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinvey.TestLocalLibApp.UWP"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kinvey.TestLocalLibApp", "Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp\Kinvey.TestLocalLibApp.csproj", "{8083DFAC-EBC8-428A-9685-0C433F4AAF48}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Kinvey.TestApp.Shared", "Kinvey.TestApp.Shared\Kinvey.TestApp.Shared.shproj", "{7F614988-F904-4F18-BF32-90CF8D7EF30C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Kinvey.Shared\Kinvey.Shared.projitems*{405fed46-66d9-4eb4-8c6e-16636329fd77}*SharedItemsImports = 4
 		Kinvey.Shared\Kinvey.Shared.projitems*{54c9e523-785c-48cf-b77c-b28842dc0abf}*SharedItemsImports = 4
 		Kinvey.Shared\Kinvey.Shared.projitems*{7de1ff95-bf2c-43d1-9a0c-0bf90d8e3b5c}*SharedItemsImports = 13
+		Kinvey.TestApp.Shared\Kinvey.TestApp.Shared.projitems*{7f614988-f904-4f18-bf32-90cf8d7ef30c}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU

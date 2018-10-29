@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Kinvey.TestLocalLibApp.Models
+namespace Kinvey.Kinvey.TestApp.Shared.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Contract : Entity
