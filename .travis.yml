@@ -36,6 +36,9 @@ matrix:
         - pushd sqlite-net/nuget/SQLite-net-std
         - dotnet build
         - popd
+        - pushd Kinvey
+        - dotnet build
+        - popd
         - pushd TestFramework/Tests.Integration
         - msbuild
         - popd
