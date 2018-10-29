@@ -6,6 +6,7 @@ task:
     PATH: $PATH:/usr/local/share/dotnet
   install_dotnet_sdk_script: brew cask install dotnet-sdk
   check_version_script: dotnet --version
+  build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
   test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 task:
@@ -40,6 +41,7 @@ task:
   apt_update_script: apt update
   install_sqlite_script: apt install libsqlite3-dev sqlite3 -y
   check_sqlite3_version_script: sqlite3 -version
+  build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
   test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 task:
@@ -57,5 +59,6 @@ task:
   install_dotnet_script: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.1
   install_coverlet_script: dotnet tool install --global coverlet.console
   nuget_restore_script: nuget restore Kinvey.sln
+  build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
   build_script: msbuild TestFramework/Tests.Integration/Tests.Integration.csproj
   test_script: (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon --real-time=1000
