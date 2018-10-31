@@ -3,7 +3,8 @@ task:
   osx_instance:
     image: high-sierra-xcode-9.4.1
   env:
-    PATH: $PATH:/usr/local/share/dotnet
+    DOTNET_ROOT: /usr/local/share/dotnet
+    PATH: $PATH:$DOTNET_ROOT
   git_submodule_update_init_script: git submodule update --init --recursive
   install_dotnet_sdk_script: brew cask install dotnet-sdk
   check_version_script: dotnet --version
@@ -14,7 +15,9 @@ task:
   osx_instance:
     image: high-sierra-xcode-9.4.1
   env:
-    PATH: $PATH:/usr/local/share/dotnet:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+    DOTNET_ROOT: /usr/local/share/dotnet
+    MONO_ROOT: /Library/Frameworks/Mono.framework/Versions/Current/Commands
+    PATH: $PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools:$MONO_ROOT
   git_submodule_update_init_script: git submodule update --init --recursive
   install_dotnet_sdk_script: brew cask install dotnet-sdk
   check_dotnet_version_script: dotnet --version
@@ -59,6 +62,7 @@ task:
   env:
     DOTNET_ROOT: /root/.dotnet
     PATH: $PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
+  path_script: echo $PATH
   apt_update_script: apt update
   install_git_script: apt install git -y
   install_node_script: apt install nodejs npm -y; ln -s nodejs /usr/bin/node
