@@ -62,16 +62,14 @@ task:
   container:
     image: mono
   env:
-    LD_LIBRARY_PATH: ./packages/SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11/runtimes/linux-x64/native
+    LD_LIBRARY_PATH: $LD_LIBRARY_PATH:./packages/SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11/runtimes/linux-x64/native
     DOTNET_ROOT: /root/.dotnet
     PATH: $PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
   pwd_script: pwd
   path_script: echo $PATH
   apt_update_script: apt update
   install_git_script: apt install git -y
-  install_node_script: apt install nodejs npm -y; ln -s nodejs /usr/bin/node
   install_icu_devtools_script: apt install icu-devtools -y
-  install_gnomon_script: npm install -g gnomon
   install_dotnet_script: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.1
   install_coverlet_script: dotnet tool install --global coverlet.console
   install_tree_script: apt install tree -y
