@@ -18,6 +18,11 @@ task:
   git_submodule_update_init_script: git submodule update --init --recursive
   install_mono_sdk_script: brew cask install mono-mdk
   check_version_script: mono --version
+  nuget_restore_script: cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
+  build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
+  build_kinvey_script: cd Kinvey; dotnet build
+  build_script: cd TestFramework/Tests.Integration; msbuild
+  test_script: (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon --real-time=1000
 
 # task:
 #   name: Windows
@@ -61,6 +66,8 @@ task:
   install_coverlet_script: dotnet tool install --global coverlet.console
   git_submodule_update_init_script: git submodule update --init --recursive
   check_version_script: mono --version
-  nuget_restore_script: nuget restore Kinvey.sln
-  build_script: msbuild TestFramework/Tests.Integration/Tests.Integration.csproj
+  nuget_restore_script: cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
+  build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
+  build_kinvey_script: cd Kinvey; dotnet build
+  build_script: cd TestFramework/Tests.Integration; msbuild
   test_script: (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon --real-time=1000
