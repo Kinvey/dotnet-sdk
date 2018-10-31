@@ -14,7 +14,7 @@ task:
   osx_instance:
     image: high-sierra-xcode-9.4.1
   env:
-    PATH: $PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+    PATH: $PATH:/usr/local/share/dotnet:/Library/Frameworks/Mono.framework/Versions/Current/Commands
   git_submodule_update_init_script: git submodule update --init --recursive
   install_dotnet_sdk_script: brew cask install dotnet-sdk
   check_dotnet_version_script: dotnet --version
@@ -66,6 +66,8 @@ task:
   install_gnomon_script: npm install -g gnomon
   install_dotnet_script: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.1
   install_coverlet_script: dotnet tool install --global coverlet.console
+  install_sqlite_script: apt install libsqlite3-dev sqlite3 -y
+  check_sqlite3_version_script: sqlite3 -version
   git_submodule_update_init_script: git submodule update --init --recursive
   check_version_script: mono --version
   nuget_restore_script: cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
