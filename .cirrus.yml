@@ -72,10 +72,13 @@ task:
   install_gnomon_script: npm install -g gnomon
   install_dotnet_script: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.1
   install_coverlet_script: dotnet tool install --global coverlet.console
+  install_tree_script: apt install tree -y
   git_submodule_update_init_script: git submodule update --init --recursive
   check_version_script: mono --version
   nuget_restore_script: cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
   build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
   build_kinvey_script: cd Kinvey; dotnet build
   build_script: cd TestFramework/Tests.Integration; msbuild
+  uname_script: uname -a
+  e_sqlite_runtimes_script: tree packages/SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11/runtimes
   test_script: coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover
