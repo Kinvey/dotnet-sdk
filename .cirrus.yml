@@ -17,9 +17,9 @@ task:
     PATH: $PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands
   git_submodule_update_init_script: git submodule update --init --recursive
   install_dotnet_sdk_script: brew cask install dotnet-sdk
-  check_version_script: dotnet --version
+  check_dotnet_version_script: dotnet --version
   install_mono_sdk_script: brew cask install mono-mdk
-  check_version_script: mono --version
+  check_mono_version_script: mono --version
   nuget_restore_script: cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
   build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
   build_kinvey_script: cd Kinvey; dotnet build
