@@ -15,6 +15,7 @@ task:
   osx_instance:
     image: high-sierra-xcode-9.4.1
   env:
+    DYLD_LIBRARY_PATH: $DYLD_LIBRARY_PATH:./packages/SQLitePCLRaw.lib.e_sqlite3.osx.1.1.11/runtimes/osx-x64/native
     DOTNET_ROOT: /usr/local/share/dotnet
     MONO_ROOT: /Library/Frameworks/Mono.framework/Versions/Current/Commands
     PATH: $PATH:$DOTNET_ROOT:~/.dotnet/tools:$MONO_ROOT
