@@ -53,7 +53,8 @@ namespace TestFramework
 		[Test]
 		public void TestClientBuilderBasicBad()
 		{
-			// Arrange
+            // Arrange
+            Client.SharedClient = null;
 
 			// Act
 			// Assert
