@@ -1,7 +1,7 @@
 task:
   name: macOS .Net
   osx_instance:
-    image: mojave-xcode-10.0
+    image: mojave-xcode-10.1
   env:
     DOTNET_ROOT: /usr/local/share/dotnet
     PATH: $PATH:$DOTNET_ROOT
@@ -13,7 +13,7 @@ task:
 task:
   name: macOS Mono
   osx_instance:
-    image: mojave-xcode-10.0
+    image: mojave-xcode-10.1
   env:
     DYLD_LIBRARY_PATH: $DYLD_LIBRARY_PATH:./packages/SQLitePCLRaw.lib.e_sqlite3.osx.1.1.11/runtimes/osx-x64/native
     DOTNET_ROOT: /usr/local/share/dotnet
