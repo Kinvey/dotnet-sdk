@@ -20,7 +20,9 @@ nuget-pack:
 		grep -v '<dependency id="SQLitePCLRaw.lib.' | \
 		grep -v '<dependency id="SQLitePCLRaw.provider.' | \
 		grep -v '<dependency id="Xamarin.Android.Support.v4"' | \
-		grep -v '<dependency id="Xamarin.GooglePlayServices.Base"' \
+		grep -v '<dependency id="Xamarin.GooglePlayServices.Base"' | \
+		awk '{ gsub("\"MonoAndroid9.0\"", "\"MonoAndroid10\""); print }' | \
+		awk '{ gsub("\"Xamarin.iOS1.0\"", "\"Xamarin.iOS10\""); print }' \
 		> Kinvey-changed.nuspec; \
 	rm Kinvey.nuspec; \
 	mv Kinvey-changed.nuspec Kinvey.nuspec; \
