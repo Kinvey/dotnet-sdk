@@ -21,11 +21,12 @@ nuget-pack:
 		grep -v '<dependency id="SQLitePCLRaw.provider.' | \
 		grep -v '<dependency id="Xamarin.Android.Support.v4"' | \
 		grep -v '<dependency id="Xamarin.GooglePlayServices.Base"' | \
-		awk '{ gsub("\"MonoAndroid9.0\"", "\"MonoAndroid10\""); print }' | \
-		awk '{ gsub("\"Xamarin.iOS1.0\"", "\"Xamarin.iOS10\""); print }' \
+		awk '{ gsub("\"MonoAndroid9.0\"", "\"MonoAndroid0.0\""); print }' \
 		> Kinvey-changed.nuspec; \
 	rm Kinvey.nuspec; \
 	mv Kinvey-changed.nuspec Kinvey.nuspec; \
+	mv lib/monoandroid90 lib/MonoAndroid; \
+	mv lib/xamarinios10 lib/Xamarin.iOS10; \
 	rm lib/**/System.dll; \
 	rm lib/**/System.*.dll; \
 	rm lib/**/Microsoft.*.dll; \
