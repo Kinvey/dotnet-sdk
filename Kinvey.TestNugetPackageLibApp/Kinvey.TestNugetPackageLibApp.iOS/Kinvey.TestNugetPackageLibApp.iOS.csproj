@@ -149,16 +149,13 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Kinvey">
+      <Version>3.2.0-beta03</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\Kinvey.iOS\Kinvey.iOS.csproj">
-      <Project>{54c9e523-785c-48cf-b77c-b28842dc0abf}</Project>
-      <Name>Kinvey.iOS</Name>
-      <IsAppExtension>false</IsAppExtension>
-      <IsWatchApp>false</IsWatchApp>
-    </ProjectReference>
     <ProjectReference Include="..\Kinvey.TestNugetPackageLibApp\Kinvey.TestNugetPackageLibApp.csproj">
       <Project>{4271C26B-523D-4C9E-8174-0074F38DF190}</Project>
       <Name>Kinvey.TestNugetPackageLibApp</Name>
