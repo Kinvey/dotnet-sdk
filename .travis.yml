@@ -21,31 +21,31 @@ matrix:
         - export PATH="$PATH:/usr/local/share/dotnet"
       after_success:
         - bash <(curl -s https://codecov.io/bash) -F macOS
-    - name: "Mono"
-      language: csharp
-      solution: Kinvey.sln
-      dotnet: 2.1
-      before_install:
-        - sudo apt update
-        - sudo apt install -y nodejs npm
-        - npm install -g gnomon
-      before_script:
-        - pushd TestFramework/Tests.Integration
-        - nuget restore -SolutionDirectory ../..
-        - popd
-        - pushd sqlite-net/nuget/SQLite-net-std
-        - dotnet build
-        - popd
-        - pushd Kinvey
-        - dotnet build
-        - popd
-        - pushd TestFramework/Tests.Integration
-        - msbuild
-        - popd
-      script:
-        - (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon --real-time=1000 ; test ${PIPESTATUS[0]} -eq 0
-      after_success:
-        - bash <(curl -s https://codecov.io/bash) -F Mono
+    # - name: "Mono"
+    #   language: csharp
+    #   solution: Kinvey.sln
+    #   dotnet: 2.1
+    #   before_install:
+    #     - sudo apt update
+    #     - sudo apt install -y nodejs npm
+    #     - npm install -g gnomon
+    #   before_script:
+    #     - pushd TestFramework/Tests.Integration
+    #     - nuget restore -SolutionDirectory ../..
+    #     - popd
+    #     - pushd sqlite-net/nuget/SQLite-net-std
+    #     - dotnet build
+    #     - popd
+    #     - pushd Kinvey
+    #     - dotnet build
+    #     - popd
+    #     - pushd TestFramework/Tests.Integration
+    #     - msbuild
+    #     - popd
+    #   script:
+    #     - (echo "Running Unit Tests"; coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover) | gnomon --real-time=1000 ; test ${PIPESTATUS[0]} -eq 0
+    #   after_success:
+    #     - bash <(curl -s https://codecov.io/bash) -F Mono
 install:
   - dotnet tool install --global coverlet.console
   - export PATH="$PATH:/home/travis/.dotnet/tools"
