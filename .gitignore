@@ -331,3 +331,5 @@ coverage.opencover.xml
 
 # SQLite
 **/*.sqlite
+**/*.sqlite-shm
+**/*.sqlite-wal
