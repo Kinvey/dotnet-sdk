@@ -16,6 +16,7 @@ using SQLite;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System;
 
 namespace Kinvey
 {
@@ -24,39 +25,67 @@ namespace Kinvey
 	/// </summary>
 	public class SQLiteCredentialStore : ICredentialStore
 	{
-		/// <summary>
-		/// The db connection.
-		/// </summary>
-		private SQLiteConnection _dbConnection;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SQLiteCredentialStore"/> class.
-		/// </summary>
-		/// <param name="platform">Platform.</param>
-		/// <param name="filepath">Filepath.</param>
-		public SQLiteCredentialStore (string filepath)
+        private static readonly Dictionary<String, List<SQLiteConnection>> SQLiteFiles = new Dictionary<String, List<SQLiteConnection>>();
+
+        /// <summary>
+        /// The db connection.
+        /// </summary>
+        private readonly SQLiteConnection _dbConnection;
+        private readonly String dbPath;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteCredentialStore"/> class.
+        /// </summary>
+        /// <param name="filepath">Filepath.</param>
+        public SQLiteCredentialStore (string filepath)
 		{
-			if (_dbConnection == null)
-			{
-                var dbPath = Path.Combine(filepath, "kinvey_tokens.sqlite");
-                _dbConnection = new SQLiteConnection (
-                    dbPath,
-                    SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex
-                );
-				_dbConnection.CreateTable<SQLCredential>();
-			}
-		}
+            dbPath = Path.Combine(filepath, "kinvey_tokens.sqlite");
+            _dbConnection = new SQLiteConnection(
+                dbPath,
+                SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex | SQLiteOpenFlags.PrivateCache
+            );
+            List<SQLiteConnection> connections;
+            if (SQLiteFiles.ContainsKey(dbPath))
+            {
+                connections = SQLiteFiles[dbPath];
+            }
+            else
+            {
+                connections = new List<SQLiteConnection>();
+                SQLiteFiles[dbPath] = connections;
+            }
+            connections.Add(_dbConnection);
+            _dbConnection.CreateTable<SQLCredential>();
+        }
 
-		#region ICredentialStore implementation
+        ~SQLiteCredentialStore()
+        {
+            if (_dbConnection != null)
+            {
+                _dbConnection.Close();
+                if (SQLiteFiles.TryGetValue(dbPath, out List<SQLiteConnection> connections))
+                {
+                    connections.Remove(_dbConnection);
+                    if (connections.Count == 0) SQLiteFiles.Remove(dbPath);
+                }
+            }
+        }
 
-		/// <summary>
-		/// Load the specified userId.
-		/// </summary>
-		/// <param name="userId">User identifier.</param>
-		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		virtual public Credential Load (string userId, string ssoGroupKey)
+        #region ICredentialStore implementation
+
+        /// <summary>
+        /// Load the specified userId.
+        /// </summary>
+        /// <param name="userId">User identifier.</param>
+        /// <param name="ssoGroupKey">SSO Group Key.</param>
+        virtual public Credential Load (string userId, string ssoGroupKey)
 		{
-			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().Where (t => t.UserID == userId).FirstOrDefault ();
+            SQLCredential sqlcred;
+            lock (SQLiteFiles[dbPath])
+            {
+                sqlcred = _dbConnection.Table<SQLCredential>().Where(t => t.UserID == userId).FirstOrDefault();
+            }
 			Credential cred = null;
 			if (sqlcred != null)
 			{
@@ -75,20 +104,35 @@ namespace Kinvey
 		virtual public void Store (string userId, string ssoGroupKey, Credential credential)
 		{
 			Delete (userId, ssoGroupKey);
-			SQLCredential cred = new SQLCredential();
-			cred.UserID = credential.UserId;
-			cred.AuthSocialID = JsonConvert.SerializeObject(credential.AuthSocialID);
-			cred.AuthToken = credential.AuthToken;
-			cred.SecAuthToken = credential.SecAuthToken;
-			cred.UserName = credential.UserName;
-			cred.Attributes = JsonConvert.SerializeObject(credential.Attributes);
-			cred.UserKMD = JsonConvert.SerializeObject(credential.UserKMD);
-			cred.AccessToken = credential.AccessToken;
-			cred.RefreshToken = credential.RefreshToken;
-			cred.RedirectUri = credential.RedirectUri;
-			cred.DeviceID = credential.DeviceID;
-            cred.MICClientID = credential.MICClientID;
-			_dbConnection.Insert(cred);
+            SQLCredential cred = new SQLCredential
+            {
+                UserID = credential.UserId,
+                AuthSocialID = JsonConvert.SerializeObject(credential.AuthSocialID),
+                AuthToken = credential.AuthToken,
+                SecAuthToken = credential.SecAuthToken,
+                UserName = credential.UserName,
+                Attributes = JsonConvert.SerializeObject(credential.Attributes),
+                UserKMD = JsonConvert.SerializeObject(credential.UserKMD),
+                AccessToken = credential.AccessToken,
+                RefreshToken = credential.RefreshToken,
+                RedirectUri = credential.RedirectUri,
+                DeviceID = credential.DeviceID,
+                MICClientID = credential.MICClientID
+            };
+            lock (SQLiteFiles[dbPath])
+            {
+                try
+                {
+                    _dbConnection.BeginTransaction();
+                    _dbConnection.Insert(cred);
+                    _dbConnection.Commit();
+                }
+                catch (Exception ex)
+                {
+                    _dbConnection.Rollback();
+                    throw ex;
+                }
+            }
 		}
 
 		/// <summary>
@@ -98,14 +142,31 @@ namespace Kinvey
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		public void Delete (string userId, string ssoGroupKey)
 		{
-			_dbConnection.Delete<SQLCredential> (userId);
+            lock (SQLiteFiles[dbPath])
+            {
+                try
+                {
+                    _dbConnection.BeginTransaction();
+                    _dbConnection.Delete<SQLCredential>(userId);
+                    _dbConnection.Commit();
+                }
+                catch (Exception ex)
+                {
+                    _dbConnection.Rollback();
+                    throw ex;
+                }
+            }
 		}
 
 		virtual public Credential GetStoredCredential(string ssoGroupKey)
 		{
 			Credential cred = null;
 
-			SQLCredential sqlcred = _dbConnection.Table<SQLCredential> ().FirstOrDefault ();
+            SQLCredential sqlcred;
+            lock (SQLiteFiles[dbPath])
+            {
+                sqlcred = _dbConnection.Table<SQLCredential>().FirstOrDefault();
+            }
 
 			if (sqlcred != null)
 			{
@@ -127,9 +188,11 @@ namespace Kinvey
 					socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
 				}
 
-				cred =  new Credential (sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID, sqlcred.MICClientID);
-				cred.SecAuthToken = sqlcred.SecAuthToken;
-			}
+                cred = new Credential(sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID, sqlcred.MICClientID)
+                {
+                    SecAuthToken = sqlcred.SecAuthToken
+                };
+            }
 
 			return cred;
 		}

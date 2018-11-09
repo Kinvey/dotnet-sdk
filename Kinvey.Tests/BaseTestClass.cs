@@ -127,6 +127,8 @@ namespace Kinvey.Tests
             finally
             {
                 Client.SharedClient = null;
+                GC.WaitForPendingFinalizers();
+                GC.WaitForFullGCComplete();
             }
             Delete(TestSetup.SQLiteOfflineStoreFilePath);
             Delete(TestSetup.SQLiteCredentialStoreFilePath);

@@ -43,6 +43,8 @@ namespace Kinvey
         // The asynchronous db connection.
         private SQLiteAsyncConnection dbConnectionAsync;
 
+        private static readonly Dictionary<String, List<SQLiteConnection>> SQLiteFiles = new Dictionary<String, List<SQLiteConnection>>();
+
         // The asynchronous db connection.
         private SQLiteConnection _dbConnectionSync;
         private SQLiteConnection DBConnectionSync
@@ -56,15 +58,46 @@ namespace Kinvey
                     {
                         //var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
                         //dbConnection = new SQLiteAsyncConnection (connectionFactory);
-                        _dbConnectionSync = new SQLiteConnection(
-                            databasePath: dbpath,
-                            openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex,
-                            storeDateTimeAsTicks: false
-                        );
+                        lock (SQLiteFiles)
+                        {
+                            _dbConnectionSync = new SQLiteConnection(
+                                databasePath: dbpath,
+                                openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex | SQLiteOpenFlags.PrivateCache,
+                                storeDateTimeAsTicks: false
+                            );
+                            List<SQLiteConnection> connections;
+                            if (SQLiteFiles.ContainsKey(dbpath))
+                            {
+                                connections = SQLiteFiles[dbpath];
+                            }
+                            else
+                            {
+                                connections = new List<SQLiteConnection>();
+                                SQLiteFiles[dbpath] = connections;
+                            }
+                            connections.Add(_dbConnectionSync);
+                        }
                         //_dbConnectionSync.TraceListener = new DebugTraceListener();
                     }
 
                     return _dbConnectionSync;
+                }
+            }
+        }
+
+        ~SQLiteCacheManager()
+        {
+            if (_dbConnectionSync != null)
+            {
+                lock (SQLiteFiles)
+                {
+                    _dbConnectionSync.Close();
+                    if (SQLiteFiles.TryGetValue(dbpath, out List<SQLiteConnection> connections))
+                    {
+                        connections.Remove(_dbConnectionSync);
+                        if (connections.Count == 0) SQLiteFiles.Remove(dbpath);
+                    }
+                    _dbConnectionSync = null;
                 }
             }
         }
@@ -76,7 +109,7 @@ namespace Kinvey
         public string dbpath { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteCacheManager"/> class.
+		/// Initializes a new instance of the <see cref="SQLiteCacheManager"/> class.
 		/// </summary>
 		public SQLiteCacheManager(string filePath)
 		{
@@ -304,6 +337,5 @@ namespace Kinvey
 			var cmd = connection.CreateCommand (cmdText, typeof(T).Name);
 			return cmd.ExecuteScalar<string> () != null;
 		}
-
-	}
+    }
 }
