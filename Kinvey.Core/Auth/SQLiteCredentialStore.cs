@@ -194,38 +194,42 @@ namespace Kinvey
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    // dispose managed state (managed objects).
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
                 if (_dbConnection != null)
                 {
                     _dbConnection.Close();
-                    if (SQLiteFiles.TryGetValue(dbPath, out List<SQLiteConnection> connections))
+                    lock (SQLiteFiles)
                     {
-                        connections.Remove(_dbConnection);
-                        if (connections.Count == 0) SQLiteFiles.Remove(dbPath);
+                        if (SQLiteFiles.TryGetValue(dbPath, out List<SQLiteConnection> connections))
+                        {
+                            connections.Remove(_dbConnection);
+                            if (connections.Count == 0) SQLiteFiles.Remove(dbPath);
+                        }
                     }
+                    _dbConnection.Dispose();
                 }
-                // TODO: set large fields to null.
+
+                // set large fields to null.
+
 
                 disposedValue = true;
             }
         }
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~SQLiteCredentialStore() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
+        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~SQLiteCredentialStore() {
+            Dispose(false);
+        }
 
         // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
         #endregion
 
