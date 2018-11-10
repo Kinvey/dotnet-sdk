@@ -76,28 +76,12 @@ namespace Kinvey
                                 SQLiteFiles[dbpath] = connections;
                             }
                             connections.Add(_dbConnectionSync);
+							Console.WriteLine($"Connections: {connections.Count}");
                         }
                         //_dbConnectionSync.TraceListener = new DebugTraceListener();
                     }
 
                     return _dbConnectionSync;
-                }
-            }
-        }
-
-        ~SQLiteCacheManager()
-        {
-            if (_dbConnectionSync != null)
-            {
-                lock (SQLiteFiles)
-                {
-                    _dbConnectionSync.Close();
-                    if (SQLiteFiles.TryGetValue(dbpath, out List<SQLiteConnection> connections))
-                    {
-                        connections.Remove(_dbConnectionSync);
-                        if (connections.Count == 0) SQLiteFiles.Remove(dbpath);
-                    }
-                    _dbConnectionSync = null;
                 }
             }
         }
@@ -337,5 +321,53 @@ namespace Kinvey
 			var cmd = connection.CreateCommand (cmdText, typeof(T).Name);
 			return cmd.ExecuteScalar<string> () != null;
 		}
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                if (_dbConnectionSync != null)
+                {
+                    lock (SQLiteFiles)
+                    {
+                        _dbConnectionSync.Close();
+                        if (SQLiteFiles.TryGetValue(dbpath, out List<SQLiteConnection> connections))
+                        {
+                            connections.Remove(_dbConnectionSync);
+                            if (connections.Count == 0) SQLiteFiles.Remove(dbpath);
+                        }
+                        _dbConnectionSync = null;
+                    }
+                }
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~SQLiteCacheManager() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

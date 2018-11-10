@@ -46,5 +46,7 @@ namespace Kinvey
 		/// <returns>The credential object representing the active user.</returns>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		abstract public Credential GetStoredCredential(string ssoGroupKey);
-	}
+
+        public abstract void Dispose();
+    }
 }

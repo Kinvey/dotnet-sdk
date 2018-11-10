@@ -56,20 +56,8 @@ namespace Kinvey
                 SQLiteFiles[dbPath] = connections;
             }
             connections.Add(_dbConnection);
+            Console.WriteLine($"Connections: {connections.Count}");
             _dbConnection.CreateTable<SQLCredential>();
-        }
-
-        ~SQLiteCredentialStore()
-        {
-            if (_dbConnection != null)
-            {
-                _dbConnection.Close();
-                if (SQLiteFiles.TryGetValue(dbPath, out List<SQLiteConnection> connections))
-                {
-                    connections.Remove(_dbConnection);
-                    if (connections.Count == 0) SQLiteFiles.Remove(dbPath);
-                }
-            }
         }
 
         #region ICredentialStore implementation
@@ -172,7 +160,7 @@ namespace Kinvey
 			{
 				Dictionary<string, JToken> attributes = null;
 				if (sqlcred.Attributes != null)
-				{
+                {
 					attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 				}
 
@@ -182,11 +170,11 @@ namespace Kinvey
 					kmd = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 				}
 
-				KinveyAuthSocialID socialIdentity = null;
-				if (sqlcred.AuthSocialID != null)
-				{
-					socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
-				}
+                KinveyAuthSocialID socialIdentity = null;
+                if (sqlcred.AuthSocialID != null)
+                {
+                    socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
+                }
 
                 cred = new Credential(sqlcred.UserID, sqlcred.AccessToken, socialIdentity, sqlcred.AuthToken, sqlcred.UserName, attributes, kmd, sqlcred.RefreshToken, sqlcred.RedirectUri, sqlcred.DeviceID, sqlcred.MICClientID)
                 {
@@ -197,7 +185,51 @@ namespace Kinvey
 			return cred;
 		}
 
-		#endregion
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
 
-	}
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                if (_dbConnection != null)
+                {
+                    _dbConnection.Close();
+                    if (SQLiteFiles.TryGetValue(dbPath, out List<SQLiteConnection> connections))
+                    {
+                        connections.Remove(_dbConnection);
+                        if (connections.Count == 0) SQLiteFiles.Remove(dbPath);
+                    }
+                }
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~SQLiteCredentialStore() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        #endregion
+
+    }
 }

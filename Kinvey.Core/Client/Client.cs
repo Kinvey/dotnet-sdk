@@ -39,7 +39,7 @@ namespace Kinvey
 		/// <value>The sender ID.</value>
 		public string senderID { get; set;}
 
-		private static Client _sharedClient;
+		internal static Client _sharedClient;
 
 		/// <summary>
 		/// The Shared Client instance.

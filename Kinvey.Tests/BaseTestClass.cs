@@ -110,7 +110,7 @@ namespace Kinvey.Tests
         {
             try
             {
-                var client = Client.SharedClient;
+                var client = Client._sharedClient;
                 if (client != null)
                 {
                     var user = client.ActiveUser;
@@ -118,17 +118,12 @@ namespace Kinvey.Tests
                     {
                         user.Logout();
                     }
+                    client.Dispose();
                 }
-            }
-            catch (Exception)
-            {
-                //do nothing
             }
             finally
             {
                 Client.SharedClient = null;
-                GC.WaitForPendingFinalizers();
-                GC.WaitForFullGCComplete();
             }
             Delete(TestSetup.SQLiteOfflineStoreFilePath);
             Delete(TestSetup.SQLiteCredentialStoreFilePath);
