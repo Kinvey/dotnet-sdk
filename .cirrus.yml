@@ -37,7 +37,10 @@ task:
     image: microsoft/windowsservercore:ltsc2016
   env:
     CIRRUS_SHELL: powershell
-    PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\SQLite\tools'
+    CHOCOLATEY_HOME: C:\ProgramData\chocolatey
+    SQLITE_HOME: C:\ProgramData\chocolatey\lib\SQLite
+    GIT_HOME: C:\Program Files\Git
+    PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;$CHOCOLATEY_HOME\bin;$SQLITE_HOME\tools;$GIT_HOME\cmd'
   install_dotnet_sdk_script: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 2.1"
   check_dotnet_version_script: dotnet --version
   install_choco_script: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
