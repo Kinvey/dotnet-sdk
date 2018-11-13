@@ -580,7 +580,7 @@ namespace Kinvey
         /// <param name="username">Username for authentication</param>
         /// <param name="password">Password for authentication</param>
         /// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
-        /// <param name="micID">[optional] Client ID configured during auth provider configuration, which is to be used during authentication.  Defaults to app key.</param>
+        /// <param name="micID">[optional] Auth Service ID</param>
         /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
         static public async Task LoginWithMIC(string username, string password, string redirectURI, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
@@ -603,7 +603,7 @@ namespace Kinvey
 
                 // Initiate token request
                 //
-                var micLoginRequest = User.BuildMICLogin(uc, username, password, clientID);
+                var micLoginRequest = BuildMICLogin(uc, username, password, clientID);
 				ct.ThrowIfCancellationRequested();
 				var accessResult = await micLoginRequest.ExecuteAsync();
 
@@ -613,7 +613,7 @@ namespace Kinvey
 
 				ct.ThrowIfCancellationRequested();
 
-				// Log into Kinvey
+				// Log into Kinvey using the token
 				//
 				var user = await LoginMICWithAccessTokenAsync(accessToken);
 
@@ -1161,6 +1161,8 @@ namespace Kinvey
                 { "password", password }
             };
 
+            // Creation MIC Login request
+            //
             var micLoginRequest = new MicLoginRequest(cli, data);          
             cli.InitializeRequest(micLoginRequest);
             return micLoginRequest;
