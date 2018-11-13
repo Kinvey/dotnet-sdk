@@ -31,20 +31,20 @@ task:
 #   build_script: cd TestFramework/Tests.Integration; msbuild
 #   test_script: coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover
 
-# task:
-#   name: Windows
-#   windows_container:
-#     image: microsoft/windowsservercore:ltsc2016
-#   env:
-#     CIRRUS_SHELL: powershell
-#     PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\SQLite\tools'
-#   install_dotnet_sdk_script: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 2.1"
-#   check_dotnet_version_script: dotnet --version
-#   install_choco_script: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-#   check_choco_version_script: choco upgrade pgkname --noop
-#   install_sqlite_script: choco install sqlite -y
-#   check_sqlite_version_script: sqlite3 -version
-#   test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover; exit $LastExitCode
+task:
+  name: Windows
+  windows_container:
+    image: microsoft/windowsservercore:ltsc2016
+  env:
+    CIRRUS_SHELL: powershell
+    PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\SQLite\tools'
+  install_dotnet_sdk_script: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 2.1"
+  check_dotnet_version_script: dotnet --version
+  install_choco_script: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+  check_choco_version_script: choco upgrade pgkname --noop
+  install_sqlite_script: choco install sqlite -y
+  check_sqlite_version_script: sqlite3 -version
+  test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover; exit $LastExitCode
 
 task:
   name: Linux .Net
