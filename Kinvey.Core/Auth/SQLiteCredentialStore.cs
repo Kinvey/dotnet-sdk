@@ -56,7 +56,6 @@ namespace Kinvey
                 SQLiteFiles[dbPath] = connections;
             }
             connections.Add(_dbConnection);
-            Console.WriteLine($"Connections: {connections.Count}");
             _dbConnection.CreateTable<SQLCredential>();
         }
 
@@ -190,32 +189,35 @@ namespace Kinvey
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            lock (this)
             {
-                if (disposing)
+                if (!disposedValue)
                 {
-                    // dispose managed state (managed objects).
-                }
-
-                // free unmanaged resources (unmanaged objects) and override a finalizer below.
-                if (_dbConnection != null)
-                {
-                    _dbConnection.Close();
-                    lock (SQLiteFiles)
+                    if (disposing)
                     {
-                        if (SQLiteFiles.TryGetValue(dbPath, out List<SQLiteConnection> connections))
-                        {
-                            connections.Remove(_dbConnection);
-                            if (connections.Count == 0) SQLiteFiles.Remove(dbPath);
-                        }
+                        // dispose managed state (managed objects).
                     }
-                    _dbConnection.Dispose();
+
+                    // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    if (_dbConnection != null)
+                    {
+                        _dbConnection.Close();
+                        lock (SQLiteFiles)
+                        {
+                            if (SQLiteFiles.TryGetValue(dbPath, out List<SQLiteConnection> connections))
+                            {
+                                connections.Remove(_dbConnection);
+                                if (connections.Count == 0) SQLiteFiles.Remove(dbPath);
+                            }
+                        }
+                        _dbConnection.Dispose();
+                    }
+
+                    // set large fields to null.
+
+
+                    disposedValue = true;
                 }
-
-                // set large fields to null.
-
-
-                disposedValue = true;
             }
         }
 

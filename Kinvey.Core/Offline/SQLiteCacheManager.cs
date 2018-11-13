@@ -76,7 +76,6 @@ namespace Kinvey
                                 SQLiteFiles[dbpath] = connections;
                             }
                             connections.Add(_dbConnectionSync);
-							Console.WriteLine($"Connections: {connections.Count}");
                         }
                         //_dbConnectionSync.TraceListener = new DebugTraceListener();
                     }
@@ -327,32 +326,35 @@ namespace Kinvey
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            lock (this)
             {
-                if (disposing)
+                if (!disposedValue)
                 {
-                    // dispose managed state (managed objects).
-                }
-
-                // free unmanaged resources (unmanaged objects) and override a finalizer below.
-                if (_dbConnectionSync != null)
-                {
-                    _dbConnectionSync.Close();
-                    lock (SQLiteFiles)
+                    if (disposing)
                     {
-                        if (SQLiteFiles.TryGetValue(dbpath, out List<SQLiteConnection> connections))
-                        {
-                            connections.Remove(_dbConnectionSync);
-                            if (connections.Count == 0) SQLiteFiles.Remove(dbpath);
-                        }
+                        // dispose managed state (managed objects).
                     }
-                    _dbConnectionSync.Dispose();
+
+                    // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    if (_dbConnectionSync != null)
+                    {
+                        _dbConnectionSync.Close();
+                        lock (SQLiteFiles)
+                        {
+                            if (SQLiteFiles.TryGetValue(dbpath, out List<SQLiteConnection> connections))
+                            {
+                                connections.Remove(_dbConnectionSync);
+                                if (connections.Count == 0) SQLiteFiles.Remove(dbpath);
+                            }
+                        }
+                        _dbConnectionSync.Dispose();
+                    }
+
+                    // set large fields to null.
+                    _dbConnectionSync = null;
+
+                    disposedValue = true;
                 }
-
-                // set large fields to null.
-                _dbConnectionSync = null;
-
-                disposedValue = true;
             }
         }
 

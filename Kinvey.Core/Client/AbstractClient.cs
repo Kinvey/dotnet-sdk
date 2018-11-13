@@ -298,22 +298,25 @@ namespace Kinvey
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            lock (this)
             {
-                if (disposing)
+                if (!disposedValue)
                 {
-                    // dispose managed state (managed objects).
-                    CacheManager.Dispose();
-                    Store.Dispose();
+                    if (disposing)
+                    {
+                        // dispose managed state (managed objects).
+                        CacheManager.Dispose();
+                        Store.Dispose();
+                    }
+
+                    // free unmanaged resources (unmanaged objects) and override a finalizer below.
+
+
+                    // set large fields to null.
+                    CacheManager = null;
+
+                    disposedValue = true;
                 }
-
-                // free unmanaged resources (unmanaged objects) and override a finalizer below.
-
-
-                // set large fields to null.
-                CacheManager = null;
-
-                disposedValue = true;
             }
         }
 
