@@ -574,67 +574,59 @@ namespace Kinvey
 			await LoginWithMIC(username, password, redirectURI, null, userClient, ct);
 		}
 
-		/// <summary>
-		/// Performs MIC Login authorization through an API.
-		/// </summary>
-		/// <param name="username">Username for authentication</param>
-		/// <param name="password">Password for authentication</param>
-		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task LoginWithMIC(string username, string password, string redirectURI, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Performs MIC Login authorization through an API.
+        /// </summary>
+        /// <param name="username">Username for authentication</param>
+        /// <param name="password">Password for authentication</param>
+        /// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
+        /// <param name="micID">[optional] Client ID configured during auth provider configuration, which is to be used during authentication.  Defaults to app key.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        static public async Task LoginWithMIC(string username, string password, string redirectURI, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			AbstractClient uc = userClient ?? Client.SharedClient;
+			var uc = userClient ?? Client.SharedClient;
 			uc.MICRedirectURI = redirectURI;
 
 			try
 			{
 				ct.ThrowIfCancellationRequested();
 
-				string appKey = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
+				var clientID = ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey;
 
-				string clientID = appKey;
-
-				// Check if a client ID for MIC authentication has been provided
-				//
-				if (!string.IsNullOrEmpty(micID))
+                // Check if a client ID for MIC authentication has been provided
+                //
+                if (!string.IsNullOrEmpty(micID))
 				{
 					clientID += Constants.MIC_ID_SEPARATOR + micID;
 				}
 
-				// Initiate grant reqeust
-				//
-				GetMICTempURLRequest MICTempURLRequest = User.BuildMICTempURLRequest(uc, clientID);
+                // Initiate token request
+                //
+                var micLoginRequest = User.BuildMICLogin(uc, username, password, clientID);
 				ct.ThrowIfCancellationRequested();
-				JObject tempResult = await MICTempURLRequest.ExecuteAsync();
-
-				string tempURL = tempResult["temp_login_uri"].ToString();
-
-				// Initiate token request
-				//
-				LoginToTempURLRequest MICLoginToTempURL = User.BuildMICLoginToTempURL(uc, username, password, tempURL, clientID);
-				ct.ThrowIfCancellationRequested();
-				JObject accessResult = await MICLoginToTempURL.ExecuteAsync();
+				var accessResult = await micLoginRequest.ExecuteAsync();
 
 				ct.ThrowIfCancellationRequested();
 
-				string accessToken = accessResult["access_token"].ToString();
+				var accessToken = accessResult["access_token"].ToString();
 
 				ct.ThrowIfCancellationRequested();
 
 				// Log into Kinvey
 				//
-				User u = await User.LoginMICWithAccessTokenAsync(accessToken);
+				var user = await LoginMICWithAccessTokenAsync(accessToken);
 
 				ct.ThrowIfCancellationRequested();
 
 				// Store the new access token and refresh token
 				//
-				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
+				var currentCred = uc.Store.Load(user.Id, uc.SSOGroupKey);
 				currentCred.AccessToken = accessResult["access_token"].ToString();
 				currentCred.RefreshToken = accessResult["refresh_token"].ToString();
 				currentCred.RedirectUri = uc.MICRedirectURI;
 				currentCred.MICClientID = clientID;
-				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
+				uc.Store.Store(user.Id, uc.SSOGroupKey, currentCred);
 			}
 			catch (KinveyException ke)
 			{
@@ -642,8 +634,8 @@ namespace Kinvey
 			}
 			catch(Exception e)
 			{
-				Logger.Log("Error in LoginWithAuthorizationCodeAPI: " + e.StackTrace);
-				var kinveyException = new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_GENERAL, "Unexpected error in MIC Automated Auth Flow", e);
+				Logger.Log("Error in LoginWithMIC: " + e.StackTrace);
+				var kinveyException = new KinveyException(EnumErrorCategory.ERROR_USER, EnumErrorCode.ERROR_GENERAL, "Unexpected error in MIC Resource Owner Credentials Grant flow", e);
 				throw kinveyException;
 			}
 		}
@@ -1149,7 +1141,32 @@ namespace Kinvey
 			return loginTemp;
 		}
 
-		private LogoutRequest buildLogoutRequest()
+        // Generates a request to login a user to the MIC URL (Resource Owner Credentials Grant (Username and Password))
+        static private MicLoginRequest BuildMICLogin(AbstractClient cli, string username, string password, string clientID)
+        {
+            //    	client_id:  provided by the developer when configuring authlink (defaults to the app’s appKey (the KID))
+            //    	client_secret: App Secret
+            //      grant_type: "password" - this is always set to this value
+            //    	username
+            //    	password
+
+            var appSecret = ((KinveyClientRequestInitializer)cli.RequestInitializer).AppSecret;
+
+            var data = new Dictionary<string, string>
+            {
+                { "client_id", clientID },
+                { "client_secret", appSecret },
+                { "grant_type", "password" },
+                { "username", username },
+                { "password", password }
+            };
+
+            var micLoginRequest = new MicLoginRequest(cli, data);          
+            cli.InitializeRequest(micLoginRequest);
+            return micLoginRequest;
+        }
+
+        private LogoutRequest buildLogoutRequest()
 		{
 			return new LogoutRequest(this.KinveyClient.Store, this);
 		}
@@ -1358,7 +1375,20 @@ namespace Kinvey
 			}
 		}
 
-		// A logout request
+        // Request to get access token (Resource Owner Credentials Grant (Username and Password))
+        internal class MicLoginRequest : AbstractKinveyClientRequest<JObject>
+        {
+            private const string REST_PATH = "oauth/token";
+
+            internal MicLoginRequest(AbstractClient client, object httpContent) :
+                base(client, client.MICHostName, "POST", REST_PATH, httpContent, new Dictionary<string, string>())
+            {
+                this.PayloadType = new URLEncodedPayload();
+                RequireAppCredentials = true;
+            }          
+        }
+
+        // A logout request
         private class LogoutRequest
         {
 			private ICredentialStore store;
