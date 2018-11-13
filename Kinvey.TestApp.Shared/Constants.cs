@@ -19,5 +19,4 @@
             public const string RequiredFieldsMessage = "Title and Number are required fields.";
         }
     }
-
 }
