@@ -38,13 +38,14 @@ task:
   env:
     CIRRUS_SHELL: powershell
     PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\SQLite\tools'
-  git_submodule_update_init_script: git submodule update --init --recursive
   install_dotnet_sdk_script: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 2.1"
   check_dotnet_version_script: dotnet --version
   install_choco_script: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
   check_choco_version_script: choco upgrade pgkname --noop
   install_sqlite_script: choco install sqlite -y
   check_sqlite_version_script: sqlite3 -version
+  install_git_script: choco install git
+  git_submodule_update_init_script: git submodule update --init --recursive
   test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover; exit $LastExitCode
 
 task:
