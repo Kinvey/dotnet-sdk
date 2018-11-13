@@ -110,15 +110,16 @@ namespace Kinvey.Tests
         {
             try
             {
-                var client = Client._sharedClient;
-                if (client != null)
+                using (var client = Client._sharedClient)
                 {
-                    var user = client.ActiveUser;
-                    if (user != null)
+                    if (client != null)
                     {
-                        user.Logout();
+                        var user = client.ActiveUser;
+                        if (user != null)
+                        {
+                            user.Logout();
+                        }
                     }
-                    client.Dispose();
                 }
             }
             finally
