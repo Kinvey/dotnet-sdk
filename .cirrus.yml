@@ -1,0 +1,79 @@
+task:
+  name: macOS .Net
+  osx_instance:
+    image: high-sierra-xcode-10.0
+  env:
+    DOTNET_ROOT: /usr/local/share/dotnet
+    PATH: $PATH:$DOTNET_ROOT
+  git_submodule_update_init_script: git submodule update --init --recursive
+  install_dotnet_sdk_script: brew cask install dotnet-sdk
+  check_version_script: dotnet --version
+  test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+# task:
+#   name: macOS Mono
+#   osx_instance:
+#     image: high-sierra-xcode-10.0
+#   env:
+#     DYLD_LIBRARY_PATH: $DYLD_LIBRARY_PATH:./packages/SQLitePCLRaw.lib.e_sqlite3.osx.1.1.11/runtimes/osx-x64/native
+#     DOTNET_ROOT: /usr/local/share/dotnet
+#     MONO_ROOT: /Library/Frameworks/Mono.framework/Versions/Current/Commands
+#     PATH: $PATH:$DOTNET_ROOT:~/.dotnet/tools:$MONO_ROOT
+#   git_submodule_update_init_script: git submodule update --init --recursive
+#   install_dotnet_sdk_script: brew cask install dotnet-sdk
+#   check_dotnet_version_script: dotnet --version
+#   install_mono_sdk_script: brew cask install mono-mdk
+#   check_mono_version_script: mono --version
+#   install_coverlet_script: dotnet tool install --global coverlet.console
+#   nuget_restore_script: cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
+#   build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
+#   build_kinvey_script: cd Kinvey; dotnet build
+#   build_script: cd TestFramework/Tests.Integration; msbuild
+#   test_script: coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover
+
+# task:
+#   name: Windows
+#   windows_container:
+#     image: microsoft/windowsservercore:ltsc2016
+#   env:
+#     CIRRUS_SHELL: powershell
+#     PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\SQLite\tools'
+#   install_dotnet_sdk_script: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 2.1"
+#   check_dotnet_version_script: dotnet --version
+#   install_choco_script: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+#   check_choco_version_script: choco upgrade pgkname --noop
+#   install_sqlite_script: choco install sqlite -y
+#   check_sqlite_version_script: sqlite3 -version
+#   test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover; exit $LastExitCode
+
+task:
+  name: Linux .Net
+  container:
+    image: microsoft/dotnet
+  git_submodule_update_init_script: git submodule update --init --recursive
+  check_version_script: dotnet --version
+  apt_update_script: apt update
+  install_sqlite_script: apt install libsqlite3-dev sqlite3 -y
+  check_sqlite3_version_script: sqlite3 -version
+  test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+# task:
+#   name: Linux Mono
+#   container:
+#     image: mono
+#   env:
+#     LD_LIBRARY_PATH: $LD_LIBRARY_PATH:./packages/SQLitePCLRaw.lib.e_sqlite3.linux.1.1.11/runtimes/linux-x64/native
+#     DOTNET_ROOT: /root/.dotnet
+#     PATH: $PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
+#   apt_update_script: apt update
+#   install_git_script: apt install git -y
+#   install_icu_devtools_script: apt install icu-devtools -y
+#   install_dotnet_script: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 2.1
+#   install_coverlet_script: dotnet tool install --global coverlet.console
+#   git_submodule_update_init_script: git submodule update --init --recursive
+#   check_version_script: mono --version
+#   nuget_restore_script: cd TestFramework/Tests.Integration; nuget restore -SolutionDirectory ../..
+#   build_sqlite-net_script: cd sqlite-net/nuget/SQLite-net-std; dotnet build
+#   build_kinvey_script: cd Kinvey; dotnet build
+#   build_script: cd TestFramework/Tests.Integration; msbuild
+#   test_script: coverlet TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll --target "mono" --targetargs "--debug packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe TestFramework/Tests.Integration/bin/Debug/Tests.Integration.dll" --format opencover

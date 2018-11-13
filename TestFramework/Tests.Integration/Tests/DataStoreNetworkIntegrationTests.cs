@@ -140,7 +140,7 @@ namespace TestFramework
                 .Verifiable();
 
 			Client.Builder cb = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(TestSetup.db_dir)
+				.SetFilePath(TestSetup.db_dir)
                 .SetRestClient(new HttpClient(moqRC.Object));
 
 			Client c = cb.Build();
