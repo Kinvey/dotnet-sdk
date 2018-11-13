@@ -581,7 +581,7 @@ namespace Kinvey
         /// <param name="password">Password for authentication</param>
         /// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
         /// <param name="micID">[optional] Auth Service ID</param>
-        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in, defaulted to SharedClient.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
         static public async Task LoginWithMIC(string username, string password, string redirectURI, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
