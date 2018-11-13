@@ -588,6 +588,7 @@ namespace Kinvey
 			var uc = userClient ?? Client.SharedClient;
 			uc.MICRedirectURI = redirectURI;
 
+
 			try
 			{
 				ct.ThrowIfCancellationRequested();
