@@ -91,7 +91,6 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsNull(exception);
-
         }
 
         [TestMethod]
