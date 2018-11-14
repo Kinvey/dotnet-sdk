@@ -20,7 +20,7 @@ namespace Kinvey.Tests
 		[JsonProperty("_kmd")]
 		[Preserve]
 		[Column("_kmd")]
-		public KinveyMetaData KMD { get; set; }
+		public KinveyMetaData Kmd { get; set; }
 
 		[JsonProperty]
 		public string FirstName { get; set; }

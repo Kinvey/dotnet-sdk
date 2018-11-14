@@ -52,6 +52,6 @@ namespace Kinvey
         [DataMember(Name = "_kmd")]
         [Preserve]
 		[Column("_kmd")]
-		public KinveyMetaData KMD { get; set; }
+		public KinveyMetaData Kmd { get; set; }
 	}
 }

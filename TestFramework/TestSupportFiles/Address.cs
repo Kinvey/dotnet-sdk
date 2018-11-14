@@ -28,7 +28,7 @@ namespace TestFramework
         [Kinvey.Preserve]
         [SQLite.Preserve]
         [Column("_kmd")]
-		public KinveyMetaData KMD { get; set; }
+		public KinveyMetaData Kmd { get; set; }
 
 		[JsonProperty]
         [DataMember]

@@ -35,6 +35,6 @@ namespace Kinvey
 		/// <see cref="KinveyMetaData"/> field which maps back to Kinvey _kmd
 		/// </summary>
 		/// <value>The kmd.</value>
-		KinveyMetaData KMD { get; set; }
+		KinveyMetaData Kmd { get; set; }
 	}
 }

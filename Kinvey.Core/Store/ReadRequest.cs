@@ -87,8 +87,8 @@ namespace Kinvey
 			foreach (var cacheItem in cacheItems)
 			{
 				var item = cacheItem as IPersistable;
-				if (item.KMD?.lastModifiedTime != null) {  //if lmt doesn't exist for cache entity, avoid crashing
-					dictCachedEntities.Add(item.Id, item.KMD.lastModifiedTime);
+				if (item.Kmd?.lastModifiedTime != null) {  //if lmt doesn't exist for cache entity, avoid crashing
+					dictCachedEntities.Add(item.Id, item.Kmd.lastModifiedTime);
 				}
 			}
 
