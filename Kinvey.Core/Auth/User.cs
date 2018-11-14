@@ -1155,7 +1155,6 @@ namespace Kinvey
             var data = new Dictionary<string, string>
             {
                 { "client_id", clientID },
-                { "client_secret", appSecret },
                 { "grant_type", "password" },
                 { "username", username },
                 { "password", password }
