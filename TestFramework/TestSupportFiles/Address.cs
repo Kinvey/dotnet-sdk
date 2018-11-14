@@ -21,7 +21,7 @@ namespace TestFramework
         [Kinvey.Preserve]
         [SQLite.Preserve]
         [Column("_acl")]
-		public AccessControlList ACL { get; set; }
+		public AccessControlList Acl { get; set; }
 
 		[JsonProperty("_kmd")]
         [DataMember(Name = "_kmd")]

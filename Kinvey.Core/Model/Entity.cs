@@ -42,7 +42,7 @@ namespace Kinvey
         [DataMember(Name = "_acl")]
         [Preserve]
 		[Column("_acl")]
-		public AccessControlList ACL { get; set; }
+		public AccessControlList Acl { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="KinveyMetaData"/> for this Kinvey-backed object.

@@ -29,7 +29,7 @@ namespace Kinvey
 		/// <see cref="AccessControlList"/>  field which maps back to Kinvey _acl
 		/// </summary>
 		/// <value>The acl.</value>
-		AccessControlList ACL { get; set; }
+		AccessControlList Acl { get; set; }
 
 		/// <summary>
 		/// <see cref="KinveyMetaData"/> field which maps back to Kinvey _kmd

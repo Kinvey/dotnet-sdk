@@ -15,7 +15,7 @@ namespace Kinvey.Tests
 		[JsonProperty("_acl")]
 		[Preserve]
 		[Column("_acl")]
-		public AccessControlList ACL { get; set; }
+		public AccessControlList Acl { get; set; }
 
 		[JsonProperty("_kmd")]
 		[Preserve]

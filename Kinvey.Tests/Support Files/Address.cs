@@ -19,7 +19,7 @@ namespace Kinvey.Tests
         [DataMember(Name = "_acl")]
         [Preserve]
 		[Column("_acl")]
-        public AccessControlList ACL { get; set; }
+        public AccessControlList Acl { get; set; }
 
 		[JsonProperty("_kmd")]
         [DataMember(Name = "_kmd")]
