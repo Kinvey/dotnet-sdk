@@ -23,7 +23,7 @@ namespace Kinvey
 		/// ID field which maps back to Kinvey _id
 		/// </summary>
 		/// <value>The identifier.</value>
-		string ID { get; set; }
+		string Id { get; set; }
 
 		/// <summary>
 		/// <see cref="AccessControlList"/>  field which maps back to Kinvey _acl

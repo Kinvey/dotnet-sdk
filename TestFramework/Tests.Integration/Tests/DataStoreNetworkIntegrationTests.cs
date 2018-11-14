@@ -193,8 +193,8 @@ namespace TestFramework
 			Assert.AreEqual(2, todoList.Count);
 
 			// Teardown
-			await todoStore.RemoveAsync(t.ID);
-			await todoStore.RemoveAsync(t2.ID);
+			await todoStore.RemoveAsync(t.Id);
+			await todoStore.RemoveAsync(t2.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -214,14 +214,14 @@ namespace TestFramework
 
 			// Act
 			ToDo entity = null;
-			entity = await todoStore.FindByIDAsync(t.ID);
+			entity = await todoStore.FindByIDAsync(t.Id);
 
 			// Assert
 			Assert.NotNull(entity);
-			Assert.True(string.Equals(entity.ID, t.ID));
+			Assert.True(string.Equals(entity.Id, t.Id));
 
 			// Teardown
-			await todoStore.RemoveAsync(t.ID);
+			await todoStore.RemoveAsync(t.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -309,8 +309,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -354,8 +354,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -401,8 +401,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -450,8 +450,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -495,8 +495,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -549,9 +549,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -606,9 +606,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -661,9 +661,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -716,9 +716,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -772,9 +772,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -828,9 +828,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -884,9 +884,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -940,9 +940,9 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -995,8 +995,8 @@ namespace TestFramework
 			Assert.True(ke.ErrorCode == EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1035,8 +1035,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1080,8 +1080,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1125,8 +1125,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1171,8 +1171,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1219,8 +1219,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1270,8 +1270,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1323,8 +1323,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1373,8 +1373,8 @@ namespace TestFramework
 			listToDo = await todoStore.FindWithMongoQueryAsync(mongoQuery);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1425,8 +1425,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1473,8 +1473,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1519,8 +1519,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1565,8 +1565,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1611,8 +1611,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1657,8 +1657,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1705,8 +1705,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1753,8 +1753,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1799,8 +1799,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1845,8 +1845,8 @@ namespace TestFramework
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1897,8 +1897,8 @@ namespace TestFramework
 			Assert.AreEqual(2, count);
 
 			// Teardown
-			await todoStore.RemoveAsync(t1.ID);
-			await todoStore.RemoveAsync(t2.ID);
+			await todoStore.RemoveAsync(t1.Id);
+			await todoStore.RemoveAsync(t2.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1954,9 +1954,9 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, sum);
@@ -2000,9 +2000,9 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, min);
@@ -2046,9 +2046,9 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, max);
@@ -2098,10 +2098,10 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p4.ID);
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p4.Id);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, avg);
@@ -2130,7 +2130,7 @@ namespace TestFramework
 			Assert.True(string.Equals(savedToDo.Name, newItem.Name));
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -2159,7 +2159,7 @@ namespace TestFramework
 			ToDo deleteToDo = await todoStore.SaveAsync(newItem);
 
 			// Act
-			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(deleteToDo.ID);
+			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(deleteToDo.Id);
 
 			// Assert
 			Assert.NotNull(kdr);
@@ -2229,7 +2229,7 @@ namespace TestFramework
 			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -2258,7 +2258,7 @@ namespace TestFramework
 			Assert.AreEqual(todo.ACL.GloballyWriteable, savedToDo.ACL.GloballyWriteable);
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -2294,7 +2294,7 @@ namespace TestFramework
 			Assert.True(savedToDo.ACL.Readers[1].Equals("reader2"));
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -2332,7 +2332,7 @@ namespace TestFramework
 			Assert.True(savedToDo.ACL.Writers[2].Equals("writer3"));
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -2373,7 +2373,7 @@ namespace TestFramework
 			Assert.True(savedToDo.ACL.Groups.Readers[2].Equals("groupread3"));
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -2412,7 +2412,7 @@ namespace TestFramework
 			Assert.True(savedToDo.ACL.Groups.Writers[1].Equals("groupwrite2"));
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 	}

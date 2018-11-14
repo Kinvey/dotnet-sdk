@@ -511,7 +511,7 @@ namespace Kinvey
 				var ids = new List<string>();
 				var entities = cache.FindByQuery(query.Expression);
                 var pendings = entities.Select(entity => entity as IPersistable)
-                                       .Select(persistable => syncQueue.GetByID(persistable.ID));
+                                       .Select(persistable => syncQueue.GetByID(persistable.Id));
 				return syncQueue.Remove(pendings);
 			}
 

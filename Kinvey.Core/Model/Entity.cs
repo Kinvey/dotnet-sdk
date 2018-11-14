@@ -32,7 +32,7 @@ namespace Kinvey
         [DataMember(Name = "_id")]
         [Preserve]
 		[PrimaryKey, Column("_id")]
-		public string ID { get; set; }
+		public string Id { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="AccessControlList"/> for this Kinvey-backed object.

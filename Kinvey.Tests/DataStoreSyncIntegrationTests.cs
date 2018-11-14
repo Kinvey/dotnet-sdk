@@ -132,8 +132,8 @@ namespace Kinvey.Tests
 			Assert.AreEqual(2, listToDo.Count);
 
 			// Teardown
-			await todoStore.RemoveAsync(t.ID);
-			await todoStore.RemoveAsync(t2.ID);
+			await todoStore.RemoveAsync(t.Id);
+			await todoStore.RemoveAsync(t2.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -157,14 +157,14 @@ namespace Kinvey.Tests
 
 			// Act
 			ToDo entity = null;
-			entity = await todoStore.FindByIDAsync(t.ID);
+			entity = await todoStore.FindByIDAsync(t.Id);
 
 			// Assert
 			Assert.IsNotNull(entity);
-			Assert.IsTrue(string.Equals(entity.ID, t.ID));
+			Assert.IsTrue(string.Equals(entity.Id, t.Id));
 
 			// Teardown
-			await todoStore.RemoveAsync(t.ID);
+			await todoStore.RemoveAsync(t.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -211,8 +211,8 @@ namespace Kinvey.Tests
 
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -269,9 +269,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -330,9 +330,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -389,9 +389,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -448,9 +448,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -508,9 +508,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -568,9 +568,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -628,9 +628,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -688,9 +688,9 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -734,8 +734,8 @@ namespace Kinvey.Tests
 			Assert.AreEqual(2u, count);
 
 			// Teardown
-			await todoStore.RemoveAsync(t1.ID);
-			await todoStore.RemoveAsync(t2.ID);
+			await todoStore.RemoveAsync(t1.Id);
+			await todoStore.RemoveAsync(t2.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -781,9 +781,9 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, sum);
@@ -832,9 +832,9 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, min);
@@ -884,9 +884,9 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, max);
@@ -939,10 +939,10 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p4.ID);
-			await personStore.RemoveAsync(p3.ID);
-			await personStore.RemoveAsync(p2.ID);
-			await personStore.RemoveAsync(p1.ID);
+			await personStore.RemoveAsync(p4.Id);
+			await personStore.RemoveAsync(p3.Id);
+			await personStore.RemoveAsync(p2.Id);
+			await personStore.RemoveAsync(p1.Id);
 
 			// Assert
 			Assert.AreNotEqual(0, avg);
@@ -975,7 +975,7 @@ namespace Kinvey.Tests
 			Assert.IsTrue(string.Equals(savedToDo.Name, newItem.Name));
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -994,7 +994,7 @@ namespace Kinvey.Tests
             newItem.Name = "Next Task";
             newItem.Details = "A test";
             newItem.DueDate = "2016-04-19T20:02:17.635Z";
-            newItem.ID = "12345";
+            newItem.Id = "12345";
             DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
             // Act
@@ -1017,7 +1017,7 @@ namespace Kinvey.Tests
             Assert.IsTrue(string.Compare("12345", pwaAfter.entityId) == 0);
 
             // Teardown
-            await todoStore.RemoveAsync(savedToDo.ID);
+            await todoStore.RemoveAsync(savedToDo.Id);
             kinveyClient.ActiveUser.Logout();
         }
 
@@ -1039,7 +1039,7 @@ namespace Kinvey.Tests
 			ToDo deleteToDo = await todoStore.SaveAsync(newItem);
 
 			// Act
-			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(deleteToDo.ID);
+			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(deleteToDo.Id);
 
 			// Assert
 			Assert.IsNotNull(kdr);
@@ -1064,7 +1064,7 @@ namespace Kinvey.Tests
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			newItem.ID = "12345";
+			newItem.Id = "12345";
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
 			// Act
@@ -1085,7 +1085,7 @@ namespace Kinvey.Tests
 			Assert.IsTrue(string.Compare("12345", pwaAfter.entityId) == 0);
 
 			// Teardown
-			await todoStore.RemoveAsync(savedToDo.ID);
+			await todoStore.RemoveAsync(savedToDo.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1117,7 +1117,7 @@ namespace Kinvey.Tests
 			Assert.IsTrue(String.Equals("POST", pwa.action));
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem.ID);
+			await todoStore.RemoveAsync(newItem.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1136,7 +1136,7 @@ namespace Kinvey.Tests
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to save to SyncQ";
 			newItem.Details = "A sync add test";
-			newItem.ID = "12345";
+			newItem.Id = "12345";
 			newItem = await todoStore.SaveAsync(newItem);
 
 			// Act
@@ -1151,11 +1151,11 @@ namespace Kinvey.Tests
 			Assert.IsTrue(String.Equals("PUT", pwa.action));
 			Assert.IsNotNull(t);
 			Assert.AreEqual(1, t.Count);
-			Assert.AreEqual("12345", t.First().ID);
-			Assert.IsTrue(String.Equals(t.First().ID, pwa.entityId));
+			Assert.AreEqual("12345", t.First().Id);
+			Assert.IsTrue(String.Equals(t.First().Id, pwa.entityId));
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem.ID);
+			await todoStore.RemoveAsync(newItem.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1175,7 +1175,7 @@ namespace Kinvey.Tests
 			newItem.Name = "Task to save to SyncQ";
 			newItem.Details = "A sync add test";
 			newItem = await todoStore.SaveAsync(newItem);
-			var responseDelete = await todoStore.RemoveAsync(newItem.ID);
+			var responseDelete = await todoStore.RemoveAsync(newItem.Id);
 
 			// Act
 			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
@@ -1195,7 +1195,7 @@ namespace Kinvey.Tests
 			Assert.AreEqual(0, syncQueueCount);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem.ID);
+			await todoStore.RemoveAsync(newItem.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1241,7 +1241,7 @@ namespace Kinvey.Tests
 			KinveyDeleteResponse kdr;
 			foreach (ToDo td in listRemoveToDo)
 			{
-				kdr = await todoStore.RemoveAsync(td.ID);
+				kdr = await todoStore.RemoveAsync(td.Id);
 			}
 
 			dsr = await todoStore.SyncAsync();
@@ -1288,8 +1288,8 @@ namespace Kinvey.Tests
 			Assert.AreEqual(2, syncCountTotal);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem.ID);
-			await todoStore.RemoveAsync(firstFlashCard.ID);
+			await todoStore.RemoveAsync(newItem.Id);
+			await todoStore.RemoveAsync(firstFlashCard.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1337,7 +1337,7 @@ namespace Kinvey.Tests
 
             foreach (ToDo td in listRemoveToDo)
             {
-                await todoStore.RemoveAsync(td.ID);
+                await todoStore.RemoveAsync(td.Id);
             }
 
             List<FlashCard> listRemoveFlash = new List<FlashCard>();
@@ -1345,7 +1345,7 @@ namespace Kinvey.Tests
 
             foreach (FlashCard fc in listRemoveFlash)
             {
-                await flashCardStore.RemoveAsync(fc.ID);
+                await flashCardStore.RemoveAsync(fc.Id);
             }
 
             SyncDataStoreResponse<ToDo> dsrDelete = await todoStore.SyncAsync();
@@ -1395,7 +1395,7 @@ namespace Kinvey.Tests
 
 			foreach (ToDo t in listRemoveToDo)
 			{
-				await todoStore.RemoveAsync(t.ID);
+				await todoStore.RemoveAsync(t.Id);
 			}
 
 			await todoStore.SyncAsync();
@@ -1446,7 +1446,7 @@ namespace Kinvey.Tests
 			// Teardown
 			foreach (var todo in todosAfterSave.PullEntities)
 			{
-				await todoStore.RemoveAsync(todo.ID);
+				await todoStore.RemoveAsync(todo.Id);
 			}
 			await todoStore.PushAsync();
 			kinveyClient.ActiveUser.Logout();
@@ -1499,7 +1499,7 @@ namespace Kinvey.Tests
 			PullDataStoreResponse<ToDo> todoCleanup = await todoStore.PullAsync();
 			foreach (var todo in todoCleanup.PullEntities)
 			{
-				await todoStore.RemoveAsync(todo.ID);
+				await todoStore.RemoveAsync(todo.Id);
 			}
 			await todoStore.PushAsync();
 			kinveyClient.ActiveUser.Logout();
@@ -1549,7 +1549,7 @@ namespace Kinvey.Tests
 			PullDataStoreResponse<ToDo> todoCleanup = await todoStore.PullAsync();
 			foreach (var todo in todoCleanup.PullEntities)
 			{
-				await todoStore.RemoveAsync(todo.ID);
+				await todoStore.RemoveAsync(todo.Id);
 			}
 			await todoStore.PushAsync();
 			kinveyClient.ActiveUser.Logout();
@@ -1610,10 +1610,10 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
-			await todoStore.RemoveAsync(newItem4.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
+			await todoStore.RemoveAsync(newItem4.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1678,10 +1678,10 @@ namespace Kinvey.Tests
 			listToDo = await todoStore.FindAsync(query);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.ID);
-			await todoStore.RemoveAsync(newItem2.ID);
-			await todoStore.RemoveAsync(newItem3.ID);
-			await todoStore.RemoveAsync(newItem4.ID);
+			await todoStore.RemoveAsync(newItem1.Id);
+			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem3.Id);
+			await todoStore.RemoveAsync(newItem4.Id);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -1740,8 +1740,8 @@ namespace Kinvey.Tests
 			Assert.IsTrue(String.Compare(addr.Street, savedAddr.Street) == 0);
 
 			// Teardown
-			await personStore.RemoveAsync(addr.ID);
-			await addrStore.RemoveAsync(addr.ID);
+			await personStore.RemoveAsync(addr.Id);
+			await addrStore.RemoveAsync(addr.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1791,8 +1791,8 @@ namespace Kinvey.Tests
 			Assert.IsTrue(String.Compare(addr.Street, savedAddr.Street) == 0);
 
 			// Teardown
-			await personStore.RemoveAsync(addr.ID);
-			await addrStore.RemoveAsync(addr.ID);
+			await personStore.RemoveAsync(addr.Id);
+			await addrStore.RemoveAsync(addr.Id);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -1950,7 +1950,7 @@ namespace Kinvey.Tests
             var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
             foreach (var item in (await store.PullAsync()).PullEntities)
             {
-                await store.RemoveAsync(item.ID);
+                await store.RemoveAsync(item.Id);
             }
             await store.PushAsync();
 
@@ -1968,7 +1968,7 @@ namespace Kinvey.Tests
             var localEntities = await store.FindAsync();
             if (localEntities != null)
             {
-                await store.RemoveAsync(localEntities.First().ID);
+                await store.RemoveAsync(localEntities.First().Id);
                 await store.SyncAsync();
             }
 
@@ -2026,7 +2026,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2090,7 +2090,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2143,7 +2143,7 @@ namespace Kinvey.Tests
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
             fc2 = (await store.FindAsync(fc2Query)).First();
-            int localDeleteCount = (await networkStore.RemoveAsync(fc2.ID)).count;
+            int localDeleteCount = (await networkStore.RemoveAsync(fc2.Id)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.PullAsync(query2);
 
@@ -2155,12 +2155,12 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    if (fc2.ID == localEntity.ID)
+                    if (fc2.Id == localEntity.Id)
                     {
                         localCopy = true;
                     }
 
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2221,7 +2221,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2291,7 +2291,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2341,13 +2341,13 @@ namespace Kinvey.Tests
             fc3 = await networkStore.SaveAsync(fc3);
             var firstResponse = await store.PullAsync();
 
-            var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
+            var firstDeleteResponse = await store.RemoveAsync(fc1.Id);
             await store.PushAsync();
             var secondResponse = await store.PullAsync();
             var firstStoreCount = (await store.FindAsync()).Count;
 
-            var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
-            var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
+            var secondDeleteResponse = await store.RemoveAsync(fc2.Id);
+            var thirdDeleteResponse = await store.RemoveAsync(fc3.Id);
             await store.PushAsync();
             var thirdResponse = await store.PullAsync();
 
@@ -2356,7 +2356,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2412,7 +2412,7 @@ namespace Kinvey.Tests
             fc2 = (await store.FindAsync(fc2Query)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
-            var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
+            var deleteResponse = await networkStore.RemoveAsync(fc3.Id);
             var secondResponse = await store.PullAsync();
 
             var localEntities = await store.FindAsync();
@@ -2420,7 +2420,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2476,7 +2476,7 @@ namespace Kinvey.Tests
             var localEntities = await store.FindAsync();
             if (localEntities != null)
             {
-                await store.RemoveAsync(localEntities.First().ID);
+                await store.RemoveAsync(localEntities.First().Id);
                 await store.SyncAsync();
             }
 
@@ -2531,7 +2531,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2594,7 +2594,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2646,7 +2646,7 @@ namespace Kinvey.Tests
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
             fc2 = (await store.FindAsync(fc2Query)).First();
-            int localDeleteCount = (await networkStore.RemoveAsync(fc2.ID)).count;
+            int localDeleteCount = (await networkStore.RemoveAsync(fc2.Id)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.SyncAsync(query2);
 
@@ -2658,12 +2658,12 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    if (fc2.ID == localEntity.ID)
+                    if (fc2.Id == localEntity.Id)
                     {
                         localCopy = true;
                     }
 
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2723,7 +2723,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2793,7 +2793,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2843,12 +2843,12 @@ namespace Kinvey.Tests
             fc3 = await networkStore.SaveAsync(fc3);
             var firstResponse = await store.SyncAsync();
 
-            var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
+            var firstDeleteResponse = await store.RemoveAsync(fc1.Id);
             var secondResponse = await store.SyncAsync();
             var firstStoreCount = (await store.FindAsync()).Count;
 
-            var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
-            var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
+            var secondDeleteResponse = await store.RemoveAsync(fc2.Id);
+            var thirdDeleteResponse = await store.RemoveAsync(fc3.Id);
             var thirdResponse = await store.SyncAsync();
 
             var localEntities = await store.FindAsync();
@@ -2856,7 +2856,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();
@@ -2912,7 +2912,7 @@ namespace Kinvey.Tests
             fc2 = (await store.FindAsync(fc2Query)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
-            var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
+            var deleteResponse = await networkStore.RemoveAsync(fc3.Id);
             var secondResponse = await store.SyncAsync();
 
             var localEntities = await store.FindAsync();
@@ -2920,7 +2920,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.ID);
+                    await store.RemoveAsync(localEntity.Id);
                 }
 
                 await store.SyncAsync();

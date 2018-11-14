@@ -114,7 +114,7 @@ namespace TestFramework
             bool signal = autoEvent.WaitOne(20000);
 
             // Teardown
-            await store.RemoveAsync(todo.ID);
+            await store.RemoveAsync(todo.Id);
             await store.Unsubscribe();
             await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
             kinveyClient.ActiveUser.Logout();
@@ -166,7 +166,7 @@ namespace TestFramework
             bool signal = autoEvent.WaitOne(10000);
 
             // Teardown
-            await store.RemoveAsync(todo.ID);
+            await store.RemoveAsync(todo.Id);
             await store.Unsubscribe();
             await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
             kinveyClient.ActiveUser.Logout();
@@ -217,7 +217,7 @@ namespace TestFramework
             bool signal = autoEvent.WaitOne(10000);
 
             // Teardown
-            await store.RemoveAsync(todo.ID);
+            await store.RemoveAsync(todo.Id);
             await store.Unsubscribe();
             await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
             kinveyClient.ActiveUser.Logout();
