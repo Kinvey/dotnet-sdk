@@ -14,7 +14,7 @@ namespace TestFramework
 		[Kinvey.Preserve]
         [SQLite.Preserve]
         [PrimaryKey, Column("_id")]
-		public string Id { get; set; }
+		public string ID { get; set; }
 
 		[JsonProperty("_acl")]
         [DataMember(Name = "_acl")]

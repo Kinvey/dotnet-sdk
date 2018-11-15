@@ -1720,8 +1720,8 @@ namespace TestFramework
 			Assert.IsTrue(String.Compare(addr.Street, savedAddr.Street) == 0);
 
 			// Teardown
-			await personStore.RemoveAsync(addr.Id);
-			await addrStore.RemoveAsync(addr.Id);
+			await personStore.RemoveAsync(addr.ID);
+			await addrStore.RemoveAsync(addr.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
