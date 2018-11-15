@@ -23,7 +23,7 @@ namespace Kinvey
     public abstract class AbstractClient : AbstractKinveyClient, IDisposable
     {
 		/// <summary>
-		/// Gets or sets the cache manager, which manages the caches of each <see cref="KinveyXamarin.DataStore{T}"/>
+		/// Gets or sets the cache manager, which manages the caches of each <see cref="DataStore{T}"/>
 		/// </summary>
 		/// <value>The cache manager</value>
 		public ICacheManager CacheManager { get; set; }
@@ -120,7 +120,7 @@ namespace Kinvey
 		/// <summary>
 		/// The current credential store.
 		/// </summary>
-        private ICredentialStore store;
+        private readonly ICredentialStore store;
 
 		/// <summary>
 		/// The access lock
@@ -128,7 +128,7 @@ namespace Kinvey
         protected object Lock = new object();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient"/> class.
+		/// Initializes a new instance of the <see cref="AbstractClient"/> class.
 		/// </summary>
 		/// <param name="client">Client.</param>
 		/// <param name="rootUrl">Root URL.</param>
@@ -190,8 +190,7 @@ namespace Kinvey
 		{
 			get
 			{
-				if (_deviceID == null ||
-					_deviceID == String.Empty)
+				if (string.IsNullOrEmpty(_deviceID))
 				{
 					_deviceID = System.Guid.NewGuid().ToString();
 				}
@@ -223,7 +222,7 @@ namespace Kinvey
         }
 
 		/// <summary>
-		/// Class which sets up the building of the <see cref="KinveyXamarin.AbstractClient"/> class.
+		/// Class which sets up the building of the <see cref="AbstractClient"/> class.
 		/// </summary>
 		public new abstract class Builder : AbstractKinveyClient.Builder
         {
@@ -231,7 +230,7 @@ namespace Kinvey
             //private Properties props = new Properties();
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient.Builder"/> class.
+			/// Initializes a new instance of the <see cref="AbstractClient.Builder"/> class.
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
             public Builder(HttpClient transport)
@@ -240,7 +239,7 @@ namespace Kinvey
 			}
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient.Builder"/> class.
+			/// Initializes a new instance of the <see cref="AbstractClient.Builder"/> class.
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
 			/// <param name="clientRequestInitializer">Kinvey client request initializer.</param>
@@ -294,7 +293,7 @@ namespace Kinvey
 		}
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

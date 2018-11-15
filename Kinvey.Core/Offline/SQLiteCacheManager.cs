@@ -17,8 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SQLite;
 
 namespace Kinvey
@@ -38,7 +36,7 @@ namespace Kinvey
         }
 
         //The version of the internal structure of the database.
-        private int databaseSchemaVersion = 1;
+        private readonly int databaseSchemaVersion = 1;
 
         // The asynchronous db connection.
         private SQLiteAsyncConnection dbConnectionAsync;
@@ -182,9 +180,11 @@ namespace Kinvey
                     DBConnectionSync.CreateTable<CollectionTableMap>();
                 }
 
-                CollectionTableMap ctm = new CollectionTableMap();
-                ctm.CollectionName = collectionName;
-                ctm.TableName = typeof(T).Name;
+                CollectionTableMap ctm = new CollectionTableMap
+                {
+                    CollectionName = collectionName,
+                    TableName = typeof(T).Name
+                };
 
                 DBConnectionSync.InsertOrReplace(ctm);
 
@@ -322,7 +322,7 @@ namespace Kinvey
 		}
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

@@ -58,21 +58,9 @@ namespace Kinvey.Tests
 
         public static class EnvironmentVariable
         {
-            public static string AppKey
-            {
-                get
-                {
-                    return System.Environment.GetEnvironmentVariable("KINVEY_APP_KEY");
-                }
-            }
+            public static string AppKey => Environment.GetEnvironmentVariable("KINVEY_APP_KEY");
 
-            public static string AppSecret
-            {
-                get
-                {
-                    return System.Environment.GetEnvironmentVariable("KINVEY_APP_SECRET");
-                }
-            }
+            public static string AppSecret => Environment.GetEnvironmentVariable("KINVEY_APP_SECRET");
         }
 
         private static readonly string REQUEST_START_HEADER = "X-Kinvey-Request-Start";
@@ -110,9 +98,9 @@ namespace Kinvey.Tests
         {
             try
             {
-                using (var client = Client._sharedClient)
+                if (Client._sharedClient != null)
                 {
-                    if (client != null)
+                    using (var client = Client._sharedClient)
                     {
                         var user = client.ActiveUser;
                         if (user != null)
@@ -142,9 +130,10 @@ namespace Kinvey.Tests
 
             if (user != null)
             {
-                var kmd = new JObject();
-                kmd["authtoken"] = Guid.NewGuid().ToString();
-                user["_kmd"] = kmd;
+                user["_kmd"] = new JObject
+                {
+                    ["authtoken"] = Guid.NewGuid().ToString()
+                };
 
                 var clone = new JObject(user);
                 clone.Remove("password");
@@ -285,8 +274,7 @@ namespace Kinvey.Tests
                 obj["_id"] = Guid.NewGuid().ToString();
             }
 
-            var acl = obj["_acl"] as JObject;
-            if (acl == null)
+            if (!(obj["_acl"] is JObject acl))
             {
                 acl = new JObject();
                 obj["_acl"] = acl;
