@@ -819,9 +819,9 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, sum);
@@ -866,9 +866,9 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, min);
@@ -914,9 +914,9 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, max);
@@ -965,10 +965,10 @@ namespace TestFramework
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p4.Id);
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p4.ID);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, avg);

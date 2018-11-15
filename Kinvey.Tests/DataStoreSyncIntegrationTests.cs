@@ -781,9 +781,9 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, sum);
@@ -832,9 +832,9 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, min);
@@ -884,9 +884,9 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, max);
@@ -939,10 +939,10 @@ namespace Kinvey.Tests
 			}
 
 			// Teardown
-			await personStore.RemoveAsync(p4.Id);
-			await personStore.RemoveAsync(p3.Id);
-			await personStore.RemoveAsync(p2.Id);
-			await personStore.RemoveAsync(p1.Id);
+			await personStore.RemoveAsync(p4.ID);
+			await personStore.RemoveAsync(p3.ID);
+			await personStore.RemoveAsync(p2.ID);
+			await personStore.RemoveAsync(p1.ID);
 
 			// Assert
 			Assert.AreNotEqual(0, avg);
@@ -1740,8 +1740,8 @@ namespace Kinvey.Tests
 			Assert.IsTrue(String.Compare(addr.Street, savedAddr.Street) == 0);
 
 			// Teardown
-			await personStore.RemoveAsync(addr.Id);
-			await addrStore.RemoveAsync(addr.Id);
+			await personStore.RemoveAsync(addr.ID);
+			await addrStore.RemoveAsync(addr.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
