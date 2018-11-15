@@ -11,6 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using SQLite;
@@ -53,5 +54,31 @@ namespace Kinvey
         [Preserve]
 		[Column("_kmd")]
 		public KinveyMetaData Kmd { get; set; }
-	}
+
+        [Obsolete("This property has been deprecated. Please use Acl instead.")]
+        public AccessControlList ACL
+        {
+            get
+            {
+                return Acl;
+            }
+            set
+            {
+                Acl = value;
+            }
+        }
+
+        [Obsolete("This property has been deprecated. Please use Kmd instead.")]
+        public KinveyMetaData KMD
+        {
+            get
+            {
+                return Kmd;
+            }
+            set
+            {
+                Kmd = value;
+            }
+        }
+    }
 }

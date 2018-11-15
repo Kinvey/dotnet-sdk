@@ -11,6 +11,8 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+
 namespace Kinvey
 {
 	/// <summary>
@@ -36,5 +38,11 @@ namespace Kinvey
 		/// </summary>
 		/// <value>The kmd.</value>
 		KinveyMetaData Kmd { get; set; }
-	}
+
+        [Obsolete("This property has been deprecated. Please use Acl instead.")]
+        AccessControlList ACL { get; set; }
+
+        [Obsolete("This property has been deprecated. Please use Kmd instead.")]
+        KinveyMetaData KMD { get; set; }
+    }
 }
