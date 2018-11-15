@@ -113,7 +113,7 @@ namespace Kinvey.Tests
 			ToDo networkEntity = null;
 			ToDo cacheEntity = null;
 
-			networkEntity = await todoStore.FindByIDAsync(t.Id, new KinveyDelegate<ToDo>
+			networkEntity = await todoStore.FindByIDAsync(t.ID, new KinveyDelegate<ToDo>
 			{
 				onSuccess = (result) => cacheEntity = result,
 				onError = (error) => Assert.Fail("TestCacheStoreFindByIDAsync: Cache find returned error")
@@ -121,13 +121,13 @@ namespace Kinvey.Tests
 
 			// Assert
 			Assert.IsNotNull(networkEntity);
-			Assert.IsTrue(string.Equals(networkEntity.Id, t.Id));
+			Assert.IsTrue(string.Equals(networkEntity.ID, t.ID));
 			Assert.IsNotNull(cacheEntity);
-			Assert.IsTrue(string.Equals(cacheEntity.Id, t.Id));
-			Assert.IsTrue(string.Equals(cacheEntity.Id, networkEntity.Id));
+			Assert.IsTrue(string.Equals(cacheEntity.ID, t.ID));
+			Assert.IsTrue(string.Equals(cacheEntity.ID, networkEntity.ID));
 
 			// Teardown
-			await todoStore.RemoveAsync(t.Id);
+			await todoStore.RemoveAsync(t.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -181,8 +181,8 @@ namespace Kinvey.Tests
 			listToDo.AddRange(listToDoCache);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.Id);
-			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -241,8 +241,8 @@ namespace Kinvey.Tests
 			listToDo.AddRange(listToDoCache);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.Id);
-			await todoStore.RemoveAsync(newItem2.Id);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -306,9 +306,9 @@ namespace Kinvey.Tests
 			listToDo.AddRange(listToDoCache);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.Id);
-			await todoStore.RemoveAsync(newItem2.Id);
-			await todoStore.RemoveAsync(newItem3.Id);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -372,9 +372,9 @@ namespace Kinvey.Tests
 			listToDo.AddRange(listToDoCache);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.Id);
-			await todoStore.RemoveAsync(newItem2.Id);
-			await todoStore.RemoveAsync(newItem3.Id);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.ActiveUser.Logout();
 
 			// Assert
@@ -691,7 +691,7 @@ namespace Kinvey.Tests
 			Assert.IsTrue(string.Equals(newItem.Details, savedItem.Details));
 
 			// Teardown
-			await todoStore.RemoveAsync(savedItem.Id);
+			await todoStore.RemoveAsync(savedItem.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -734,9 +734,9 @@ namespace Kinvey.Tests
 			newItem3 = await todoStore.SaveAsync(newItem3);
 
 			List<string> listIDs = new List<string>();
-			listIDs.Add(newItem1.Id);
-			listIDs.Add(newItem2.Id);
-			listIDs.Add(newItem3.Id);
+			listIDs.Add(newItem1.ID);
+			listIDs.Add(newItem2.ID);
+			listIDs.Add(newItem3.ID);
 
 			// Act
 			ICache<ToDo> cache = kinveyClient.CacheManager.GetCache<ToDo>(collectionName);
@@ -747,9 +747,9 @@ namespace Kinvey.Tests
 			Assert.AreEqual(3, listEntities.Count);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.Id);
-			await todoStore.RemoveAsync(newItem2.Id);
-			await todoStore.RemoveAsync(newItem3.Id);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -792,9 +792,9 @@ namespace Kinvey.Tests
 			newItem3 = await todoStore.SaveAsync(newItem3);
 
 			List<string> listIDs = new List<string>();
-			listIDs.Add(newItem1.Id);
-			listIDs.Add(newItem2.Id);
-			listIDs.Add(newItem3.Id);
+			listIDs.Add(newItem1.ID);
+			listIDs.Add(newItem2.ID);
+			listIDs.Add(newItem3.ID);
 
 			// Act
 			List<ToDo> listEntities = new List<ToDo>();
@@ -810,9 +810,9 @@ namespace Kinvey.Tests
 			});
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.Id);
-			await todoStore.RemoveAsync(newItem2.Id);
-			await todoStore.RemoveAsync(newItem3.Id);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -844,7 +844,7 @@ namespace Kinvey.Tests
 
 			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
 			ToDo savedItem = await todoStore.SaveAsync(newItem);
-			string savedItemID = savedItem.Id;
+			string savedItemID = savedItem.ID;
 
 			// Act
 			KinveyDeleteResponse kdr = await todoStore.RemoveAsync(savedItemID);
@@ -895,9 +895,9 @@ namespace Kinvey.Tests
 			newItem3 = await todoStore.SaveAsync(newItem3);
 
 			List<string> listIDs = new List<string>();
-			listIDs.Add(newItem1.Id);
-			listIDs.Add(newItem2.Id);
-			listIDs.Add(newItem3.Id);
+			listIDs.Add(newItem1.ID);
+			listIDs.Add(newItem2.ID);
+			listIDs.Add(newItem3.ID);
 
 			// Act
 			ICache<ToDo> cache = kinveyClient.CacheManager.GetCache<ToDo>(collectionName);
@@ -908,9 +908,9 @@ namespace Kinvey.Tests
 			Assert.AreEqual(3, kdr.count);
 
 			// Teardown
-			await todoStore.RemoveAsync(newItem1.Id);
-			await todoStore.RemoveAsync(newItem2.Id);
-			await todoStore.RemoveAsync(newItem3.Id);
+			await todoStore.RemoveAsync(newItem1.ID);
+			await todoStore.RemoveAsync(newItem2.ID);
+			await todoStore.RemoveAsync(newItem3.ID);
 			kinveyClient.ActiveUser.Logout();
 		}
 
@@ -952,7 +952,7 @@ namespace Kinvey.Tests
             var localEntities = await store.FindAsync();
             if (localEntities != null)
             {
-                await store.RemoveAsync(localEntities.First().Id);
+                await store.RemoveAsync(localEntities.First().ID);
                 await store.SyncAsync();
             }
 
@@ -1012,7 +1012,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1078,7 +1078,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1133,7 +1133,7 @@ namespace Kinvey.Tests
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
             fc2 = (await store.FindAsync(fc2Query)).First();
-            int localDeleteCount = (await networkStore.RemoveAsync(fc2.Id)).count;
+            int localDeleteCount = (await networkStore.RemoveAsync(fc2.ID)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.PullAsync(query2);
 
@@ -1145,12 +1145,12 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    if (fc2.Id == localEntity.Id)
+                    if (fc2.ID == localEntity.ID)
                     {
                         localCopy = true;
                     }
 
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1213,7 +1213,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1285,7 +1285,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1337,13 +1337,13 @@ namespace Kinvey.Tests
             fc3 = await networkStore.SaveAsync(fc3);
             var firstResponse = await store.PullAsync();
 
-            var firstDeleteResponse = await store.RemoveAsync(fc1.Id);
+            var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
             await store.PushAsync();
             var secondResponse = await store.PullAsync();
             var firstStoreCount = (await store.FindAsync()).Count;
 
-            var secondDeleteResponse = await store.RemoveAsync(fc2.Id);
-            var thirdDeleteResponse = await store.RemoveAsync(fc3.Id);
+            var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
+            var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
             await store.PushAsync();
             var thirdResponse = await store.PullAsync();
 
@@ -1352,7 +1352,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1410,7 +1410,7 @@ namespace Kinvey.Tests
             fc2 = (await store.FindAsync(fc2Query)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
-            var deleteResponse = await networkStore.RemoveAsync(fc3.Id);
+            var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
             var secondResponse = await store.PullAsync();
 
             var localEntities = await store.FindAsync();
@@ -1418,7 +1418,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1475,7 +1475,7 @@ namespace Kinvey.Tests
             var localEntities = await store.FindAsync();
             if (localEntities != null)
             {
-                await store.RemoveAsync(localEntities.First().Id);
+                await store.RemoveAsync(localEntities.First().ID);
                 await store.SyncAsync();
             }
 
@@ -1532,7 +1532,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1597,7 +1597,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1651,7 +1651,7 @@ namespace Kinvey.Tests
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
             fc2 = (await store.FindAsync(fc2Query)).First();
-            int localDeleteCount = (await networkStore.RemoveAsync(fc2.Id)).count;
+            int localDeleteCount = (await networkStore.RemoveAsync(fc2.ID)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.SyncAsync(query2);
 
@@ -1663,12 +1663,12 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    if (fc2.Id == localEntity.Id)
+                    if (fc2.ID == localEntity.ID)
                     {
                         localCopy = true;
                     }
 
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1729,7 +1729,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1801,7 +1801,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1853,12 +1853,12 @@ namespace Kinvey.Tests
             fc3 = await networkStore.SaveAsync(fc3);
             var firstResponse = await store.SyncAsync();
 
-            var firstDeleteResponse = await store.RemoveAsync(fc1.Id);
+            var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
             var secondResponse = await store.SyncAsync();
             var firstStoreCount = (await store.FindAsync()).Count;
 
-            var secondDeleteResponse = await store.RemoveAsync(fc2.Id);
-            var thirdDeleteResponse = await store.RemoveAsync(fc3.Id);
+            var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
+            var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
             var thirdResponse = await store.SyncAsync();
 
             var localEntities = await store.FindAsync();
@@ -1866,7 +1866,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();
@@ -1924,7 +1924,7 @@ namespace Kinvey.Tests
             fc2 = (await store.FindAsync(fc2Query)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
-            var deleteResponse = await networkStore.RemoveAsync(fc3.Id);
+            var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
             var secondResponse = await store.SyncAsync();
 
             var localEntities = await store.FindAsync();
@@ -1932,7 +1932,7 @@ namespace Kinvey.Tests
             {
                 foreach (var localEntity in localEntities)
                 {
-                    await store.RemoveAsync(localEntity.Id);
+                    await store.RemoveAsync(localEntity.ID);
                 }
 
                 await store.SyncAsync();

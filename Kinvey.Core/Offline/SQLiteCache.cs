@@ -594,7 +594,7 @@ namespace Kinvey
 						foreach (var match in results)
 						{
 							IPersistable entity = match as IPersistable;
-							matchIDs.Add(entity.Id);
+							matchIDs.Add(entity.ID);
 						}
 
 						kdr = this.DeleteByIDs(matchIDs);

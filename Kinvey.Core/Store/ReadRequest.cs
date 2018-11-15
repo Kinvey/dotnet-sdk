@@ -88,7 +88,7 @@ namespace Kinvey
 			{
 				var item = cacheItem as IPersistable;
 				if (item.Kmd?.lastModifiedTime != null) {  //if lmt doesn't exist for cache entity, avoid crashing
-					dictCachedEntities.Add(item.Id, item.Kmd.lastModifiedTime);
+					dictCachedEntities.Add(item.ID, item.Kmd.lastModifiedTime);
 				}
 			}
 
@@ -279,7 +279,7 @@ namespace Kinvey
                             List<string> listDeletedIDs = new List<string>();
                             foreach (var deletedItem in results.Deleted)
                             {
-                                listDeletedIDs.Add(deletedItem.Id);
+                                listDeletedIDs.Add(deletedItem.ID);
                             }
                             Cache.DeleteByIDs(listDeletedIDs);
 
