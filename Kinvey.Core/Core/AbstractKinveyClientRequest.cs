@@ -256,7 +256,7 @@ namespace Kinvey
             }
             var request = new HttpRequestMessage
             {
-                RequestUri = new Uri(new Uri(client.BaseUrl), uri)
+                RequestUri = new Uri(new Uri(this.baseURL), uri)
             };
 
             switch (requestMethod)
