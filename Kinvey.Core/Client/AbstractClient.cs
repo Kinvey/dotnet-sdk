@@ -20,10 +20,10 @@ namespace Kinvey
 	/// <summary>
 	/// This class adds the concept of a user to the Client, and couples it with Kinvey.
 	/// </summary>
-    public abstract class AbstractClient : AbstractKinveyClient
+    public abstract class AbstractClient : AbstractKinveyClient, IDisposable
     {
 		/// <summary>
-		/// Gets or sets the cache manager, which manages the caches of each <see cref="KinveyXamarin.DataStore{T}"/>
+		/// Gets or sets the cache manager, which manages the caches of each <see cref="DataStore{T}"/>
 		/// </summary>
 		/// <value>The cache manager</value>
 		public ICacheManager CacheManager { get; set; }
@@ -120,7 +120,7 @@ namespace Kinvey
 		/// <summary>
 		/// The current credential store.
 		/// </summary>
-        private ICredentialStore store;
+        private readonly ICredentialStore store;
 
 		/// <summary>
 		/// The access lock
@@ -128,7 +128,7 @@ namespace Kinvey
         protected object Lock = new object();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient"/> class.
+		/// Initializes a new instance of the <see cref="AbstractClient"/> class.
 		/// </summary>
 		/// <param name="client">Client.</param>
 		/// <param name="rootUrl">Root URL.</param>
@@ -190,8 +190,7 @@ namespace Kinvey
 		{
 			get
 			{
-				if (_deviceID == null ||
-					_deviceID == String.Empty)
+				if (string.IsNullOrEmpty(_deviceID))
 				{
 					_deviceID = System.Guid.NewGuid().ToString();
 				}
@@ -223,7 +222,7 @@ namespace Kinvey
         }
 
 		/// <summary>
-		/// Class which sets up the building of the <see cref="KinveyXamarin.AbstractClient"/> class.
+		/// Class which sets up the building of the <see cref="AbstractClient"/> class.
 		/// </summary>
 		public new abstract class Builder : AbstractKinveyClient.Builder
         {
@@ -231,7 +230,7 @@ namespace Kinvey
             //private Properties props = new Properties();
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient.Builder"/> class.
+			/// Initializes a new instance of the <see cref="AbstractClient.Builder"/> class.
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
             public Builder(HttpClient transport)
@@ -240,7 +239,7 @@ namespace Kinvey
 			}
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractClient.Builder"/> class.
+			/// Initializes a new instance of the <see cref="AbstractClient.Builder"/> class.
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
 			/// <param name="clientRequestInitializer">Kinvey client request initializer.</param>
@@ -292,5 +291,47 @@ namespace Kinvey
 			//	}
 			//}
 		}
-	}
+
+        #region IDisposable Support
+        private bool disposedValue; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            lock (this)
+            {
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // dispose managed state (managed objects).
+                        CacheManager.Dispose();
+                        Store.Dispose();
+                    }
+
+                    // free unmanaged resources (unmanaged objects) and override a finalizer below.
+
+
+                    // set large fields to null.
+                    CacheManager = null;
+
+                    disposedValue = true;
+                }
+            }
+        }
+
+        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~AbstractClient() {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
 }

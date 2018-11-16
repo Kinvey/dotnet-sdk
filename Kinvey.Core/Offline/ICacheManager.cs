@@ -16,7 +16,7 @@ using SQLite;
 
 namespace Kinvey
 {
-	public interface ICacheManager
+    public interface ICacheManager : IDisposable
 	{
 		/// <summary>
 		/// Gets or sets the dbpath.

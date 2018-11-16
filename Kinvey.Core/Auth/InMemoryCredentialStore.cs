@@ -30,33 +30,22 @@ namespace Kinvey
         private Dictionary<string, Credential> store = new Dictionary<string, Credential>();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.InMemoryCredentialStore"/> class.
-		/// </summary>
-		public InMemoryCredentialStore(){
-		}
-
-		/// <summary>
 		/// Load the specified userId.
 		/// </summary>
 		/// <param name="userId">User._id.</param>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		public Credential Load(string userId, string ssoGroupKey)
         {
-            if (store.ContainsKey(userId))
-            {
-                return store[userId];
-            }
-
-            return null;
+            return store.ContainsKey(userId) ? store[userId] : null;
         }
 
-		/// <summary>
-		/// Store the specified userId and credential.
-		/// </summary>
-		/// <param name="userId">User identifier.</param>
-		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		/// <param name="credential">Credential.</param>
-		public void Store(string userId, string ssoGroupKey, Credential credential)
+        /// <summary>
+        /// Store the specified userId and credential.
+        /// </summary>
+        /// <param name="userId">User identifier.</param>
+        /// <param name="ssoGroupKey">SSO Group Key.</param>
+        /// <param name="credential">Credential.</param>
+        public void Store(string userId, string ssoGroupKey, Credential credential)
         {
             if (userId != null)
             {
@@ -81,6 +70,49 @@ namespace Kinvey
 		public Credential GetStoredCredential (string ssoGroupKey){
 			return store.FirstOrDefault ().Value;
 		}
+
+        #region IDisposable Support
+        private bool disposedValue; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects).
+                }
+
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+
+
+                // set large fields to null.
+                lock (store)
+                {
+                    if (store != null)
+                    {
+                        store.Clear();
+                        store = null;
+                    }
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        ~InMemoryCredentialStore() {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
 
     }
 }

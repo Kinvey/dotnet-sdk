@@ -17,8 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SQLite;
 
 namespace Kinvey
@@ -38,10 +36,12 @@ namespace Kinvey
         }
 
         //The version of the internal structure of the database.
-        private int databaseSchemaVersion = 1;
+        private readonly int databaseSchemaVersion = 1;
 
         // The asynchronous db connection.
         private SQLiteAsyncConnection dbConnectionAsync;
+
+        private static readonly Dictionary<String, List<SQLiteConnection>> SQLiteFiles = new Dictionary<String, List<SQLiteConnection>>();
 
         // The asynchronous db connection.
         private SQLiteConnection _dbConnectionSync;
@@ -56,11 +56,25 @@ namespace Kinvey
                     {
                         //var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
                         //dbConnection = new SQLiteAsyncConnection (connectionFactory);
-                        _dbConnectionSync = new SQLiteConnection(
-                            databasePath: dbpath,
-                            openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex,
-                            storeDateTimeAsTicks: false
-                        );
+                        lock (SQLiteFiles)
+                        {
+                            _dbConnectionSync = new SQLiteConnection(
+                                databasePath: dbpath,
+                                openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex | SQLiteOpenFlags.PrivateCache,
+                                storeDateTimeAsTicks: false
+                            );
+                            List<SQLiteConnection> connections;
+                            if (SQLiteFiles.ContainsKey(dbpath))
+                            {
+                                connections = SQLiteFiles[dbpath];
+                            }
+                            else
+                            {
+                                connections = new List<SQLiteConnection>();
+                                SQLiteFiles[dbpath] = connections;
+                            }
+                            connections.Add(_dbConnectionSync);
+                        }
                         //_dbConnectionSync.TraceListener = new DebugTraceListener();
                     }
 
@@ -76,7 +90,7 @@ namespace Kinvey
         public string dbpath { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteCacheManager"/> class.
+		/// Initializes a new instance of the <see cref="SQLiteCacheManager"/> class.
 		/// </summary>
 		public SQLiteCacheManager(string filePath)
 		{
@@ -166,9 +180,11 @@ namespace Kinvey
                     DBConnectionSync.CreateTable<CollectionTableMap>();
                 }
 
-                CollectionTableMap ctm = new CollectionTableMap();
-                ctm.CollectionName = collectionName;
-                ctm.TableName = typeof(T).Name;
+                CollectionTableMap ctm = new CollectionTableMap
+                {
+                    CollectionName = collectionName,
+                    TableName = typeof(T).Name
+                };
 
                 DBConnectionSync.InsertOrReplace(ctm);
 
@@ -305,5 +321,56 @@ namespace Kinvey
 			return cmd.ExecuteScalar<string> () != null;
 		}
 
-	}
+        #region IDisposable Support
+        private bool disposedValue; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            lock (this)
+            {
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // dispose managed state (managed objects).
+                    }
+
+                    // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    if (_dbConnectionSync != null)
+                    {
+                        _dbConnectionSync.Close();
+                        lock (SQLiteFiles)
+                        {
+                            if (SQLiteFiles.TryGetValue(dbpath, out List<SQLiteConnection> connections))
+                            {
+                                connections.Remove(_dbConnectionSync);
+                                if (connections.Count == 0) SQLiteFiles.Remove(dbpath);
+                            }
+                        }
+                        _dbConnectionSync.Dispose();
+                    }
+
+                    // set large fields to null.
+                    _dbConnectionSync = null;
+
+                    disposedValue = true;
+                }
+            }
+        }
+
+        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~SQLiteCacheManager() {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
 }
