@@ -11,6 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using SQLite;
@@ -42,7 +43,7 @@ namespace Kinvey
         [DataMember(Name = "_acl")]
         [Preserve]
 		[Column("_acl")]
-		public AccessControlList ACL { get; set; }
+		public AccessControlList Acl { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="KinveyMetaData"/> for this Kinvey-backed object.
@@ -52,6 +53,32 @@ namespace Kinvey
         [DataMember(Name = "_kmd")]
         [Preserve]
 		[Column("_kmd")]
-		public KinveyMetaData KMD { get; set; }
-	}
+		public KinveyMetaData Kmd { get; set; }
+
+        [Obsolete("This property has been deprecated. Please use Acl instead.")]
+        public AccessControlList ACL
+        {
+            get
+            {
+                return Acl;
+            }
+            set
+            {
+                Acl = value;
+            }
+        }
+
+        [Obsolete("This property has been deprecated. Please use Kmd instead.")]
+        public KinveyMetaData KMD
+        {
+            get
+            {
+                return Kmd;
+            }
+            set
+            {
+                Kmd = value;
+            }
+        }
+    }
 }
