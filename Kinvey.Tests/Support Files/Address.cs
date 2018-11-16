@@ -19,15 +19,39 @@ namespace Kinvey.Tests
         [DataMember(Name = "_acl")]
         [Preserve]
 		[Column("_acl")]
-        public AccessControlList ACL { get; set; }
+        public AccessControlList Acl { get; set; }
 
-		[JsonProperty("_kmd")]
+        public AccessControlList ACL
+        {
+            get
+            {
+                return Acl;
+            }
+            set
+            {
+                Acl = value;
+            }
+        }
+
+        [JsonProperty("_kmd")]
         [DataMember(Name = "_kmd")]
         [Preserve]
 		[Column("_kmd")]
-		public KinveyMetaData KMD { get; set; }
+		public KinveyMetaData Kmd { get; set; }
 
-		[JsonProperty]
+        public KinveyMetaData KMD
+        {
+            get
+            {
+                return Kmd;
+            }
+            set
+            {
+                Kmd = value;
+            }
+        }
+
+        [JsonProperty]
         [DataMember]
         public bool IsApartment { get; set; }
 

@@ -160,7 +160,7 @@ namespace TestFramework
             var acl = new AccessControlList();
             acl.GloballyReadable = false;
             acl.Readers.Add(Client.SharedClient.ActiveUser.Id);
-            todo.ACL = acl;
+            todo.Acl = acl;
             todo = await store.SaveAsync(todo);
 
             bool signal = autoEvent.WaitOne(10000);
@@ -211,7 +211,7 @@ namespace TestFramework
             todo.Details = "Test Todo Details";
             var acl = new AccessControlList();
             acl.GloballyReadable = false;
-            todo.ACL = acl;
+            todo.Acl = acl;
             todo = await store.SaveAsync(todo);
 
             bool signal = autoEvent.WaitOne(10000);

@@ -11,6 +11,8 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+
 namespace Kinvey
 {
 	/// <summary>
@@ -29,12 +31,18 @@ namespace Kinvey
 		/// <see cref="AccessControlList"/>  field which maps back to Kinvey _acl
 		/// </summary>
 		/// <value>The acl.</value>
-		AccessControlList ACL { get; set; }
+		AccessControlList Acl { get; set; }
 
 		/// <summary>
 		/// <see cref="KinveyMetaData"/> field which maps back to Kinvey _kmd
 		/// </summary>
 		/// <value>The kmd.</value>
-		KinveyMetaData KMD { get; set; }
-	}
+		KinveyMetaData Kmd { get; set; }
+
+        [Obsolete("This property has been deprecated. Please use Acl instead.")]
+        AccessControlList ACL { get; set; }
+
+        [Obsolete("This property has been deprecated. Please use Kmd instead.")]
+        KinveyMetaData KMD { get; set; }
+    }
 }
