@@ -22,8 +22,8 @@ namespace Kinvey
 	/// <summary>
 	/// Android native credential store.
 	/// </summary>
-	public class AndroidNativeCredentialStore : NativeCredentialStore
-	{
+	public class AndroidNativeCredentialStore : NativeCredentialStore, IDisposable
+    {
 		private Context appContext;
 		private AccountManager accountManager;
 
@@ -226,13 +226,53 @@ namespace Kinvey
 			return nc;
 		}
 
-		#endregion
-	}
+        #endregion
 
-	/// <summary>
-	/// Kinvey account authenticator.
-	/// </summary>
-	public class KinveyAccountAuthenticator : AbstractAccountAuthenticator
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    accountManager.Dispose();
+                    appContext.Dispose();
+                }
+
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+
+
+                // set large fields to null.
+                accountManager = null;
+                appContext = null;
+
+                disposedValue = true;
+            }
+        }
+
+        ~AndroidNativeCredentialStore() {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public override void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+    }
+
+    /// <summary>
+    /// Kinvey account authenticator.
+    /// </summary>
+    public class KinveyAccountAuthenticator : AbstractAccountAuthenticator
 	{
 		Context ctx;
 
@@ -294,5 +334,6 @@ namespace Kinvey
 		{
 			throw new System.NotImplementedException();
 		}
-	}
+
+    }
 }
