@@ -19,7 +19,7 @@ namespace Kinvey.TestLocalLibApp
         {
             //Creating and building of client.
             var builder = DependencyService.Get<IBuilder>().GetBuilder();
-            builder.Build();
+            builder.SetProjectId("687169210022").Build();
         }
 
         protected override void OnSleep()

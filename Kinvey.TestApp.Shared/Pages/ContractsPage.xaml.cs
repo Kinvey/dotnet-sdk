@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kinvey.Kinvey.TestApp.Shared.Interfaces;
 using Kinvey.Kinvey.TestApp.Shared.Models;
+using Xamarin.Forms;
 
 namespace Kinvey.TestApp.Shared.Pages
 {
@@ -61,6 +63,26 @@ namespace Kinvey.TestApp.Shared.Pages
         {
             //Navigation to the AddContract page
             Navigation.PushModalAsync(new AddContract());
+        }
+
+        private void RegisterGCM_OnClicked(object sender, EventArgs e)
+        {
+            var gsmService = DependencyService.Get<IGCMService>();
+            gsmService.changed += GsmService_changed;
+            gsmService.Register(Client.SharedClient);
+
+            
+
+        }
+
+        private void GsmService_changed(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void DisableGCM_OnClicked(object sender, EventArgs e)
+        {
+            DependencyService.Get<IGCMService>().Disable(Client.SharedClient);
         }
     }
 }

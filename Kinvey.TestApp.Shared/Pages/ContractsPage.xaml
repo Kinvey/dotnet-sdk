@@ -21,6 +21,8 @@
             </ListView>
 
             <Button Text="Add contract" Clicked="AddContractButton_OnClicked"/>
+            <Button Text="Register GCM" Clicked="RegisterGCM_OnClicked"/>
+            <Button Text="Disable GCM" Clicked="DisableGCM_OnClicked"/>
         </StackLayout>
     </pages:BasePage.Content>
 </pages:BasePage>

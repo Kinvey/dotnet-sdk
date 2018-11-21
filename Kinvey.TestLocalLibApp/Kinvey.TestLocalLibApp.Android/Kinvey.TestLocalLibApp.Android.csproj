@@ -61,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndroidAppBuilder.cs" />
+    <Compile Include="GCMBroadcastReceiver.cs" />
+    <Compile Include="GCMService.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
