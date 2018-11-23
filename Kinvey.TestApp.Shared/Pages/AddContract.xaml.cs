@@ -36,11 +36,16 @@ namespace Kinvey.TestApp.Shared.Pages
                 //Going back to the main page
 	            await Navigation.PopModalAsync();
 	        }
-	        catch (Exception ex)
-	        {
-	            //Popup with exception message.
-                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, ex.Message);
-	        }
+            catch (KinveyException kinveyException)
+            {
+                // Handle any Kinvey exception.
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.KinveyExceptionTitle, kinveyException.Message);
+            }
+            catch (Exception generalException)
+            {
+                // Handle any General exception.
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, generalException.Message);
+            }
         }
 
 	    private async void CancelButton_OnClicked(object sender, EventArgs e)

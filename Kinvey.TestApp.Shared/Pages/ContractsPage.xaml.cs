@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kinvey.Kinvey.TestApp.Shared.Models;
+using Plugin.Connectivity;
+using System.Linq;
 
 namespace Kinvey.TestApp.Shared.Pages
 {
@@ -8,7 +10,7 @@ namespace Kinvey.TestApp.Shared.Pages
     {
         public ContractsPage()
         {
-            InitializeComponent();         
+            InitializeComponent();
         }
 
         private async void ContractsPage_OnAppearing(object sender, EventArgs e)
@@ -50,10 +52,15 @@ namespace Kinvey.TestApp.Shared.Pages
                 //Binding ListView with data.
                 ContractsList.ItemsSource = contracts;
             }
-            catch (Exception ex)
+            catch (KinveyException kinveyException)
             {
-                //Popup with exception message.
-                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, ex.Message);
+                // Handle any Kinvey exception.
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.KinveyExceptionTitle, kinveyException.Message);
+            }
+            catch (Exception generalException)
+            {
+                // Handle any General exception.
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, generalException.Message);
             }
         }
 
@@ -61,6 +68,83 @@ namespace Kinvey.TestApp.Shared.Pages
         {
             //Navigation to the AddContract page
             Navigation.PushModalAsync(new AddContract());
+        }
+
+        private async System.Threading.Tasks.Task SubscribeLiveService_OnClicked(object sender, EventArgs e)
+        {
+            // Listen for connectivity changes.
+            CrossConnectivity.Current.ConnectivityChanged += (senderOfConnectivityChanged, args) =>
+            {
+                // Make sure to log messages.
+                Console.WriteLine("Connectivity Changed. IsConnected: " + CrossConnectivity.Current.IsConnected);
+            };
+
+            // Listen for connectivity type changes.
+            CrossConnectivity.Current.ConnectivityTypeChanged += (senderOfConnectivityChanged, args) =>
+            {
+                // Make sure to log messages.
+                Console.WriteLine("Connectivity Type Changed. Types: " + args.ConnectionTypes.FirstOrDefault());
+            };
+
+            try
+            {
+                if (Client.SharedClient.IsUserLoggedIn())
+                {
+                    // Then register fresh.
+                    await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+                    var contracts = DataStore<Contract>.Collection("Contracts");
+                    // Subscribe to a collection.
+                    await contracts.Subscribe(new KinveyDataStoreDelegate<Contract>
+                    {
+                        OnNext = (result) =>
+                        {
+                            // Handle new real-time messages.
+                            Console.WriteLine("KLS Contract title: " + result.Title);
+                        },
+                        OnStatus = (status) =>
+                        {
+                            // Handle subscription status changes.
+                            Console.WriteLine("KLS Subscription Status Change: " + status.Message);
+                        },
+                        OnError = (error) =>
+                        {
+                            // Handle errors.
+                            Console.WriteLine("KLS Error: " + error.Message);
+                        }
+                    });
+                }
+            }
+            catch (KinveyException kinveyException)
+            {
+                // Handle any Kinvey exception.
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.KinveyExceptionTitle, kinveyException.Message);
+            }
+            catch (Exception generalException)
+            {
+                // Handle any General exception.
+                await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, generalException.Message);
+            }
+        }
+
+        private async System.Threading.Tasks.Task UnsubscribeLiveService_OnClicked(object sender, EventArgs e)
+        {
+            if (Client.SharedClient.IsUserLoggedIn())
+            {
+                try
+                {
+                    await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
+                }
+                catch (KinveyException kinveyException)
+                {
+                    // Handle any Kinvey exception.
+                    await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.KinveyExceptionTitle, kinveyException.Message);
+                }
+                catch (Exception generalException)
+                {
+                    // Handle any General exception.
+                    await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, generalException.Message);
+                }
+            }
         }
     }
 }
