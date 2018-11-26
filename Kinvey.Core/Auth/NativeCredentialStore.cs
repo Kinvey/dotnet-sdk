@@ -11,13 +11,15 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+
 namespace Kinvey
 {
 	/// <summary>
 	/// Native credential store.
 	/// </summary>
-	abstract public class NativeCredentialStore : ICredentialStore
-	{
+	abstract public class NativeCredentialStore : ICredentialStore, IDisposable
+    {
 		/// <summary>
 		/// Load the credential object from the native credential store based on the specified user ID.
 		/// </summary>
