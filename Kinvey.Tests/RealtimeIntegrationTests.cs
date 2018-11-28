@@ -65,6 +65,7 @@ namespace Kinvey.Tests
             Assert.IsTrue(true);
 
             // Teardown
+            await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
             kinveyClient.ActiveUser.Logout();
         }
 
@@ -79,11 +80,12 @@ namespace Kinvey.Tests
 
             // Act
             await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy: RealtimeReconnectionPolicy.None);
-
+            
             // Assert
             Assert.IsTrue(true);
 
             // Teardown
+            await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
             kinveyClient.ActiveUser.Logout();
         }
 
