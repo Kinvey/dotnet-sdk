@@ -78,7 +78,7 @@ namespace Kinvey.Tests
                 PublishKey = "pub-c-6a2c19f6-9f3c-4b7a-994f-4ef089f2ed56",
                 AuthKey = "1f6154fd-a80e-4885-953e-d51c8e7e110d.AGWit1OjW/nJJXtlyPjQAxzpAPaNOn7XvcuegxTUhGg=",
                 Secure = true,
-                ReconnectionPolicy = PNReconnectionPolicy.LINEAR
+                ReconnectionPolicy = PNReconnectionPolicy.EXPONENTIAL
             };
             var pubnubClient = new PubnubApi.Pubnub(PNconfig);
 
