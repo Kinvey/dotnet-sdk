@@ -69,44 +69,6 @@ namespace Kinvey.Tests
 		}
 
         [TestMethod]
-        public async Task TestRealtimeRegistrationWithRealtimeReconnectionPolicyLinear()
-        {
-            // Setup
-            if (MockData) MockResponses(2);
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            // Arrange
-
-            // Act
-            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy : RealtimeReconnectionPolicy.Exponential);
-
-            // Assert
-            Assert.IsTrue(true);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
-        }
-
-        [TestMethod]
-        public async Task TestRealtimeRegistrationWithRealtimeReconnectionPolicyExponential()
-        {
-            // Setup
-            if (MockData) MockResponses(2);
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            // Arrange
-
-            // Act
-            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy: RealtimeReconnectionPolicy.None);
-
-            // Assert
-            Assert.IsTrue(true);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
-        }
-
-        [TestMethod]
 		public async Task TestRealtimeUnregistration()
 		{
             // Setup
