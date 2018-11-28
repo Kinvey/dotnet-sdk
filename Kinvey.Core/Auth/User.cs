@@ -703,17 +703,18 @@ namespace Kinvey
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Realtime
+        #region Realtime
 
-		/// <summary>
-		/// Registers the active user for realtime messaging.
-		/// </summary>
-		/// <returns>The realtime.</returns>
-		/// <param name="userClient">User client.</param>
-		/// <param name="ct">Ct.</param>
-		public async Task RegisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Registers the active user for realtime messaging.
+        /// </summary>
+        /// <returns>The realtime.</returns>
+        /// <param name="userClient">User client.</param>
+        /// <param name="ct">Ct.</param>
+        /// <param name="realtimeReconnectionPolicy"> Rrealtime reconnection policy </param>
+        public async Task RegisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken), RealtimeReconnectionPolicy realtimeReconnectionPolicy = RealtimeReconnectionPolicy.None)
 		{
 			if (!IsActive())
 			{
@@ -734,7 +735,7 @@ namespace Kinvey
 				string publishKey = responseRegister[Constants.STR_REALTIME_PUBLISH_KEY].ToString();
 				string subscribeKey = responseRegister[Constants.STR_REALTIME_SUBSCRIBE_KEY].ToString();
 
-				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, uc);
+				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, uc, realtimeReconnectionPolicy);
 			}
 			catch (KinveyException ke)
 			{
