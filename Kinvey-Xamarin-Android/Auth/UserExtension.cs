@@ -22,14 +22,14 @@ namespace Kinvey
         [Obsolete("This method has been deprecated. Please use OnOAuthCallbackReceived() instead.")]
         public static void OnOAuthCallbackRecieved(this User user, Intent intent)
 		{
-			global::Android.Net.Uri uri = intent.Data;
-			string accessToken = uri.GetQueryParameter("code");
-			User.GetMICAccessTokenAsync(accessToken);
-		}
+            user.OnOAuthCallbackReceived(intent);
+        }
 
         public static void OnOAuthCallbackReceived(this User user, Intent intent)
         {
-            user.OnOAuthCallbackRecieved(intent);
+            global::Android.Net.Uri uri = intent.Data;
+            string accessToken = uri.GetQueryParameter("code");
+            User.GetMICAccessTokenAsync(accessToken);
         }
     }
 }
