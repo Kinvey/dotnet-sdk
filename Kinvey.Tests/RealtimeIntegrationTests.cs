@@ -57,10 +57,10 @@ namespace Kinvey.Tests
             if (MockData) MockResponses(2);
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			// Arrange
+            // Arrange
 
-			// Act
-			await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+            // Act
+            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy: RealtimeReconnectionPolicy.Linear);
 
 			// Assert
 			Assert.IsTrue(true);
@@ -72,37 +72,37 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestRealtimeRegistrationWithRealtimeReconnectionPolicyLinear()
         {
-            var PNconfig = new PNConfiguration
-            {
-                SubscribeKey = "sub-c-d684472c-f873-11e6-a5cd-02ee2ddab7fe",
-                PublishKey = "pub-c-6a2c19f6-9f3c-4b7a-994f-4ef089f2ed56",
-                AuthKey = "1f6154fd-a80e-4885-953e-d51c8e7e110d.AGWit1OjW/nJJXtlyPjQAxzpAPaNOn7XvcuegxTUhGg=",
-                Secure = true,
-                ReconnectionPolicy = PNReconnectionPolicy.EXPONENTIAL
-            };
-            var pubnubClient = new PubnubApi.Pubnub(PNconfig);
+            //var PNconfig = new PNConfiguration
+            //{
+            //    SubscribeKey = "sub-c-d684472c-f873-11e6-a5cd-02ee2ddab7fe",
+            //    PublishKey = "pub-c-6a2c19f6-9f3c-4b7a-994f-4ef089f2ed56",
+            //    AuthKey = "1f6154fd-a80e-4885-953e-d51c8e7e110d.AGWit1OjW/nJJXtlyPjQAxzpAPaNOn7XvcuegxTUhGg=",
+            //    Secure = true,
+            //    ReconnectionPolicy = PNReconnectionPolicy.EXPONENTIAL
+            //};
+            //var pubnubClient = new PubnubApi.Pubnub(PNconfig);
 
-            var subscribeCallback = new PubnubApi.SubscribeCallbackExt(
-                (pubnubObj, message) =>
-                {
+            //var subscribeCallback = new PubnubApi.SubscribeCallbackExt(
+            //    (pubnubObj, message) =>
+            //    {
 
-                },
-                (pubnubObj, presence) =>
-                {
+            //    },
+            //    (pubnubObj, presence) =>
+            //    {
 
-                },
-                (pubnubObj, status) =>
-                {
+            //    },
+            //    (pubnubObj, status) =>
+            //    {
 
-                }
-            );
+            //    }
+            //);
 
-            pubnubClient.AddListener(subscribeCallback);
+            //pubnubClient.AddListener(subscribeCallback);
 
-            var channelGroup = "kid_S112cy0jX.u-5bd06b9d444a0e1412ccde83.dd6c362a-a272-469c-a6a8-92616f51aa6a";
-            pubnubClient.Subscribe<string>().ChannelGroups(new string[] { channelGroup }).Execute();
+            //var channelGroup = "kid_S112cy0jX.u-5bd06b9d444a0e1412ccde83.dd6c362a-a272-469c-a6a8-92616f51aa6a";
+            //pubnubClient.Subscribe<string>().ChannelGroups(new string[] { channelGroup }).Execute();
 
-            pubnubClient.Unsubscribe<string>().ChannelGroups(new string[] { channelGroup }).Execute();
+            //pubnubClient.Unsubscribe<string>().ChannelGroups(new string[] { channelGroup }).Execute();
         }
 
         [TestMethod]
