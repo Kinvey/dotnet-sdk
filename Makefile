@@ -27,6 +27,8 @@ nuget-pack:
 	mv Kinvey-changed.nuspec Kinvey.nuspec; \
 	mv lib/monoandroid90 lib/MonoAndroid; \
 	mv lib/xamarinios10 lib/Xamarin.iOS10; \
+	rm lib/MonoAndroid/monoandroid90; \
+	rm lib/Xamarin.iOS10/xamarinios10; \
 	rm lib/**/System.dll; \
 	rm lib/**/System.*.dll; \
 	rm lib/**/Microsoft.*.dll; \
