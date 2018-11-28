@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Kinvey;
+using PubnubApi;
 
 namespace Kinvey.Tests
 {
@@ -71,39 +72,37 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestRealtimeRegistrationWithRealtimeReconnectionPolicyLinear()
         {
-            // Setup
-            if (MockData) MockResponses(2);
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            var PNconfig = new PNConfiguration
+            {
+                SubscribeKey = "sub-c-d684472c-f873-11e6-a5cd-02ee2ddab7fe",
+                PublishKey = "pub-c-6a2c19f6-9f3c-4b7a-994f-4ef089f2ed56",
+                AuthKey = "1f6154fd-a80e-4885-953e-d51c8e7e110d.AGWit1OjW/nJJXtlyPjQAxzpAPaNOn7XvcuegxTUhGg=",
+                Secure = true,
+                ReconnectionPolicy = PNReconnectionPolicy.LINEAR
+            };
+            var pubnubClient = new PubnubApi.Pubnub(PNconfig);
 
-            // Arrange
+            var subscribeCallback = new PubnubApi.SubscribeCallbackExt(
+                (pubnubObj, message) =>
+                {
 
-            // Act
-            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy : RealtimeReconnectionPolicy.Linear);
+                },
+                (pubnubObj, presence) =>
+                {
 
-            // Assert
-            Assert.IsTrue(true);
+                },
+                (pubnubObj, status) =>
+                {
 
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
-        }
+                }
+            );
 
-        [TestMethod]
-        public async Task TestRealtimeRegistrationWithRealtimeReconnectionPolicyExponential()
-        {
-            // Setup
-            if (MockData) MockResponses(2);
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            pubnubClient.AddListener(subscribeCallback);
 
-            // Arrange
+            var channelGroup = "kid_S112cy0jX.u-5bd06b9d444a0e1412ccde83.dd6c362a-a272-469c-a6a8-92616f51aa6a";
+            pubnubClient.Subscribe<string>().ChannelGroups(new string[] { channelGroup }).Execute();
 
-            // Act
-            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy: RealtimeReconnectionPolicy.Exponential);
-
-            // Assert
-            Assert.IsTrue(true);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
+            pubnubClient.Unsubscribe<string>().ChannelGroups(new string[] { channelGroup }).Execute();
         }
 
         [TestMethod]
