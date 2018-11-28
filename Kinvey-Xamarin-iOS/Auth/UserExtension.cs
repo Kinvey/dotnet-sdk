@@ -31,11 +31,7 @@ namespace Kinvey
 
         public static bool OnOAuthCallbackReceived(this User user, NSUrl url)
         {
-            Console.WriteLine(url.Query);
-            Console.WriteLine(url.Query.Substring(url.Query.IndexOf("code=") + 5));
-            string accesstoken = url.Query.Substring(url.Query.IndexOf("code=") + 5);
-            User.GetMICAccessTokenAsync(accesstoken);
-            return true;
+            return user.OnOAuthCallbackRecieved(url);
         }
     }
 }

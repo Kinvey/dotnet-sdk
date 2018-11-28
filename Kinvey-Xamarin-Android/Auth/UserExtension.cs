@@ -29,9 +29,7 @@ namespace Kinvey
 
         public static void OnOAuthCallbackReceived(this User user, Intent intent)
         {
-            global::Android.Net.Uri uri = intent.Data;
-            string accessToken = uri.GetQueryParameter("code");
-            User.GetMICAccessTokenAsync(accessToken);
+            user.OnOAuthCallbackRecieved(intent);
         }
     }
 }
