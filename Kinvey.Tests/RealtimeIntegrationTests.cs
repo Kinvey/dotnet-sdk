@@ -59,7 +59,7 @@ namespace Kinvey.Tests
 			// Arrange
 
 			// Act
-			await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+			await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy: RealtimeReconnectionPolicy.Linear);
 
 			// Assert
 			Assert.IsTrue(true);
@@ -97,7 +97,7 @@ namespace Kinvey.Tests
             // Arrange
 
             // Act
-            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy: RealtimeReconnectionPolicy.Exponential);
+            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync(realtimeReconnectionPolicy: RealtimeReconnectionPolicy.Linear);
 
             // Assert
             Assert.IsTrue(true);
