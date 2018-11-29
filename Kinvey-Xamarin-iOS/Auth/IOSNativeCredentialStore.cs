@@ -15,14 +15,15 @@ using System.Collections.Generic;
 using Foundation;
 using Security;
 using Newtonsoft.Json;
+using System;
 
 namespace Kinvey
 {
 	/// <summary>
 	/// iOS native credential store.
 	/// </summary>
-	public class IOSNativeCredentialStore : NativeCredentialStore
-	{
+	public class IOSNativeCredentialStore : NativeCredentialStore, IDisposable
+    {
 		#region NativeStoreCredential implementation
 
 		/// <summary>
@@ -38,7 +39,7 @@ namespace Kinvey
 			{
 				NativeCredential nc = null;
 
-				var credentials = FindCredentialsForOrg(ssoGroupKey);
+                var credentials = FindCredentialsForOrg(ssoGroupKey);
 
 				foreach (var c in credentials)
 				{
@@ -226,6 +227,15 @@ namespace Kinvey
 			return NativeCredential.Deserialize(serializedNativeCredential);
 		}
 
-		#endregion
-	}
+        #endregion
+
+        #region IDisposable Support
+
+        public override void Dispose()
+        {
+        }
+
+        #endregion
+
+    }
 }
