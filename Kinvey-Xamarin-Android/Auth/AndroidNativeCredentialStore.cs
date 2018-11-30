@@ -153,12 +153,6 @@ namespace Kinvey
 		{
 			return Load(string.Empty, ssoGroupKey);
 		}
-
-        public override void Dispose()
-        {
-
-        }
-
         #endregion
 
         #region Helper methods
