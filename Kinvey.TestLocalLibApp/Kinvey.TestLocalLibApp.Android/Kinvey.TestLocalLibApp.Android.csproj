@@ -68,7 +68,7 @@
     <Compile Include="CustomFirebaseMessagingService.cs" />
     <Compile Include="FCMService.cs" />
     <Compile Include="MainActivity.cs" />
-    <Compile Include="MyFCMBroadcastReceiver.cs" />
+    <Compile Include="CustomFCMBroadcastReceiver.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

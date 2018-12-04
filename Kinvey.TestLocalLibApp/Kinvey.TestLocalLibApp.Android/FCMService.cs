@@ -15,7 +15,7 @@ namespace Kinvey.TestLocalLibApp.Droid
 
         public override void onError(string error)
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void onMessage(string message)

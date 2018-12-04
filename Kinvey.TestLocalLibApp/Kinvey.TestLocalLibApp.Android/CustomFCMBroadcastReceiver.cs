@@ -13,12 +13,12 @@ using Android.Widget;
 namespace Kinvey.TestLocalLibApp.Droid
 {
     [BroadcastReceiver(Permission = "com.google.android.c2dm.permission.SEND")]
-    [IntentFilter(new string[] { "com.google.android.c2dm.intent.RECEIVE" })]
-    [IntentFilter(new string[] { "com.google.android.c2dm.intent.REGISTRATION" })]
-    [IntentFilter(new string[] { "com.kinvey.xamarin.android.fcm.unregistration" })]
-    [IntentFilter(new string[] { "com.google.android.gcm.intent.RETRY" })]
-    [IntentFilter(new string[] { "com.kinvey.xamarin.android.ERROR" })]
-    public class MyFCMBroadcastReceiver : BroadcastReceiver
+    //[IntentFilter(new string[] { "com.google.android.c2dm.intent.RECEIVE" })]
+    //[IntentFilter(new string[] { "com.google.android.c2dm.intent.REGISTRATION" })]
+    //[IntentFilter(new string[] { "com.kinvey.xamarin.android.fcm.unregistration" })]
+    //[IntentFilter(new string[] { "com.google.android.gcm.intent.RETRY" })]
+    //[IntentFilter(new string[] { "com.kinvey.xamarin.android.ERROR" })]
+    public class CustomFCMBroadcastReceiver : BroadcastReceiver
     {
         public override void OnReceive(Context context, Intent intent)
         {

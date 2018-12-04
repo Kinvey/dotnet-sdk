@@ -36,7 +36,7 @@ namespace Kinvey
                 try
                 {
                     var token = FirebaseInstanceId.Instance.Token;
-                    token = string.Empty;
+                    //token = string.Empty;
 
                     if (string.IsNullOrEmpty(token))
                     {
