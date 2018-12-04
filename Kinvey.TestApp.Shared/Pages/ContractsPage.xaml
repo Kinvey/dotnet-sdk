@@ -21,6 +21,8 @@
             </ListView>
 
             <Button Text="Add contract" Clicked="AddContractButton_OnClicked"/>
+            <Button Text="Register push" Clicked="RegisterPush_OnClicked"/>
+            <Button Text="Unregister push" Clicked="UnregisterPush_OnClicked"/>
         </StackLayout>
     </pages:BasePage.Content>
 </pages:BasePage>

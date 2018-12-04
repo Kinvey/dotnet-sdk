@@ -14,14 +14,14 @@ using Firebase.Messaging;
 
 namespace Kinvey.TestLocalLibApp.Droid
 {
-    [Service]
-    [IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
-    public class CustomFirebaseIIDService : FirebaseInstanceIdService
-    {
-        public override void OnTokenRefresh()
-        {
-            var refreshedToken = FirebaseInstanceId.Instance.Token;
-            FirebaseMessaging.Instance.SubscribeToTopic("news");
-        }
-    }
+    //[Service]
+    //[IntentFilter(new[] { "com.google.firebase.INSTANCE_ID_EVENT" })]
+    //public class CustomFirebaseIIDService : FirebaseInstanceIdService
+    //{
+    //    public override void OnTokenRefresh()
+    //    {
+    //        var refreshedToken = FirebaseInstanceId.Instance.Token;
+    //        FirebaseMessaging.Instance.SubscribeToTopic("news");
+    //    }
+    //}
 }

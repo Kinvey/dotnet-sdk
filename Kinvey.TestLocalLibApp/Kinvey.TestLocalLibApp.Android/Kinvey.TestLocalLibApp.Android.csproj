@@ -66,7 +66,9 @@
     <Compile Include="AndroidAppBuilder.cs" />
     <Compile Include="CustomFirebaseIIDService.cs" />
     <Compile Include="CustomFirebaseMessagingService.cs" />
+    <Compile Include="FCMService.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MyFCMBroadcastReceiver.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -74,7 +76,9 @@
     <GoogleServicesJson Include="google-services.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
-    <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Properties\AndroidManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
