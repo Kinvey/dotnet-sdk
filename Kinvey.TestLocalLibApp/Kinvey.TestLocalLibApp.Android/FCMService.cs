@@ -10,7 +10,7 @@ namespace Kinvey.TestLocalLibApp.Droid
     {
         public override void onDelete(int deleted)
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void onError(string error)
