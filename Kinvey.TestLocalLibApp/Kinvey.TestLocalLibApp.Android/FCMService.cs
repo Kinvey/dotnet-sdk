@@ -7,12 +7,7 @@ namespace Kinvey.TestLocalLibApp.Droid
 {
     [Service]
     public class FCMService : KinveyFCMService, IFCMService 
-    {
-        public override void onDelete(int deleted)
-        {
-
-        }
-
+    {   
         public override void onError(string error)
         {
             
