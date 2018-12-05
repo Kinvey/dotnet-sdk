@@ -29,7 +29,7 @@ namespace Kinvey
 
         public void Initialize(Context appContext)
         {
-            string senders = base.client.senderID;
+            var senders = base.client.senderID;
 
             ThreadPool.QueueUserWorkItem(o => {
 
@@ -72,7 +72,7 @@ namespace Kinvey
 
         public void DisablePush(Context appContext)
         {
-            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
+            var prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
             var alreadyInitialized = prefs.GetString(FCM_ID, string.Empty);
 
             if (alreadyInitialized.Length == 0)

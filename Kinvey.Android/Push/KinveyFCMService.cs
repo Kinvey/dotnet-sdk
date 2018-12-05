@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 
 namespace Kinvey
 {
@@ -57,10 +49,6 @@ namespace Kinvey
                 {
                     onMessage(intent.GetStringExtra(MESSAGE_FROM_FCM));
                 }
-                else if (action.Equals("delete"))
-                {
-                    onDelete(intent.GetIntExtra("DELETED", 0));
-                }
                 else if (action.Equals(Constants.STR_KINVEY_ANDROID_ERROR))
                 {
                     onError(intent.GetStringExtra(Constants.STR_GENERAL_ERROR));
@@ -80,8 +68,6 @@ namespace Kinvey
         public abstract void onMessage(string message);
 
         public abstract void onError(string error);
-
-        public abstract void onDelete(int deleted);
 
         public abstract void onRegistered(string registrationId);
 
