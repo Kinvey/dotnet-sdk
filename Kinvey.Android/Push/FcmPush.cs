@@ -22,6 +22,8 @@ namespace Kinvey
         private const string APP = "app";
         private const string SENDER = "sender";
         private const string ANDROID = "android";
+        private const string FCM_NOT_REGISTERED = "Firebase Cloud Messaging is not registered";
+
 
         public FCMPush(Client client) : base(client) { }
 
@@ -36,12 +38,12 @@ namespace Kinvey
                 try
                 {
                     var token = FirebaseInstanceId.Instance.Token;
-                    //token = string.Empty;
+                    token = string.Empty;
 
                     if (string.IsNullOrEmpty(token))
                     {
-                        intent = new Intent("com.kinvey.xamarin.android.ERROR");
-                        intent.PutExtra("ERROR", "Firebase Cloud Messaging is not registered");
+                        intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
+                        intent.PutExtra(Constants.STR_GENERAL_ERROR, FCM_NOT_REGISTERED);
                         appContext.SendBroadcast(intent);
                         return;
                     }
@@ -61,8 +63,8 @@ namespace Kinvey
                 }
                 catch (Exception ex)
                 {
-                    intent = new Intent("com.kinvey.xamarin.android.ERROR");
-                    intent.PutExtra("ERROR", ex.Message);
+                    intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
+                    intent.PutExtra(Constants.STR_GENERAL_ERROR, ex.Message);
                     appContext.SendBroadcast(intent);
                 }
             });
@@ -92,14 +94,14 @@ namespace Kinvey
                     editor.Remove(FCM_ID);
                     editor.Apply();
 
-                    intent = new Intent(Constants.KINVEY_FCM_UNREGISTRATION);
-                    intent.PutExtra(Constants.UNREGISTRATION_ID, alreadyInitialized);
+                    intent = new Intent(Constants.STR_KINVEY_FCM_UNREGISTRATION);
+                    intent.PutExtra(Constants.STR_UNREGISTRATION_ID, alreadyInitialized);
                     appContext.SendBroadcast(intent);
                 }
                 catch (Exception ex)
                 {
-                    intent = new Intent("com.kinvey.xamarin.android.ERROR");
-                    intent.PutExtra("ERROR", ex.Message);
+                    intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
+                    intent.PutExtra(Constants.STR_GENERAL_ERROR, ex.Message);
                     appContext.SendBroadcast(intent);
                 }
             });

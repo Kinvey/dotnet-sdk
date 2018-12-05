@@ -25,10 +25,10 @@ namespace Kinvey.TestLocalLibApp.Droid
         {
             base.OnResume();
             var intentFilter = new IntentFilter();
-            intentFilter.AddAction("com.google.android.c2dm.intent.RECEIVE");
-            intentFilter.AddAction("com.google.android.c2dm.intent.REGISTRATION");
-            intentFilter.AddAction("com.kinvey.xamarin.android.fcm.unregistration");
-            intentFilter.AddAction("com.kinvey.xamarin.android.ERROR");
+            intentFilter.AddAction(Constants.STR_C2DM_INTENT_RECEIVE);
+            intentFilter.AddAction(Constants.STR_C2DM_INTENT_REGISTRATION);
+            intentFilter.AddAction(Constants.STR_KINVEY_FCM_UNREGISTRATION);
+            intentFilter.AddAction(Constants.STR_KINVEY_ANDROID_ERROR);
 
             RegisterReceiver(_customFCMBroadcastReceiver, intentFilter);
         }

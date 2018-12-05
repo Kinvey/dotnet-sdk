@@ -20,9 +20,9 @@ namespace Kinvey
 
         static PowerManager.WakeLock sWakeLock;
         static object LOCK = new object();
-        private const string MESSAGE_FROM_FCM = "msg";
-        private const string C2DM_INTENT_REGISTRATION = "com.google.android.c2dm.intent.REGISTRATION";
+        private const string MESSAGE_FROM_FCM = "gcm.notification.body";
         private const string REGISTRATION_ID = "registration_id";
+        private const string KINVEY_FCM = "KinveyFCM";
 
         protected override void OnHandleIntent(Intent intent)
         {
@@ -32,7 +32,7 @@ namespace Kinvey
                 if (sWakeLock == null)
                 {
                     var pm = PowerManager.FromContext(this.ApplicationContext);
-                    sWakeLock = pm.NewWakeLock(WakeLockFlags.Partial, "KinveyFCM");
+                    sWakeLock = pm.NewWakeLock(WakeLockFlags.Partial, KINVEY_FCM);
                 }
             }
 
@@ -43,17 +43,17 @@ namespace Kinvey
             {
                 string action = intent.Action;
 
-                if (action.Equals(C2DM_INTENT_REGISTRATION))
+                if (action.Equals(Constants.STR_C2DM_INTENT_REGISTRATION))
                 {
                     var registrationId = intent.GetStringExtra(REGISTRATION_ID);
                     onRegistered(registrationId);
                 }
-                else if (action.Equals(Constants.KINVEY_FCM_UNREGISTRATION))
+                else if (action.Equals(Constants.STR_KINVEY_FCM_UNREGISTRATION))
                 {
-                    var unregistrationId = intent.GetStringExtra(Constants.UNREGISTRATION_ID);
+                    var unregistrationId = intent.GetStringExtra(Constants.STR_UNREGISTRATION_ID);
                     onRegistered(unregistrationId);
                 }
-                else if (action.Equals("com.google.android.c2dm.intent.RECEIVE"))
+                else if (action.Equals(Constants.STR_C2DM_INTENT_RECEIVE))
                 {
                     onMessage(intent.GetStringExtra(MESSAGE_FROM_FCM));
                 }
@@ -61,9 +61,9 @@ namespace Kinvey
                 {
                     onDelete(intent.GetIntExtra("DELETED", 0));
                 }
-                else if (action.Equals("com.kinvey.xamarin.android.ERROR"))
+                else if (action.Equals(Constants.STR_KINVEY_ANDROID_ERROR))
                 {
-                    onError(intent.GetStringExtra("ERROR"));
+                    onError(intent.GetStringExtra(Constants.STR_GENERAL_ERROR));
                 }
             }
             finally

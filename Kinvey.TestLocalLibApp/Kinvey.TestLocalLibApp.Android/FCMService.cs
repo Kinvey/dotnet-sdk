@@ -20,7 +20,7 @@ namespace Kinvey.TestLocalLibApp.Droid
 
         public override void onMessage(string message)
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void onRegistered(string registrationId)
@@ -30,7 +30,7 @@ namespace Kinvey.TestLocalLibApp.Droid
 
         public override void onUnregistered(string oldID)
         {
-            throw new System.NotImplementedException();
+
         }
 
         public void Register(Client client)
