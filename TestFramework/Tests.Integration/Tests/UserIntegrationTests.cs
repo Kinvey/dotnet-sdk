@@ -323,7 +323,8 @@ namespace TestFramework
 		// MIC LOGIN TESTS
 		//
 		[Test]
-		public void TestMIC_LoginWithMIC_NormalFlow()
+        [Obsolete("This test has been deprecated.")]
+        public void TestMIC_LoginWithMIC_NormalFlow()
 		{
 			// Arrange
 			string redirectURI = "http://test.redirect";
@@ -345,7 +346,8 @@ namespace TestFramework
 		}
 
 		[Test]
-		public void TestMIC_LoginWithMIC_NormalFlow_ClientID()
+        [Obsolete("This test has been deprecated.")]
+        public void TestMIC_LoginWithMIC_NormalFlow_ClientID()
 		{
 			// Arrange
 			string redirectURI = "http://test.redirect";

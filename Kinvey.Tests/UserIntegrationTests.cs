@@ -314,6 +314,7 @@ namespace Kinvey.Tests
         // MIC LOGIN TESTS
         //
         [TestMethod]
+        [Obsolete("This test has been deprecated.")]
         public void TestMIC_LoginWithMIC_NormalFlow()
         {
             // Arrange
@@ -336,6 +337,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        [Obsolete("This test has been deprecated.")]
         public void TestMIC_LoginWithMIC_NormalFlow_ClientID()
         {
             // Arrange
