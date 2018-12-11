@@ -515,15 +515,15 @@ namespace Kinvey
 			LoginWithMIC(redirectURI, MICDelegate, null, userClient, ct);
 		}
 
-		/// <summary>
-		/// Performs MIC Login authorization through a login page.
-		/// </summary>
-		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
-		/// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
-		/// <param name="clientID">[optional] Client ID configured during auth provider configuration, which is to be used during authentication.  Defaults to app key.</param>
-		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public void LoginWithMIC(string redirectURI, KinveyMICDelegate<User> MICDelegate, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Performs MIC Login authorization through a login page.
+        /// </summary>
+        /// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
+        /// <param name="MICDelegate">MIC Delegate, which has a callback to pass back the URL to render for login, as well as success and error callbacks.</param>
+        /// <param name="clientID">[optional] Client ID configured during auth provider configuration, which is to be used during authentication.  Defaults to app key.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        static public void LoginWithMIC(string redirectURI, KinveyMICDelegate<User> MICDelegate, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			//return URL for login page
 			//https://auth.kinvey.com/oauth/auth?client_id=<your_app_id>&redirect_uri=<redirect_uri>&response_type=code

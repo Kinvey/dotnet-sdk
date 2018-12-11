@@ -172,7 +172,7 @@ namespace Kinvey.Tests
 		}
 
         [TestMethod]
-		public async Task TestMICRenderURLScopeID()
+        public async Task TestMICRenderURLScopeID()
 		{
 			// Arrange
 			var builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
