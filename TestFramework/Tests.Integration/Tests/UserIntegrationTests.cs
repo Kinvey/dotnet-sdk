@@ -323,7 +323,6 @@ namespace TestFramework
 		// MIC LOGIN TESTS
 		//
 		[Test]
-        [Obsolete("This test has been deprecated.")]
         public void TestMIC_LoginWithMIC_NormalFlow()
 		{
 			// Arrange
@@ -346,7 +345,6 @@ namespace TestFramework
 		}
 
 		[Test]
-        [Obsolete("This test has been deprecated.")]
         public void TestMIC_LoginWithMIC_NormalFlow_ClientID()
 		{
 			// Arrange

@@ -523,7 +523,6 @@ namespace Kinvey
         /// <param name="clientID">[optional] Client ID configured during auth provider configuration, which is to be used during authentication.  Defaults to app key.</param>
         /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-        [Obsolete("This method has been deprecated.  Please use LoginWithMIC() instead.")]
         static public void LoginWithMIC(string redirectURI, KinveyMICDelegate<User> MICDelegate, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			//return URL for login page

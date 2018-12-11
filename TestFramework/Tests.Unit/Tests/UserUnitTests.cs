@@ -140,7 +140,6 @@ namespace TestFramework
 		}
 
 		[Test]
-        [Obsolete("This test has been deprecated.")]
         public async Task TestMICRenderURLScopeID()
 		{
 			// Arrange
