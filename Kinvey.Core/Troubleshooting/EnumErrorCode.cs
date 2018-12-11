@@ -63,10 +63,15 @@ namespace Kinvey
 		/// </summary>
 		ERROR_DATASTORE_CACHE_REMOVE_ENTITY,
 
-		/// <summary>
-		/// Error due to an invalid pull operation being performed on this type of datastore.
+        /// <summary>
+		/// Error removing entities according to query in the local cache.
 		/// </summary>
-		ERROR_DATASTORE_INVALID_PULL_OPERATION,
+		ERROR_DATASTORE_CACHE_REMOVING_ENTITIES_ACCORDING_TO_QUERY,
+
+        /// <summary>
+        /// Error due to an invalid pull operation being performed on this type of datastore.
+        /// </summary>
+        ERROR_DATASTORE_INVALID_PULL_OPERATION,
 
 		/// <summary>
 		/// Error due to an invalid push operation being performed on this type of datastore.

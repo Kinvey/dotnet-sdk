@@ -676,11 +676,57 @@ namespace Kinvey
 			return kdr;
 		}
 
-		public async Task<KinveyDeleteResponse> DeleteAsync (string query)
-		{
-			// TODO implement
-			return null;
-		}
+        public KinveyDeleteResponse DeleteByQuery(Expression expr)
+        {
+            var kdr = new KinveyDeleteResponse();
+
+            try
+            {
+                int skipNumber = 0;
+                int takeNumber = 0;
+                bool sortAscending = true;
+                LambdaExpression exprSort = null;
+
+                var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
+
+                var query = dbConnectionSync.Table<T>();
+
+                if (exprSort != null)
+                {
+                    ApplySort(ref query, sortAscending, exprSort);
+                }
+
+                if (skipNumber != 0)
+                {
+                    query = query.Skip(skipNumber);
+                }
+
+                if (takeNumber != 0)
+                {
+                    query = query.Take(takeNumber);
+                }
+
+                if (lambdaExpr != null)
+                {
+                    query = query.Where(lambdaExpr);
+                }
+
+                var matchIDs = new List<string>();
+                foreach (var item in query.ToList())
+                {
+                    var entity = item as IPersistable;
+                    matchIDs.Add(entity.ID);
+                }
+
+                kdr = this.DeleteByIDs(matchIDs);
+            }
+            catch (SQLiteException ex)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVING_ENTITIES_ACCORDING_TO_QUERY, string.Empty, ex);
+            }
+
+            return kdr;
+        }
 
 		#endregion
 

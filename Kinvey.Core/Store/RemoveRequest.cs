@@ -11,7 +11,9 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using Remotion.Linq;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kinvey
@@ -19,37 +21,66 @@ namespace Kinvey
 	public class RemoveRequest <T> : WriteRequest <T, KinveyDeleteResponse>
 	{
 		private string entityID;
+        private readonly IQueryable<object> _query;
 
-		public RemoveRequest(string entityID, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy)
+
+        public RemoveRequest(string entityID, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy)
 			: base(client, collection, cache, sync, policy)
 		{
 			this.entityID = entityID;
 		}
 
-		public override async Task<KinveyDeleteResponse> ExecuteAsync()
+        public RemoveRequest(IQueryable<object> query, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy) : this(string.Empty, client, collection, cache, sync, policy)
+        {
+            _query = query;
+        }
+
+        public override async Task<KinveyDeleteResponse> ExecuteAsync()
 		{
 			KinveyDeleteResponse kdr = default(KinveyDeleteResponse);
 
-			NetworkRequest<KinveyDeleteResponse> request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
+            NetworkRequest<KinveyDeleteResponse> request;
 
-			switch (Policy)
+            if (_query == null)
+            {
+                request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
+            }
+            else
+            {
+                StringQueryBuilder queryBuilder = new StringQueryBuilder();
+
+                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
+                QueryModel queryModel = (_query.Provider as KinveyQueryProvider)?.qm;
+
+                queryBuilder.Write("{");
+                queryModel?.Accept(visitor);
+                queryBuilder.Write("}");
+
+                string mongoQuery = queryBuilder.BuildQueryString();
+
+                request = Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery);
+            }
+
+            switch (Policy)
 			{
 				case WritePolicy.FORCE_LOCAL:
-					// sync
-					kdr = Cache.DeleteByID(entityID);
-					PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
-					SyncQueue.Enqueue(pendingAction);
-					break;
+                    // sync
+                    kdr = Cache.DeleteByID(entityID);
+                    //PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
+                    //SyncQueue.Enqueue(pendingAction);
+                    break;
 
 				case WritePolicy.FORCE_NETWORK:
 					// network
-					kdr = await request.ExecuteAsync();
+					//kdr = await request.ExecuteAsync();
 					break;
 
 				case WritePolicy.NETWORK_THEN_LOCAL:
-					// cache
-					kdr = Cache.DeleteByID(entityID);
-					kdr = await request.ExecuteAsync();
+                    // cache
+                    //kdr = Cache.DeleteByID(entityID);
+                    var c = Cache.DeleteByQuery(_query.Expression);
+                   
+					//kdr = await request.ExecuteAsync();
 					break;
 
 				default:

@@ -354,15 +354,28 @@ namespace Kinvey
 			return await request.ExecuteAsync();
 		}
 
-		/// <summary>
-		/// Pulls data from the backend to local storage
-		///
-		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
+        /// <summary>
+		/// Deletes the entity associated with the provided id
 		/// </summary>
-		/// <returns>Entities that were pulled from the backend.</returns>
-		/// <param name="query">Optional Query parameter.</param>
+		/// <returns>The async task.</returns>
+		/// <param name="entityID">The Kinvey ID of the entity to delete.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<object> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
+		public async Task<KinveyDeleteResponse> RemoveAsync(IQueryable<object> query, CancellationToken ct = default(CancellationToken))
+        {
+            RemoveRequest<T> request = new RemoveRequest<T>(query, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+            ct.ThrowIfCancellationRequested();
+            return await request.ExecuteAsync();
+        }
+
+        /// <summary>
+        /// Pulls data from the backend to local storage
+        ///
+        /// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
+        /// </summary>
+        /// <returns>Entities that were pulled from the backend.</returns>
+        /// <param name="query">Optional Query parameter.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<object> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
