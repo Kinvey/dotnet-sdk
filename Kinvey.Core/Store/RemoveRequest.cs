@@ -11,8 +11,6 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using Remotion.Linq;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,55 +35,66 @@ namespace Kinvey
 
         public override async Task<KinveyDeleteResponse> ExecuteAsync()
 		{
-			KinveyDeleteResponse kdr = default(KinveyDeleteResponse);
-
-            NetworkRequest<KinveyDeleteResponse> request;
-
-            if (_query == null)
-            {
-                request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
-            }
-            else
-            {
-                StringQueryBuilder queryBuilder = new StringQueryBuilder();
-
-                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
-                QueryModel queryModel = (_query.Provider as KinveyQueryProvider)?.qm;
-
-                queryBuilder.Write("{");
-                queryModel?.Accept(visitor);
-                queryBuilder.Write("}");
-
-                string mongoQuery = queryBuilder.BuildQueryString();
-
-                request = Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery);
-            }
+			var kdr = default(KinveyDeleteResponse);
 
             switch (Policy)
-			{
-				case WritePolicy.FORCE_LOCAL:
+            {
+                case WritePolicy.FORCE_LOCAL:
                     // sync
-                    kdr = Cache.DeleteByID(entityID);
-                    //PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
-                    //SyncQueue.Enqueue(pendingAction);
+                    if (_query == null)
+                    {
+                        // cache
+                        kdr = Cache.DeleteByID(entityID);
+
+                        //PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
+                        //SyncQueue.Enqueue(pendingAction);
+                    }
+                    else
+                    {
+                        // cache
+                        kdr = Cache.DeleteByQuery(_query.Expression);
+
+                        //PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
+                        //SyncQueue.Enqueue(pendingAction);
+                    }
                     break;
 
-				case WritePolicy.FORCE_NETWORK:
-					// network
-					//kdr = await request.ExecuteAsync();
-					break;
+                case WritePolicy.FORCE_NETWORK:
+                    // network
+                    if (_query == null)
+                    {
+                        kdr = await Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID).ExecuteAsync();
+                    }
+                    else
+                    {
+                        var mongoQuery = KinveyMongoQueryBuilder.GetQuery<T>(_query);
+                        kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
+                    }
+                    break;
 
-				case WritePolicy.NETWORK_THEN_LOCAL:
-                    // cache
-                    //kdr = Cache.DeleteByID(entityID);
-                    var c = Cache.DeleteByQuery(_query.Expression);
-                   
-					//kdr = await request.ExecuteAsync();
-					break;
+                case WritePolicy.NETWORK_THEN_LOCAL:
+                    if (_query == null)
+                    {
+                        // cache
+                        kdr = Cache.DeleteByID(entityID);
 
-				default:
-					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid write policy");
-			}
+                        // network
+                        kdr = await Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID).ExecuteAsync();
+                    }
+                    else
+                    {
+                        // cache
+                        kdr = Cache.DeleteByQuery(_query.Expression);
+
+                        // network
+                        var mongoQuery = KinveyMongoQueryBuilder.GetQuery<T>(_query);
+                        kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
+                    }
+                    break;
+
+                default:
+                    throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid write policy");
+            }
 
 			return kdr;
 		}
