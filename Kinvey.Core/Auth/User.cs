@@ -568,7 +568,7 @@ namespace Kinvey
 		/// <param name="password">Password for authentication</param>
 		/// <param name="redirectURI">The redirect URI to be used for parsing the grant code</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		[Obsolete("This method has been deprecated.  Please use LoginWithMIC() instead.")]
+		[Obsolete("This method has been deprecated.  Please use LoginWithMIC(username:, password:, micID:, userClient:, ct: ) instead.")]
 		static public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			await LoginWithMICInternal(username, password, redirectURI, null, userClient, ct);
@@ -583,7 +583,7 @@ namespace Kinvey
         /// <param name="micID">[optional] Auth Service ID</param>
         /// <param name="userClient">[optional] Client that the user is logged in, defaulted to SharedClient.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-        [Obsolete("This method has been deprecated.  Please use LoginWithMIC() instead.")]
+        [Obsolete("This method has been deprecated.  Please use LoginWithMIC(username:, password:, micID:, userClient:, ct: ) instead.")]
         static public async Task LoginWithMIC(string username, string password, string redirectURI, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
             await LoginWithMICInternal(username, password, redirectURI, micID, userClient, ct);
