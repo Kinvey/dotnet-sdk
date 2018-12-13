@@ -80,7 +80,7 @@ namespace testiosapp2
 
 		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
 		{
-			return myClient.ActiveUser.OnOAuthCallbackRecieved(url);
+			return myClient.ActiveUser.OnOAuthCallbackReceived(url);
 		}
 
 		public async Task<User> Login(string user, string pass)
