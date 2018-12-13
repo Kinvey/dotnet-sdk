@@ -19,5 +19,6 @@
             public const string RequiredFieldsTitle = "Required fields!";
             public const string RequiredFieldsMessage = "Title and Number are required fields.";
         }
+
     }
 }
