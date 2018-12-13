@@ -385,7 +385,7 @@ namespace TestFramework
 			localClient.MICApiVersion = "v2";
 
 			// Act
-			await User.LoginWithMIC(username, password, redirectURI);
+			await User.LoginWithMIC(username, password, redirectURI, micID: null);
 
 			// Assert
 			Assert.NotNull(localClient.ActiveUser);
