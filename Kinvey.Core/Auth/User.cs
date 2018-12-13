@@ -714,7 +714,7 @@ namespace Kinvey
         /// <param name="userClient">User client.</param>
         /// <param name="ct">Ct.</param>
         /// <param name="realtimeReconnectionPolicy"> Realtime reconnection policy </param>
-        public async Task RegisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken), RealtimeReconnectionPolicy realtimeReconnectionPolicy = RealtimeReconnectionPolicy.None)
+        public async Task RegisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken), RealtimeReconnectionPolicy realtimeReconnectionPolicy = RealtimeReconnectionPolicy.Exponential)
 		{
 			if (!IsActive())
 			{
