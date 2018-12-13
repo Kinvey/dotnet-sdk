@@ -46,16 +46,20 @@ namespace Kinvey
                         // cache
                         kdr = Cache.DeleteByID(entityID);
 
-                        //PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
-                        //SyncQueue.Enqueue(pendingAction);
+                        var request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
+
+                        PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
+                        SyncQueue.Enqueue(pendingAction);
                     }
                     else
                     {
                         // cache
                         kdr = Cache.DeleteByQuery(_query.Expression);
 
-                        //PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
-                        //SyncQueue.Enqueue(pendingAction);
+                        var request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
+
+                        PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
+                        SyncQueue.Enqueue(pendingAction);
                     }
                     break;
 
