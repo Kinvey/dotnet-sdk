@@ -21,16 +21,16 @@ namespace Kinvey
         /// <summary>
 		/// Indicates that NO action will taken when there is a network or internet issue.
 		/// </summary>
-        None,
+        NONE,
 
         /// <summary>
 		/// SDK will try to reconnect each 3 seconds.
 		/// </summary>
-        Linear,
+        LINEAR,
 
         /// <summary>
 		/// SDK uses the Exponential Backoff algorithm to reconnect when there is a network or internet issue
 		/// </summary>
-        Exponential
+        EXPONENTIAL
     }
 }

@@ -25,11 +25,11 @@ namespace Kinvey
         {
             switch (realtimeReconnectionPolicy)
             {
-                case RealtimeReconnectionPolicy.None:
+                case RealtimeReconnectionPolicy.NONE:
                     return PubnubApi.PNReconnectionPolicy.NONE;
-                case RealtimeReconnectionPolicy.Linear:
+                case RealtimeReconnectionPolicy.LINEAR:
                     return PubnubApi.PNReconnectionPolicy.LINEAR;
-                case RealtimeReconnectionPolicy.Exponential:
+                case RealtimeReconnectionPolicy.EXPONENTIAL:
                     return PubnubApi.PNReconnectionPolicy.EXPONENTIAL;
                 default:
                     return PubnubApi.PNReconnectionPolicy.NONE;
