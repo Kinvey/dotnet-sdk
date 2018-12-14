@@ -32,7 +32,7 @@ namespace Kinvey
                 case RealtimeReconnectionPolicy.EXPONENTIAL:
                     return PubnubApi.PNReconnectionPolicy.EXPONENTIAL;
                 default:
-                    return PubnubApi.PNReconnectionPolicy.NONE;
+                    throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid realtime reconnection policy");
             }
         }
     }
