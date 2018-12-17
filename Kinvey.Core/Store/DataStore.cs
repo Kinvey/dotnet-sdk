@@ -362,6 +362,11 @@ namespace Kinvey
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<KinveyDeleteResponse> RemoveAsync(IQueryable<object> query, CancellationToken ct = default(CancellationToken))
         {
+            if(query == null)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_NULL_QUERY, "Query cannot be null.");
+            }
+
             var request = new RemoveRequest<T>(query, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
             ct.ThrowIfCancellationRequested();
             return await request.ExecuteAsync();

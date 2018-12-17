@@ -88,10 +88,15 @@ namespace Kinvey
 		/// </summary>
 		ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
 
-		/// <summary>
-		/// Error due to attempting a file metadata operation without a file ID.
+        /// <summary>
+		/// Error due to attempting to remove entities with null query.
 		/// </summary>
-		ERROR_FILE_MISSING_FILE_ID,
+		ERROR_DATASTORE_NULL_QUERY,
+
+        /// <summary>
+        /// Error due to attempting a file metadata operation without a file ID.
+        /// </summary>
+        ERROR_FILE_MISSING_FILE_ID,
 
 		/// <summary>
 		/// Error due to attempting a file upload operation with either null or missing metadata information.  Verify that the <see cref="KinveyXamarin.FileMetaData"/> is valid.
