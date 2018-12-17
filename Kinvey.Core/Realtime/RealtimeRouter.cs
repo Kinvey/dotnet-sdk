@@ -55,7 +55,7 @@ namespace Kinvey
             }
         }
 
-        static internal void Initialize(string channelGroup, string publishKey, string subscribeKey, string authKey, AbstractClient client)
+        static internal void Initialize(string channelGroup, string publishKey, string subscribeKey, string authKey, AbstractClient client, RealtimeReconnectionPolicy realtimeReconnectionPolicy)
         {
             if (instance == null)
             {
@@ -71,12 +71,16 @@ namespace Kinvey
                             PNconfig.PublishKey = publishKey;
                             PNconfig.AuthKey = authKey;
                             PNconfig.Secure = true;
+                            PNconfig.ReconnectionPolicy = realtimeReconnectionPolicy.ConvertToPNReconnectionPolicy();
                             instance.pubnubClient = new PubnubApi.Pubnub(PNconfig);
 
                             instance.subscribeCallback = new PubnubApi.SubscribeCallbackExt(
                                 (pubnubObj, message) => { instance.SubscribeCallback(message.Channel, message.Message as string); },
                                 (pubnubObj, presence) => { /* presence not currently supported */}, // TODO Support PubNub presence
-                                (pubnubObj, status) => { instance.HandleStatusMessage(status); }
+                                (pubnubObj, status) => 
+                                {
+                                    instance.HandleStatusMessage(status);
+                                }
                             );
 
                             instance.pubnubClient.AddListener(instance.subscribeCallback);

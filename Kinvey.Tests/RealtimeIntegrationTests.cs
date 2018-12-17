@@ -49,26 +49,26 @@ namespace Kinvey.Tests
             base.Tear();
 		}
 
-		[TestMethod]
-		public async Task TestRealtimeRegistration()
-		{
+        [TestMethod]
+        public async Task TestRealtimeRegistrationWithDefaultValue()
+        {
             // Setup
             if (MockData) MockResponses(2);
-			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			// Arrange
+            // Arrange
 
-			// Act
-			await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+            // Act
+            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
 
-			// Assert
-			Assert.IsTrue(true);
+            // Assert
+            Assert.IsTrue(true);
 
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
-		}
+            // Teardown
+            kinveyClient.ActiveUser.Logout();
+        }
 
-		[TestMethod]
+        [TestMethod]
 		public async Task TestRealtimeUnregistration()
 		{
             // Setup
