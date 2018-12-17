@@ -212,6 +212,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeRouter.cs">
       <Link>Realtime\RealtimeRouter.cs</Link>
     </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicy.cs">
+      <Link>Realtime\RealtimeReconnectionPolicy</Link>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicyExtension.cs">
+      <Link>Realtime\RealtimeReconnectionPolicyExtension</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\DataStore.cs">
       <Link>Store\DataStore.cs</Link>
     </Compile>
