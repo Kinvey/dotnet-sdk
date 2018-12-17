@@ -355,14 +355,14 @@ namespace Kinvey
 		}
 
         /// <summary>
-		/// Deletes the entity associated with the provided id
+		/// Deletes a list of entities by the query.
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entityID">The Kinvey ID of the entity to delete.</param>
+		/// <returns>KinveyDeleteResponse object.</returns>
+        /// <param name="query">Expression for deleting entities.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
 		public async Task<KinveyDeleteResponse> RemoveAsync(IQueryable<object> query, CancellationToken ct = default(CancellationToken))
         {
-            RemoveRequest<T> request = new RemoveRequest<T>(query, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+            var request = new RemoveRequest<T>(query, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
             ct.ThrowIfCancellationRequested();
             return await request.ExecuteAsync();
         }

@@ -131,7 +131,7 @@ namespace Kinvey
         /// <summary>
 		/// Deletes a list of entities by the query.
 		/// </summary>
-		/// <returns>A KinveyDeleteResponse object.</returns>
+		/// <returns>KinveyDeleteResponse object.</returns>
 		/// <param name="expr">Expression to delete entities from the cache.</param>
         KinveyDeleteResponse DeleteByQuery(Expression expr);
 

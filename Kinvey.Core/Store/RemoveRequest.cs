@@ -28,7 +28,7 @@ namespace Kinvey
 			this.entityID = entityID;
 		}
 
-        public RemoveRequest(IQueryable<object> query, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy) : this(string.Empty, client, collection, cache, sync, policy)
+        public RemoveRequest(IQueryable<object> query, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy) : base(client, collection, cache, sync, policy)
         {
             _query = query;
         }
