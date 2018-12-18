@@ -209,11 +209,13 @@ namespace Kinvey.Tests
 				await User.LoginAsync(TestSetup.user, TestSetup.pass);
 			}
 
-			// Act
-			JObject obj = new JObject();
-			obj.Add("input", 1);
+            // Act
+            JObject obj = new JObject
+            {
+                { "input", 1 }
+            };
 
-			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+            CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
 			var result = await ce.ExecuteCustomEndpoint("test", obj);
 			string outputstr = result[1].DueDate;
 			int output = int.Parse(outputstr);
@@ -231,7 +233,7 @@ namespace Kinvey.Tests
 		{
             // Arrange
             Client.Builder builder = ClientBuilder
-                .setFilePath(TestSetup.db_dir);
+                .SetFilePath(TestSetup.db_dir);
 
             if (MockData)
             {
@@ -247,11 +249,13 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
-			// Act
-			JObject obj = new JObject();
-			obj.Add("input", 1);
+            // Act
+            JObject obj = new JObject
+            {
+                { "input", 1 }
+            };
 
-			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+            CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
             Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
 			{
 				await ce.ExecuteCustomEndpoint("test_bad", obj);

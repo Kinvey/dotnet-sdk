@@ -34,7 +34,7 @@ namespace Kinvey.Tests
 		public void Setup()
         {
             Client.Builder builder = ClientBuilder
-                .setFilePath(TestSetup.db_dir);
+                .SetFilePath(TestSetup.db_dir);
 
             if (MockData)
             {
@@ -45,8 +45,10 @@ namespace Kinvey.Tests
 		}
 
         [TestCleanup]
-		public void Tear()
+		public override void Tear()
 		{
+            base.Tear();
+
 			kinveyClient.ActiveUser?.Logout();
 			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
 			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);

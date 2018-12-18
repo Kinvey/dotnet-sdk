@@ -33,10 +33,28 @@ namespace Kinvey.Tests
         [TestInitialize]
         public override void Setup()
         {
+            try
+            {
+                if (kinveyClient != null)
+                {
+                    using (var client = kinveyClient)
+                    {
+                        var user = client.ActiveUser;
+                        if (user != null)
+                        {
+                            user.Logout();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                kinveyClient = null;
+            }
+
             base.Setup();
 
-            Client.Builder builder = ClientBuilder
-                .setFilePath(TestSetup.db_dir);
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
 
             if (MockData) builder.setBaseURL("http://localhost:8080");
             if (MockData) builder.setMICHostName("http://localhost:8081");
@@ -47,14 +65,29 @@ namespace Kinvey.Tests
         [TestCleanup]
         public override void Tear()
         {
-            if (kinveyClient.ActiveUser != null)
+            try
             {
-                kinveyClient.ActiveUser.Logout();
+                if (kinveyClient != null)
+                {
+                    using (var client = kinveyClient)
+                    {
+                        var user = client.ActiveUser;
+                        if (user != null)
+                        {
+                            user.Logout();
+                        }
+                    }
+                }
             }
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            finally
+            {
+                kinveyClient = null;
+            }
 
             base.Tear();
+
+            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
         }
 
         #region Login/Logout Tests
