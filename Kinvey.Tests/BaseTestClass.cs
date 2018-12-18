@@ -648,7 +648,16 @@ namespace Kinvey.Tests
                         (expectedRequests == null && httpListener.IsListening) ||
                         (expectedRequests != null && count < expectedRequests)
                     ) {
-                        var context = httpListener.GetContext();
+                        HttpListenerContext context;
+                        try
+                        {
+                            context = httpListener.GetContext();
+                        }
+                        catch (HttpListenerException)
+                        {
+                            continue;
+                        }
+
                         count++;
                         Console.WriteLine($"{count}");
 
