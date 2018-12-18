@@ -28,11 +28,28 @@ namespace Kinvey.Tests
         [TestInitialize]
         public override void Setup()
 		{
+            try
+            {
+                if (kinveyClient != null)
+                {
+                    using (var client = kinveyClient)
+                    {
+                        var user = client.ActiveUser;
+                        if (user != null)
+                        {
+                            user.Logout();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                kinveyClient = null;
+            }
+
             base.Setup();
 
-			string appKey = "kid_Zy0JOYPKkZ", appSecret = "d83de70e64d540e49acd6cfce31415df"; // UnitTestFramework
-            Client.Builder builder = ClientBuilder
-                .setFilePath(TestSetup.db_dir);
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
 
             if (MockData) builder.setBaseURL("http://localhost:8080");
 
@@ -42,11 +59,29 @@ namespace Kinvey.Tests
         [TestCleanup]
         public override void Tear()
 		{
-			kinveyClient.ActiveUser?.Logout();
-			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            try
+            {
+                if (kinveyClient != null)
+                {
+                    using (var client = kinveyClient)
+                    {
+                        var user = client.ActiveUser;
+                        if (user != null)
+                        {
+                            user.Logout();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                kinveyClient = null;
+            }
 
             base.Tear();
+
+            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
         [TestMethod]

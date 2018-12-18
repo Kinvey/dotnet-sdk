@@ -24,18 +24,6 @@ namespace Kinvey.Tests
     [TestClass]
     public class FileUnitTests
     {
-        [TestInitialize]
-        public void Setup()
-        {
-        }
-
-        [TestCleanup]
-        public void Tear()
-        {
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
-        }
-
         [TestMethod]
         public void TestDetermineStartByteFromRange()
         {
