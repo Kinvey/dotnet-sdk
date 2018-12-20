@@ -416,7 +416,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(9);
             }
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
@@ -1881,7 +1881,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(10);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -1970,7 +1970,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(10);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2059,7 +2059,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(10);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2149,7 +2149,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(10);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2240,7 +2240,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(10);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2330,7 +2330,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(10);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2420,7 +2420,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(8);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
