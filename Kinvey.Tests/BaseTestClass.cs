@@ -291,7 +291,87 @@ namespace Kinvey.Tests
             Write(context, obj);
         }
 
-        protected static void MockAppDataPut(HttpListenerContext context, List<JObject> items, string id, Client client)
+        protected static void MockAppDataGet(HttpListenerContext context, List<JObject> items, Client client)
+        {
+            var results = FilterByQuery(context, items, client);
+            Write(context, results);
+        }
+
+        protected static void MockAppDataDelete(HttpListenerContext context, List<JObject> items, Client client)
+        {
+            var results = FilterByQuery(context, items, client);
+            var resultsIds = results.Select(item => item["_id"].Value<string>());
+            var count = items.RemoveAll(obj=> resultsIds.Contains(obj["_id"].Value<string>()));
+
+            var jsonObject = new JObject
+            {
+                ["count"] = count
+            };
+
+            Write(context, jsonObject);
+        }
+
+        protected static IEnumerable<JObject> FilterByQuery(HttpListenerContext context, List<JObject> items, Client client)
+        {
+            var queryItems = HttpUtility.ParseQueryString(context.Request.Url.Query);
+            var results = items as IEnumerable<JObject>;
+            var query = queryItems["query"];
+            if (query != null)
+            {
+                var queryObj = JsonConvert.DeserializeObject<JObject>(query);
+                foreach (var queryItem in queryObj)
+                {
+                    results = Filter(results, queryItem);
+                }
+            }
+            var sort = queryItems["sort"];
+            if (sort != null)
+            {
+                var sortObject = JsonConvert.DeserializeObject<Dictionary<string, int>>(sort);
+                foreach (var sortKeyValue in sortObject)
+                {
+                    if (sortKeyValue.Value > 0)
+                    {
+                        results = results.OrderBy((x) => x[sortKeyValue.Key]);
+                    }
+                    else
+                    {
+                        results = results.OrderByDescending((x) => x[sortKeyValue.Key]);
+                    }
+                }
+            }
+            var skip = queryItems["skip"];
+            if (skip != null)
+            {
+                var skipValue = int.Parse(skip);
+                results = results.Skip(skipValue);
+            }
+            var limit = queryItems["limit"];
+            if (limit != null)
+            {
+                var limitValue = int.Parse(limit);
+                results = results.Take(limitValue);
+            }
+            var fields = queryItems["fields"];
+            if (fields != null)
+            {
+                var fieldsArray = fields.Split(",");
+                results = results.Select((item) =>
+                {
+                    var _obj = new JObject();
+                    foreach (var field in fieldsArray)
+                    {
+                        _obj[field] = item[field];
+                    }
+                    return _obj;
+                });
+            }
+            AddRequestStartHeader(context);
+
+            return results;
+        }
+
+            protected static void MockAppDataPut(HttpListenerContext context, List<JObject> items, string id, Client client)
         {
             var obj = Read<JObject>(context);
             var index = items.FindIndex((x) => id.Equals(x["_id"].Value<string>()));
@@ -316,63 +396,13 @@ namespace Kinvey.Tests
             switch (context.Request.HttpMethod)
             {
                 case "GET":
-                    var queryItems = HttpUtility.ParseQueryString(context.Request.Url.Query);
-                    var results = items as IEnumerable<JObject>;
-                    var query = queryItems["query"];
-                    if (query != null)
-                    {
-                        var queryObj = JsonConvert.DeserializeObject<JObject>(query);
-                        foreach (var queryItem in queryObj)
-                        {
-                            results = Filter(results, queryItem);
-                        }
-                    }
-                    var sort = queryItems["sort"];
-                    if (sort != null)
-                    {
-                        var sortObject = JsonConvert.DeserializeObject<Dictionary<string, int>>(sort);
-                        foreach (var sortKeyValue in sortObject)
-                        {
-                            if (sortKeyValue.Value > 0)
-                            {
-                                results = results.OrderBy((x) => x[sortKeyValue.Key]);
-                            }
-                            else
-                            {
-                                results = results.OrderByDescending((x) => x[sortKeyValue.Key]);
-                            }
-                        }
-                    }
-                    var skip = queryItems["skip"];
-                    if (skip != null)
-                    {
-                        var skipValue = int.Parse(skip);
-                        results = results.Skip(skipValue);
-                    }
-                    var limit = queryItems["limit"];
-                    if (limit != null)
-                    {
-                        var limitValue = int.Parse(limit);
-                        results = results.Take(limitValue);
-                    }
-                    var fields = queryItems["fields"];
-                    if (fields != null)
-                    {
-                        var fieldsArray = fields.Split(",");
-                        results = results.Select((item) => {
-                            var _obj = new JObject();
-                            foreach (var field in fieldsArray)
-                            {
-                                _obj[field] = item[field];
-                            }
-                            return _obj;
-                        });
-                    }
-                    AddRequestStartHeader(context);
-                    Write(context, results);
+                    MockAppDataGet(context, items, client);
                     break;
                 case "POST":
                     MockAppDataPost(context, items, client);
+                    break;
+                case "DELETE":
+                    MockAppDataDelete(context, items, client);
                     break;
                 default:
                     Assert.Fail(context.Request.RawUrl);
