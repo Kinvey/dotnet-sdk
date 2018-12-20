@@ -66,6 +66,8 @@ namespace Kinvey.Tests
         private static readonly string REQUEST_START_HEADER = "X-Kinvey-Request-Start";
         private static readonly string DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffK";
 
+        protected static HttpListener httpListener;
+
         public void Delete(string fileName)
         {
             var fileInfo = new FileInfo(fileName);
@@ -86,15 +88,7 @@ namespace Kinvey.Tests
             }
         }
 
-        [TestInitialize]
-        public virtual void Setup()
-        {
-            Delete(TestSetup.SQLiteOfflineStoreFilePath);
-            Delete(TestSetup.SQLiteCredentialStoreFilePath);
-        }
-
-        [TestCleanup]
-        public virtual void Tear()
+        private void Logout()
         {
             try
             {
@@ -114,8 +108,34 @@ namespace Kinvey.Tests
             {
                 Client.SharedClient = null;
             }
+        }
+
+        [TestInitialize]
+        public virtual void Setup()
+        {
+            Logout();
+
             Delete(TestSetup.SQLiteOfflineStoreFilePath);
             Delete(TestSetup.SQLiteCredentialStoreFilePath);
+
+            if (httpListener != null && httpListener.IsListening)
+            {
+                httpListener.Close();
+            }
+        }
+
+        [TestCleanup]
+        public virtual void Tear()
+        {
+            Logout();
+
+            Delete(TestSetup.SQLiteOfflineStoreFilePath);
+            Delete(TestSetup.SQLiteCredentialStoreFilePath);
+
+            if (httpListener != null && httpListener.IsListening)
+            {
+                httpListener.Close();
+            }
         }
 
         protected static void MockUserLogin(HttpListenerContext context, IEnumerable<JObject> users)
@@ -198,6 +218,7 @@ namespace Kinvey.Tests
         {
             var response = context.Response;
             response.StatusCode = 404;
+            Write(context, "Not Found");
         }
 
         private static bool Filter(JObject item, string key, JToken jToken)
@@ -553,9 +574,13 @@ namespace Kinvey.Tests
             Write(context, new { changed, deleted });
         }
 
-        protected static void MockResponses(uint expectedRequests, Client client = null)
+        protected static void MockResponses(uint? expectedRequests = null, Client client = null)
         {
-            var httpListener = new HttpListener();
+            if (httpListener != null && httpListener.IsListening)
+            {
+                httpListener.Close();
+            }
+            httpListener = new HttpListener();
             if (client == null)
             {
                 client = Client.SharedClient;
@@ -649,9 +674,20 @@ namespace Kinvey.Tests
                         FlashCard = new List<JObject>(),
                     };
                     var count = 0u;
-                    while (count < expectedRequests)
-                    {
-                        var context = httpListener.GetContext();
+                    while (
+                        (expectedRequests == null && httpListener.IsListening) ||
+                        (expectedRequests != null && count < expectedRequests)
+                    ) {
+                        HttpListenerContext context;
+                        try
+                        {
+                            context = httpListener.GetContext();
+                        }
+                        catch (HttpListenerException)
+                        {
+                            continue;
+                        }
+
                         count++;
                         Console.WriteLine($"{count}");
 
@@ -923,7 +959,10 @@ namespace Kinvey.Tests
                 }
                 finally
                 {
-                    httpListener.Stop();
+                    if (expectedRequests == null && httpListener != null && httpListener.IsListening)
+                    {
+                        httpListener.Stop();
+                    }
                 }
             }))
             {

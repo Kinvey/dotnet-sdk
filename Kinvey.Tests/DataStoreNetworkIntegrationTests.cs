@@ -42,13 +42,31 @@ namespace Kinvey.Tests
         [TestInitialize]
         public override void Setup()
 		{
+            try
+            {
+                if (kinveyClient != null)
+                {
+                    using (var client = kinveyClient)
+                    {
+                        var user = client.ActiveUser;
+                        if (user != null)
+                        {
+                            user.Logout();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                kinveyClient = null;
+            }
+
             base.Setup();
 
-            kinveyClient?.ActiveUser?.Logout();
             System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
             System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 
-            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir);
+            Client.Builder builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
 
             if (MockData)
             {
@@ -61,11 +79,29 @@ namespace Kinvey.Tests
         [TestCleanup]
         public override void Tear()
 		{
-			kinveyClient.ActiveUser?.Logout();
-			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
+            try
+            {
+                if (kinveyClient != null)
+                {
+                    using (var client = kinveyClient)
+                    {
+                        var user = client.ActiveUser;
+                        if (user != null)
+                        {
+                            user.Logout();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                kinveyClient = null;
+            }
 
             base.Tear();
+
+			System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
+			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
         [TestMethod]
@@ -2540,7 +2576,7 @@ namespace Kinvey.Tests
 		    // Setup
             if (MockData)
             {
-                MockResponses(1);
+                MockResponses();
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2566,24 +2602,25 @@ namespace Kinvey.Tests
 				.SetFilePath(TestSetup.db_dir)
                 .SetRestClient(new HttpClient(moqRC.Object));
 
-			Client c = cb.Build();
+            using (var c = cb.Build())
+            {
+                // Arrange
+                DataStore<ToDo> store = DataStore<ToDo>.Collection("todos", DataStoreType.NETWORK, c);
 
-			// Arrange
-			DataStore<ToDo> store = DataStore<ToDo>.Collection("todos", DataStoreType.NETWORK, c);
+                // Act
+                // Assert
+                Exception er = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+                {
+                    await store.FindAsync();
+                });
 
-			// Act
-			// Assert
-            Exception er = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-			{
-				await store.FindAsync();
-			});
+                Assert.IsNotNull(er);
+                KinveyException ke = er as KinveyException;
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
 
-			Assert.IsNotNull(er);
-			KinveyException ke = er as KinveyException;
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, ke.ErrorCode);
-
-			// Teardown
-			c.ActiveUser.Logout();
+                // Teardown
+                c.ActiveUser.Logout();
+            }
 		}
 
         [TestMethod]
@@ -2674,7 +2711,7 @@ namespace Kinvey.Tests
 			// Setup
             if (MockData)
             {
-                MockResponses(6);
+                MockResponses();
             }
 			if (kinveyClient.ActiveUser != null)
 			{
@@ -2683,18 +2720,22 @@ namespace Kinvey.Tests
 
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			// Arrange
-			ToDo newItem1 = new ToDo();
-			newItem1.Name = "todo";
-			newItem1.Details = "details for 1";
-			newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+            // Arrange
+            ToDo newItem1 = new ToDo
+            {
+                Name = "todo",
+                Details = "details for 1",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
 
-			ToDo newItem2 = new ToDo();
-			newItem2.Name = "another todo";
-			newItem2.Details = "details for 2";
-			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+            ToDo newItem2 = new ToDo
+            {
+                Name = "another todo",
+                Details = "details for 2",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -3067,7 +3108,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses();
             }
             if (kinveyClient.ActiveUser != null)
             {
@@ -3077,26 +3118,32 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            ToDo newItem1 = new ToDo();
-            newItem1.Name = "todo";
-            newItem1.Details = "details for 1";
-            newItem1.DueDate = "2016-04-22T19:56:00.963Z";
-            newItem1.NewDate = new DateTime(2016, 4, 21, 19, 56, 0);
+            var newItem1 = new ToDo
+            {
+                Name = "todo",
+                Details = "details for 1",
+                DueDate = "2016-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2016, 4, 21, 19, 56, 0)
+            };
 
-            ToDo newItem2 = new ToDo();
-            newItem2.Name = "another todo";
-            newItem2.Details = "details for 2";
-            newItem2.DueDate = "2016-04-22T19:56:00.963Z";
-            newItem2.NewDate = new DateTime(2016, 4, 22, 19, 56, 0);
+            var newItem2 = new ToDo
+            {
+                Name = "another todo",
+                Details = "details for 2",
+                DueDate = "2016-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2016, 4, 22, 19, 56, 0)
+            };
 
-            ToDo newItem3 = new ToDo();
-            newItem3.Name = "another todo";
-            newItem3.Details = "details for 2";
-            newItem3.DueDate = "2016-04-22T19:56:00.963Z";
-            newItem3.NewDate = new DateTime(2017, 1, 1, 0, 0, 0);
+            var newItem3 = new ToDo
+            {
+                Name = "another todo",
+                Details = "details for 2",
+                DueDate = "2016-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2017, 1, 1, 0, 0, 0)
+            };
 
             var endDate = new DateTime(2017, 1, 1, 0, 0, 0);
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -3105,7 +3152,7 @@ namespace Kinvey.Tests
             // Act
             var query = todoStore.Where(x => x.NewDate <= endDate);
 
-            List<ToDo> listToDo = new List<ToDo>();
+            var listToDo = new List<ToDo>();
 
             listToDo = await todoStore.FindAsync(query);
 
