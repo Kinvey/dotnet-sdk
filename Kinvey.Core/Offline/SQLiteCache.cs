@@ -676,43 +676,32 @@ namespace Kinvey
 			return kdr;
 		}
 
-        public KinveyDeleteResponse DeleteByQuery(Expression expr)
-        {
+        public KinveyDeleteResponse DeleteByQuery(IQueryable<object> query)
+        {            
             var kdr = new KinveyDeleteResponse();
 
             try
             {
+                var visitor = new KinveyQueryVisitor(typeof(T));
+                var queryModel = (query.Provider as KinveyQueryProvider)?.qm;
+                queryModel?.Accept(visitor);
+
                 int skipNumber = 0;
                 int takeNumber = 0;
                 bool sortAscending = true;
                 LambdaExpression exprSort = null;
 
-                var lambdaExpr = ConvertQueryExpressionToFunction(expr, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
+                var lambdaExpr = ConvertQueryExpressionToFunction(query.Expression, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
 
-                var query = dbConnectionSync.Table<T>();
-
-                if (exprSort != null)
-                {
-                    ApplySort(ref query, sortAscending, exprSort);
-                }
-
-                if (skipNumber != 0)
-                {
-                    query = query.Skip(skipNumber);
-                }
-
-                if (takeNumber != 0)
-                {
-                    query = query.Take(takeNumber);
-                }
+                var dataTable = dbConnectionSync.Table<T>();
 
                 if (lambdaExpr != null)
                 {
-                    query = query.Where(lambdaExpr);
+                    dataTable = dataTable.Where(lambdaExpr);
                 }
 
                 var matchIDs = new List<string>();
-                foreach (var item in query.ToList())
+                foreach (var item in dataTable.ToList())
                 {
                     var entity = item as IPersistable;
                     matchIDs.Add(entity.ID);

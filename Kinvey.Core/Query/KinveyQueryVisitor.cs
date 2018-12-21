@@ -35,7 +35,12 @@ namespace Kinvey
 			LoadMapOfKeysForType(type);
 		}
 
-		private void LoadMapOfKeysForType(Type type)
+        public KinveyQueryVisitor(Type type) : this(new StringQueryBuilder(), type)
+        {
+
+        }
+
+        private void LoadMapOfKeysForType(Type type)
 		{
 			mapPropertyToName = new Dictionary<string, string>();
 

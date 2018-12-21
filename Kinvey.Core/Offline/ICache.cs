@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -132,8 +133,8 @@ namespace Kinvey
 		/// Deletes a list of entities by the query.
 		/// </summary>
 		/// <returns>KinveyDeleteResponse object.</returns>
-		/// <param name="expr">Expression to delete entities from the cache.</param>
-        KinveyDeleteResponse DeleteByQuery(Expression expr);
+		/// <param name="query">Query to delete entities from the cache.</param>
+        KinveyDeleteResponse DeleteByQuery(IQueryable<object> query);
 
 
         List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query);

@@ -1889,9 +1889,9 @@ namespace Kinvey.Tests
             var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
-                Name = "Task1 not to delete",
+                Name = "Task1",
                 Details = "Details for",
-                DueDate = "2017-04-22T19:56:00.963Z",
+                DueDate = "2018-04-22T19:56:00.963Z",
                 NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
                 Value = 3
             };
@@ -1916,7 +1916,7 @@ namespace Kinvey.Tests
             var savedItem2 = await todoStore.SaveAsync(newItem2);
             var savedItem3 = await todoStore.SaveAsync(newItem3);
 
-            var query = todoStore.Where(x => x.Details.StartsWith("Details for")).Where(y => y.Name.StartsWith("Task D")).Where(z => z.DueDate.Equals("2018-04-22T19:56:00.963Z"));
+            var query = todoStore.Where(x => x.Details.StartsWith("Details f")).Where(y => y.Name.StartsWith("Task D")).Where(z => z.DueDate.Equals("2018-04-22T19:56:00.963Z"));
 
             // Act
             var kinveyDeleteResponse = await todoStore.RemoveAsync(query);
@@ -1978,15 +1978,15 @@ namespace Kinvey.Tests
             var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
-                Name = "Task1 not to delete",
+                Name = "Task1",
                 Details = "Details for",
-                DueDate = "2017-04-22T19:56:00.963Z",
+                DueDate = "2018-04-22T19:56:00.963Z",
                 NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
                 Value = 3
             };
             var newItem2 = new ToDo
             {
-                Name = "Task Del",
+                Name = "Task Test",
                 Details = "Details for",
                 BoolVal = true,
                 DueDate = "2017-04-22T19:56:00.963Z",
@@ -1995,7 +1995,7 @@ namespace Kinvey.Tests
             };
             var newItem3 = new ToDo
             {
-                Name = "Task Del",
+                Name = "Task Test",
                 Details = "Details for",
                 DueDate = "2018-04-22T19:56:00.963Z",
                 Value = 1
@@ -2005,7 +2005,7 @@ namespace Kinvey.Tests
             var savedItem2 = await todoStore.SaveAsync(newItem2);
             var savedItem3 = await todoStore.SaveAsync(newItem3);
 
-            var query = todoStore.Where(x => x.Details.Equals("Details for")).Where(y => y.Name.Equals("Task Del")).Where(z => z.DueDate.Equals("2018-04-22T19:56:00.963Z"));
+            var query = todoStore.Where(x => x.Details.Equals("Details for")).Where(y => y.Name.Equals("Task Test")).Where(z => z.DueDate.Equals("2018-04-22T19:56:00.963Z"));
 
             // Act
             var kinveyDeleteResponse = await todoStore.RemoveAsync(query);
@@ -2067,9 +2067,9 @@ namespace Kinvey.Tests
             var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
-                Name = "Task1 not to delete",
+                Name = "Task1",
                 Details = "Details for",
-                DueDate = "2017-04-22T19:56:00.963Z",
+                DueDate = "2018-04-22T19:56:00.963Z",
                 NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
                 Value = 3
             };
@@ -2080,7 +2080,7 @@ namespace Kinvey.Tests
                 BoolVal = true,
                 DueDate = "2017-04-22T19:56:00.963Z",
                 NewDate = new DateTime(2018, 12, 10, 0, 0, 0),
-                
+
             };
             var newItem3 = new ToDo
             {
@@ -2157,9 +2157,9 @@ namespace Kinvey.Tests
             var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
-                Name = "Task1 not to delete",
+                Name = "Task1",
                 Details = "Details for",
-                DueDate = "2017-04-22T19:56:00.963Z",
+                DueDate = "2018-04-22T19:56:00.963Z",
                 NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
                 Value = 3
             };
@@ -2248,7 +2248,7 @@ namespace Kinvey.Tests
             var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
-                Name = "Task1 not to delete",
+                Name = "Task Delete",
                 Details = "Details for",
                 DueDate = "2017-04-22T19:56:00.963Z",
                 NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
@@ -2256,7 +2256,7 @@ namespace Kinvey.Tests
             };
             var newItem2 = new ToDo
             {
-                Name = "Task Del11",
+                Name = "Task Not Delete",
                 Details = "Details for",
                 BoolVal = true,
                 DueDate = "2018-04-22T19:56:00.963Z",
@@ -2265,7 +2265,7 @@ namespace Kinvey.Tests
             };
             var newItem3 = new ToDo
             {
-                Name = "Task Del22",
+                Name = "Task Delete",
                 Details = "Details for",
                 BoolVal = true,
                 DueDate = "2018-04-22T19:56:00.963Z",
@@ -2276,7 +2276,7 @@ namespace Kinvey.Tests
             var savedItem2 = await todoStore.SaveAsync(newItem2);
             var savedItem3 = await todoStore.SaveAsync(newItem3);
 
-            var query = todoStore.Where(x => x.Details.StartsWith("Details for") && x.DueDate.Equals("2018-04-22T19:56:00.963Z")).Where(y => y.Name.StartsWith("Task Del2"));
+            var query = todoStore.Where(x => x.Details.StartsWith("Details f") && x.DueDate.Equals("2018-04-22T19:56:00.963Z")).Where(y => y.Name.StartsWith("Task Del"));
 
             // Act
             var kinveyDeleteResponse = await todoStore.RemoveAsync(query);
@@ -2338,7 +2338,7 @@ namespace Kinvey.Tests
             var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
-                Name = "Task1 not to delete",
+                Name = "Task Del1",
                 Details = "Details1",
                 DueDate = "2017-04-22T19:56:00.963Z",
                 NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
@@ -2346,7 +2346,7 @@ namespace Kinvey.Tests
             };
             var newItem2 = new ToDo
             {
-                Name = "Task Del11",
+                Name = "Task Not Del",
                 Details = "Details for",
                 BoolVal = true,
                 DueDate = "2018-04-22T19:56:00.963Z",
@@ -2355,8 +2355,8 @@ namespace Kinvey.Tests
             };
             var newItem3 = new ToDo
             {
-                Name = "Task Del22",
-                Details = "Details for",
+                Name = "Task Del2",
+                Details = "Details",
                 BoolVal = true,
                 DueDate = "2018-04-22T19:56:00.963Z",
                 Value = 1
@@ -2366,7 +2366,7 @@ namespace Kinvey.Tests
             var savedItem2 = await todoStore.SaveAsync(newItem2);
             var savedItem3 = await todoStore.SaveAsync(newItem3);
 
-            var query = todoStore.Where(x => x.Details.StartsWith("Details for") || x.DueDate.Equals("2018-04-22T19:56:00.963Z")).Where(y => y.Name.StartsWith("Task Del2"));
+            var query = todoStore.Where(x => x.Details.StartsWith("Details f") || x.DueDate.Equals("2018-04-22T19:56:00.963Z")).Where(y => y.Name.StartsWith("Task D"));
 
             // Act
             var kinveyDeleteResponse = await todoStore.RemoveAsync(query);
@@ -2457,6 +2457,71 @@ namespace Kinvey.Tests
             var savedItem3 = await todoStore.SaveAsync(newItem3);
 
             var query = todoStore.Where(x => true);
+            KinveyDeleteResponse kinveyDeleteResponse;
+
+            // Act
+            Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                kinveyDeleteResponse = await todoStore.RemoveAsync(query);
+            });
+
+
+            // Teardown
+            await todoStore.RemoveAsync(savedItem1.ID);
+            await todoStore.RemoveAsync(savedItem2.ID);
+            await todoStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsTrue(e.GetType() == typeof(KinveyException));
+            KinveyException ke = e as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED);
+        }
+
+        [TestMethod]
+        public async Task TestSyncStoreDeleteByQueryNotSupportedStringExpressionAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var newItem1 = new ToDo
+            {
+                Name = "Task1 not to delete",
+                Details = "Details1",
+                DueDate = "2017-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
+                BoolVal = false,
+                Value = 3
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "Task2 to delete support",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 10, 0, 0, 0),
+
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "Task3 to delete support",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                Value = 1
+            };
+
+            var savedItem1 = await todoStore.SaveAsync(newItem1);
+            var savedItem2 = await todoStore.SaveAsync(newItem2);
+            var savedItem3 = await todoStore.SaveAsync(newItem3);
+
+            var query = todoStore.Where(x => x.Name.Contains("support"));
             KinveyDeleteResponse kinveyDeleteResponse;
 
             // Act

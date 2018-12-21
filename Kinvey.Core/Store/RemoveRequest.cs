@@ -54,7 +54,7 @@ namespace Kinvey
                     else
                     {
                         // cache
-                        kdr = Cache.DeleteByQuery(_query.Expression);
+                        kdr = Cache.DeleteByQuery(_query);
 
                         foreach (var id in kdr.IDs) {
 
@@ -90,7 +90,7 @@ namespace Kinvey
                     else
                     {
                         // cache
-                        kdr = Cache.DeleteByQuery(_query.Expression);
+                        kdr = Cache.DeleteByQuery(_query);
 
                         // network
                         var mongoQuery = KinveyMongoQueryBuilder.GetQuery<T>(_query);
