@@ -282,10 +282,10 @@ namespace Kinvey
 			var cacheDelegate = new KinveyDelegate<List<T>>
 			{
 				onSuccess = (listCacheResults) => {
-					cacheResult.onSuccess(listCacheResults.FirstOrDefault());
+					cacheResult?.onSuccess(listCacheResults.FirstOrDefault());
 				},
 				onError = (error) => {
-					cacheResult.onError(error);
+					cacheResult?.onError(error);
 				}
 			};
 
