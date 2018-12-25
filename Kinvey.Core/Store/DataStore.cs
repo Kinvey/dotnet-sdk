@@ -498,7 +498,7 @@ namespace Kinvey
             {
                 StringQueryBuilder queryBuilder = new StringQueryBuilder();
 
-                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
+                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T), VisitorClause.Order | VisitorClause.SkipTake | VisitorClause.Where | VisitorClause.Select);
                 var queryModel = (query.Provider as KinveyQueryProvider)?.qm;
 
                 queryBuilder.Write("{");

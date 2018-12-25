@@ -22,17 +22,43 @@ namespace Kinvey
     internal static class KinveyMongoQueryBuilder
     {
         /// <summary>
+        /// Builds the mongo-style query string for find operation to be run against the backend.
+        /// </summary>
+        /// <param name="query">LINQ-style query that can be used to filter delete results</param>
+        /// <returns>The mongo-style query string.</returns>
+        internal static string GetQueryForFindOperation<T>(IQueryable<object> query)
+        {
+            return GetQuery<T>(query, VisitorClause.Order | VisitorClause.SkipTake | VisitorClause.Where | VisitorClause.Select);
+        }
+
+        /// <summary>
+        ///  Builds the mongo-style query string for remove operation to be run against the backend.
+        /// </summary>
+        /// <param name="query">LINQ-style query that can be used to filter delete results</param>
+        /// <returns>The mongo-style query string.</returns>
+        internal static string GetQueryForRemoveOperation<T>(IQueryable<object> query)
+        {
+            var mongoQuery = GetQuery<T>(query, VisitorClause.Where);
+            if (string.IsNullOrEmpty(mongoQuery) || mongoQuery == "{}")
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY, "'Where' clause is absent in query.");
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
 		/// Builds the mongo-style query string to be run against the backend.
 		/// </summary>
         /// <param name="query">LINQ-style query that can be used to filter delete results</param>
+        /// <param name="visitorClause">Enum value to filter LINQ clauses which should be used</param>
 		/// <returns>The mongo-style query string.</returns>
-        internal static string GetQuery<T>(IQueryable<object> query)
+        private static string GetQuery<T>(IQueryable<object> query, VisitorClause visitorClause)
         {
             if (query != null)
             {
                 StringQueryBuilder queryBuilder = new StringQueryBuilder();
 
-                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
+                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T), visitorClause);
                 QueryModel queryModel = (query.Provider as KinveyQueryProvider)?.qm;
 
                 queryBuilder.Write("{");

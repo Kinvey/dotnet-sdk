@@ -55,7 +55,7 @@ namespace Kinvey
 		/// <returns>The mongo-style query string.</returns>
 		protected string BuildMongoQuery()
 		{
-            return KinveyMongoQueryBuilder.GetQuery<T>(Query);
+            return KinveyMongoQueryBuilder.GetQueryForFindOperation<T>(Query);
         }
 
 

@@ -2359,6 +2359,261 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestCacheStoreDeleteByQueryWhereClauseIsAbsentInQueryUsingSelectClauseAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+            var newItem1 = new ToDo
+            {
+                Name = "Task1 not to delete",
+                Details = "Details1",
+                DueDate = "2017-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
+                Value = 3
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "Task2 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 10, 0, 0, 0),
+
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "Task3 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                Value = 1
+            };
+
+            var savedItem1 = await todoStore.SaveAsync(newItem1);
+            var savedItem2 = await todoStore.SaveAsync(newItem2);
+            var savedItem3 = await todoStore.SaveAsync(newItem3);
+
+            var query = todoStore.Select(x => x.Details);
+            KinveyDeleteResponse kinveyDeleteResponse;
+
+            // Act
+            Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                kinveyDeleteResponse = await todoStore.RemoveAsync(query);
+            });
+
+
+            // Teardown
+            await todoStore.RemoveAsync(savedItem1.ID);
+            await todoStore.RemoveAsync(savedItem2.ID);
+            await todoStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsTrue(e.GetType() == typeof(KinveyException));
+            KinveyException ke = e as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_GENERAL);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY);
+        }
+
+        [TestMethod]
+        public async Task TestCacheStoreDeleteByQueryWhereClauseIsAbsentInQueryUsingOrderClauseAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+            var newItem1 = new ToDo
+            {
+                Name = "Task1 not to delete",
+                Details = "Details1",
+                DueDate = "2017-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
+                Value = 3
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "Task2 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 10, 0, 0, 0),
+
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "Task3 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                Value = 1
+            };
+
+            var savedItem1 = await todoStore.SaveAsync(newItem1);
+            var savedItem2 = await todoStore.SaveAsync(newItem2);
+            var savedItem3 = await todoStore.SaveAsync(newItem3);
+
+            var query = todoStore.OrderBy(x => x.Details);
+            KinveyDeleteResponse kinveyDeleteResponse;
+
+            // Act
+            Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                kinveyDeleteResponse = await todoStore.RemoveAsync(query);
+            });
+
+
+            // Teardown
+            await todoStore.RemoveAsync(savedItem1.ID);
+            await todoStore.RemoveAsync(savedItem2.ID);
+            await todoStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsTrue(e.GetType() == typeof(KinveyException));
+            KinveyException ke = e as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_GENERAL);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY);
+        }
+
+        [TestMethod]
+        public async Task TestCacheStoreDeleteByQueryWhereClauseIsAbsentInQueryUsingTakeClauseAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+            var newItem1 = new ToDo
+            {
+                Name = "Task1 not to delete",
+                Details = "Details1",
+                DueDate = "2017-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
+                Value = 3
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "Task2 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 10, 0, 0, 0),
+
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "Task3 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                Value = 1
+            };
+
+            var savedItem1 = await todoStore.SaveAsync(newItem1);
+            var savedItem2 = await todoStore.SaveAsync(newItem2);
+            var savedItem3 = await todoStore.SaveAsync(newItem3);
+
+            var query = todoStore.Take(1);
+            KinveyDeleteResponse kinveyDeleteResponse;
+
+            // Act
+            Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                kinveyDeleteResponse = await todoStore.RemoveAsync(query);
+            });
+
+
+            // Teardown
+            await todoStore.RemoveAsync(savedItem1.ID);
+            await todoStore.RemoveAsync(savedItem2.ID);
+            await todoStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsTrue(e.GetType() == typeof(KinveyException));
+            KinveyException ke = e as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_GENERAL);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY);
+        }
+
+        [TestMethod]
+        public async Task TestCacheStoreDeleteByQueryNullQueryAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.CACHE);
+            var newItem1 = new ToDo
+            {
+                Name = "Task1 not to delete",
+                Details = "Details1",
+                DueDate = "2017-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 18, 19, 56, 0),
+                Value = 3
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "Task2 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                NewDate = new DateTime(2018, 12, 10, 0, 0, 0),
+
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "Task3 not to delete",
+                Details = "Details for",
+                BoolVal = true,
+                DueDate = "2018-04-22T19:56:00.963Z",
+                Value = 1
+            };
+
+            var savedItem1 = await todoStore.SaveAsync(newItem1);
+            var savedItem2 = await todoStore.SaveAsync(newItem2);
+            var savedItem3 = await todoStore.SaveAsync(newItem3);
+
+            KinveyDeleteResponse kinveyDeleteResponse;
+
+            // Act
+            Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                kinveyDeleteResponse = await todoStore.RemoveAsync(query : null);
+            });
+
+
+            // Teardown
+            await todoStore.RemoveAsync(savedItem1.ID);
+            await todoStore.RemoveAsync(savedItem2.ID);
+            await todoStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsTrue(e.GetType() == typeof(KinveyException));
+            KinveyException ke = e as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_GENERAL);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_DATASTORE_NULL_QUERY);
+        }
+
+        [TestMethod]
         public async Task TestCacheStoreDeleteByQueryNotSupportedExpressionAsync()
         {
             // Setup

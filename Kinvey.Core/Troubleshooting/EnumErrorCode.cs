@@ -94,6 +94,11 @@ namespace Kinvey
 		ERROR_DATASTORE_NULL_QUERY,
 
         /// <summary>
+		/// Error due to 'where' clause is absent in query.
+		/// </summary>
+		ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY,
+
+        /// <summary>
         /// Error due to attempting a file metadata operation without a file ID.
         /// </summary>
         ERROR_FILE_MISSING_FILE_ID,

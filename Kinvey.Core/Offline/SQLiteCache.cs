@@ -682,8 +682,9 @@ namespace Kinvey
 
             try
             {
-                var visitor = new KinveyQueryVisitor(typeof(T));
+                var visitor = new KinveyQueryVisitor(typeof(T), VisitorClause.Where);
                 var queryModel = (query.Provider as KinveyQueryProvider)?.qm;
+                //We call it here to find unsupported LINQ where clauses.
                 queryModel?.Accept(visitor);
 
                 int skipNumber = 0;
@@ -695,10 +696,12 @@ namespace Kinvey
 
                 var dataTable = dbConnectionSync.Table<T>();
 
-                if (lambdaExpr != null)
+                if (lambdaExpr == null)
                 {
-                    dataTable = dataTable.Where(lambdaExpr);
+                    throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY, "'Where' clause is absent in query.");
                 }
+
+                dataTable = dataTable.Where(lambdaExpr);
 
                 var matchIDs = new List<string>();
                 foreach (var item in dataTable.ToList())

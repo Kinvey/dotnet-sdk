@@ -73,7 +73,7 @@ namespace Kinvey
                     }
                     else
                     {
-                        var mongoQuery = KinveyMongoQueryBuilder.GetQuery<T>(_query);
+                        var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
                         kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
                     }
                     break;
@@ -93,7 +93,7 @@ namespace Kinvey
                         kdr = Cache.DeleteByQuery(_query);
 
                         // network
-                        var mongoQuery = KinveyMongoQueryBuilder.GetQuery<T>(_query);
+                        var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
                         kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
                     }
                     break;
