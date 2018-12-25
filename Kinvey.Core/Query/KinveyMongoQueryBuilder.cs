@@ -43,7 +43,7 @@ namespace Kinvey
             {
                 throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY, "'Where' clause is absent in query.");
             }
-            return string.Empty;
+            return mongoQuery;
         }
 
         /// <summary>
