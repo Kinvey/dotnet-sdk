@@ -24,7 +24,7 @@ namespace Kinvey
         /// <summary>
         /// Builds the mongo-style query string for find operation to be run against the backend.
         /// </summary>
-        /// <param name="query">LINQ-style query that can be used to filter delete results</param>
+        /// <param name="query">LINQ-style query that can be used to filter delete results.</param>
         /// <returns>The mongo-style query string.</returns>
         internal static string GetQueryForFindOperation<T>(IQueryable<object> query)
         {
@@ -34,7 +34,7 @@ namespace Kinvey
         /// <summary>
         ///  Builds the mongo-style query string for remove operation to be run against the backend.
         /// </summary>
-        /// <param name="query">LINQ-style query that can be used to filter delete results</param>
+        /// <param name="query">LINQ-style query that can be used to filter delete results.</param>
         /// <returns>The mongo-style query string.</returns>
         internal static string GetQueryForRemoveOperation<T>(IQueryable<object> query)
         {
@@ -49,8 +49,8 @@ namespace Kinvey
         /// <summary>
 		/// Builds the mongo-style query string to be run against the backend.
 		/// </summary>
-        /// <param name="query">LINQ-style query that can be used to filter delete results</param>
-        /// <param name="visitorClause">Enum value to filter LINQ clauses which should be used</param>
+        /// <param name="query">LINQ-style query that can be used to filter delete results.</param>
+        /// <param name="visitorClause">Enum to filter LINQ clauses which should be used in a query for network request.</param>
 		/// <returns>The mongo-style query string.</returns>
         private static string GetQuery<T>(IQueryable<object> query, VisitorClause visitorClause)
         {

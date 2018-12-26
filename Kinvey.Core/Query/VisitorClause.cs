@@ -14,7 +14,7 @@
 namespace Kinvey
 {
     /// <summary>
-    /// Enum to filter LINQ clauses which should be used.
+    /// Enum to filter LINQ clauses which should be used in a query for network request.
     /// </summary>
     internal enum VisitorClause
     {
