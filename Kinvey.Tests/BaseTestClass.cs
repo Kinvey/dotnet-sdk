@@ -959,10 +959,10 @@ namespace Kinvey.Tests
                 }
                 finally
                 {
-                    //if (expectedRequests == null && httpListener != null && httpListener.IsListening)
-                    //{
-                    //    httpListener.Stop();
-                    //}
+                    if (expectedRequests == null && httpListener != null && httpListener.IsListening)
+                    {
+                        httpListener.Stop();
+                    }
                 }
             }))
             {
