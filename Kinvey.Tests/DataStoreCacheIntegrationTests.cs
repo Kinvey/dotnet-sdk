@@ -2364,7 +2364,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(7);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2428,7 +2428,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(7);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2492,7 +2492,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(7);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2556,7 +2556,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(7);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2619,7 +2619,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(7);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -2683,7 +2683,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(7);
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
