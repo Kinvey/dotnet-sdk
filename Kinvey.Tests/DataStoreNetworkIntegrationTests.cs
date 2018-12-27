@@ -2734,7 +2734,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSyncStoreDeleteByQueryNotSupportedStringExpressionAsync()
+        public async Task TestDeleteByQueryNotSupportedStringExpressionAsync()
         {
             // Setup
             if (MockData)
