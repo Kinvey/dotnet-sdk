@@ -101,7 +101,7 @@ namespace Kinvey
 			}
 			catch (KinveyException ke)
 			{
-				throw ke;
+				throw;
 			}
 			catch (Exception e)
 			{
