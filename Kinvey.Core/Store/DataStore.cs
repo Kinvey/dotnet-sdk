@@ -282,10 +282,10 @@ namespace Kinvey
 			var cacheDelegate = new KinveyDelegate<List<T>>
 			{
 				onSuccess = (listCacheResults) => {
-					cacheResult.onSuccess(listCacheResults.FirstOrDefault());
+					cacheResult?.onSuccess(listCacheResults.FirstOrDefault());
 				},
 				onError = (error) => {
-					cacheResult.onError(error);
+					cacheResult?.onError(error);
 				}
 			};
 
@@ -354,15 +354,33 @@ namespace Kinvey
 			return await request.ExecuteAsync();
 		}
 
-		/// <summary>
-		/// Pulls data from the backend to local storage
-		///
-		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
+        /// <summary>
+		/// Deletes a list of entities by the query.
 		/// </summary>
-		/// <returns>Entities that were pulled from the backend.</returns>
-		/// <param name="query">Optional Query parameter.</param>
+		/// <returns>KinveyDeleteResponse object.</returns>
+        /// <param name="query">Expression for deleting entities.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<object> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
+		public async Task<KinveyDeleteResponse> RemoveAsync(IQueryable<object> query, CancellationToken ct = default(CancellationToken))
+        {
+            if(query == null)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_NULL_QUERY, "Query cannot be null.");
+            }
+
+            var request = new RemoveRequest<T>(query, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
+            ct.ThrowIfCancellationRequested();
+            return await request.ExecuteAsync();
+        }
+
+        /// <summary>
+        /// Pulls data from the backend to local storage
+        ///
+        /// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
+        /// </summary>
+        /// <returns>Entities that were pulled from the backend.</returns>
+        /// <param name="query">Optional Query parameter.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<object> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -480,7 +498,7 @@ namespace Kinvey
             {
                 StringQueryBuilder queryBuilder = new StringQueryBuilder();
 
-                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
+                KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T), VisitorClause.Order | VisitorClause.SkipTake | VisitorClause.Where | VisitorClause.Select);
                 var queryModel = (query.Provider as KinveyQueryProvider)?.qm;
 
                 queryBuilder.Write("{");

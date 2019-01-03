@@ -197,6 +197,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\StringQueryBuilder.cs">
       <Link>Query\StringQueryBuilder.cs</Link>
     </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\KinveyMongoQueryBuilder.cs">
+      <Link>Query\KinveyMongoQueryBuilder.cs</Link>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\VisitorClause.cs">
+      <Link>Query\VisitorClause.cs</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\KinveyRealtimeDelegate.cs">
       <Link>Realtime\KinveyRealtimeDelegate.cs</Link>
     </Compile>

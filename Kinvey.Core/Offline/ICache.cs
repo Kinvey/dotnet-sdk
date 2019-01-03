@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -128,9 +129,15 @@ namespace Kinvey
 		/// <param name="ids">The IDs of the entities to delete from the cache.</param>
 		KinveyDeleteResponse DeleteByIDs(List<string> IDs);
 
-		Task<KinveyDeleteResponse> DeleteAsync (string query);
+        /// <summary>
+		/// Deletes a list of entities by the query.
+		/// </summary>
+		/// <returns>KinveyDeleteResponse object.</returns>
+		/// <param name="query">Query to delete entities from the cache.</param>
+        KinveyDeleteResponse DeleteByQuery(IQueryable<object> query);
 
-		List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query);
+
+        List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query);
 
 		//Task<int> InsertEntityAsync (T entity);
 

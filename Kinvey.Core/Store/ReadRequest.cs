@@ -15,7 +15,6 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Linq;
 
 namespace Kinvey
 {
@@ -56,24 +55,8 @@ namespace Kinvey
 		/// <returns>The mongo-style query string.</returns>
 		protected string BuildMongoQuery()
 		{
-			if (Query != null)
-			{
-				StringQueryBuilder queryBuilder = new StringQueryBuilder();
-
-				KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
-				QueryModel queryModel = (Query.Provider as KinveyQueryProvider)?.qm;
-
-				queryBuilder.Write("{");
-				queryModel?.Accept(visitor);
-				queryBuilder.Write("}");
-
-				string mongoQuery = queryBuilder.BuildQueryString();
-
-				return mongoQuery;
-			}
-
-			return default (string);
-		}
+            return KinveyMongoQueryBuilder.GetQueryForFindOperation<T>(Query);
+        }
 
 
 		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, List<DeltaSetFetchInfo> networkItems, string mongoQuery)
