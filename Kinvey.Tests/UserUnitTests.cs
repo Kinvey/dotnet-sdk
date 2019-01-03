@@ -82,7 +82,7 @@ namespace Kinvey.Tests
             try
             {
                 var client = clientBuilder.Build();
-                await User.LoginWithMIC("test", "test", "myRedirectURI://", null, client);
+                await User.LoginWithMIC("test", "test", null, client);
             }
             catch(Exception ex)
             {

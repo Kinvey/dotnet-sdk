@@ -19,14 +19,20 @@ namespace Kinvey
 {
 	public static class UserExtension
 	{
-		public static bool OnOAuthCallbackRecieved(this User user, NSUrl url)
+        [Obsolete("This method has been deprecated. Please use OnOAuthCallbackReceived() instead.")]
+        public static bool OnOAuthCallbackRecieved(this User user, NSUrl url)
 		{
-			Console.WriteLine (url.Query);
-			Console.WriteLine (url.Query.Substring(url.Query.IndexOf ("code=") + 5) );
-			string accesstoken = url.Query.Substring(url.Query.IndexOf ("code=") + 5) ;
-			User.GetMICAccessTokenAsync(accesstoken);
-			return true;
+            return user.OnOAuthCallbackReceived(url);
 		}
-	}
+
+        public static bool OnOAuthCallbackReceived(this User user, NSUrl url)
+        {
+            Console.WriteLine(url.Query);
+            Console.WriteLine(url.Query.Substring(url.Query.IndexOf("code=") + 5));
+            string accesstoken = url.Query.Substring(url.Query.IndexOf("code=") + 5);
+            User.GetMICAccessTokenAsync(accesstoken);
+            return true;
+        }
+    }
 }
 

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2018, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,25 +11,26 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using Kinvey;
-using Android.Content;
-using System;
-
 namespace Kinvey
 {
-	public static class UserExtension
-	{
-        [Obsolete("This method has been deprecated. Please use OnOAuthCallbackReceived() instead.")]
-        public static void OnOAuthCallbackRecieved(this User user, Intent intent)
-		{
-            user.OnOAuthCallbackReceived(intent);
-        }
+    /// <summary>
+	/// Enumeration for realtime reconnection policy
+	/// </summary>
+    public enum RealtimeReconnectionPolicy
+    {
+        /// <summary>
+		/// Indicates that NO action will taken when there is a network or internet issue.
+		/// </summary>
+        NONE,
 
-        public static void OnOAuthCallbackReceived(this User user, Intent intent)
-        {
-            global::Android.Net.Uri uri = intent.Data;
-            string accessToken = uri.GetQueryParameter("code");
-            User.GetMICAccessTokenAsync(accessToken);
-        }
+        /// <summary>
+		/// SDK will try to reconnect each 3 seconds.
+		/// </summary>
+        LINEAR,
+
+        /// <summary>
+		/// SDK uses the Exponential Backoff algorithm to reconnect when there is a network or internet issue
+		/// </summary>
+        EXPONENTIAL
     }
 }
