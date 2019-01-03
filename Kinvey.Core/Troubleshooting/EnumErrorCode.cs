@@ -63,10 +63,15 @@ namespace Kinvey
 		/// </summary>
 		ERROR_DATASTORE_CACHE_REMOVE_ENTITY,
 
-		/// <summary>
-		/// Error due to an invalid pull operation being performed on this type of datastore.
+        /// <summary>
+		/// Error removing entities according to query in the local cache.
 		/// </summary>
-		ERROR_DATASTORE_INVALID_PULL_OPERATION,
+		ERROR_DATASTORE_CACHE_REMOVING_ENTITIES_ACCORDING_TO_QUERY,
+
+        /// <summary>
+        /// Error due to an invalid pull operation being performed on this type of datastore.
+        /// </summary>
+        ERROR_DATASTORE_INVALID_PULL_OPERATION,
 
 		/// <summary>
 		/// Error due to an invalid push operation being performed on this type of datastore.
@@ -83,10 +88,20 @@ namespace Kinvey
 		/// </summary>
 		ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
 
-		/// <summary>
-		/// Error due to attempting a file metadata operation without a file ID.
+        /// <summary>
+		/// Error due to attempting to remove entities with null query.
 		/// </summary>
-		ERROR_FILE_MISSING_FILE_ID,
+		ERROR_DATASTORE_NULL_QUERY,
+
+        /// <summary>
+		/// Error due to 'where' clause is absent in query.
+		/// </summary>
+		ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY,
+
+        /// <summary>
+        /// Error due to attempting a file metadata operation without a file ID.
+        /// </summary>
+        ERROR_FILE_MISSING_FILE_ID,
 
 		/// <summary>
 		/// Error due to attempting a file upload operation with either null or missing metadata information.  Verify that the <see cref="KinveyXamarin.FileMetaData"/> is valid.
