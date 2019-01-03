@@ -676,11 +676,49 @@ namespace Kinvey
 			return kdr;
 		}
 
-		public async Task<KinveyDeleteResponse> DeleteAsync (string query)
-		{
-			// TODO implement
-			return null;
-		}
+        public KinveyDeleteResponse DeleteByQuery(IQueryable<object> query)
+        {            
+            var kdr = new KinveyDeleteResponse();
+
+            try
+            {
+                var visitor = new KinveyQueryVisitor(typeof(T), VisitorClause.Where);
+                var queryModel = (query.Provider as KinveyQueryProvider)?.qm;
+                //We call it here to find unsupported LINQ where clauses.
+                queryModel?.Accept(visitor);
+
+                int skipNumber = 0;
+                int takeNumber = 0;
+                bool sortAscending = true;
+                LambdaExpression exprSort = null;
+
+                var lambdaExpr = ConvertQueryExpressionToFunction(query.Expression, ref skipNumber, ref takeNumber, ref sortAscending, ref exprSort);
+
+                var dataTable = dbConnectionSync.Table<T>();
+
+                if (lambdaExpr == null)
+                {
+                    throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY, "'Where' clause is absent in query.");
+                }
+
+                dataTable = dataTable.Where(lambdaExpr);
+
+                var matchIDs = new List<string>();
+                foreach (var item in dataTable.ToList())
+                {
+                    var entity = item as IPersistable;
+                    matchIDs.Add(entity.ID);
+                }
+
+                kdr = this.DeleteByIDs(matchIDs);
+            }
+            catch (SQLiteException ex)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_REMOVING_ENTITIES_ACCORDING_TO_QUERY, string.Empty, ex);
+            }
+
+            return kdr;
+        }
 
 		#endregion
 

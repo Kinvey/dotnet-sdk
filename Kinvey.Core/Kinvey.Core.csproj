@@ -47,6 +47,7 @@
     <Compile Include="Model\KinveyDeleteResponse.cs" />
     <Compile Include="Auth\SQLiteCredentialStore.cs" />
     <Compile Include="Query\IQueryBuilder.cs" />
+    <Compile Include="Query\KinveyMongoQueryBuilder.cs" />
     <Compile Include="Query\StringQueryBuilder.cs" />
     <Compile Include="Model\KinveyMetaData.cs" />
     <Compile Include="File\FileMetaData.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Offline\PendingWriteAction.cs" />
     <Compile Include="Offline\SQLiteSyncQueue.cs" />
     <Compile Include="Core\AbstractDataRequest.cs" />
+    <Compile Include="Query\VisitorClause.cs" />
     <Compile Include="Realtime\RealtimeReconnectionPolicy.cs" />
     <Compile Include="Realtime\RealtimeReconnectionPolicyExtension.cs" />
     <Compile Include="Store\RemoveRequest.cs" />
