@@ -21,6 +21,8 @@
             </ListView>
 
             <Button Text="Add contract" Clicked="AddContractButton_OnClicked"/>
+          <Button Text="Subscribe Live Service" Clicked="SubscribeLiveService_OnClicked"/>
+          <Button Text="Unsubscribe Live Service" Clicked="UnsubscribeLiveService_OnClicked"/>
             <Button Text="Register push" Clicked="RegisterPush_OnClicked"/>
             <Button Text="Unregister push" Clicked="UnregisterPush_OnClicked"/>
         </StackLayout>

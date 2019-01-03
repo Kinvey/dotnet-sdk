@@ -251,6 +251,21 @@ namespace Kinvey
 			return delete;
 		}
 
+        public NetworkRequest<T> buildDeleteRequestWithQuery<T>(string collectionName, string queryString)
+        {
+            var REST_PATH = "appdata/{appKey}/{collectionName}?query={querystring}";
+
+            var urlParameters = new Dictionary<string, string>();
+            urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+            urlParameters.Add("collectionName", collectionName);
+
+            var modifiers = ParseQueryForModifiers(queryString, ref REST_PATH, ref urlParameters);
+
+            var delete = new NetworkRequest<T>(client, "DELETE", REST_PATH, null, urlParameters);
+            client.InitializeRequest(delete);
+            return delete;
+        }
+
         public NetworkRequest<T> BuildDeltaSetRequest<T>(string collectionName, string lastRequestTime, string query = null)
         {
             string REST_PATH = "appdata/{appKey}/{collectionName}/_deltaset";

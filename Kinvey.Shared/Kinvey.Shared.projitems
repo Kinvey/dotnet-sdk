@@ -197,6 +197,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\StringQueryBuilder.cs">
       <Link>Query\StringQueryBuilder.cs</Link>
     </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\KinveyMongoQueryBuilder.cs">
+      <Link>Query\KinveyMongoQueryBuilder.cs</Link>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\VisitorClause.cs">
+      <Link>Query\VisitorClause.cs</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\KinveyRealtimeDelegate.cs">
       <Link>Realtime\KinveyRealtimeDelegate.cs</Link>
     </Compile>
@@ -208,6 +214,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeRouter.cs">
       <Link>Realtime\RealtimeRouter.cs</Link>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicy.cs">
+      <Link>Realtime\RealtimeReconnectionPolicy</Link>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicyExtension.cs">
+      <Link>Realtime\RealtimeReconnectionPolicyExtension</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\DataStore.cs">
       <Link>Store\DataStore.cs</Link>
