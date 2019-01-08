@@ -119,7 +119,7 @@ namespace Kinvey
 				}
 				else
 				{
-					throw e;
+					throw;
 				}
 			}
 
@@ -147,9 +147,9 @@ namespace Kinvey
 					}
 				}
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
 			catch (Exception e)
 			{
