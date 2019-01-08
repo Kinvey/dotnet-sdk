@@ -1,5 +1,6 @@
 XMLSTARLET = xmlstarlet
 VERSION = $(shell cat Kinvey.NuGet/Kinvey.NuGet.nuproj | grep PackageVersion | awk '{ print $1 }' | $(XMLSTARLET) sel -t -v PackageVersion)
+NUSPEC_XMLNS = "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd"
 
 version:
 	@echo $(VERSION)
@@ -23,6 +24,20 @@ nuget-pack:
 		grep -v '<dependency id="Xamarin.GooglePlayServices.Base"' | \
 		awk '{ gsub("\"MonoAndroid9.0\"", "\"MonoAndroid0.0\""); print }' \
 		> Kinvey-changed.nuspec; \
+	rm Kinvey.nuspec; \
+	mv Kinvey-changed.nuspec Kinvey.nuspec; \
+	$(XMLSTARLET) ed -N x=$(NUSPEC_XMLNS) \
+	                 -i "//x:licenseUrl" \
+					 -t elem \
+					 -n "license" \
+					 -v "Apache-2.0" \
+					 Kinvey.nuspec | \
+					$(XMLSTARLET) ed -N x=$(NUSPEC_XMLNS) \
+					 -i "//x:license" \
+					 -t attr \
+					 -n "type" \
+					 -v "expression" \
+					 > Kinvey-changed.nuspec; \
 	rm Kinvey.nuspec; \
 	mv Kinvey-changed.nuspec Kinvey.nuspec; \
 	mv lib/monoandroid90 lib/MonoAndroid; \
