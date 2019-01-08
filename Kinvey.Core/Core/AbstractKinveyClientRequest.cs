@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net.Http;
-using KinveyUtils;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Net;
@@ -257,7 +256,7 @@ namespace Kinvey
             }
             var request = new HttpRequestMessage
             {
-                RequestUri = new Uri(new Uri(client.BaseUrl), uri)
+                RequestUri = new Uri(new Uri(this.baseURL), uri)
             };
 
             switch (requestMethod)

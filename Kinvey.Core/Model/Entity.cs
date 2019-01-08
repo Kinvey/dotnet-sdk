@@ -11,8 +11,10 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using SQLite.Net.Attributes;
+using SQLite;
 namespace Kinvey
 {
 	/// <summary>
@@ -20,14 +22,16 @@ namespace Kinvey
 	/// <see cref="IPersistable"/> interface
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
-	public class Entity : IPersistable
+    [DataContract]
+    public class Entity : IPersistable
 	{
 		/// <summary>
 		/// Gets or sets the Kinvey ID.
 		/// </summary>
 		/// <value>The identifier.</value>
 		[JsonProperty("_id")]
-		[Preserve]
+        [DataMember(Name = "_id")]
+        [Preserve]
 		[PrimaryKey, Column("_id")]
 		public string ID { get; set; }
 
@@ -36,22 +40,45 @@ namespace Kinvey
 		/// </summary>
 		/// <value>The acl.</value>
 		[JsonProperty("_acl")]
-		[Preserve]
+        [DataMember(Name = "_acl")]
+        [Preserve]
 		[Column("_acl")]
-		public AccessControlList ACL { get; set; }
+		public AccessControlList Acl { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="KinveyMetaData"/> for this Kinvey-backed object.
 		/// </summary>
 		/// <value>The kmd.</value>
 		[JsonProperty("_kmd")]
-		[Preserve]
+        [DataMember(Name = "_kmd")]
+        [Preserve]
 		[Column("_kmd")]
-		public KinveyMetaData KMD { get; set; }
+		public KinveyMetaData Kmd { get; set; }
 
-		virtual public string Serialize()
-		{
-			return JsonConvert.SerializeObject(this);
-		}
-	}
+        [Obsolete("This property has been deprecated. Please use Acl instead.")]
+        public AccessControlList ACL
+        {
+            get
+            {
+                return Acl;
+            }
+            set
+            {
+                Acl = value;
+            }
+        }
+
+        [Obsolete("This property has been deprecated. Please use Kmd instead.")]
+        public KinveyMetaData KMD
+        {
+            get
+            {
+                return Kmd;
+            }
+            set
+            {
+                Kmd = value;
+            }
+        }
+    }
 }

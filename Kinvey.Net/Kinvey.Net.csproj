@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,15 +44,6 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.105.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="SQLite.Net">
-      <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="SQLite.Net.Platform.Win32">
-      <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\net4\SQLite.Net.Platform.Win32.dll</HintPath>
-    </Reference>
-    <Reference Include="SQLite.Net.Platform.Generic">
-      <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\net40\SQLite.Net.Platform.Generic.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.Security" />
     <Reference Include="Newtonsoft.Json">
@@ -60,17 +51,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client\DotnetClientBuilder.cs" />
     <Compile Include="Auth\WindowsSQLiteCredentialStore.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Auth\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Client\" />
-  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
       <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>

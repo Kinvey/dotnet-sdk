@@ -12,7 +12,6 @@
 // contents is a violation of applicable laws.
 
 using Newtonsoft.Json.Linq;
-using KinveyUtils;
 using System.Net.Http;
 
 namespace Kinvey

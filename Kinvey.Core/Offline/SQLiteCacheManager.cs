@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -17,12 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using KinveyUtils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SQLite.Net;
-using SQLite.Net.Async;
-using SQLite.Net.Interop;
+using SQLite;
 
 namespace Kinvey
 {
@@ -32,7 +27,7 @@ namespace Kinvey
     public class SQLiteCacheManager : ICacheManager
     {
 
-        private class DebugTraceListener : ITraceListener
+        private class DebugTraceListener
         {
             public void Receive(string message)
             {
@@ -41,10 +36,12 @@ namespace Kinvey
         }
 
         //The version of the internal structure of the database.
-        private int databaseSchemaVersion = 1;
+        private readonly int databaseSchemaVersion = 1;
 
         // The asynchronous db connection.
         private SQLiteAsyncConnection dbConnectionAsync;
+
+        private static readonly Dictionary<String, List<SQLiteConnection>> SQLiteFiles = new Dictionary<String, List<SQLiteConnection>>();
 
         // The asynchronous db connection.
         private SQLiteConnection _dbConnectionSync;
@@ -59,13 +56,25 @@ namespace Kinvey
                     {
                         //var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
                         //dbConnection = new SQLiteAsyncConnection (connectionFactory);
-                        _dbConnectionSync = new SQLiteConnection(
-                            sqlitePlatform: platform,
-                            databasePath: dbpath,
-                            openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex,
-                            storeDateTimeAsTicks: false,
-                            resolver: new KinveyContractResolver()
-                        );
+                        lock (SQLiteFiles)
+                        {
+                            _dbConnectionSync = new SQLiteConnection(
+                                databasePath: dbpath,
+                                openFlags: SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex | SQLiteOpenFlags.PrivateCache,
+                                storeDateTimeAsTicks: false
+                            );
+                            List<SQLiteConnection> connections;
+                            if (SQLiteFiles.ContainsKey(dbpath))
+                            {
+                                connections = SQLiteFiles[dbpath];
+                            }
+                            else
+                            {
+                                connections = new List<SQLiteConnection>();
+                                SQLiteFiles[dbpath] = connections;
+                            }
+                            connections.Add(_dbConnectionSync);
+                        }
                         //_dbConnectionSync.TraceListener = new DebugTraceListener();
                     }
 
@@ -75,23 +84,16 @@ namespace Kinvey
         }
 
         /// <summary>
-        /// Gets or sets the platform.
-        /// </summary>
-        /// <value>The platform.</value>
-        public ISQLitePlatform platform { get; set; }
-
-        /// <summary>
         /// Gets or sets the database file path.
         /// </summary>
         /// <value>The dbpath.</value>
         public string dbpath { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteCacheManager"/> class.
+		/// Initializes a new instance of the <see cref="SQLiteCacheManager"/> class.
 		/// </summary>
-		public SQLiteCacheManager(ISQLitePlatform platform, string filePath)
+		public SQLiteCacheManager(string filePath)
 		{
-			this.platform = platform;
 			this.dbpath = Path.Combine (filePath, "kinveyOffline.sqlite");
 		}
 
@@ -169,7 +171,7 @@ namespace Kinvey
 //			return SQLiteHelper<T>.getInstance (platform, dbpath);
 //		}
 
-		public ICache<T> GetCache<T>(string collectionName) where T : class
+		public ICache<T> GetCache<T>(string collectionName) where T : class, new()
 		{
             lock (DBConnectionSync)
             {
@@ -178,9 +180,11 @@ namespace Kinvey
                     DBConnectionSync.CreateTable<CollectionTableMap>();
                 }
 
-                CollectionTableMap ctm = new CollectionTableMap();
-                ctm.CollectionName = collectionName;
-                ctm.TableName = typeof(T).Name;
+                CollectionTableMap ctm = new CollectionTableMap
+                {
+                    CollectionName = collectionName,
+                    TableName = typeof(T).Name
+                };
 
                 DBConnectionSync.InsertOrReplace(ctm);
 
@@ -189,7 +193,7 @@ namespace Kinvey
                     return mapCollectionToCache[collectionName] as ICache<T>;
                 }
 
-                mapCollectionToCache[collectionName] = new SQLiteCache<T>(collectionName, dbConnectionAsync, DBConnectionSync, platform);
+                mapCollectionToCache[collectionName] = new SQLiteCache<T>(collectionName, dbConnectionAsync, DBConnectionSync);
                 return mapCollectionToCache[collectionName] as ICache<T>;
             }
 		}
@@ -317,28 +321,56 @@ namespace Kinvey
 			return cmd.ExecuteScalar<string> () != null;
 		}
 
+        #region IDisposable Support
+        private bool disposedValue; // To detect redundant calls
 
-		/// <summary>
-		/// Kinvey contract resolver - this resolver is used to replace the default SQLite resolver,
-		/// so that any class that can be serialized / deserialized as a JSON string can be stored in SQL
-		/// </summary>
-		class KinveyContractResolver:ContractResolver{
+        protected virtual void Dispose(bool disposing)
+        {
+            lock (this)
+            {
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // dispose managed state (managed objects).
+                    }
 
-			public KinveyContractResolver () : base(t =>  true, Deserialize){
-				
-			}
+                    // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    if (_dbConnectionSync != null)
+                    {
+                        _dbConnectionSync.Close();
+                        lock (SQLiteFiles)
+                        {
+                            if (SQLiteFiles.TryGetValue(dbpath, out List<SQLiteConnection> connections))
+                            {
+                                connections.Remove(_dbConnectionSync);
+                                if (connections.Count == 0) SQLiteFiles.Remove(dbpath);
+                            }
+                        }
+                        _dbConnectionSync.Dispose();
+                    }
 
-			public static object Deserialize(Type t, object [] obj){
-				//if (t == typeof(ISerializable<string>)) {
-				if (t.GetTypeInfo().ImplementedInterfaces.Contains(typeof (ISerializable<string>)) &&
-				    obj != null &&
-				    obj.Count() > 0)
-				{
-					return JsonConvert.DeserializeObject (obj[0].ToString(), t);
-				}
+                    // set large fields to null.
+                    _dbConnectionSync = null;
 
-				return Activator.CreateInstance(t, obj);
-			} 
-		}
-	}
+                    disposedValue = true;
+                }
+            }
+        }
+
+        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~SQLiteCacheManager() {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
 }

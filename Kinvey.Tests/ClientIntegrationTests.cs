@@ -81,7 +81,7 @@ namespace Kinvey.Tests
 
 			// Act
 			// Assert
-            Assert.ThrowsException<NullReferenceException>(delegate ()
+            Assert.ThrowsException<KinveyException>(delegate ()
 			{
 				DataStore<ToDo> todoStore = DataStore<ToDo>.Collection("ToDos", DataStoreType.NETWORK);
 			});
@@ -195,9 +195,8 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestCustomEndpoint()
 		{
-			// Arrange
-            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Arrange
+            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir);
 
             if (MockData) builder.setBaseURL("http://localhost:8080");
 
@@ -210,11 +209,13 @@ namespace Kinvey.Tests
 				await User.LoginAsync(TestSetup.user, TestSetup.pass);
 			}
 
-			// Act
-			JObject obj = new JObject();
-			obj.Add("input", 1);
+            // Act
+            JObject obj = new JObject
+            {
+                { "input", 1 }
+            };
 
-			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+            CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
 			var result = await ce.ExecuteCustomEndpoint("test", obj);
 			string outputstr = result[1].DueDate;
 			int output = int.Parse(outputstr);
@@ -230,10 +231,9 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestCustomEndpointBad()
 		{
-			// Arrange
-			Client.Builder builder = ClientBuilder
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Arrange
+            Client.Builder builder = ClientBuilder
+                .SetFilePath(TestSetup.db_dir);
 
             if (MockData)
             {
@@ -249,11 +249,13 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
-			// Act
-			JObject obj = new JObject();
-			obj.Add("input", 1);
+            // Act
+            JObject obj = new JObject
+            {
+                { "input", 1 }
+            };
 
-			CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+            CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
             Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
 			{
 				await ce.ExecuteCustomEndpoint("test_bad", obj);

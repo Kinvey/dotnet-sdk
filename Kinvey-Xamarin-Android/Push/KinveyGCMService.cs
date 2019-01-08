@@ -3,10 +3,8 @@ using Android.App;
 using Android.OS;
 using Android.Content;
 using Android.Gms.Gcm;
-using KinveyUtils;
 
-
-namespace KinveyXamarinAndroid
+namespace Kinvey
 {
 	[Service]
 	public abstract class KinveyGCMService : IntentService

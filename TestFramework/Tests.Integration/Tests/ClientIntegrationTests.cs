@@ -53,7 +53,8 @@ namespace TestFramework
 		[Test]
 		public void TestClientBuilderBasicBad()
 		{
-			// Arrange
+            // Arrange
+            Client.SharedClient = null;
 
 			// Act
 			// Assert
@@ -70,8 +71,7 @@ namespace TestFramework
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
-			builder.setFilePath("")
-				.setLogger(Console.WriteLine);
+			builder.setLogger(Console.WriteLine);
 
 			// Assert
 			Client client = builder.Build();
@@ -183,10 +183,9 @@ namespace TestFramework
 		[Test]
 		public async Task TestCustomEndpoint()
 		{
-			// Arrange
-			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Arrange
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+                .setFilePath(TestSetup.db_dir);
 
 			builder.Build();
 
@@ -217,10 +216,9 @@ namespace TestFramework
 		[Test]
 		public async Task TestCustomEndpointBad()
 		{
-			// Arrange
-			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            // Arrange
+            Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret)
+                .setFilePath(TestSetup.db_dir);
 
 			builder.Build();
 

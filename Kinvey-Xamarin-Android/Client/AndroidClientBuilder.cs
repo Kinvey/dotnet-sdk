@@ -1,15 +1,30 @@
 ﻿using System;
-using SQLite.Net.Platform.XamarinAndroid;
 
 namespace Kinvey
 {
-    public class AndroidClientBuilder : Client.Builder
+    public partial class Client
     {
-        public AndroidClientBuilder(string appKey, string appSecret) :
-        base(appKey, appSecret, Constants.DevicePlatform.Android)
+        public static string DefaultFilePath
         {
-            this.setFilePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal));
-            this.setOfflinePlatform(new SQLitePlatformAndroid());
+            get
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            }
+        }
+
+        public partial class Builder
+        {
+            public Builder(
+                string appKey,
+                string appSecret
+            ) : this(
+                appKey,
+                appSecret,
+                DefaultFilePath,
+                Constants.DevicePlatform.Android
+            )
+            {
+            }
         }
     }
 }

@@ -1,13 +1,22 @@
-﻿using SQLite.Net.Platform.Win32;
+﻿using System;
 
 namespace Kinvey
 {
-    public class DotnetClientBuilder : Client.Builder
+    public partial class Client
     {
-        public DotnetClientBuilder(string appKey, string appSecret) :
-        base(appKey, appSecret, Constants.DevicePlatform.NET)
+        public partial class Builder
         {
-            this.setOfflinePlatform(new SQLitePlatformWin32());
+            public Builder(
+                string appKey,
+                string appSecret
+            ) : this(
+                appKey,
+                appSecret,
+                Environment.CurrentDirectory,
+                Constants.DevicePlatform.NET
+            )
+            {
+            }
         }
     }
 }

@@ -2,8 +2,6 @@
 using UIKit;
 
 using Kinvey;
-using KinveyXamariniOS;
-using SQLite.Net.Platform.XamarinIOS;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -49,7 +47,6 @@ namespace testiosapp2
 
 			Client.Builder cb = new Client.Builder(appKey, appSecret)
 				.setFilePath(NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomain.User)[0].ToString())
-				.setOfflinePlatform(new SQLitePlatformIOS())
 				.setCredentialStore(new IOSNativeCredentialStore())
 				.SetSSOGroupKey("KinveyOrg")
 				//.setBaseURL("https://alm-kcs.ngrok.io")
@@ -83,7 +80,7 @@ namespace testiosapp2
 
 		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
 		{
-			return myClient.ActiveUser.OnOAuthCallbackRecieved(url);
+			return myClient.ActiveUser.OnOAuthCallbackReceived(url);
 		}
 
 		public async Task<User> Login(string user, string pass)

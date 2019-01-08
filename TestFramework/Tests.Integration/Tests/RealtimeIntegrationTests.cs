@@ -29,9 +29,8 @@ namespace TestFramework
 		public void Setup()
 		{
 			string appKey = "kid_Zy0JOYPKkZ", appSecret = "d83de70e64d540e49acd6cfce31415df"; // UnitTestFramework
-			Client.Builder builder = new Client.Builder(appKey, appSecret)
-				.setFilePath(TestSetup.db_dir)
-				.setOfflinePlatform(new SQLite.Net.Platform.Generic.SQLitePlatformGeneric());
+            Client.Builder builder = new Client.Builder(appKey, appSecret)
+                .setFilePath(TestSetup.db_dir);
 
 			kinveyClient = builder.Build();
 		}
@@ -161,7 +160,7 @@ namespace TestFramework
             var acl = new AccessControlList();
             acl.GloballyReadable = false;
             acl.Readers.Add(Client.SharedClient.ActiveUser.Id);
-            todo.ACL = acl;
+            todo.Acl = acl;
             todo = await store.SaveAsync(todo);
 
             bool signal = autoEvent.WaitOne(10000);
@@ -212,7 +211,7 @@ namespace TestFramework
             todo.Details = "Test Todo Details";
             var acl = new AccessControlList();
             acl.GloballyReadable = false;
-            todo.ACL = acl;
+            todo.Acl = acl;
             todo = await store.SaveAsync(todo);
 
             bool signal = autoEvent.WaitOne(10000);

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -12,18 +12,12 @@
 // contents is a violation of applicable laws.
 
 using System;
-using SQLite.Net.Interop;
+using SQLite;
 
 namespace Kinvey
 {
-	public interface ICacheManager
+    public interface ICacheManager : IDisposable
 	{
-		/// <summary>
-		/// Gets or sets the platform.
-		/// </summary>
-		/// <value>The platform.</value>
-		ISQLitePlatform platform {get; set;}
-
 		/// <summary>
 		/// Gets or sets the dbpath.
 		/// </summary>
@@ -35,7 +29,7 @@ namespace Kinvey
 		/// </summary>
 		/// <returns>The cache.</returns>
 		/// <param name="collectionName">Collection name.</param>
-		ICache<T> GetCache <T>(string collectionName) where T:class;
+		ICache<T> GetCache <T>(string collectionName) where T : class, new();
 
 		ISyncQueue GetSyncQueue (string collectionName);
 

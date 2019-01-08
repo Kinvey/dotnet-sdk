@@ -74,7 +74,7 @@ namespace Kinvey
 			{
 				if (Query != null)
 				{
-					IQueryable<object> query = Query;
+					var query = Query;
 					localCount = (uint)Cache.CountByQuery(query.Expression);
 				}
 				else
@@ -92,7 +92,7 @@ namespace Kinvey
 				}
 				else
 				{
-					throw e;
+					throw;
 				}
 			}
 
@@ -125,9 +125,9 @@ namespace Kinvey
 					}
 				}
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
 			catch (Exception e)
 			{

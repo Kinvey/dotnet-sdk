@@ -11,7 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using SQLite.Net.Attributes;
+using SQLite;
 
 /// <summary>
 /// SQL credential.

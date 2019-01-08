@@ -1,36 +1,62 @@
 ﻿using Newtonsoft.Json;
-using SQLite.Net.Attributes;
+using SQLite;
 using Kinvey;
+using System.Runtime.Serialization;
 
 namespace Kinvey.Tests
 {
 	[JsonObject(MemberSerialization.OptIn)]
+    [DataContract]
 	public class Address : IPersistable
 	{
 		[JsonProperty("_id")]
-		[Preserve]
+        [DataMember(Name = "_id")]
+        [Preserve]
 		[PrimaryKey, Column("_id")]
 		public string ID { get; set; }
 
 		[JsonProperty("_acl")]
-		[Preserve]
+        [DataMember(Name = "_acl")]
+        [Preserve]
 		[Column("_acl")]
-		public AccessControlList ACL { get; set; }
+        public AccessControlList Acl { get; set; }
 
-		[JsonProperty("_kmd")]
-		[Preserve]
+        public AccessControlList ACL
+        {
+            get
+            {
+                return Acl;
+            }
+            set
+            {
+                Acl = value;
+            }
+        }
+
+        [JsonProperty("_kmd")]
+        [DataMember(Name = "_kmd")]
+        [Preserve]
 		[Column("_kmd")]
-		public KinveyMetaData KMD { get; set; }
+		public KinveyMetaData Kmd { get; set; }
+
+        public KinveyMetaData KMD
+        {
+            get
+            {
+                return Kmd;
+            }
+            set
+            {
+                Kmd = value;
+            }
+        }
+
+        [JsonProperty]
+        [DataMember]
+        public bool IsApartment { get; set; }
 
 		[JsonProperty]
-		public bool IsApartment { get; set; }
-
-		[JsonProperty]
-		public string Street { get; set; }
-
-		public string Serialize()
-		{
-			return JsonConvert.SerializeObject(this);
-		}
+        [DataMember]
+        public string Street { get; set; }
 	}
 }

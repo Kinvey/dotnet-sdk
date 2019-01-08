@@ -11,12 +11,14 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+
 namespace Kinvey
 {
 	/// <summary>
 	/// This interface defines the ability to store Credentials.
 	/// </summary>
-    public interface ICredentialStore
+    public interface ICredentialStore : IDisposable
     {
 		/// <summary>
 		/// Load the specified userId.

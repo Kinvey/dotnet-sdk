@@ -21,7 +21,6 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Net;
-using KinveyUtils;
 
 namespace Kinvey
 {
@@ -253,9 +252,9 @@ namespace Kinvey
                 var responseBody = await response.Content.ReadAsStringAsync();
 				return JsonConvert.DeserializeObject<KinveyAuthResponse>(responseBody);
 			}
-			catch (KinveyException JSONException)
+			catch (KinveyException)
 			{
-				throw JSONException;
+				throw;
 			}
 			catch (Exception ex)
 			{

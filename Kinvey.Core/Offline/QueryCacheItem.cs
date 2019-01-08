@@ -12,7 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
-using SQLite.Net.Attributes;
+using SQLite;
 using Newtonsoft.Json;
 
 namespace Kinvey

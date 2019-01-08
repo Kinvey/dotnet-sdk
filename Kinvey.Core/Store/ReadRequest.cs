@@ -15,7 +15,6 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Linq;
 
 namespace Kinvey
 {
@@ -56,24 +55,8 @@ namespace Kinvey
 		/// <returns>The mongo-style query string.</returns>
 		protected string BuildMongoQuery()
 		{
-			if (Query != null)
-			{
-				StringQueryBuilder queryBuilder = new StringQueryBuilder();
-
-				KinveyQueryVisitor visitor = new KinveyQueryVisitor(queryBuilder, typeof(T));
-				QueryModel queryModel = (Query.Provider as KinveyQueryProvider)?.qm;
-
-				queryBuilder.Write("{");
-				queryModel?.Accept(visitor);
-				queryBuilder.Write("}");
-
-				string mongoQuery = queryBuilder.BuildQueryString();
-
-				return mongoQuery;
-			}
-
-			return default (string);
-		}
+            return KinveyMongoQueryBuilder.GetQueryForFindOperation<T>(Query);
+        }
 
 
 		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, List<DeltaSetFetchInfo> networkItems, string mongoQuery)
@@ -87,8 +70,8 @@ namespace Kinvey
 			foreach (var cacheItem in cacheItems)
 			{
 				var item = cacheItem as IPersistable;
-				if (item.KMD?.lastModifiedTime != null) {  //if lmt doesn't exist for cache entity, avoid crashing
-					dictCachedEntities.Add(item.ID, item.KMD.lastModifiedTime);
+				if (item.Kmd?.lastModifiedTime != null) {  //if lmt doesn't exist for cache entity, avoid crashing
+					dictCachedEntities.Add(item.ID, item.Kmd.lastModifiedTime);
 				}
 			}
 
@@ -176,7 +159,7 @@ namespace Kinvey
 			{
 				if (Query != null)
 				{
-					IQueryable<object> query = Query;
+					var query = Query;
 					cacheHits = Cache.FindByQuery(query.Expression);
 				}
 				else if (EntityIDs?.Count > 0)
@@ -198,7 +181,7 @@ namespace Kinvey
 				}
 				else
 				{
-					throw e;
+					throw;
 				}
 			}
 
@@ -269,7 +252,7 @@ namespace Kinvey
 
                                     default:
                                         // This is not a delta sync specific error
-                                        throw ke;
+                                        throw;
                                 }
                             }
 
@@ -309,9 +292,9 @@ namespace Kinvey
 
                 return await PerformNetworkGet(mongoQuery);
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
 			catch (Exception e)
 			{

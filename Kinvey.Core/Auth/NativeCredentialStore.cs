@@ -11,13 +11,15 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+
 namespace Kinvey
 {
 	/// <summary>
 	/// Native credential store.
 	/// </summary>
-	abstract public class NativeCredentialStore : ICredentialStore
-	{
+	abstract public class NativeCredentialStore : ICredentialStore, IDisposable
+    {
 		/// <summary>
 		/// Load the credential object from the native credential store based on the specified user ID.
 		/// </summary>
@@ -46,5 +48,7 @@ namespace Kinvey
 		/// <returns>The credential object representing the active user.</returns>
 		/// <param name="ssoGroupKey">SSO Group Key.</param>
 		abstract public Credential GetStoredCredential(string ssoGroupKey);
-	}
+
+        public abstract void Dispose();
+    }
 }

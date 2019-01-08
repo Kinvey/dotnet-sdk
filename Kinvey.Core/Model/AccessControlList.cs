@@ -12,8 +12,8 @@
 // contents is a violation of applicable laws.
 
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using SQLite.Net;
 
 namespace Kinvey
 {
@@ -24,7 +24,8 @@ namespace Kinvey
 	/// the collection level.
 	/// </summary>
 	[JsonObject]
-	public class AccessControlList : ISerializable<string>
+    [DataContract]
+	public class AccessControlList
 	{
 		/// <summary>
 		/// the field name within every JSON object.
@@ -36,6 +37,7 @@ namespace Kinvey
 		/// </summary>
 		/// <value>The creator</value>
 		[JsonProperty("creator")]
+        [DataMember(Name = "creator")]
 		public string Creator { get; set; }
 
 		/// <summary>
@@ -43,28 +45,32 @@ namespace Kinvey
 		/// </summary>
 		/// <value><c>true</c> if globally readable; otherwise, <c>false</c>.</value>
 		[JsonProperty("gr")]
-		public bool GloballyReadable { get; set; }
+        [DataMember(Name = "gr")]
+        public bool GloballyReadable { get; set; }
 
 		/// <summary>
 		/// Gets or sets whether this entity is globally writeable.
 		/// </summary>
 		/// <value><c>true</c> if globally writeable; otherwise, <c>false</c>.</value>
 		[JsonProperty("gw")]
-		public bool GloballyWriteable { get; set; }
+        [DataMember(Name = "gw")]
+        public bool GloballyWriteable { get; set; }
 
 		/// <summary>
 		/// Gets or sets a list of user IDs that are specifically allowed to read this entity.
 		/// </summary>
 		/// <value>The list of user IDs allowed to read this entity.</value>
 		[JsonProperty("r")]
-		public List<string> Readers { get; set; }
+        [DataMember(Name = "r")]
+        public List<string> Readers { get; set; }
 
 		/// <summary>
 		/// Gets or sets a list of user IDs that are specifically allowed to modify this entity.
 		/// </summary>
 		/// <value>The list of user IDs allowed to modify this entity.</value>
 		[JsonProperty("w")]
-		public List<string> Writers { get; set; }
+        [DataMember(Name = "w")]
+        public List<string> Writers { get; set; }
 
 		/// <summary>
 		/// Gets or sets the ACL group that contains lists of user groups which are authorized on the
@@ -74,13 +80,15 @@ namespace Kinvey
 		/// </summary>
 		/// <value>The group object which contains the list of user groups allowed to read and/or modify the entity.</value>
 		[JsonProperty("groups")]
-		public ACLGroups Groups { get; set; }
+        [DataMember(Name = "groups")]
+        public ACLGroups Groups { get; set; }
 
 		/// <summary>
 		/// Class that holds the list of user groups that can read the entity and the list of user groups
 		/// that can modify the entity.
 		/// </summary>
 		[JsonObject]
+        [DataContract]
 		public class ACLGroups
 		{
 			/// <summary>
@@ -88,14 +96,16 @@ namespace Kinvey
 			/// </summary>
 			/// <value>The list of user groups with read access to the entity.</value>
 			[JsonProperty("r")]
-			public List<string> Readers { get; set; }
+            [DataMember(Name = "r")]
+            public List<string> Readers { get; set; }
 
 			/// <summary>
 			/// Gets or sets the list of user groups that can modify the entity.
 			/// </summary>
 			/// <value>The list of user groups with write access to the entity.</value>
 			[JsonProperty("w")]
-			public List<string> Writers { get; set; }
+            [DataMember(Name = "w")]
+            public List<string> Writers { get; set; }
 
 			public ACLGroups()
 			{
@@ -112,14 +122,6 @@ namespace Kinvey
 			Writers = new List<string>();
 
 			Groups = new ACLGroups();
-		}
-
-		/// <summary>
-		/// Implementation of ISerializeable interface, used to serialize this <see cref="AccessControlList"/> instance.
-		/// </summary>
-		public string Serialize()
-		{
-			return JsonConvert.SerializeObject(this);
 		}
 	}
 }

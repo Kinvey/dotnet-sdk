@@ -52,7 +52,7 @@ namespace TestFramework
         public void TestDotnetClientBuilder()
         {
             // Arrange
-            var builder = new DotnetClientBuilder(TestSetup.app_key, TestSetup.app_secret);
+            var builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
             // Act
             var client = builder.Build();
@@ -81,8 +81,7 @@ namespace TestFramework
 			Client.Builder builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
 
 			// Act
-			builder.setFilePath("")
-				.setLogger(delegate (string msg) { Console.WriteLine(msg); });
+			builder.setLogger(delegate (string msg) { Console.WriteLine(msg); });
 
 			// Assert
 			Client client = builder.Build();

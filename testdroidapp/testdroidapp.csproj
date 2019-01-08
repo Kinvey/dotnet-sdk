@@ -42,13 +42,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="SQLite.Net">
-      <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
-    </Reference>
     <Reference Include="System.Json" />
-    <Reference Include="SQLite.Net.Platform.XamarinAndroid">
-      <HintPath>..\packages\SQLite.Net.Platform.XamarinAndroid.2.5.1\lib\MonoAndroid\SQLite.Net.Platform.XamarinAndroid.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -80,17 +74,9 @@
     <Folder Include="Resources\xml\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
-      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
-      <Name>Kinvey-Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinvey-Xamarin-Android\Kinvey-Xamarin-Android.csproj">
-      <Project>{77977557-862E-4A14-A5D7-0096023BA682}</Project>
-      <Name>Kinvey-Xamarin-Android</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Kinvey.Core\Kinvey.Core.csproj">
-      <Project>{6644D98D-026B-48E9-95A3-61C4D98D82E7}</Project>
-      <Name>Kinvey.Core</Name>
+    <ProjectReference Include="..\Kinvey.Android\Kinvey.Android.csproj">
+      <Project>{405FED46-66D9-4EB4-8C6E-16636329FD77}</Project>
+      <Name>Kinvey.Android</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

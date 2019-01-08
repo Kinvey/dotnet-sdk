@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace KinveyXamarinAndroid
+namespace Kinvey
 {
 	public static class PushExtension
 	{

@@ -11,7 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using SQLite.Net;
+using System;
 
 namespace Kinvey
 {
@@ -19,7 +19,7 @@ namespace Kinvey
 	/// Persistable interface which model objects can choose to implement as an alternative
 	/// to subclassing from <see cref="Entity"/>
 	/// </summary>
-	public interface IPersistable : ISerializable<string>
+	public interface IPersistable
 	{
 		/// <summary>
 		/// ID field which maps back to Kinvey _id
@@ -31,12 +31,18 @@ namespace Kinvey
 		/// <see cref="AccessControlList"/>  field which maps back to Kinvey _acl
 		/// </summary>
 		/// <value>The acl.</value>
-		AccessControlList ACL { get; set; }
+		AccessControlList Acl { get; set; }
 
 		/// <summary>
 		/// <see cref="KinveyMetaData"/> field which maps back to Kinvey _kmd
 		/// </summary>
 		/// <value>The kmd.</value>
-		KinveyMetaData KMD { get; set; }
-	}
+		KinveyMetaData Kmd { get; set; }
+
+        [Obsolete("This property has been deprecated. Please use Acl instead.")]
+        AccessControlList ACL { get; set; }
+
+        [Obsolete("This property has been deprecated. Please use Kmd instead.")]
+        KinveyMetaData KMD { get; set; }
+    }
 }
