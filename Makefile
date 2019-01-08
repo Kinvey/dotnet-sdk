@@ -49,7 +49,10 @@ nuget-pack:
 	rm lib/**/Microsoft.*.dll; \
 	rm lib/**/mscorlib.dll; \
 	rm lib/**/netstandard.dll; \
-	zip -r ../Kinvey.$(VERSION).nupkg **
+	zip -r ../Kinvey.$(VERSION).nupkg **; \
+	cp -R lib ../kinvey-xamarin-$(VERSION); \
+	cd ..; \
+	zip -r kinvey-xamarin-$(VERSION).zip kinvey-xamarin-$(VERSION)
 
 doc:
 	mdoc update \
