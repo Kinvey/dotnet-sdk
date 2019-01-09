@@ -775,8 +775,9 @@ namespace Kinvey.Tests
                             case "/appdata/_kid_/ToDos/_count":
                                 {
                                     Assert.AreEqual("GET", context.Request.HttpMethod);
+                                    var results = FilterByQuery(context, memory.Todo, client);
                                     var jsonObject = new JObject();
-                                    jsonObject["count"] = memory.Todo.Count;
+                                    jsonObject["count"] = results.Count();
                                     Write(context, jsonObject);
                                     break;
                                 }
