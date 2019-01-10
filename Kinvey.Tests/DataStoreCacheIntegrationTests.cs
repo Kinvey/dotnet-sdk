@@ -3918,11 +3918,6 @@ namespace Kinvey.Tests
             }
 
             // Arrange
-            if (kinveyClient.ActiveUser != null)
-            {
-                kinveyClient.ActiveUser.Logout();
-            }
-
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.CACHE);
