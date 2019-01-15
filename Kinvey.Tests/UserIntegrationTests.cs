@@ -104,9 +104,6 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(kinveyClient.ActiveUser);
             Assert.IsTrue(u.IsActive());
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -121,9 +118,6 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(Client.SharedClient.ActiveUser);
             Assert.IsTrue(u.IsActive());
-
-            // Teardown
-            Client.SharedClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -131,10 +125,12 @@ namespace Kinvey.Tests
         {
             // Arrange
             Client.Builder builder = ClientBuilderFake;
-            if (MockData) builder.setBaseURL("http://localhost:8080");
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+                MockResponses(3);
+            }
             Client fakeClient = builder.Build();
-
-            if (MockData) MockResponses(3);
 
             // Act
             // Assert
@@ -161,28 +157,27 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(kinveyClient.ActiveUser);
             Assert.IsTrue(u.IsActive());
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
-        //[TestMethod]
-        //[Ignore("Placeholder - Need Access Token To Run Test")]
-        //public async Task TestLoginFacebookAsync()
-        //{
-        //    // Arrange
-        //    string facebookAccessToken = "";
+        [TestMethod]
+        public async Task TestLoginFacebookAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
 
-        //    // Act
-        //    User fbUser = await User.LoginFacebookAsync(facebookAccessToken, kinveyClient);
+            // Act
+            User fbUser = await User.LoginFacebookAsync(TestSetup.facebook_Access_Token_Fake, kinveyClient);
 
-        //    // Assert
-        //    Assert.IsNotNull(fbUser);
-        //    Assert.IsNotNull(fbUser.Attributes["_socialIdentity"]);
-        //    JToken socID = fbUser.Attributes["_socialIdentity"];
-        //    Assert.IsNotNull(socID["facebook"]);
-        //    Assert.IsTrue(socID["facebook"].HasValues);
-        //}
+            // Assert
+            Assert.IsNotNull(fbUser);
+            Assert.IsNotNull(fbUser.Attributes["_socialIdentity"]);
+            JToken socID = fbUser.Attributes["_socialIdentity"];
+            Assert.IsNotNull(socID["facebook"]);
+            Assert.IsTrue(socID["facebook"].HasValues);
+        }
 
         [TestMethod]
         public async Task TestLoginFacebookAsyncBad()

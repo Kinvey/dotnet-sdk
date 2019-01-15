@@ -32,11 +32,27 @@ namespace Kinvey.Tests
             }
         }
 
+        //public static string AppKey
+        //{
+        //    get
+        //    {
+        //        return EnvironmentVariable.AppKey ?? "_kid_";
+        //    }
+        //}
+
+        //public static string AppSecret
+        //{
+        //    get
+        //    {
+        //        return EnvironmentVariable.AppSecret ?? "appSecret";
+        //    }
+        //}
+
         public static string AppKey
         {
             get
             {
-                return EnvironmentVariable.AppKey ?? "_kid_";
+                return null ?? "_kid_";
             }
         }
 
@@ -44,15 +60,49 @@ namespace Kinvey.Tests
         {
             get
             {
-                return EnvironmentVariable.AppSecret ?? "appSecret";
+                return null ?? "appSecret";
             }
         }
+
+        //public static string AppKey
+        //{
+        //    get
+        //    {
+        //        return "kid_S112cy0jX" ?? "_kid_";
+        //    }
+        //}
+
+        //public static string AppSecret
+        //{
+        //    get
+        //    {
+        //        return "eddf74fe0d554d94b5ce856437e20b93" ?? "appSecret";
+        //    }
+        //}
+
+        //public static string AppKey
+        //{
+        //    get
+        //    {
+        //        return "kid_S1GhjUlh7" ?? "_kid_";
+        //    }
+        //}
+
+        //public static string AppSecret
+        //{
+        //    get
+        //    {
+        //        return "a5c5ef48d20546b6a05714e2fde590b1" ?? "appSecret";
+        //    }
+        //}
 
         public static bool MockData
         {
             get
             {
-                return string.IsNullOrEmpty(EnvironmentVariable.AppKey) && string.IsNullOrEmpty(EnvironmentVariable.AppSecret);
+                //return string.IsNullOrEmpty(EnvironmentVariable.AppKey) && string.IsNullOrEmpty(EnvironmentVariable.AppSecret);
+                return true;
+                //return false;
             }
         }
 
@@ -138,37 +188,70 @@ namespace Kinvey.Tests
             }
         }
 
-        protected static void MockUserLogin(HttpListenerContext context, IEnumerable<JObject> users)
+        protected static void MockUserLogin(HttpListenerContext context, IEnumerable<JObject> users, IDictionary<string, JObject> signedUsers)
         {
             Assert.AreEqual(context.Request.HttpMethod, "POST");
             var json = Read<JObject>(context);
-            var username = json["username"];
-            var password = json["password"];
-            var user = users.SingleOrDefault(x => {
-                return username.Equals(x["username"]) && password.Equals(x["password"]);
-            });
-
-            if (user != null)
+            JToken socialIdentityJson;
+            if (json.TryGetValue("_socialIdentity", out socialIdentityJson))
             {
-                user["_kmd"] = new JObject
+                Assert.AreEqual(socialIdentityJson.Children().Count(), 1);
+                var socialIdentityJsonChild = socialIdentityJson.First();
+                JToken kinveyAccessToken = null;
+
+                switch (socialIdentityJsonChild.Path)
                 {
-                    ["authtoken"] = Guid.NewGuid().ToString()
-                };
+                    case "_socialIdentity.facebook" :
+                        kinveyAccessToken = socialIdentityJsonChild["facebook"];
+                        break;
+                    default:
+                        Assert.Fail("Incorrect json data.");
+                        break;
+                }
 
-                var clone = new JObject(user);
-                clone.Remove("password");
+                var accessToken = kinveyAccessToken["access_token"].ToString();
 
-                Write(context, clone);
+                if (signedUsers.ContainsKey(accessToken))
+                {
+                    var responseJson = new JObject
+                    {
+                        ["_id"] = signedUsers[accessToken]["_id"]
+                    };
+
+                    Write(context, responseJson);
+                }
             }
             else
             {
-                context.Response.StatusCode = 401;
-                Write(context, new
+                var username = json["username"];
+                var password = json["password"];
+                var user = users.SingleOrDefault(x =>
                 {
-                    error = "InvalidCredentials",
-                    description = "Invalid credentials. Please retry your request with correct credentials.",
-                    debug = "",
+                    return username.Equals(x["username"]) && password.Equals(x["password"]);
                 });
+
+                if (user != null)
+                {
+                    user["_kmd"] = new JObject
+                    {
+                        ["authtoken"] = Guid.NewGuid().ToString()
+                    };
+
+                    var clone = new JObject(user);
+                    clone.Remove("password");
+
+                    Write(context, clone);
+                }
+                else
+                {
+                    context.Response.StatusCode = 401;
+                    Write(context, new
+                    {
+                        error = "InvalidCredentials",
+                        description = "Invalid credentials. Please retry your request with correct credentials.",
+                        debug = "",
+                    });
+                }
             }
         }
 
@@ -659,6 +742,25 @@ namespace Kinvey.Tests
                         }
                     };
 
+                    var micUsers = new Dictionary<string, JObject>();
+                    var signedUsers = new Dictionary<string, JObject>();
+
+                    var testMicUserId = Guid.NewGuid().ToString();
+                    micUsers[testMicUserId] = new JObject
+                    {
+                        ["_id"] = testMicUserId,
+                        ["username"] = "test",
+                        ["password"] = "test"                      
+                    };
+
+                    var micUserId1 = Guid.NewGuid().ToString();
+                    micUsers[micUserId1] = new JObject
+                    {
+                        ["_id"] = micUserId1,
+                        ["username"] = Guid.NewGuid().ToString(),
+                        ["password"] = Guid.NewGuid().ToString(),
+                    };
+
                     var blobs = new Dictionary<string, JObject>();
                     var files = new Dictionary<string, byte[]>();
                     var memory = new
@@ -751,12 +853,15 @@ namespace Kinvey.Tests
                                 MockUserLookup(context, users.Values);
                                 break;
                             case "/user/_kid_/login":
-                                MockUserLogin(context, users.Values);
+                                MockUserLogin(context, users.Values, signedUsers);
                                 break;
                             case "/user/_kid_":
                             case "/user/_kid_/":
                                 MockUserSignUp(context, users);
                                 break;
+                            case "/oauth/token":
+                                MockOauthToken(context, micUsers.Values, signedUsers);
+                                break;                               
                             case "/appdata/_kid_/person":
                                 MockAppData(context, memory.Person, client);
                                 break;
@@ -1013,6 +1118,37 @@ namespace Kinvey.Tests
             users[userId] = user;
 
             Write(context, user);
+        }
+
+        private static void MockOauthToken(HttpListenerContext context, IEnumerable<JObject> micUsers, IDictionary<string, JObject> signedUsers)
+        {
+            Assert.AreEqual("POST", context.Request.HttpMethod);
+            var data = Read(context);
+            var micData = Encoding.Default.GetString(data);
+            var micUserData = micData.Split('&');
+
+            var micUser = new Dictionary<string, string>();
+
+            foreach (var micUserItem in micUserData)
+            {
+                var item = micUserItem.Split('=');
+                micUser.Add(item[0], item[1]);
+            }
+
+            var micUserName = micUser["username"];
+            var micPassword = micUser["password"];
+            var existingUser = micUsers.FirstOrDefault(x => micUserName.Equals(x["username"].ToString()) && micPassword.Equals(x["password"].ToString()));
+
+            var accessToken = Guid.NewGuid().ToString();
+            signedUsers.Add(accessToken, existingUser);
+
+            var responseJson = new JObject
+            {
+                ["access_token"] = accessToken,
+                ["refresh_token"] = string.Empty
+            };
+
+            Write(context, responseJson);
         }
 
         private static void MockCheckUsernameExists(HttpListenerContext context, IEnumerable<JObject> users)
