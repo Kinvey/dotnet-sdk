@@ -9,16 +9,14 @@ namespace Kinvey.Tests
 	{
 		private Client kinveyClient;
 
-		public const string user = "roman.ogolikhin@softteco.com";
-		public const string pass = "qwertYUIOP1z";
+		public const string user = "testuser";
+		public const string pass = "testpass";
 
-        public const string app_key = "kid_S112cy0jX";
-		public const string app_secret = "eddf74fe0d554d94b5ce856437e20b93";
+        public const string app_key = "kid_Zy0JOYPKkZ";
+		public const string app_secret = "d83de70e64d540e49acd6cfce31415df";
 
 		public const string app_key_fake = "abcdefg";
 		public const string app_secret_fake = "0123456789abcdef";
-
-        public const string facebook_Access_Token_Fake = "4a156f9c-d734-487f-931e-401105c2a45d";
 
         public static string db_dir = Environment.CurrentDirectory;
         public static string SQLiteOfflineStoreFilePath = Path.Combine(db_dir, "kinveyOffline.sqlite");
