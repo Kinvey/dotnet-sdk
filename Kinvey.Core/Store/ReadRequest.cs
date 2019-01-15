@@ -181,7 +181,7 @@ namespace Kinvey
 				}
 				else
 				{
-					throw e;
+					throw;
 				}
 			}
 
@@ -252,7 +252,7 @@ namespace Kinvey
 
                                     default:
                                         // This is not a delta sync specific error
-                                        throw ke;
+                                        throw;
                                 }
                             }
 
@@ -292,9 +292,9 @@ namespace Kinvey
 
                 return await PerformNetworkGet(mongoQuery);
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
 			catch (Exception e)
 			{

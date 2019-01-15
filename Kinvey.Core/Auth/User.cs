@@ -656,7 +656,7 @@ namespace Kinvey
                 currentCred.MICClientID = clientID;
                 uc.Store.Store(user.Id, uc.SSOGroupKey, currentCred);
             }
-            catch (KinveyException ke)
+            catch (KinveyException)
             {
                 throw;
             }
@@ -765,11 +765,9 @@ namespace Kinvey
 
 				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, uc, realtimeReconnectionPolicy);
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				var msg = ke.Error;
-
-				throw ke;
+				throw;
 			}
 		}
 
@@ -790,11 +788,9 @@ namespace Kinvey
 				ct.ThrowIfCancellationRequested();
 				JObject responseUnregister = await realtimeRequest.ExecuteAsync();
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				var msg = ke.Error;
-
-				throw ke;
+				throw;
 			}
 		}
 
@@ -928,9 +924,9 @@ namespace Kinvey
 					}
 				}
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
 			catch (Exception e)
 			{
