@@ -169,14 +169,13 @@ namespace Kinvey.Tests
             }
 
             // Act
-            User fbUser = await User.LoginFacebookAsync(TestSetup.facebook_Access_Token_Fake, kinveyClient);
+            var fbUser = await User.LoginFacebookAsync(TestSetup.facebook_access_token_fake, kinveyClient);
 
             // Assert
             Assert.IsNotNull(fbUser);
-            Assert.IsNotNull(fbUser.Attributes["_socialIdentity"]);
-            JToken socID = fbUser.Attributes["_socialIdentity"];
-            Assert.IsNotNull(socID["facebook"]);
-            Assert.IsTrue(socID["facebook"].HasValues);
+            Assert.IsNotNull(fbUser.AuthSocialID);
+            Assert.IsNotNull(fbUser.AuthSocialID.Attributes["facebook"]);
+            Assert.IsTrue(fbUser.AuthSocialID.Attributes["facebook"].HasValues);
         }
 
         [TestMethod]
@@ -193,23 +192,24 @@ namespace Kinvey.Tests
             });
         }
 
-        //[TestMethod]
-        //[Ignore("Placeholder - Need Access Token To Run Test")]
-        //public async Task TestLoginGoogleAsync()
-        //{
-        //    // Arrange
-        //    string googleAccessToken = "";
+        [TestMethod]
+        public async Task TestLoginGoogleAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
 
-        //    // Act
-        //    User googleUser = await User.LoginGoogleAsync(googleAccessToken, kinveyClient);
+            // Act
+            var googleUser = await User.LoginGoogleAsync(TestSetup.google_access_token_fake, kinveyClient);
 
-        //    // Assert
-        //    Assert.IsNotNull(googleUser);
-        //    Assert.IsNotNull(googleUser.Attributes["_socialIdentity"]);
-        //    JToken socID = googleUser.Attributes["_socialIdentity"];
-        //    Assert.IsNotNull(socID["google"]);
-        //    Assert.IsTrue(socID["google"].HasValues);
-        //}
+            // Assert
+            Assert.IsNotNull(googleUser);
+            Assert.IsNotNull(googleUser.AuthSocialID);
+            Assert.IsNotNull(googleUser.AuthSocialID.Attributes["google"]);
+            Assert.IsTrue(googleUser.AuthSocialID.Attributes["google"].HasValues);
+        }
 
         [TestMethod]
         public async Task TestLoginGoogleAsyncBad()
@@ -225,26 +225,28 @@ namespace Kinvey.Tests
             });
         }
 
-        //[TestMethod]
-        //[Ignore("Placeholder - Need Access Token To Run Test")]
-        //public async Task TestLoginTwitterAsync()
-        //{
-        //    // Arrange
-        //    string accessTokenKey = "";
-        //    string accessTokenSecret = "";
-        //    string consumerKey = "";
-        //    string consumerKeySecret = "";
+        [TestMethod]
+        public async Task TestLoginTwitterAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+            string accessTokenKey = TestSetup.twitter_access_token_fake;
+            string accessTokenSecret = "";
+            string consumerKey = "";
+            string consumerKeySecret = "";
 
-        //    // Act
-        //    User twitterUser = await User.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
+            // Act
+            var twitterUser = await User.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
 
-        //    // Assert
-        //    Assert.IsNotNull(twitterUser);
-        //    Assert.IsNotNull(twitterUser.Attributes["_socialIdentity"]);
-        //    JToken socID = twitterUser.Attributes["_socialIdentity"];
-        //    Assert.IsNotNull(socID["twitter"]);
-        //    Assert.IsTrue(socID["twitter"].HasValues);
-        //}
+            // Assert
+            Assert.IsNotNull(twitterUser);
+            Assert.IsNotNull(twitterUser.AuthSocialID);
+            Assert.IsNotNull(twitterUser.AuthSocialID.Attributes["twitter"]);
+            Assert.IsTrue(twitterUser.AuthSocialID.Attributes["twitter"].HasValues);
+        }
 
         [TestMethod]
         public async Task TestLoginTwitterAsyncBad()
@@ -263,26 +265,28 @@ namespace Kinvey.Tests
             });
         }
 
-        //[TestMethod]
-        //[Ignore("Placeholder - Need Access Token To Run Test")]
-        //public async Task TestLoginLinkedInAsync()
-        //{
-        //    // Arrange
-        //    string accessTokenKey = "";
-        //    string accessTokenSecret = "";
-        //    string consumerKey = "";
-        //    string consumerKeySecret = "";
+        [TestMethod]
+        public async Task TestLoginLinkedInAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+            string accessTokenKey = TestSetup.linkedin_access_token_fake;
+            string accessTokenSecret = "";
+            string consumerKey = "";
+            string consumerKeySecret = "";
 
-        //    // Act
-        //    User linkedinUser = await User.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
+            // Act
+            var linkedinUser = await User.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
 
-        //    // Assert
-        //    Assert.IsNotNull(linkedinUser);
-        //    Assert.IsNotNull(linkedinUser.Attributes["_socialIdentity"]);
-        //    JToken socID = linkedinUser.Attributes["_socialIdentity"];
-        //    Assert.IsNotNull(socID["linkedin"]);
-        //    Assert.IsTrue(socID["linkedin"].HasValues);
-        //}
+            // Assert
+            Assert.IsNotNull(linkedinUser);
+            Assert.IsNotNull(linkedinUser.AuthSocialID);
+            Assert.IsNotNull(linkedinUser.AuthSocialID.Attributes["linkedin"]);
+            Assert.IsTrue(linkedinUser.AuthSocialID.Attributes["linkedin"].HasValues);
+        }
 
         [TestMethod]
         public async Task TestLoginLinkedInAsyncBad()
@@ -301,26 +305,28 @@ namespace Kinvey.Tests
             });
         }
 
-        //[TestMethod]
-        //[Ignore("Placeholder - Need Access Token To Run Test")]
-        //public async Task TestLoginSalesforceAsync()
-        //{
-        //    // Arrange
-        //    string access = "";
-        //    string reauth = "";
-        //    string clientID = "";
-        //    string ID = "";
+        [TestMethod]
+        public async Task TestLoginSalesforceAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+            string access = TestSetup.salesforce_access_token_fake;
+            string reauth = "";
+            string clientID = "";
+            string ID = "";
 
-        //    // Act
-        //    User salesforceUser = await User.LoginSalesforceAsync(access, reauth, clientID, ID, kinveyClient);
+            // Act
+            var salesforceUser = await User.LoginSalesforceAsync(access, reauth, clientID, ID, kinveyClient);
 
-        //    // Assert
-        //    Assert.IsNotNull(salesforceUser);
-        //    Assert.IsNotNull(salesforceUser.Attributes["_socialIdentity"]);
-        //    JToken socID = salesforceUser.Attributes["_socialIdentity"];
-        //    Assert.IsNotNull(socID["salesforce"]);
-        //    Assert.IsTrue(socID["salesforce"].HasValues);
-        //}
+            // Assert
+            Assert.IsNotNull(salesforceUser);
+            Assert.IsNotNull(salesforceUser.AuthSocialID);
+            Assert.IsNotNull(salesforceUser.AuthSocialID.Attributes["salesforce"]);
+            Assert.IsTrue(salesforceUser.AuthSocialID.Attributes["salesforce"].HasValues);
+        }
 
         [TestMethod]
         public async Task TestLoginSalesforceAsyncBad()
@@ -389,54 +395,53 @@ namespace Kinvey.Tests
             Assert.IsTrue(renderURL.StartsWith(kinveyClient.MICHostName + Constants.STR_MIC_DEFAULT_VERSION + "/oauth/auth?client_id=" + (kinveyClient.RequestInitializer as KinveyClientRequestInitializer).AppKey + "." + micID, StringComparison.Ordinal));
         }
 
-        //[TestMethod]
-        //[Ignore("Placeholder - Need configured backend to run test")]
-        //public async Task TestMIC_LoginWithMIC_HeadlessFlow()
-        //{
-        //    // Arrange
-        //    string username = "testuser";
-        //    string password = "testpass";
-        //    string redirectURI = "kinveyAuthDemo://";
-        //    string saml_app_key = "kid_ZkPDb_34T";
-        //    string saml_app_secret = "c3752d5079f34353ab89d07229efaf63";
-        //    Client.Builder localBuilder = new Client.Builder(saml_app_key, saml_app_secret);
-        //    Client localClient = localBuilder.Build();
-        //    localClient.MICApiVersion = "v2";
+        [TestMethod]
+        public async Task TestLoginWithMicAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(2);
+            }
 
-        //    // Act
-        //    await User.LoginWithMIC(username, password, redirectURI);
+            // Act
+            Exception exception = null;
+            try
+            {
+                await User.LoginWithMIC("test", "test", null, kinveyClient);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
 
-        //    // Assert
-        //    Assert.IsNotNull(localClient.ActiveUser);
+            // Assert
+            Assert.IsNull(exception);
+        }
 
-        //    // Teardown
-        //    localClient.ActiveUser.Logout();
-        //}
+        [TestMethod]
+        public async Task TestLoginWithMicServiceIdProvidedAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(2);
+            }
 
-        //[TestMethod]
-        //[Ignore("Placeholder - Need configured backend to run test")]
-        //public async Task TestMIC_LoginWithMIC_HeadlessFlow_ClientID()
-        //{
-        //    // Arrange
-        //    string username = "testuser";
-        //    string password = "testpass";
-        //    string redirectURI = "kinveyAuthDemo://";
-        //    string saml_app_key = "kid_ZkPDb_34T";
-        //    string saml_app_secret = "c3752d5079f34353ab89d07229efaf63";
-        //    Client.Builder localBuilder = new Client.Builder(saml_app_key, saml_app_secret);
-        //    Client localClient = localBuilder.Build();
-        //    localClient.MICApiVersion = "v2";
+            // Act
+            Exception exception = null;
+            try
+            {
+                await User.LoginWithMIC("test", "test", TestSetup.mic_id_fake, kinveyClient);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
 
-        //    // Act
-        //    string micID = "12345";
-        //    await User.LoginWithMIC(username, password, redirectURI, micID);
-
-        //    // Assert
-        //    Assert.IsNotNull(localClient.ActiveUser);
-
-        //    // Teardown
-        //    localClient.ActiveUser.Logout();
-        //}
+            // Assert
+            Assert.IsNull(exception);
+        }
 
         [TestMethod]
         public async Task TestLogout()
@@ -507,27 +512,27 @@ namespace Kinvey.Tests
 
         #region CRUD Tests
 
-        //[TestMethod]
-        //[Ignore("Placeholder - No unit test yet")]
-        //public async Task TestCreateUserAsync()
-        //{
-        //    // Arrange
-        //    string email = "newuser@test.com";
-        //    Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
-        //    customFields.Add("email", email);
+        [TestMethod]
+        public async Task TestCreateUserAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+            string email = "newuser@test.com";
+            Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
+            customFields.Add("email", email);
 
-        //    // Act
-        //    User newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+            // Act
+            var newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+            var existingUser = await newUser.RetrieveAsync(newUser.Id);
 
-        //    // Teardown
-        //    //await kinveyClient.ActiveUser.DeleteAsync(newUser.Id, true);
-        //    kinveyClient.ActiveUser.Logout();
-
-        //    // Assert
-        //    Assert.IsNotNull(newUser);
-        //    Assert.IsNotNull(newUser.Attributes);
-        //    Assert.IsTrue(String.Compare((newUser.Attributes["email"]).ToString(), email) == 0);
-        //}
+            // Assert
+            Assert.IsNotNull(existingUser);
+            Assert.IsNotNull(existingUser.Attributes);
+            Assert.IsTrue(String.Compare((existingUser.Attributes["email"]).ToString(), email) == 0);
+        }
 
         //[TestMethod]
         //public async Task TestCreateUserAsyncBad()
