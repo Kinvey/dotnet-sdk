@@ -522,16 +522,16 @@ namespace Kinvey.Tests
             customFields.Add("email", email);
 
             // Act
-            var newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+            var newUser = await User.SignupAsync(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), customFields, kinveyClient);
             var existingUser = await newUser.RetrieveAsync(newUser.Id);
 
             //Teardown
-            var deleteResponse = await kinveyClient.ActiveUser.DeleteAsync(existingUser.Id, true);
+            await kinveyClient.ActiveUser.DeleteAsync(existingUser.Id, true);
 
             // Assert
             Assert.IsNotNull(existingUser);
             Assert.IsNotNull(existingUser.Attributes);
-            Assert.IsTrue(String.Compare((existingUser.Attributes["email"]).ToString(), email) == 0);
+            Assert.IsTrue(string.Compare((existingUser.Attributes["email"]).ToString(), email) == 0);
         }
 
         //[TestMethod]
@@ -722,11 +722,19 @@ namespace Kinvey.Tests
             customFields.Add("email", email);
 
             // Act
-            var newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
-            var deleteResponse = await newUser.DeleteAsync(newUser.Id, true);
+            Exception exception = null;
+            try
+            {
+                var newUser = await User.SignupAsync(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), customFields, kinveyClient);
+                await newUser.DeleteAsync(newUser.Id, true);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
 
-            // Assert          
-            Assert.AreEqual(deleteResponse.count, 1);
+            // Assert
+            Assert.IsNull(exception);
         }
 
         #endregion
@@ -846,10 +854,18 @@ namespace Kinvey.Tests
             var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Act
-            var u = await user.EmailVerificationAsync(user.Id);
+            Exception exception = null;
+            try
+            {
+                await user.EmailVerificationAsync(user.Id);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
 
             // Assert
-            Assert.IsNotNull(u);
+            Assert.IsNull(exception);
         }
     }
 }
