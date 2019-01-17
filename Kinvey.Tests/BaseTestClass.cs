@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace Kinvey.Tests
 {
@@ -32,27 +33,11 @@ namespace Kinvey.Tests
             }
         }
 
-        //public static string AppKey
-        //{
-        //    get
-        //    {
-        //        return EnvironmentVariable.AppKey ?? "_kid_";
-        //    }
-        //}
-
-        //public static string AppSecret
-        //{
-        //    get
-        //    {
-        //        return EnvironmentVariable.AppSecret ?? "appSecret";
-        //    }
-        //}
-
         public static string AppKey
         {
             get
             {
-                return null ?? "_kid_";
+                return EnvironmentVariable.AppKey ?? "_kid_";
             }
         }
 
@@ -60,49 +45,16 @@ namespace Kinvey.Tests
         {
             get
             {
-                return null ?? "appSecret";
+                return EnvironmentVariable.AppSecret ?? "appSecret";
             }
         }
 
-        //public static string AppKey
-        //{
-        //    get
-        //    {
-        //        return "kid_S112cy0jX" ?? "_kid_";
-        //    }
-        //}
-
-        //public static string AppSecret
-        //{
-        //    get
-        //    {
-        //        return "eddf74fe0d554d94b5ce856437e20b93" ?? "appSecret";
-        //    }
-        //}
-
-        //public static string AppKey
-        //{
-        //    get
-        //    {
-        //        return "kid_S1GhjUlh7" ?? "_kid_";
-        //    }
-        //}
-
-        //public static string AppSecret
-        //{
-        //    get
-        //    {
-        //        return "a5c5ef48d20546b6a05714e2fde590b1" ?? "appSecret";
-        //    }
-        //}
 
         public static bool MockData
         {
             get
             {
-                //return string.IsNullOrEmpty(EnvironmentVariable.AppKey) && string.IsNullOrEmpty(EnvironmentVariable.AppSecret);
-                return true;
-                //return false;
+                return string.IsNullOrEmpty(EnvironmentVariable.AppKey) && string.IsNullOrEmpty(EnvironmentVariable.AppSecret);
             }
         }
 
