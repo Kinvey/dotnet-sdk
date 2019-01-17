@@ -715,7 +715,7 @@ namespace Kinvey.Tests
             // Arrange
             if (MockData)
             {
-                MockResponses(3);
+                MockResponses(2);
             }
             string email = "newuser@test.com";
             var customFields = new Dictionary<string, JToken>();
