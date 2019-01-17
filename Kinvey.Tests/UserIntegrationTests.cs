@@ -396,7 +396,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestLoginWithMicAsync()
+        public async Task TestLoginWithMicResourceOwnerGrantFlowAsync()
         {
             // Arrange
             if (MockData)
@@ -420,7 +420,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestLoginWithMicServiceIdProvidedAsync()
+        public async Task TestLoginWithMicResourceOwnerGrantFlowWithServiceIdAsync()
         {
             // Arrange
             if (MockData)
@@ -521,7 +521,7 @@ namespace Kinvey.Tests
                 MockResponses(2);
             }
             string email = "newuser@test.com";
-            Dictionary<string, JToken> customFields = new Dictionary<string, JToken>();
+            var customFields = new Dictionary<string, JToken>();
             customFields.Add("email", email);
 
             // Act

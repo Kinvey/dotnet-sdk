@@ -192,8 +192,7 @@ namespace Kinvey.Tests
         {
             Assert.AreEqual(context.Request.HttpMethod, "POST");
             var json = Read<JObject>(context);
-            JToken socialIdentityJson;
-            if (json.TryGetValue("_socialIdentity", out socialIdentityJson))
+            if (json.TryGetValue("_socialIdentity", out JToken socialIdentityJson))
             {
                 Assert.AreEqual(socialIdentityJson.Children().Count(), 1);
                 var socialIdentityJsonChild = socialIdentityJson.First();
@@ -205,8 +204,8 @@ namespace Kinvey.Tests
                     case "_socialIdentity.kinveyAuth":
                         accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
                         Assert.IsNotNull(accessToken);
-                        break;                       
-                    case "_socialIdentity.facebook" :
+                        break;
+                    case "_socialIdentity.facebook":
                         accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
                         Assert.IsNotNull(accessToken);
                         break;
@@ -219,14 +218,14 @@ namespace Kinvey.Tests
                         Assert.IsNotNull(accessToken);
                         Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("access_token_secret"));
                         Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_key"));
-                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("access_token"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_secret"));
                         break;
                     case "_socialIdentity.linkedin":
                         accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
                         Assert.IsNotNull(accessToken);
                         Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("access_token_secret"));
                         Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_key"));
-                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("access_token"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_secret"));
                         break;
                     case "_socialIdentity.salesforce":
                         accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
@@ -234,7 +233,7 @@ namespace Kinvey.Tests
                         Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("refresh_token"));
                         Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("id"));
                         Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("client_id"));
-                        break;                       
+                        break;
                     default:
                         Assert.Fail("Incorrect json data.");
                         break;
@@ -1263,12 +1262,12 @@ namespace Kinvey.Tests
             var micPassword = micUser["password"];
             var clientId = micUser["client_id"];
 
-            var noMicIdProvided = clientId == "_kid_";
+            var noMicServiceIdProvided = clientId == "_kid_";
 
-            if (micServices.ContainsKey(clientId) || noMicIdProvided)
+            if (micServices.ContainsKey(clientId) || noMicServiceIdProvided)
             {
                 IEnumerable<JObject> existingUsers = null;
-                if (noMicIdProvided)
+                if (noMicServiceIdProvided)
                 {
                     existingUsers = micServices[micServices.Keys.FirstOrDefault()];                   
                 }
