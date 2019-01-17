@@ -12,7 +12,7 @@
 			<action android:name="android.accounts.AccountAuthenticator" />
 		</intent-filter>
 		<meta-data android:name="android.accounts.AccountAuthenticator"
-      android:resource="@drawable/KinveyAccountAuthenticator" />
+               android:resource="@drawable/KinveyAccountAuthenticator" />
 	</service>
 	</application>
 </manifest>
