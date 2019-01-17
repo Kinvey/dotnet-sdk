@@ -1154,6 +1154,9 @@ namespace Kinvey.Tests
                                             case "PUT":
                                                 MockUserUpdate(context, users, id);
                                                 break;
+                                            case "DELETE":
+                                                MockUserDelete(context, users, id);
+                                                break;                                                
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
                                                 MockNotFound(context);
@@ -1168,6 +1171,20 @@ namespace Kinvey.Tests
                                             case "POST":
                                                 context.Response.StatusCode = 204;
                                                 Write(context, "");
+                                                break;
+                                            default:
+                                                Assert.Fail(context.Request.RawUrl);
+                                                MockNotFound(context);
+                                                break;
+                                        }
+                                    }
+                                    else if (match != null && match.Groups.Count == 5 && match.Groups[1].Value.Equals("rpc") && match.Groups[2].Value.Equals("_kid_") && match.Groups[4].Value.Equals("user-email-verification-initiate"))
+                                    {                                       
+                                        switch (context.Request.HttpMethod)
+                                        {
+                                            case "POST":
+                                                var user = users[match.Groups[3].ToString()];
+                                                Write(context, user);
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
@@ -1204,6 +1221,17 @@ namespace Kinvey.Tests
             var user = Read<JObject>(context);
             users[id] = user;
             Write(context, user);
+        }
+
+        private static void MockUserDelete(HttpListenerContext context, Dictionary<string, JObject> users, string query)
+        {
+            var id = query.Split('?')[0];
+            var isRemoved = users.Remove(id);
+            var kinveyDeleteResponse = new KinveyDeleteResponse
+            {
+                count = isRemoved ? 1 : 0
+            };
+            Write(context, kinveyDeleteResponse);
         }
 
         private static void MockUserLookup(HttpListenerContext context, IEnumerable<JObject> users)

@@ -411,20 +411,7 @@ namespace Kinvey
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Sends a verification email
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="userID">Userid.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> EmailVerificationAsync(string userID, CancellationToken ct = default(CancellationToken))
-		{
-			EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
-			ct.ThrowIfCancellationRequested();
-			return await emailVerificationRequest.ExecuteAsync();
-		}
-
+		
 		private static readonly object classLock = new object();
 
 		/// <summary>
@@ -1023,14 +1010,27 @@ namespace Kinvey
 			return await deleteRequest.ExecuteAsync();
 		}
 
-		#endregion
+        /// <summary>
+		/// Sends a verification email
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userID">Userid.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> EmailVerificationAsync(string userID, CancellationToken ct = default(CancellationToken))
+        {
+            EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
+            ct.ThrowIfCancellationRequested();
+            return await emailVerificationRequest.ExecuteAsync();
+        }
 
-		#endregion
+        #endregion
 
-		#region User class internal login methods - internal use only.
+        #endregion
 
-		// Logs a user in asynchronously with a credential object.  Internal use only.
-		static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        #region User class internal login methods - internal use only.
+
+        // Logs a user in asynchronously with a credential object.  Internal use only.
+        static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			if (!String.IsNullOrEmpty(cred.AccessToken) &&

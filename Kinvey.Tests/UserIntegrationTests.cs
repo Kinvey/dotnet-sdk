@@ -327,7 +327,7 @@ namespace Kinvey.Tests
             Assert.IsNotNull(salesforceUser.AuthSocialID.Attributes["salesforce"]);
             Assert.IsTrue(salesforceUser.AuthSocialID.Attributes["salesforce"].HasValues);
         }
-
+     
         [TestMethod]
         public async Task TestLoginSalesforceAsyncBad()
         {
@@ -472,9 +472,6 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
             DataStore<ToDo> todoStoreRelogin = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
             await todoStoreRelogin.FindAsync();
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -518,7 +515,7 @@ namespace Kinvey.Tests
             // Arrange
             if (MockData)
             {
-                MockResponses(2);
+                MockResponses(3);
             }
             string email = "newuser@test.com";
             var customFields = new Dictionary<string, JToken>();
@@ -527,6 +524,9 @@ namespace Kinvey.Tests
             // Act
             var newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
             var existingUser = await newUser.RetrieveAsync(newUser.Id);
+
+            //Teardown
+            var deleteResponse = await kinveyClient.ActiveUser.DeleteAsync(existingUser.Id, true);
 
             // Assert
             Assert.IsNotNull(existingUser);
@@ -574,9 +574,6 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(me);
             Assert.IsTrue(string.Equals(kinveyClient.ActiveUser.Id, me.Id));
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -596,9 +593,6 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(users);
             Assert.AreEqual(3, users.Length);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -630,9 +624,6 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsFalse(exists);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -648,9 +639,6 @@ namespace Kinvey.Tests
             // Act
             // Assert
             await User.ForgotUsername(email);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -666,7 +654,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestUpdateUserAsync()
+        public async Task TestUpdateInstanceUserAsync()
         {
             // Setup
             if (MockData) MockResponses(3);
@@ -691,7 +679,54 @@ namespace Kinvey.Tests
             // Teardown
             kinveyClient.ActiveUser.Attributes.Remove(TEST_KEY);
             await kinveyClient.ActiveUser.UpdateAsync();
-            kinveyClient.ActiveUser.Logout();
+        }
+
+        [TestMethod]
+        public async Task TestUpdateUserAsync()
+        {
+            // Setup
+            if (MockData) MockResponses(3);
+            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            const string TEST_KEY = "test_key";
+            const string TEST_VALUE = "test_value";
+
+            // Arrange
+            kinveyClient.ActiveUser.Attributes.Remove(TEST_KEY);
+            kinveyClient.ActiveUser.Attributes.Add(TEST_KEY, TEST_VALUE);
+            Assert.IsTrue(kinveyClient.ActiveUser.Attributes.ContainsKey(TEST_KEY));
+
+            // Act
+            // Assert
+            var u = await kinveyClient.ActiveUser.UpdateAsync(user);
+
+            Assert.IsTrue(u != null);
+            Assert.IsTrue(u.Attributes.ContainsKey(TEST_KEY));
+            Assert.IsTrue(kinveyClient.ActiveUser.Attributes.ContainsKey(TEST_KEY));
+            Assert.IsTrue(kinveyClient.ActiveUser.Attributes.Count == u.Attributes.Count);
+
+            // Teardown
+            kinveyClient.ActiveUser.Attributes.Remove(TEST_KEY);
+            await kinveyClient.ActiveUser.UpdateAsync();
+        }
+
+        [TestMethod]
+        public async Task TestDeleteUserAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(3);
+            }
+            string email = "newuser@test.com";
+            var customFields = new Dictionary<string, JToken>();
+            customFields.Add("email", email);
+
+            // Act
+            var newUser = await User.SignupAsync("newuser1", "newpass1", customFields, kinveyClient);
+            var deleteResponse = await newUser.DeleteAsync(newUser.Id, true);
+
+            // Assert          
+            Assert.AreEqual(deleteResponse.count, 1);
         }
 
         #endregion
@@ -709,9 +744,6 @@ namespace Kinvey.Tests
             // Act
             // Assert
             Assert.IsTrue(deletedSoftUser.Disabled);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -727,9 +759,6 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsFalse(myUser.Disabled);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -748,9 +777,6 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsTrue(String.Equals(status, "sent"));
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -769,9 +795,6 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsTrue(String.Equals(status, "InProgress"));
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -809,9 +832,24 @@ namespace Kinvey.Tests
             Assert.AreEqual(0, kinveyClient2?.ActiveUser?.Metadata.Count);
             Assert.AreEqual(activeUser?.Metadata.Count, kinveyClient2?.ActiveUser?.Metadata.Count);
             Assert.IsTrue(activeUser?.UserName == kinveyClient2?.ActiveUser?.UserName);
+        }
 
-            // Teardown
-            kinveyClient1.ActiveUser.Logout();
+        [TestMethod]
+        public async Task TestEmailVerification()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            var u = await user.EmailVerificationAsync(user.Id);
+
+            // Assert
+            Assert.IsNotNull(u);
         }
     }
 }
