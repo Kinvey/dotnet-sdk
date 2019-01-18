@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "1085641296408",
+    "firebase_url": "https://testfcm-e2b1d.firebaseio.com",
+    "project_id": "testfcm-e2b1d",
+    "storage_bucket": "testfcm-e2b1d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085641296408:android:fc2ea48598823ee0",
+        "android_client_info": {
+          "package_name": "com.companyname.Kinvey.TestLocalLibApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085641296408-f0ue6d3sairt37e25m47n1t8r1dgm184.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOIMnPkxHVELCiII7O6p6AQ6IQDvgldyM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085641296408:android:0d1eb9a681af2460",
+        "android_client_info": {
+          "package_name": "com.xamarin.fcmexample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085641296408-f0ue6d3sairt37e25m47n1t8r1dgm184.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOIMnPkxHVELCiII7O6p6AQ6IQDvgldyM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
