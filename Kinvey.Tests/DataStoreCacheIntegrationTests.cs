@@ -3908,6 +3908,64 @@ namespace Kinvey.Tests
             Assert.AreEqual(2, thirdResponse.PullCount);
         }
 
+        [TestMethod]
+        public async Task TestDeltaSetWithQueryPullReturnCorrectNumberOfUpdates()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(13, kinveyClient);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.CACHE);
+            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            store.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard();
+            fc1.Question = "What+?";
+            fc1.Answer = "7";
+
+            var fc2 = new FlashCard();
+            fc2.Question = "What+?";
+            fc2.Answer = "8";
+
+            var fc3 = new FlashCard();
+            fc3.Question = "What+?";
+            fc3.Answer = "Because 7 8 9.";
+
+            // Act
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            var query = store.Where(x => x.Question.Equals("What+?"));
+            var firstResponse = await store.PullAsync(query);
+
+            var fc2Query = store.Where(y => y.Answer.Equals("8"));
+            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2.Answer = "14";
+            fc2 = await networkStore.SaveAsync(fc2);
+            var query2 = store.Where(x => x.Question.Equals("What+?"));
+            var secondResponse = await store.PullAsync(query2);
+
+            var localEntities = await store.FindAsync();
+            if (localEntities != null)
+            {
+                foreach (var localEntity in localEntities)
+                {
+                    await store.RemoveAsync(localEntity.ID);
+                }
+
+                await store.SyncAsync();
+            }
+
+            // Assert
+            Assert.AreEqual(3, firstResponse.PullCount);
+            Assert.AreEqual(1, secondResponse.PullCount);
+        }
+
         //with enabled deltaset should return correct number of items when deleting
         [TestMethod]
         public async Task TestDeltaSetPullReturnCorrectNumberOfDeletes()
