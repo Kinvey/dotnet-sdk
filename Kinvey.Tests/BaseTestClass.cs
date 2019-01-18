@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace Kinvey.Tests
 {
@@ -47,6 +48,7 @@ namespace Kinvey.Tests
                 return EnvironmentVariable.AppSecret ?? "appSecret";
             }
         }
+
 
         public static bool MockData
         {
@@ -138,37 +140,98 @@ namespace Kinvey.Tests
             }
         }
 
-        protected static void MockUserLogin(HttpListenerContext context, IEnumerable<JObject> users)
+        protected static void MockUserLogin(HttpListenerContext context, IEnumerable<JObject> users, IDictionary<string, JObject> signedUsers)
         {
             Assert.AreEqual(context.Request.HttpMethod, "POST");
             var json = Read<JObject>(context);
-            var username = json["username"];
-            var password = json["password"];
-            var user = users.SingleOrDefault(x => {
-                return username.Equals(x["username"]) && password.Equals(x["password"]);
-            });
-
-            if (user != null)
+            if (json.TryGetValue("_socialIdentity", out JToken socialIdentityJson))
             {
-                user["_kmd"] = new JObject
+                Assert.AreEqual(socialIdentityJson.Children().Count(), 1);
+                var socialIdentityJsonChild = socialIdentityJson.First();
+                Assert.AreEqual(socialIdentityJsonChild.Children().Count(), 1);
+                var accessToken = default(string);
+
+                switch (socialIdentityJsonChild.Path)
                 {
-                    ["authtoken"] = Guid.NewGuid().ToString()
-                };
+                    case "_socialIdentity.kinveyAuth":
+                        accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
+                        Assert.IsNotNull(accessToken);
+                        break;
+                    case "_socialIdentity.facebook":
+                        accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
+                        Assert.IsNotNull(accessToken);
+                        break;
+                    case "_socialIdentity.google":
+                        accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
+                        Assert.IsNotNull(accessToken);
+                        break;
+                    case "_socialIdentity.twitter":
+                        accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
+                        Assert.IsNotNull(accessToken);
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("access_token_secret"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_key"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_secret"));
+                        break;
+                    case "_socialIdentity.linkedin":
+                        accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
+                        Assert.IsNotNull(accessToken);
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("access_token_secret"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_key"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("consumer_secret"));
+                        break;
+                    case "_socialIdentity.salesforce":
+                        accessToken = socialIdentityJsonChild.First().Value<string>("access_token");
+                        Assert.IsNotNull(accessToken);
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("refresh_token"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("id"));
+                        Assert.IsNotNull(socialIdentityJsonChild.First().Value<string>("client_id"));
+                        break;
+                    default:
+                        Assert.Fail("Incorrect json data.");
+                        break;
+                }
 
-                var clone = new JObject(user);
-                clone.Remove("password");
-
-                Write(context, clone);
+                if (signedUsers.ContainsKey(accessToken))
+                {
+                    var responseJson = signedUsers[accessToken];
+                    Write(context, responseJson);
+                }
+                else
+                {
+                    Assert.Fail("Incorrect access token.");
+                }
             }
             else
             {
-                context.Response.StatusCode = 401;
-                Write(context, new
+                var username = json["username"];
+                var password = json["password"];
+                var user = users.SingleOrDefault(x =>
                 {
-                    error = "InvalidCredentials",
-                    description = "Invalid credentials. Please retry your request with correct credentials.",
-                    debug = "",
+                    return username.Equals(x["username"]) && password.Equals(x["password"]);
                 });
+
+                if (user != null)
+                {
+                    user["_kmd"] = new JObject
+                    {
+                        ["authtoken"] = Guid.NewGuid().ToString()
+                    };
+
+                    var clone = new JObject(user);
+                    clone.Remove("password");
+
+                    Write(context, clone);
+                }
+                else
+                {
+                    context.Response.StatusCode = 401;
+                    Write(context, new
+                    {
+                        error = "InvalidCredentials",
+                        description = "Invalid credentials. Please retry your request with correct credentials.",
+                        debug = "",
+                    });
+                }
             }
         }
 
@@ -597,6 +660,8 @@ namespace Kinvey.Tests
             var thread = new Thread(new ThreadStart(() => {
                 try
                 {
+                    #region Existing users
+
                     var users = new Dictionary<string, JObject>();
 
                     var testUserId = Guid.NewGuid().ToString();
@@ -658,6 +723,118 @@ namespace Kinvey.Tests
                             }
                         }
                     };
+
+                    #endregion Existing users
+
+                    #region Social networks users
+                    
+                    var signedUsers = new Dictionary<string, JObject>();
+
+                    signedUsers[TestSetup.facebook_access_token_fake] = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = "facebook_user",
+                        ["_socialIdentity"] = new JObject()
+                        {
+                            ["facebook"] = new JObject()
+                            {
+                                ["data"] = Guid.NewGuid().ToString(),
+                            },
+                        },
+                    };
+
+                    signedUsers[TestSetup.google_access_token_fake] = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = "google_user",
+                        ["_socialIdentity"] = new JObject()
+                        {
+                            ["google"] = new JObject()
+                            {
+                                ["data"] = Guid.NewGuid().ToString(),
+                            },
+                        },
+                    };
+
+                    signedUsers[TestSetup.twitter_access_token_fake] = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = "twitter_user",
+                        ["_socialIdentity"] = new JObject()
+                        {
+                            ["twitter"] = new JObject()
+                            {
+                                ["data"] = Guid.NewGuid().ToString(),
+                            },
+                        },
+                    };
+
+                    signedUsers[TestSetup.linkedin_access_token_fake] = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = "linkedin_user",
+                        ["_socialIdentity"] = new JObject()
+                        {
+                            ["linkedin"] = new JObject()
+                            {
+                                ["data"] = Guid.NewGuid().ToString(),
+                            },
+                        },
+                    };
+
+                    signedUsers[TestSetup.salesforce_access_token_fake] = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = "salesforce_user",
+                        ["_socialIdentity"] = new JObject()
+                        {
+                            ["salesforce"] = new JObject()
+                            {
+                                ["data"] = Guid.NewGuid().ToString(),
+                            },
+                        },
+                    };
+
+                    #endregion Social networks users
+
+                    #region MIC services
+
+                    var micServices = new Dictionary<string, IEnumerable<JObject>>();
+                    var micId1 = "_kid_" + Constants.MIC_ID_SEPARATOR + TestSetup.mic_id_fake;                                       
+                    var micUser1 = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = "test",
+                        ["password"] = "test"
+                    };
+
+                    var micUser2 =  new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = Guid.NewGuid().ToString(),
+                        ["password"] = Guid.NewGuid().ToString()
+                    };
+
+                    micServices[micId1] = new List<JObject> { micUser1, micUser2 };
+
+                    var micId2 = "_kid_" + Constants.MIC_ID_SEPARATOR + "46a68b99c6284c32b4ab7d54328a06ab";
+                    var micUser3 = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = Guid.NewGuid().ToString(),
+                        ["password"] = Guid.NewGuid().ToString()
+                    };
+
+                    var micUser4 = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = Guid.NewGuid().ToString(),
+                        ["password"] = Guid.NewGuid().ToString()
+                    };
+
+                    micServices[micId2] = new List<JObject> { micUser3, micUser4 };
+
+                    #endregion MIC services
 
                     var blobs = new Dictionary<string, JObject>();
                     var files = new Dictionary<string, byte[]>();
@@ -751,12 +928,15 @@ namespace Kinvey.Tests
                                 MockUserLookup(context, users.Values);
                                 break;
                             case "/user/_kid_/login":
-                                MockUserLogin(context, users.Values);
+                                MockUserLogin(context, users.Values, signedUsers);
                                 break;
                             case "/user/_kid_":
                             case "/user/_kid_/":
                                 MockUserSignUp(context, users);
                                 break;
+                            case "/oauth/token":
+                                MockOauthToken(context, micServices, signedUsers);
+                                break;                               
                             case "/appdata/_kid_/person":
                                 MockAppData(context, memory.Person, client);
                                 break;
@@ -927,6 +1107,9 @@ namespace Kinvey.Tests
                                             case "PUT":
                                                 MockUserUpdate(context, users, id);
                                                 break;
+                                            case "DELETE":
+                                                MockUserDelete(context, users, id);
+                                                break;                                                
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
                                                 MockNotFound(context);
@@ -941,6 +1124,20 @@ namespace Kinvey.Tests
                                             case "POST":
                                                 context.Response.StatusCode = 204;
                                                 Write(context, "");
+                                                break;
+                                            default:
+                                                Assert.Fail(context.Request.RawUrl);
+                                                MockNotFound(context);
+                                                break;
+                                        }
+                                    }
+                                    else if (match != null && match.Groups.Count == 5 && match.Groups[1].Value.Equals("rpc") && match.Groups[2].Value.Equals("_kid_") && match.Groups[4].Value.Equals("user-email-verification-initiate"))
+                                    {                                       
+                                        switch (context.Request.HttpMethod)
+                                        {
+                                            case "POST":
+                                                var user = users[match.Groups[3].ToString()];
+                                                Write(context, user);
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
@@ -979,6 +1176,17 @@ namespace Kinvey.Tests
             Write(context, user);
         }
 
+        private static void MockUserDelete(HttpListenerContext context, Dictionary<string, JObject> users, string query)
+        {
+            var id = query.Split('?')[0];
+            var isRemoved = users.Remove(id);
+            var kinveyDeleteResponse = new KinveyDeleteResponse
+            {
+                count = isRemoved ? 1 : 0
+            };
+            Write(context, kinveyDeleteResponse);
+        }
+
         private static void MockUserLookup(HttpListenerContext context, IEnumerable<JObject> users)
         {
             Assert.AreEqual("POST", context.Request.HttpMethod);
@@ -1014,6 +1222,61 @@ namespace Kinvey.Tests
             users[userId] = user;
 
             Write(context, user);
+        }
+
+        private static void MockOauthToken(HttpListenerContext context, IDictionary<string, IEnumerable<JObject>> micServices, IDictionary<string, JObject> signedUsers)
+        {
+            Assert.AreEqual("POST", context.Request.HttpMethod);
+            var data = Read(context);
+            var micData = Encoding.Default.GetString(data);
+            var micUserData = micData.Split('&');
+
+            var micUser = new Dictionary<string, string>();
+
+            foreach (var micUserItem in micUserData)
+            {
+                var item = micUserItem.Split('=');
+                micUser.Add(item[0], item[1]);
+            }
+
+            var micUserName = micUser["username"];
+            var micPassword = micUser["password"];
+            var clientId = micUser["client_id"];
+
+            var noMicServiceIdProvided = clientId == "_kid_";
+
+            if (micServices.ContainsKey(clientId) || noMicServiceIdProvided)
+            {
+                IEnumerable<JObject> existingUsers = null;
+                if (noMicServiceIdProvided)
+                {
+                    existingUsers = micServices[micServices.Keys.FirstOrDefault()];                   
+                }
+                else
+                {
+                    existingUsers = micServices[clientId];
+                }
+
+                var existingUser = existingUsers.FirstOrDefault(x => micUserName.Equals(x["username"].ToString()) && micPassword.Equals(x["password"].ToString()));
+
+                Assert.IsNotNull(existingUser);
+
+                var accessToken = Guid.NewGuid().ToString();
+                signedUsers.Add(accessToken, existingUser);
+
+                var responseJson = new JObject
+                {
+                    ["access_token"] = accessToken,
+                    ["refresh_token"] = Guid.NewGuid().ToString()
+                };
+
+                Write(context, responseJson);
+            }
+            else
+            {
+                Assert.Fail("A user not found.");
+            }
+            
         }
 
         private static void MockCheckUsernameExists(HttpListenerContext context, IEnumerable<JObject> users)
