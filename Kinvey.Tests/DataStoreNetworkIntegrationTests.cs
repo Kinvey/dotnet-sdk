@@ -491,6 +491,86 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestDeleteByQueryStringValueWithPlusSymbolEqualExpressionAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(9);
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var newItem1 = new ToDo
+            {
+                Name = "Task1 to delete",
+                Details = "+Delete"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "Task2 to delete",
+                Details = "+Delete"
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "Task3 not to delete",
+                Details = "Not delete details3"
+            };
+
+            var savedItem1 = await todoStore.SaveAsync(newItem1);
+            var savedItem2 = await todoStore.SaveAsync(newItem2);
+            var savedItem3 = await todoStore.SaveAsync(newItem3);
+
+            var query = todoStore.Where(x => x.Details.Equals("+Delete"));
+
+            // Act
+            var kinveyDeleteResponse = await todoStore.RemoveAsync(query);
+
+            ToDo existingItem1 = null;
+            ToDo existingItem2 = null;
+            ToDo existingItem3 = null;
+
+            try
+            {
+                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            try
+            {
+                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            try
+            {
+                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            // Teardown
+            await todoStore.RemoveAsync(existingItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(kinveyDeleteResponse);
+            Assert.AreEqual(2, kinveyDeleteResponse.count);
+            Assert.IsNull(existingItem1);
+            Assert.IsNull(existingItem2);
+            Assert.IsNotNull(existingItem3);
+        }
+
+        [TestMethod]
         public async Task TestDeleteByQueryOrExpressionAsync()
         {
             // Setup
@@ -2852,6 +2932,49 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestGetCountAsyncWithQuery()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var newItem = new ToDo
+            {
+                Name = "Next Task",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "another todo",
+                Details = "details for 2+",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var t1 = await todoStore.SaveAsync(newItem);
+            var t2 = await todoStore.SaveAsync(newItem2);
+
+            // Act
+            var count = 0u;
+            var query = todoStore.Where(e => e.Details.Equals("details for 2+"));
+            count = await todoStore.GetCountAsync(query);
+
+            // Teardown
+            await todoStore.RemoveAsync(t1.ID);
+            await todoStore.RemoveAsync(t2.ID);
+
+            // Assert
+            Assert.AreEqual(1u, count);
+        }
+
+        [TestMethod]
         public async Task TestNetworkStoreFindAsync()
         {
             // Setup
@@ -3023,6 +3146,52 @@ namespace Kinvey.Tests
             Assert.IsNotNull(listToDo[0].Name);
             Assert.IsNotNull(listToDo[0].Details);
             Assert.IsTrue(listToDo[0].Details.Equals("details for 2"));
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreFindByMongoQueryWithPlusSymbol()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+           
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var newItem1 = new ToDo();
+            newItem1.Name = "todo";
+            newItem1.Details = "details for 1";
+            newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+            var newItem2 = new ToDo();
+            newItem2.Name = "another todo";
+            newItem2.Details = "details for 2+";
+            newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+            newItem1 = await todoStore.SaveAsync(newItem1);
+            newItem2 = await todoStore.SaveAsync(newItem2);
+
+            // Act
+            var mongoQuery = "{\"details\":\"details for 2+\"}";
+            var listToDo = new List<ToDo>();
+
+            listToDo = await todoStore.FindWithMongoQueryAsync(mongoQuery);
+
+            // Teardown
+            await todoStore.RemoveAsync(newItem1.ID);
+            await todoStore.RemoveAsync(newItem2.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDo);
+            Assert.IsTrue(listToDo.Count > 0);
+            Assert.AreEqual(1, listToDo.Count);
+            Assert.IsNotNull(listToDo[0].Name);
+            Assert.IsNotNull(listToDo[0].Details);
+            Assert.IsTrue(listToDo[0].Details.Equals("details for 2+"));
         }
 
         [TestMethod]
