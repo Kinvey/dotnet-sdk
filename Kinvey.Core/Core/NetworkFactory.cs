@@ -286,7 +286,8 @@ namespace Kinvey
             {
                 restPathParams += string.IsNullOrEmpty(restPathParams) ? "?" : "&";
                 restPathParams += "query={query}";
-                urlParameters.Add("query", query);
+                var encodedQuery = Uri.EscapeDataString(query);
+                urlParameters.Add("query", encodedQuery);
             }
 
             REST_PATH += restPathParams;
@@ -330,9 +331,10 @@ namespace Kinvey
 				uriResourceParameters.Add("fields", decodedQueryMap["fields"]);
 			}
 
-			uriResourceParameters["querystring"] = decodedQueryMap["query"];
+            var encodedQuery = Uri.EscapeDataString(decodedQueryMap["query"]);
+            uriResourceParameters["querystring"] = encodedQuery;
 
-			return uriResourceParameters;
+            return uriResourceParameters;
 		}
 	
 		#endregion
