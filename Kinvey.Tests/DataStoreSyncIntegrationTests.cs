@@ -3874,7 +3874,109 @@ namespace Kinvey.Tests
 			kinveyClient.ActiveUser.Logout();
 		}
 
-		[TestMethod]
+        [TestMethod]
+        public async Task TestSyncStorePullWithAutoPaginationQueryNullAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(7);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            syncStore.AutoPagination = true;
+
+            // Arrange
+            ToDo newItem = new ToDo
+            {
+                Name = "Next Task",
+                Details = "A test",
+                DueDate = "2018-04-19T20:02:17.635Z"
+            };
+            ToDo t1 = await networkStore.SaveAsync(newItem);
+
+            ToDo anotherNewItem = new ToDo
+            {
+                Name = "Another Next Task",
+                Details = "Another test",
+                DueDate = "2018-05-19T20:02:17.635Z"
+            };
+            ToDo t2 = await networkStore.SaveAsync(anotherNewItem);
+
+            await syncStore.PullAsync();
+
+            var savedTasks = await syncStore.FindAsync();
+
+            // Teardown
+            foreach (var todo in savedTasks)
+            {
+                await syncStore.RemoveAsync(todo.ID);
+            }
+            await syncStore.PushAsync();
+
+            // Assert
+            Assert.IsNotNull(savedTasks);
+            Assert.AreEqual(2, savedTasks.Count);
+            Assert.IsNotNull(savedTasks.FirstOrDefault(e=> e.Name == "Next Task"));
+            Assert.IsNotNull(savedTasks.FirstOrDefault(e => e.Name == "Another Next Task"));
+        }
+
+        [TestMethod]
+        public async Task TestSyncStorePullWithAutoPaginationQueryNotNullAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(9);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            syncStore.AutoPagination = true;
+
+            // Arrange
+            ToDo newItem = new ToDo
+            {
+                Name = "Next Task",
+                Details = "A test",
+                DueDate = "2018-04-19T20:02:17.635Z"
+            };
+            ToDo t1 = await networkStore.SaveAsync(newItem);
+
+            ToDo anotherNewItem = new ToDo
+            {
+                Name = "Another Next Task",
+                Details = "Another test",
+                DueDate = "2018-05-19T20:02:17.635Z"
+            };
+            ToDo t2 = await networkStore.SaveAsync(anotherNewItem);
+
+            var query = syncStore.Where(e => e.Details.Equals("Another test"));
+            await syncStore.PullAsync(query);
+            var savedTasksWithQuery = await syncStore.FindAsync();
+
+            await syncStore.PullAsync();
+            var savedTasksWithoutQuery = await syncStore.FindAsync();
+
+            // Teardown
+            foreach (var todo in savedTasksWithoutQuery)
+            {
+                await syncStore.RemoveAsync(todo.ID);
+            }
+            await syncStore.PushAsync();
+
+            // Assert
+            Assert.IsNotNull(savedTasksWithQuery);
+            Assert.AreEqual(1, savedTasksWithQuery.Count);
+            Assert.AreEqual(t2.Name, savedTasksWithQuery[0].Name);
+            Assert.AreEqual(t2.Details, savedTasksWithQuery[0].Details);
+            Assert.AreEqual(t2.DueDate, savedTasksWithQuery[0].DueDate);
+        }
+
+        [TestMethod]
 		public async Task TestSyncStorePullWithQueryAsync()
 		{
 			// Setup
