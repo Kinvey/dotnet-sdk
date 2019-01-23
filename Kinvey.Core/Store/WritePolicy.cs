@@ -28,7 +28,11 @@ namespace Kinvey
 		/// <summary>
 		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
 		/// </summary>
-		NETWORK_THEN_LOCAL
-	}
+		NETWORK_THEN_LOCAL,
+        /// <summary>
+		/// Writes in the local cache first and then try to write trought the network (backend).
+		/// </summary>
+		LOCAL_THEN_NETWORK
+    }
 }
 
