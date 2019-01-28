@@ -97,7 +97,8 @@ namespace Kinvey
                     }
                     catch (KinveyException exception)
                     {
-                        exception.ThrowIfNotNetworkException(exception, networkKinveyException);
+                        exception.ThrowIfNotCorrespond(exception, EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED);
+                        networkKinveyException = exception;
                     }
 
                     // if the network request fails, fetch data from local cache

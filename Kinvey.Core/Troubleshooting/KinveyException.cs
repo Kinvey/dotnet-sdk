@@ -412,16 +412,13 @@ namespace Kinvey
 
         #region miscellanea
 
-        internal void ThrowIfNotNetworkException(KinveyException sourceException, KinveyException destinationException)
+        internal void ThrowIfNotCorrespond(KinveyException exception, EnumErrorCategory category,
+            EnumErrorCode code)
         {
-            if (sourceException.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK && sourceException.ErrorCode == EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+            if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
             {
-                destinationException = sourceException;
-            }
-            else
-            {
-                throw sourceException;
-            }
+                throw exception;
+            }           
         }
 
         #endregion miscellanea
