@@ -415,7 +415,7 @@ namespace Kinvey
         internal void ThrowIfNotCorrespond(KinveyException exception, EnumErrorCategory category,
             EnumErrorCode code)
         {
-            if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+            if (exception.ErrorCategory != category || exception.ErrorCode != code)
             {
                 throw exception;
             }           
