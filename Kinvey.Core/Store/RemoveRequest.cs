@@ -79,6 +79,7 @@ namespace Kinvey
                     break;
 
                 case WritePolicy.NETWORK_THEN_LOCAL:
+                case WritePolicy.LOCAL_THEN_NETWORK:
                     if (_query == null)
                     {
                         // cache

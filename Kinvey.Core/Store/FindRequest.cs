@@ -78,7 +78,43 @@ namespace Kinvey
 					}
 					break;
 
-				default:
+                case ReadPolicy.NETWORK_OTHERWISE_LOCAL:
+                    // auto
+
+                    KinveyException kinveyException = null;
+                    try
+                    {
+                        // first, perform a network request
+                        var networkResult = await PerformNetworkFind();
+                        if (networkResult.IsDeltaFetched)
+                        {
+                            listResult = PerformLocalFind();
+                        }
+                        else
+                        {
+                            listResult = networkResult.ResultSet;
+                        }
+                    }
+                    catch (KinveyException exception)
+                    {
+                        if (exception.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK && exception.ErrorCode == EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+                        {
+                            kinveyException = exception;
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+
+                    // if the network request fails, fetch data from local cache
+                    if (kinveyException != null)
+                    {
+                        listResult = PerformLocalFind();
+                    }
+                    break;
+
+                default:
 					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 

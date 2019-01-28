@@ -75,6 +75,7 @@ namespace Kinvey
 					break;
 
 				case WritePolicy.NETWORK_THEN_LOCAL:
+                case WritePolicy.LOCAL_THEN_NETWORK:
 					// cache
 					string saveMode = request.RequestMethod;
 					string tempID = null;
@@ -89,7 +90,6 @@ namespace Kinvey
 						Cache.Update(entity);
 					}
 
-
 					// network save
 					savedEntity = await request.ExecuteAsync();
 
@@ -100,7 +100,7 @@ namespace Kinvey
 
 					break;
 
-				default:
+                default:
 					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid write policy");
 			}
 

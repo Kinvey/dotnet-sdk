@@ -149,7 +149,7 @@ namespace Kinvey
 		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <see cref="KinveyXamarin.Client.SharedClient"/> is used.</param>
 		public static DataStore<T> Collection(string collectionName, AbstractClient client = null)
 		{
-			return new DataStore<T>(DataStoreType.AUTO, collectionName, client);
+			return new DataStore<T>(DataStoreType.CACHE, collectionName, client);
 		}
 
 		/// <summary>

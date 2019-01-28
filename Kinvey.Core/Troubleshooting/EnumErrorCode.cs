@@ -268,9 +268,14 @@ namespace Kinvey
 		/// </summary>
 		ERROR_REALTIME_NOT_REGISTERED,
 
-		/// <summary>
-		/// General error condition
+        /// <summary>
+		/// Error code for failing network connection.
 		/// </summary>
-		ERROR_GENERAL
+		ERROR_NETWORK_CONNECTION_FAILED,
+
+        /// <summary>
+        /// General error condition
+        /// </summary>
+        ERROR_GENERAL
 	}
 }
