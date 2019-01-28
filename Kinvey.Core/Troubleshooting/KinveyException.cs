@@ -409,18 +409,5 @@ namespace Kinvey
 		}
 
         #endregion
-
-        #region miscellanea
-
-        internal void ThrowIfNotCorrespond(KinveyException exception, EnumErrorCategory category,
-            EnumErrorCode code)
-        {
-            if (exception.ErrorCategory != category || exception.ErrorCode != code)
-            {
-                throw exception;
-            }           
-        }
-
-        #endregion miscellanea
     }
 }

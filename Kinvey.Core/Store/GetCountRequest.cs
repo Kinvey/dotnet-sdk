@@ -66,7 +66,10 @@ namespace Kinvey
                     }
                     catch (KinveyException exception)
                     {
-                        exception.ThrowIfNotCorrespond(exception, EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED);
+                        if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+                        {
+                            throw;
+                        }
                         networkKinveyException = exception;
                     }
 
