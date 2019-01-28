@@ -408,6 +408,22 @@ namespace Kinvey
 			return new Tuple<string, string, string>(error, debug, description);
 		}
 
-		#endregion
+        #endregion
+
+        #region miscellanea
+
+        internal void ThrowIfNotNetworkException(KinveyException sourceException, KinveyException destinationException)
+        {
+            if (sourceException.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK && sourceException.ErrorCode == EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+            {
+                destinationException = sourceException;
+            }
+            else
+            {
+                throw sourceException;
+            }
+        }
+
+        #endregion miscellanea
     }
 }

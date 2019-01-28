@@ -81,7 +81,7 @@ namespace Kinvey
                 case ReadPolicy.NETWORK_OTHERWISE_LOCAL:
                     // auto
 
-                    KinveyException kinveyException = null;
+                    KinveyException networkKinveyException = null;
                     try
                     {
                         // first, perform a network request
@@ -97,18 +97,11 @@ namespace Kinvey
                     }
                     catch (KinveyException exception)
                     {
-                        if (exception.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK && exception.ErrorCode == EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
-                        {
-                            kinveyException = exception;
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        exception.ThrowIfNotNetworkException(exception, networkKinveyException);
                     }
 
                     // if the network request fails, fetch data from local cache
-                    if (kinveyException != null)
+                    if (networkKinveyException != null)
                     {
                         listResult = PerformLocalFind();
                     }
