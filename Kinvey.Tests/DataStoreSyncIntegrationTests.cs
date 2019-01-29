@@ -16,12 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Moq;
-
-
-using Kinvey;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 namespace Kinvey.Tests
 {
@@ -3974,6 +3970,61 @@ namespace Kinvey.Tests
             Assert.AreEqual(t2.Name, savedTasksWithQuery[0].Name);
             Assert.AreEqual(t2.Details, savedTasksWithQuery[0].Details);
             Assert.AreEqual(t2.DueDate, savedTasksWithQuery[0].DueDate);
+        }
+
+        [TestMethod]
+        public async Task TestSyncStorePullWithAutoPaginationReceivingMoreThan10kRecordsAsync()
+        {
+            const int countEntitiesInThread = 1001;
+            const int countThreads = 10;
+
+            // Setup
+            if (MockData)
+            {
+                MockResponses(countEntitiesInThread * countThreads * 2 + 4);
+            }
+            else
+            {
+                Assert.Fail("Use this test only with mocks since it operates with big data size.");
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            syncStore.AutoPagination = true;
+
+            // Arrange
+            var tasks = new List<Task>();
+
+            for (var i = 0; i < countThreads; i++)
+            {
+                tasks.Add(Task.Run(async () => {
+                    for (var index = 0; index < countEntitiesInThread; index++)
+                    {
+                        ToDo newItem = new ToDo
+                        {
+                            Name = Guid.NewGuid().ToString(),
+                            Details = "A test",
+                            DueDate = "2018-04-19T20:02:17.635Z"
+                        };
+                        await networkStore.SaveAsync(newItem);
+                    }
+                }));
+            }
+
+            await Task.WhenAll(tasks.ToArray());
+
+            await syncStore.PullAsync();
+            var savedTasks = await syncStore.FindAsync();
+
+            // Teardown
+            await syncStore.RemoveAsync(syncStore.Where(e => e.Details.Equals("A test")));
+            await syncStore.PushAsync();
+
+            // Assert
+            Assert.IsNotNull(savedTasks);
+            Assert.AreEqual(countEntitiesInThread * countThreads, savedTasks.Count);
         }
 
         [TestMethod]
