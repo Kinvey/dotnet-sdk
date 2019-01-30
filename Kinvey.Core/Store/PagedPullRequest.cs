@@ -48,10 +48,11 @@ namespace Kinvey
 			Task consumer = null;
 			//Semaphore maxThread = new Semaphore(20, 20);
 			var pageQueue = new List<Task<List<T>>>();
+            IQueryable<object> query = Query ?? Enumerable.Empty<object>().AsQueryable();
 
-			do
+            do
 			{
-				var skipTakeQuery = this.Query.Skip(skipCount).Take(pageSize);
+				var skipTakeQuery = query.Skip(skipCount).Take(pageSize);
 				//maxThread.WaitOne();
 				pageQueue.Add(new FindRequest<T>(Client, Collection, Cache, ReadPolicy.FORCE_NETWORK, false, null, skipTakeQuery, null).ExecuteAsync());
 				//maxThread.Release();
