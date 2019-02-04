@@ -4430,7 +4430,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(13, kinveyClient);
+                MockResponses(12, kinveyClient);
             }
             
             var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
