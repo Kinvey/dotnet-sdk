@@ -449,7 +449,11 @@ namespace Kinvey.Tests
             // Arrange
             if (MockData)
             {
-                MockResponses(6);
+                MockResponses(8);
+            }
+            else
+            {
+                Assert.Fail("Use this test only with mocks.");
             }
 
             var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
@@ -459,19 +463,17 @@ namespace Kinvey.Tests
             };
 
             // Act
-            Exception exception = null;
-            try
-            {
-                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
-                await todoStore.SaveAsync(todo);
-            }
-            catch (Exception ex)
-            {
-                exception = ex;
-            }
+            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+            var savedToDo = await todoStore.SaveAsync(todo);
+            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+
+            //Teardown
+            await todoStore.RemoveAsync(savedToDo.ID);
 
             // Assert
-            Assert.IsNull(exception);
+            Assert.IsNotNull(savedToDo);
+            Assert.AreEqual(savedToDo.ID, existingToDo.ID);
+            Assert.AreEqual(savedToDo.Name, existingToDo.Name);
         }
 
         [TestMethod]
