@@ -50,7 +50,6 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(todoStore);
             Assert.IsTrue(string.Equals(todoStore.CollectionName, toDosCollection));
-            Assert.AreEqual(todoStore.StoreType, DataStoreType.AUTO);
             Assert.IsNotNull(todoStore.KinveyClient);
         }
 

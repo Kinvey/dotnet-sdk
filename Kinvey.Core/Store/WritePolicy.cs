@@ -25,10 +25,11 @@ namespace Kinvey
 		/// Executes the request from the cache every single time.
 		/// </summary>
 		FORCE_LOCAL,
-		/// <summary>
-		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
-		/// </summary>
-		NETWORK_THEN_LOCAL,
+        /// <summary>
+        /// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
+        /// </summary>
+        [Obsolete("This enum value has been deprecated. Please use LOCAL_THEN_NETWORK instead.")]
+        NETWORK_THEN_LOCAL,
         /// <summary>
 		/// Writes in the local cache first and then try to write trought the network (backend).
 		/// </summary>
