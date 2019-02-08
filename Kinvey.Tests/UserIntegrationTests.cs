@@ -444,6 +444,37 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestLoginMICWithAccessTokenUnauthorizedResponseAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todo = new ToDo
+            {
+                Name = "Test"
+            };
+
+            // Act
+            Exception exception = null;
+            try
+            {
+                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+                await todoStore.SaveAsync(todo);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            // Assert
+            Assert.IsNull(exception);
+        }
+
+        [TestMethod]
         public async Task TestLogout()
         {
             // Arrange

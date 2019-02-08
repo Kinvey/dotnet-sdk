@@ -643,7 +643,16 @@ namespace Kinvey
                 //
                 var currentCred = uc.Store.Load(user.Id, uc.SSOGroupKey);
                 currentCred.AccessToken = accessResult["access_token"].ToString();
-                currentCred.RefreshToken = accessResult["refresh_token"].ToString();
+
+                if (accessResult["refresh_token"] != null)
+                {
+                    var refreshToken = accessResult["refresh_token"].ToString();
+                    if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
+                    {
+                        currentCred.RefreshToken = refreshToken;
+                    }
+                }
+
                 currentCred.RedirectUri = uc.MICRedirectURI;
                 currentCred.MICClientID = clientID;
                 uc.Store.Store(user.Id, uc.SSOGroupKey, currentCred);
