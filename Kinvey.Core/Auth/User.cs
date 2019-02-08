@@ -703,8 +703,17 @@ namespace Kinvey
 				//store the new refresh token
 				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
 				currentCred.AccessToken = result["access_token"].ToString();
-				currentCred.RefreshToken = result["refresh_token"].ToString();
-				currentCred.RedirectUri = uc.MICRedirectURI;
+
+                if (result["refresh_token"] != null)
+                {
+                    var refreshToken = result["refresh_token"].ToString();
+                    if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
+                    {
+                        currentCred.RefreshToken = refreshToken;
+                    }
+                }
+
+                currentCred.RedirectUri = uc.MICRedirectURI;
                 currentCred.MICClientID = clientID;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
 
