@@ -140,14 +140,15 @@ namespace Kinvey
 			this.AutoPagination = false;
 		}
 
-		#region Public interface
-		/// <summary>
-		/// Gets an instance of the <see cref="KinveyXamarin.DataStore{T}"/>.
-		/// </summary>
-		/// <returns>The DataStore instance.</returns>
-		/// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
-		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <see cref="KinveyXamarin.Client.SharedClient"/> is used.</param>
-		public static DataStore<T> Collection(string collectionName, AbstractClient client = null)
+        #region Public interface
+        /// <summary>
+        /// Gets an instance of the <see cref="KinveyXamarin.DataStore{T}"/>.
+        /// </summary>
+        /// <returns>The DataStore instance.</returns>
+        /// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
+        /// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <see cref="KinveyXamarin.Client.SharedClient"/> is used.</param>
+        [Obsolete("This method has been deprecated.  Please use Collection( collectionName:, type:, client: ) instead.")]
+        public static DataStore<T> Collection(string collectionName, AbstractClient client = null)
 		{
 			return new DataStore<T>(DataStoreType.CACHE, collectionName, client);
 		}
