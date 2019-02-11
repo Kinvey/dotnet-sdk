@@ -6,7 +6,7 @@ namespace Kinvey
     {
         internal static string GetValidValue(this JObject jobject, string propertyName)
         {
-            var propertyValue = jobject["refresh_token"];
+            var propertyValue = jobject[propertyName];
             if (propertyValue != null)
             {
                 var newRefreshToken = propertyValue.ToString();
