@@ -521,17 +521,8 @@ namespace Kinvey
 							//store the new refresh token
 							Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
 							currentCred.AccessToken = result["access_token"].ToString();
-
-                            if (result["refresh_token"] != null)
-                            {
-                                var newRefreshToken = result["refresh_token"].ToString();
-                                if (!string.IsNullOrEmpty(newRefreshToken) && !newRefreshToken.ToLower().Equals("null"))
-                                {
-                                    currentCred.RefreshToken = newRefreshToken;
-                                }
-                            }
-
-							currentCred.RedirectUri = redirectUri;
+                            currentCred.RefreshToken = result.GetValidValue("refresh_token");
+                            currentCred.RedirectUri = redirectUri;
 							Client.Store.Store(Client.ActiveUser.Id, Client.SSOGroupKey, currentCred);
 
 							// Retry the original request
