@@ -9,6 +9,10 @@
     <DocumentationFile>bin\Release\netstandard2.0\Kinvey.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="docfx.console" Version="2.40.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" />
