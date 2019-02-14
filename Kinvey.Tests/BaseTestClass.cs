@@ -194,8 +194,16 @@ namespace Kinvey.Tests
                 if (signedUsers.ContainsKey(accessToken))
                 {
                     var responseJson = signedUsers[accessToken];
+
+                    var authtoken = accessToken.Equals(TestSetup.access_token_for_401_response_fake) ? TestSetup.auth_token_for_401_response_fake : Guid.NewGuid().ToString();
+
+                    responseJson["_kmd"] = new JObject
+                    {
+                        ["authtoken"] = authtoken
+                    };
+
                     Write(context, responseJson);
-                }
+                }              
                 else
                 {
                     Assert.Fail("Incorrect access token.");
@@ -794,7 +802,6 @@ namespace Kinvey.Tests
                             },
                         },
                     };
-
                     #endregion Social networks users
 
                     #region MIC services
@@ -815,16 +822,16 @@ namespace Kinvey.Tests
                         ["password"] = Guid.NewGuid().ToString()
                     };
 
-                    micServices[micId1] = new List<JObject> { micUser1, micUser2 };
-
-                    var micId2 = "_kid_" + Constants.MIC_ID_SEPARATOR + "46a68b99c6284c32b4ab7d54328a06ab";
                     var micUser3 = new JObject
                     {
                         ["_id"] = Guid.NewGuid().ToString(),
-                        ["username"] = Guid.NewGuid().ToString(),
-                        ["password"] = Guid.NewGuid().ToString()
+                        ["username"] = "test3",
+                        ["password"] = "test3"
                     };
 
+                    micServices[micId1] = new List<JObject> { micUser1, micUser2, micUser3 };
+
+                    var micId2 = "_kid_" + Constants.MIC_ID_SEPARATOR + "46a68b99c6284c32b4ab7d54328a06ab";
                     var micUser4 = new JObject
                     {
                         ["_id"] = Guid.NewGuid().ToString(),
@@ -832,7 +839,14 @@ namespace Kinvey.Tests
                         ["password"] = Guid.NewGuid().ToString()
                     };
 
-                    micServices[micId2] = new List<JObject> { micUser3, micUser4 };
+                    var micUser5 = new JObject
+                    {
+                        ["_id"] = Guid.NewGuid().ToString(),
+                        ["username"] = Guid.NewGuid().ToString(),
+                        ["password"] = Guid.NewGuid().ToString()
+                    };
+
+                    micServices[micId2] = new List<JObject> { micUser4, micUser5 };
 
                     #endregion MIC services
 
@@ -873,6 +887,12 @@ namespace Kinvey.Tests
                         {
                             Assert.IsNotNull(authorization);
                             Assert.IsFalse(string.IsNullOrEmpty(authorization));
+                            if (authorization.Contains(TestSetup.auth_token_for_401_response_fake, StringComparison.Ordinal))
+                            {
+                                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                                Write(context, "Unauthorized");
+                                continue;
+                            }
                         }
                         switch (context.Request.Url.LocalPath)
                         {
@@ -1231,38 +1251,45 @@ namespace Kinvey.Tests
             var micData = Encoding.Default.GetString(data);
             var micUserData = micData.Split('&');
 
-            var micUser = new Dictionary<string, string>();
+            var splitedMicData = new Dictionary<string, string>();
 
             foreach (var micUserItem in micUserData)
             {
                 var item = micUserItem.Split('=');
-                micUser.Add(item[0], item[1]);
+                splitedMicData.Add(item[0], item[1]);
             }
-
-            var micUserName = micUser["username"];
-            var micPassword = micUser["password"];
-            var clientId = micUser["client_id"];
-
+                      
+            var clientId = splitedMicData["client_id"];
             var noMicServiceIdProvided = clientId == "_kid_";
 
             if (micServices.ContainsKey(clientId) || noMicServiceIdProvided)
             {
-                IEnumerable<JObject> existingUsers = null;
-                if (noMicServiceIdProvided)
+                string accessToken;
+                var existingUsers = noMicServiceIdProvided ? micServices[micServices.Keys.FirstOrDefault()] : micServices[clientId];
+
+                if (splitedMicData["grant_type"] == "refresh_token")
                 {
-                    existingUsers = micServices[micServices.Keys.FirstOrDefault()];                   
+                    signedUsers.Remove(TestSetup.access_token_for_401_response_fake);
+
+                    var existingUser = existingUsers.FirstOrDefault(x => x["username"].ToString().Equals("test3") && x["password"].ToString().Equals("test3"));
+
+                    Assert.IsNotNull(existingUser);
+
+                    accessToken = Guid.NewGuid().ToString();
+                    signedUsers.Add(accessToken, existingUser);
                 }
                 else
                 {
-                    existingUsers = micServices[clientId];
+                    var micUserName = splitedMicData["username"];
+                    var micPassword = splitedMicData["password"];
+
+                    var existingUser = existingUsers.FirstOrDefault(x => micUserName.Equals(x["username"].ToString()) && micPassword.Equals(x["password"].ToString()));
+
+                    Assert.IsNotNull(existingUser);
+
+                    accessToken = micUserName.Equals("test3") && micPassword.Equals("test3") ? TestSetup.access_token_for_401_response_fake : Guid.NewGuid().ToString();
+                    signedUsers.Add(accessToken, existingUser);
                 }
-
-                var existingUser = existingUsers.FirstOrDefault(x => micUserName.Equals(x["username"].ToString()) && micPassword.Equals(x["password"].ToString()));
-
-                Assert.IsNotNull(existingUser);
-
-                var accessToken = Guid.NewGuid().ToString();
-                signedUsers.Add(accessToken, existingUser);
 
                 var responseJson = new JObject
                 {
