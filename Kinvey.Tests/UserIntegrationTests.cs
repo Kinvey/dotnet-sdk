@@ -444,6 +444,39 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestLoginMICWithAccessTokenUnauthorizedResponseAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(8);
+            }
+            else
+            {
+                Assert.Fail("Use this test only with mocks.");
+            }
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todo = new ToDo
+            {
+                Name = "Test"
+            };
+
+            // Act
+            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+            var savedToDo = await todoStore.SaveAsync(todo);
+            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+
+            //Teardown
+            await todoStore.RemoveAsync(savedToDo.ID);
+
+            // Assert
+            Assert.IsNotNull(savedToDo);
+            Assert.AreEqual(savedToDo.ID, existingToDo.ID);
+            Assert.AreEqual(savedToDo.Name, existingToDo.Name);
+        }
+
+        [TestMethod]
         public async Task TestLogout()
         {
             // Arrange
