@@ -505,7 +505,7 @@ namespace Kinvey
 						redirectUri = cred.RedirectUri;
                         micClientId = cred.MICClientID;
 
-						if (refreshToken != null)
+						if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
 						{
 							//use the refresh token for a new access token
                             JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, micClientId).ExecuteAsync();
@@ -521,8 +521,8 @@ namespace Kinvey
 							//store the new refresh token
 							Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
 							currentCred.AccessToken = result["access_token"].ToString();
-							currentCred.RefreshToken = result["refresh_token"].ToString();
-							currentCred.RedirectUri = redirectUri;
+                            currentCred.RefreshToken = result.GetValidValue("refresh_token");
+                            currentCred.RedirectUri = redirectUri;
 							Client.Store.Store(Client.ActiveUser.Id, Client.SSOGroupKey, currentCred);
 
 							// Retry the original request
