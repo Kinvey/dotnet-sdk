@@ -37,10 +37,11 @@ namespace Kinvey
 		/// </summary>
 		public static readonly DataStoreType SYNC = new DataStoreType(ReadPolicy.FORCE_LOCAL, WritePolicy.FORCE_LOCAL);
 
-		/// <summary>
-		/// The CACHE store.
-		/// </summary>
-		public static readonly DataStoreType CACHE = new DataStoreType (ReadPolicy.BOTH, WritePolicy.NETWORK_THEN_LOCAL);
+        /// <summary>
+        /// The CACHE store.
+        /// </summary>
+        [Obsolete("This field has been deprecated.  Please use AUTO instead.")]
+        public static readonly DataStoreType CACHE = new DataStoreType (ReadPolicy.BOTH, WritePolicy.NETWORK_THEN_LOCAL);
 
 		/// <summary>
 		/// The NETWORK store.
