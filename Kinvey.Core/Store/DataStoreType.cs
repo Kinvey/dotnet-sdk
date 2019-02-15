@@ -47,7 +47,12 @@ namespace Kinvey
 		/// </summary>
 		public static readonly DataStoreType NETWORK = new DataStoreType (ReadPolicy.FORCE_NETWORK, WritePolicy.FORCE_NETWORK);
 
-		DataStoreType (ReadPolicy readPolicy, WritePolicy writePolicy){
+        /// <summary>
+		/// The AUTO store.
+		/// </summary>
+		public static readonly DataStoreType AUTO = new DataStoreType(ReadPolicy.NETWORK_OTHERWISE_LOCAL, WritePolicy.LOCAL_THEN_NETWORK);
+
+        DataStoreType (ReadPolicy readPolicy, WritePolicy writePolicy){
 			this.ReadPolicy = readPolicy;
 			this.WritePolicy = writePolicy;
 		}

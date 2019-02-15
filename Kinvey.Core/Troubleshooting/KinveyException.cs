@@ -408,6 +408,6 @@ namespace Kinvey
 			return new Tuple<string, string, string>(error, debug, description);
 		}
 
-		#endregion
+        #endregion
     }
 }
