@@ -113,6 +113,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\CustomEndpoint\CustomEndpointRequest.cs">
       <Link>CustomEndpoint\CustomEndpointRequest.cs</Link>
     </Compile>
+	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Extensions\CustomExtension.cs">
+      <Link>Extensions\CustomExtension.cs</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\File\File.cs">
       <Link>File\File.cs</Link>
     </Compile>

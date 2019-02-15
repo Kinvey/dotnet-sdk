@@ -351,7 +351,6 @@ namespace Kinvey.Tests
 			// Assert
 			Assert.IsNotNull(todoStore);
 			Assert.AreEqual(todoStore.CollectionName, collectionName);
-			Assert.AreEqual(todoStore.StoreType, DataStoreType.CACHE);
 		}
 
         [TestMethod]

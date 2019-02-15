@@ -31,7 +31,11 @@ namespace Kinvey
 		/// <summary>
 		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
 		/// </summary>
-		BOTH	
-	}
+		BOTH,
+        /// <summary>
+		/// Tries to get the most recent data from the backend first, if it fails it returns data from the local cache.
+		/// </summary>
+		NETWORK_OTHERWISE_LOCAL
+    }
 }
 
