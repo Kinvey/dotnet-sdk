@@ -8,7 +8,23 @@
     <DebugType></DebugType>
     <DocumentationFile>bin\Release\netstandard2.0\Kinvey.xml</DocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
+    <Compile Remove="api\**" />
+    <Compile Remove="articles\**" />
+    <Compile Remove="_site\**" />
+    <EmbeddedResource Remove="api\**" />
+    <EmbeddedResource Remove="articles\**" />
+    <EmbeddedResource Remove="_site\**" />
+    <None Remove="api\**" />
+    <None Remove="articles\**" />
+    <None Remove="_site\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="docfx.console" Version="2.40.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" />
@@ -22,6 +38,13 @@
     <Compile Remove="Auth\Credential.cs" />
     <Compile Remove="Client\AbstractClient.cs" />
     <Compile Remove="Client\AbstractKinveyClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove="docfx.json" />
+    <None Remove="index.md" />
+    <None Remove="log.txt" />
+    <None Remove="toc.yml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Net\Client\DotnetClientBuilder.cs">

@@ -37,17 +37,23 @@ namespace Kinvey
 		/// </summary>
 		public static readonly DataStoreType SYNC = new DataStoreType(ReadPolicy.FORCE_LOCAL, WritePolicy.FORCE_LOCAL);
 
-		/// <summary>
-		/// The CACHE store.
-		/// </summary>
-		public static readonly DataStoreType CACHE = new DataStoreType (ReadPolicy.BOTH, WritePolicy.NETWORK_THEN_LOCAL);
+        /// <summary>
+        /// The CACHE store.
+        /// </summary>
+        [Obsolete("This field has been deprecated.  Please use AUTO instead.")]
+        public static readonly DataStoreType CACHE = new DataStoreType (ReadPolicy.BOTH, WritePolicy.NETWORK_THEN_LOCAL);
 
 		/// <summary>
 		/// The NETWORK store.
 		/// </summary>
 		public static readonly DataStoreType NETWORK = new DataStoreType (ReadPolicy.FORCE_NETWORK, WritePolicy.FORCE_NETWORK);
 
-		DataStoreType (ReadPolicy readPolicy, WritePolicy writePolicy){
+        /// <summary>
+		/// The AUTO store.
+		/// </summary>
+		public static readonly DataStoreType AUTO = new DataStoreType(ReadPolicy.NETWORK_OTHERWISE_LOCAL, WritePolicy.LOCAL_THEN_NETWORK);
+
+        DataStoreType (ReadPolicy readPolicy, WritePolicy writePolicy){
 			this.ReadPolicy = readPolicy;
 			this.WritePolicy = writePolicy;
 		}

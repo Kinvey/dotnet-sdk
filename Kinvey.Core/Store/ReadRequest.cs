@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 
 namespace Kinvey
 {
@@ -296,7 +297,14 @@ namespace Kinvey
 			{
 				throw;
 			}
-			catch (Exception e)
+            catch (HttpRequestException e)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+                                            EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED,
+                                            "Error in FindAsync() for network results.",
+                                            e);
+            }
+            catch (Exception e)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
 										  EnumErrorCode.ERROR_GENERAL,
