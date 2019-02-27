@@ -14,6 +14,11 @@ namespace Kinvey.Tests
         private const string toDosCollection = "ToDos";
         private const string personCollection = "person";
         private const string flashCardCollection = "FlashCard";
+        private const string unreachableUrl = "http://localhost:12345/";
+        private string kinveyUrl
+        {
+            get { return MockData ? "http://localhost:8080" : "https://baas.kinvey.com/"; }
+        }
 
         [TestInitialize]
         public override void Setup()
@@ -31,10 +36,10 @@ namespace Kinvey.Tests
             kinveyClient = builder.Build();
         }
 
-        private void SetUnReachableRootUrlToKinveyClient()
+        private void SetRootUrlToKinveyClient(string url)
         {
             var property = kinveyClient.GetType().BaseType.BaseType.GetField("rootUrl", BindingFlags.NonPublic | BindingFlags.Instance);
-            property.SetValue(kinveyClient, "http://localhost:12345/");
+            property.SetValue(kinveyClient, url);
         }
 
         #region Collection
@@ -2589,6 +2594,831 @@ namespace Kinvey.Tests
         #region Find
 
         [TestMethod]
+        public async Task TestFindNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(9, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+            
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync();
+
+            var listToDoSync1 = await syncStore.FindAsync();
+
+            newItem3 = await networkStore.SaveAsync(newItem3);
+
+            var listToDoAuto2 = await autoStore.FindAsync();
+            var listToDoSync2 = await syncStore.FindAsync();
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoSync1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.IsNotNull(listToDoSync2);
+            Assert.AreEqual(2, listToDoAuto1.Count);
+            Assert.AreEqual(2, listToDoSync1.Count);
+            Assert.AreEqual(3, listToDoAuto2.Count);
+            Assert.AreEqual(3, listToDoSync2.Count);
+        }
+
+        [TestMethod]
+        public async Task TestFindWithQueryNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var query = autoStore.Where(x => x.Details.StartsWith("details for t"));
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+            newItem3 = await networkStore.SaveAsync(newItem3);
+
+            // Act          
+            var listToDoAuto = await autoStore.FindAsync(query);
+            var listToDoSync = await syncStore.FindAsync(query);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto);
+            Assert.IsNotNull(listToDoSync);
+            Assert.AreEqual(2, listToDoAuto.Count);
+            Assert.AreEqual(2, listToDoSync.Count);
+        }
+
+        [TestMethod]
+        public async Task TestFindWithSkipLimitQueryNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var query = autoStore.Take(1).Skip(1);
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+            newItem3 = await networkStore.SaveAsync(newItem3);
+
+            // Act          
+            var listToDoAuto = await autoStore.FindAsync(query);
+            var listToDoSync = await syncStore.FindAsync(query);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto);
+            Assert.IsNotNull(listToDoSync);
+            Assert.AreEqual(1, listToDoAuto.Count);
+            Assert.AreEqual(0, listToDoSync.Count);
+        }
+
+        [TestMethod]
+        public async Task TestFindWithDeltaSetTurnOnNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(12, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+
+            var newItem1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var newItem2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+            var newItem3 = new FlashCard
+            {
+                Question = "What is 4 + 5?",
+                Answer = "9"
+            };
+            var newItem4 = new FlashCard
+            {
+                Question = "What is 5 + 5?",
+                Answer = "10"
+            };
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);           
+
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync();
+            newItem3 = await networkStore.SaveAsync(newItem3);
+            var listToDoAuto2 = await autoStore.FindAsync();
+
+            var queryCacheItems = kinveyClient.CacheManager.GetCache<QueryCacheItem>("QueryCacheItem");
+            var queryCacheItemBefore = queryCacheItems.FindAll().FirstOrDefault();
+
+            newItem4 = await networkStore.SaveAsync(newItem4);
+
+            var listToDoAuto3 = await autoStore.FindAsync();
+            var queryCacheItemAfter = queryCacheItems.FindAll().FirstOrDefault();
+
+            var listToDoSync = await syncStore.FindAsync();
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+            await networkStore.RemoveAsync(newItem4.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.IsNotNull(listToDoAuto3);
+            Assert.IsNotNull(listToDoSync);
+            Assert.AreEqual(2, listToDoAuto1.Count);
+            Assert.AreEqual(3, listToDoAuto2.Count);
+            Assert.AreEqual(4, listToDoAuto3.Count);
+            Assert.AreEqual(4, listToDoSync.Count);
+            Assert.AreNotEqual(queryCacheItemBefore.lastRequest, queryCacheItemAfter.lastRequest);
+        }
+
+        [TestMethod]
+        public async Task TestFindDescendingOrderNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };         
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem2 = await networkStore.SaveAsync(newItem2);
+            newItem3 = await networkStore.SaveAsync(newItem3);
+            newItem1 = await networkStore.SaveAsync(newItem1);
+                       
+            var query = autoStore.OrderByDescending(task => task.Details);
+
+            // Act          
+            var listToDoAuto = await autoStore.FindAsync(query);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto);
+            Assert.AreEqual(newItem3.Details, listToDoAuto[0].Details);
+            Assert.AreEqual(newItem2.Details, listToDoAuto[1].Details);
+            Assert.AreEqual(newItem1.Details, listToDoAuto[2].Details);
+        }
+
+        [TestMethod]
+        public async Task TestFindDeletingItemNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await autoStore.SaveAsync(newItem1);
+            newItem2 = await autoStore.SaveAsync(newItem2);
+
+            await autoStore.RemoveAsync(newItem1.ID);
+
+            // Act          
+            var listToDoSync = await syncStore.FindAsync();
+
+            // Teardown
+            await autoStore.RemoveAsync(newItem2.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoSync);
+            Assert.AreEqual(newItem2.Name, listToDoSync[0].Name);
+            Assert.AreEqual(newItem2.Details, listToDoSync[0].Details);
+            Assert.AreEqual(newItem2.DueDate, listToDoSync[0].DueDate);
+        }
+
+        [TestMethod]
+        public async Task TestFindInvalidQueryNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+
+            var query = autoStore.Where(x => true);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.FindAsync(query);
+            });
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED);
+        }
+
+        [TestMethod]
+        public async Task TestFindNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync();
+
+            newItem3 = await networkStore.SaveAsync(newItem3);
+
+            SetRootUrlToKinveyClient(unreachableUrl);           
+            var listToDoAuto2 = await autoStore.FindAsync();
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.AreEqual(2, listToDoAuto1.Count);
+            Assert.AreEqual(2, listToDoAuto2.Count);
+        }
+
+        [TestMethod]
+        public async Task TestFindNetworkConnectionEliminatedAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(11, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem4 = new ToDo
+            {
+                Name = "todo4",
+                Details = "details for 4 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync();
+
+            newItem3 = await networkStore.SaveAsync(newItem3);
+
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var listToDoAuto2 = await autoStore.FindAsync();
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            newItem4 = await networkStore.SaveAsync(newItem4);
+
+            var listToDoAuto3 = await autoStore.FindAsync();
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+            await networkStore.RemoveAsync(newItem4.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.IsNotNull(listToDoAuto3);
+            Assert.AreEqual(2, listToDoAuto1.Count);
+            Assert.AreEqual(2, listToDoAuto2.Count);
+            Assert.AreEqual(4, listToDoAuto3.Count);
+        }
+
+        [TestMethod]
+        public async Task TestFindWithQueryNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var query = autoStore.Where(x => x.Details.StartsWith("details for t"));
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+            newItem3 = await networkStore.SaveAsync(newItem3);
+
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync();
+
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var listToDoAuto2 = await autoStore.FindAsync(query);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.AreEqual(3, listToDoAuto1.Count);
+            Assert.AreEqual(2, listToDoAuto2.Count);
+        }
+
+        [TestMethod]
+        public async Task TestFindSkip1Take1NetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo",
+                Details = "details for 1",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "another todo",
+                Details = "details for 2",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "yet another todo",
+                Details = "details for 3",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var query = autoStore.Skip(1).Take(1);
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass);
+           
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+            newItem3 = await networkStore.SaveAsync(newItem3);
+
+            // Act
+            var listToDoAuto1 = await autoStore.FindAsync();
+
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var listToDoAuto2 = await autoStore.FindAsync(query);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.AreEqual(listToDoAuto1.Count, 3);
+            Assert.AreEqual(listToDoAuto2.Count, 1);
+        }
+
+        [TestMethod]
+        public async Task TestFindDescendingOrderNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem2 = await networkStore.SaveAsync(newItem2);
+            newItem3 = await networkStore.SaveAsync(newItem3);
+            newItem1 = await networkStore.SaveAsync(newItem1);
+
+            var query = autoStore.OrderByDescending(task => task.Details);
+
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync(query);
+
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var listToDoAuto2 = await autoStore.FindAsync(query);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+            await networkStore.RemoveAsync(newItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.AreEqual(newItem3.Details, listToDoAuto2[0].Details);
+            Assert.AreEqual(newItem2.Details, listToDoAuto2[1].Details);
+            Assert.AreEqual(newItem1.Details, listToDoAuto2[2].Details);
+        }
+
+        [TestMethod]
+        public async Task TestFindWithDeltaSetTurnOnNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };            
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync();
+
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var listToDoAuto2 = await autoStore.FindAsync();
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.AreEqual(2, listToDoAuto1.Count);
+            Assert.AreEqual(2, listToDoAuto2.Count);
+        }
+
+        [TestMethod]
+        public async Task TestFindDeletedItemNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(7, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+
+            // Act          
+            var listToDoAuto1 = await autoStore.FindAsync();
+            await networkStore.RemoveAsync(newItem1.ID);
+            var listToDoAuto2 = await autoStore.FindAsync();
+
+            var existingToDo = await syncStore.FindByIDAsync(newItem1.ID);
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem2.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto1);
+            Assert.IsNotNull(listToDoAuto2);
+            Assert.AreEqual(2, listToDoAuto1.Count);
+            Assert.AreEqual(1, listToDoAuto2.Count);
+            Assert.AreEqual(newItem2.Name, listToDoAuto2[0].Name);
+            Assert.AreEqual(newItem2.Details, listToDoAuto2[0].Details);
+            Assert.AreEqual(newItem2.DueDate, listToDoAuto2[0].DueDate);
+            Assert.IsNull(existingToDo);
+        }
+
+        [TestMethod]
         public async Task TestFindByQueryNetworkConnectionAvailableAsync()
         {
             // Setup
@@ -2667,7 +3497,7 @@ namespace Kinvey.Tests
            
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             newItem1 = await syncStore.SaveAsync(newItem1);
             newItem2 = await syncStore.SaveAsync(newItem2);
@@ -2763,7 +3593,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             newItem1 = await syncStore.SaveAsync(newItem1);
             newItem2 = await syncStore.SaveAsync(newItem2);
@@ -2856,7 +3686,7 @@ namespace Kinvey.Tests
            
             await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             newItem1 = await syncStore.SaveAsync(newItem1);
             newItem2 = await syncStore.SaveAsync(newItem2);
@@ -2965,7 +3795,7 @@ namespace Kinvey.Tests
            
             await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             newItem1 = await syncStore.SaveAsync(newItem1);
             newItem2 = await syncStore.SaveAsync(newItem2);
@@ -2987,6 +3817,246 @@ namespace Kinvey.Tests
         #endregion Find
 
         #region Find by id
+
+        [TestMethod]
+        public async Task TestFindByIDExistingItemNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "Next Task1",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "Next Task2",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var savedItem1 = await networkStore.SaveAsync(newItem1);
+            var savedItem2 = await networkStore.SaveAsync(newItem2);
+
+            // Act
+            var existingItemInNetwork = await autoStore.FindByIDAsync(savedItem1.ID);
+            var existingItemInLocalStorage = await syncStore.FindByIDAsync(savedItem1.ID);
+
+            // Teardown
+            await networkStore.RemoveAsync(savedItem1.ID);
+            await networkStore.RemoveAsync(savedItem2.ID);
+
+            // Assert
+            Assert.IsNotNull(existingItemInNetwork);
+            Assert.IsNotNull(existingItemInLocalStorage);
+            Assert.AreEqual(existingItemInNetwork.ID, savedItem1.ID);
+            Assert.AreEqual(existingItemInNetwork.Name, savedItem1.Name);
+            Assert.AreEqual(existingItemInNetwork.Details, savedItem1.Details);
+            Assert.AreEqual(existingItemInNetwork.DueDate, savedItem1.DueDate);
+            Assert.AreEqual(existingItemInLocalStorage.ID, savedItem1.ID);
+            Assert.AreEqual(existingItemInLocalStorage.Name, savedItem1.Name);
+            Assert.AreEqual(existingItemInLocalStorage.Details, savedItem1.Details);
+            Assert.AreEqual(existingItemInLocalStorage.DueDate, savedItem1.DueDate);
+        }
+
+        [TestMethod]
+        public async Task TestFindByIDNotExistingItemNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(4, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem = new ToDo
+            {
+                Name = "Next Task1",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            KinveyException exception = null;
+            ToDo existingItem = null;
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var savedItem = await networkStore.SaveAsync(newItem);
+
+            // Act
+            try
+            {
+                existingItem = await autoStore.FindByIDAsync(Guid.NewGuid().ToString());
+            }
+            catch (KinveyException kinveyException)
+            {
+                exception = kinveyException;
+            }
+
+            // Teardown
+            await autoStore.RemoveAsync(savedItem.ID);
+
+            // Assert
+            if (MockData)
+            {
+                Assert.IsNull(existingItem);
+            }
+            else
+            {
+                Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+                KinveyException ke = exception as KinveyException;
+                Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+                Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestFindByIDExistingItemNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(7, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "Next Task1",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "Next Task2",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var savedItem1 = await networkStore.SaveAsync(newItem1);
+            var savedItem2 = await networkStore.SaveAsync(newItem2);
+
+            // Act            
+            var existingItemInNetwork = await autoStore.FindByIDAsync(savedItem1.ID);
+
+            var listToDoAuto = await autoStore.FindAsync();
+
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var existingItemInLocalStorage = await autoStore.FindByIDAsync(savedItem1.ID);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            // Teardown
+            await networkStore.RemoveAsync(savedItem1.ID);
+            await networkStore.RemoveAsync(savedItem2.ID);
+
+            // Assert
+            Assert.IsNotNull(listToDoAuto);
+            Assert.IsNotNull(existingItemInNetwork);
+            Assert.IsNotNull(existingItemInLocalStorage);
+            Assert.AreEqual(2, listToDoAuto.Count);
+            Assert.AreEqual(existingItemInNetwork.ID, savedItem1.ID);
+            Assert.AreEqual(existingItemInNetwork.Name, savedItem1.Name);
+            Assert.AreEqual(existingItemInNetwork.Details, savedItem1.Details);
+            Assert.AreEqual(existingItemInNetwork.DueDate, savedItem1.DueDate);
+            Assert.AreEqual(existingItemInLocalStorage.ID, savedItem1.ID);
+            Assert.AreEqual(existingItemInLocalStorage.Name, savedItem1.Name);
+            Assert.AreEqual(existingItemInLocalStorage.Details, savedItem1.Details);
+            Assert.AreEqual(existingItemInLocalStorage.DueDate, savedItem1.DueDate);
+        }
+
+        [TestMethod]
+        public async Task TestFindByIDDeletedItemNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var newItem1 = new ToDo
+            {
+                Name = "Next Task1",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "Next Task2",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            ToDo existingItemInNetwork = null;
+            KinveyException exception = null;
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var savedItem1 = await autoStore.SaveAsync(newItem1);
+            var savedItem2 = await autoStore.SaveAsync(newItem2);
+
+            // Act
+            var existingItemInLocalStorage1 = await syncStore.FindByIDAsync(savedItem1.ID);
+
+            await autoStore.RemoveAsync(savedItem1.ID);
+
+            try
+            {
+                existingItemInNetwork = await autoStore.FindByIDAsync(savedItem1.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                exception = kinveyException;
+            }
+
+            var existingItemInLocalStorage2 = await syncStore.FindByIDAsync(savedItem1.ID);
+           
+            // Teardown
+            await autoStore.RemoveAsync(savedItem2.ID);
+
+            // Assert
+            if (MockData)
+            {
+                Assert.IsNull(existingItemInNetwork);
+            }
+            else
+            {
+                Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+                KinveyException ke = exception as KinveyException;
+                Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+                Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+            }
+
+            // Assert
+            Assert.IsNotNull(existingItemInLocalStorage1);
+            Assert.IsNull(existingItemInLocalStorage2);
+        }
 
         [TestMethod]
         public async Task TestFindByIDNetworkConnectionAvailableAsync()
@@ -3047,7 +4117,7 @@ namespace Kinvey.Tests
             
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             var savedItem = await syncStore.SaveAsync(newItem);
 
@@ -3155,7 +4225,7 @@ namespace Kinvey.Tests
             
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             p1 = await syncStore.SaveAsync(p1);
             p2 = await syncStore.SaveAsync(p2);
@@ -3260,7 +4330,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             p1 = await syncStore.SaveAsync(p1);
             p2 = await syncStore.SaveAsync(p2);
@@ -3363,7 +4433,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             p1 = await syncStore.SaveAsync(p1);
             p2 = await syncStore.SaveAsync(p2);
@@ -3480,7 +4550,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             p1 = await syncStore.SaveAsync(p1);
             p2 = await syncStore.SaveAsync(p2);
@@ -3551,6 +4621,229 @@ namespace Kinvey.Tests
         #endregion Save
 
         #region Get count
+
+        [TestMethod]
+        public async Task TestGetCountAllItemsNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(9, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "Next Task1",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "Next Task2",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "Next Task3",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var savedItem1 = await networkStore.SaveAsync(newItem1);
+            var savedItem2 = await networkStore.SaveAsync(newItem2);
+          
+            // Act
+            var count1 = await autoStore.GetCountAsync();
+
+            var savedItem3 = await networkStore.SaveAsync(newItem3);
+
+            var count2 = await autoStore.GetCountAsync();
+
+            // Teardown
+            await networkStore.RemoveAsync(savedItem1.ID);
+            await networkStore.RemoveAsync(savedItem2.ID);
+            await networkStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(count1);
+            Assert.IsNotNull(count2);
+            Assert.AreEqual(2u, count1);
+            Assert.AreEqual(3u, count2);
+        }
+
+        [TestMethod]
+        public async Task TestGetCountByQueryNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "Next Task1",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "Next Task2",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "Next Task3",
+                Details = "Details",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var query = autoStore.Where(t => t.Details.StartsWith("A t"));
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var savedItem1 = await networkStore.SaveAsync(newItem1);
+            var savedItem2 = await networkStore.SaveAsync(newItem2);
+            var savedItem3 = await networkStore.SaveAsync(newItem3);
+
+            // Act
+            var count = await autoStore.GetCountAsync(query);
+
+            // Teardown
+            await networkStore.RemoveAsync(savedItem1.ID);
+            await networkStore.RemoveAsync(savedItem2.ID);
+            await networkStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(count);
+            Assert.AreEqual(2u, count);
+        }
+
+        [TestMethod]
+        public async Task TestGetCountInvalidQueryNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await networkStore.SaveAsync(newItem1);
+            newItem2 = await networkStore.SaveAsync(newItem2);
+
+            var query = autoStore.Where(x => true);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.GetCountAsync(query);
+            });
+
+            // Teardown
+            await networkStore.RemoveAsync(newItem1.ID);
+            await networkStore.RemoveAsync(newItem2.ID);
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_LINQ_WHERE_CLAUSE_NOT_SUPPORTED);
+        }
+
+        [TestMethod]
+        public async Task TestGetCountAllItemsNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem1 = new ToDo
+            {
+                Name = "Next Task1",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem2 = new ToDo
+            {
+                Name = "Next Task2",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var newItem3 = new ToDo
+            {
+                Name = "Next Task3",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var savedItem1 = await networkStore.SaveAsync(newItem1);
+            var savedItem2 = await networkStore.SaveAsync(newItem2);
+
+            // Act
+            var listAutoToDo = await autoStore.FindAsync();
+           
+            var savedItem3 = await networkStore.SaveAsync(newItem3);
+
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var count = await autoStore.GetCountAsync();
+            SetRootUrlToKinveyClient(kinveyUrl);
+            
+            // Teardown
+            await networkStore.RemoveAsync(savedItem1.ID);
+            await networkStore.RemoveAsync(savedItem2.ID);
+            await networkStore.RemoveAsync(savedItem3.ID);
+
+            // Assert
+            Assert.IsNotNull(count);
+            Assert.IsNotNull(listAutoToDo);
+            Assert.AreEqual(2u, count);
+            Assert.AreEqual(2, listAutoToDo.Count);
+        }
 
         [TestMethod]
         public async Task TestGetCountNetworkConnectionAvailableAsync()
@@ -3640,7 +4933,7 @@ namespace Kinvey.Tests
                       
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             var savedItem1 = await syncStore.SaveAsync(newItem1);
             var savedItem2 = await syncStore.SaveAsync(newItem2);
@@ -3751,7 +5044,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            SetUnReachableRootUrlToKinveyClient();
+            SetRootUrlToKinveyClient(unreachableUrl);
 
             var savedItem1 = await syncStore.SaveAsync(newItem1);
             var savedItem2 = await syncStore.SaveAsync(newItem2);
@@ -3775,6 +5068,410 @@ namespace Kinvey.Tests
         #region Delta set
 
         #region Pull
+
+        [TestMethod]
+        public async Task TestPullDataNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+
+            // Act
+            var pullEntities = await autoStore.PullAsync();
+
+            var localEntities = await syncStore.FindAsync();
+
+            //Teardown
+            await networkStore.RemoveAsync(fc1.ID);
+            await networkStore.RemoveAsync(fc2.ID);
+
+            // Assert
+            Assert.IsNotNull(pullEntities);
+            Assert.IsNotNull(localEntities);
+            Assert.AreEqual(2, pullEntities.PullCount);
+            Assert.AreEqual(2, localEntities.Count);
+        }
+
+        [TestMethod]
+        public async Task TestPullDataNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.PullAsync();
+            });            
+            SetRootUrlToKinveyClient(kinveyUrl);
+            
+            //Teardown
+            await networkStore.RemoveAsync(fc1.ID);
+            await networkStore.RemoveAsync(fc2.ID);
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED);
+        }
+
+        [TestMethod]
+        public async Task TestPullDataWithQueryNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+            var fc3 = new FlashCard
+            {
+                Question = "Hello?",
+                Answer = "Hi"
+            };
+
+            var query = autoStore.Where(e => e.Question.StartsWith("What is"));
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+
+            // Act
+            var pullEntities = await autoStore.PullAsync(query);
+
+            var localEntities = await syncStore.FindAsync();
+
+            //Teardown
+            await networkStore.RemoveAsync(fc1.ID);
+            await networkStore.RemoveAsync(fc2.ID);
+            await networkStore.RemoveAsync(fc3.ID);
+
+            // Assert
+            Assert.IsNotNull(pullEntities);
+            Assert.IsNotNull(localEntities);
+            Assert.AreEqual(2, pullEntities.PullCount);
+            Assert.AreEqual(2, localEntities.Count);
+        }
+
+        [TestMethod]
+        public async Task TestPullDataDeletedFromBackendNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(11, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+            var fc3 = new FlashCard
+            {
+                Question = "Hello?",
+                Answer = "Hi"
+            };
+            var fc4 = new FlashCard
+            {
+                Question = "What is 3 + 7?",
+                Answer = "10"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            fc4 = await networkStore.SaveAsync(fc4);
+
+            // Act
+            var pullEntities1 = await autoStore.PullAsync();
+            var localEntities1 = await syncStore.FindAsync();
+
+            await networkStore.RemoveAsync(fc1.ID);
+            await networkStore.RemoveAsync(fc2.ID);
+
+            var pullEntities2 = await autoStore.PullAsync();
+            var localEntities2 = await syncStore.FindAsync();
+
+            //Teardown
+            await networkStore.RemoveAsync(fc3.ID);
+            await networkStore.RemoveAsync(fc4.ID);
+
+            // Assert
+            Assert.IsNotNull(pullEntities1);
+            Assert.IsNotNull(localEntities1);
+            Assert.IsNotNull(pullEntities2);
+            Assert.IsNotNull(localEntities2);
+            Assert.AreEqual(4, pullEntities1.PullCount);
+            Assert.AreEqual(4, localEntities1.Count);
+            Assert.AreEqual(0, pullEntities2.PullCount);
+            Assert.AreEqual(2, localEntities2.Count);
+        }
+
+        [TestMethod]
+        public async Task TestPullDataChangedInBackendNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(13, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+            var fc3 = new FlashCard
+            {
+                Question = "Hello?",
+                Answer = "Hi"
+            };
+            var fc4 = new FlashCard
+            {
+                Question = "What is 3 + 7?",
+                Answer = "10"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+            fc4 = await networkStore.SaveAsync(fc4);
+
+            // Act
+            var pullEntities1 = await autoStore.PullAsync();
+
+            fc1.Answer = "7!";
+            fc2.Answer = "8!";
+
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            
+            var pullEntities2 = await autoStore.PullAsync();
+            var localEntities = await syncStore.FindAsync();
+
+            //Teardown
+            await networkStore.RemoveAsync(fc1.ID);
+            await networkStore.RemoveAsync(fc2.ID);
+            await networkStore.RemoveAsync(fc3.ID);
+            await networkStore.RemoveAsync(fc4.ID);
+
+            // Assert
+            Assert.IsNotNull(pullEntities1);            
+            Assert.IsNotNull(pullEntities2);
+            Assert.IsNotNull(localEntities);
+            Assert.AreEqual(4, pullEntities1.PullCount);
+            Assert.AreEqual(2, pullEntities2.PullCount);
+            Assert.AreEqual(4, localEntities.Count);
+            Assert.AreEqual(fc1.Answer, localEntities.FirstOrDefault(e=> e.ID == fc1.ID).Answer);
+            Assert.AreEqual(fc2.Answer, localEntities.FirstOrDefault(e => e.ID == fc2.ID).Answer);
+        }
+
+        [TestMethod]
+        public async Task TestPullDataNotSyncedNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await syncStore.SaveAsync(fc1);
+            fc2 = await syncStore.SaveAsync(fc2);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.PullAsync();
+            });
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE);
+        }
+
+        [TestMethod]
+        public async Task TestPullDataDeletedAndChangedInBackendNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(10, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+            var fc3 = new FlashCard
+            {
+                Question = "What is 4 + 5?",
+                Answer = "9"
+            };
+
+            autoStore.DeltaSetFetchingEnabled = true;
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await networkStore.SaveAsync(fc1);
+            fc2 = await networkStore.SaveAsync(fc2);
+            fc3 = await networkStore.SaveAsync(fc3);
+
+            // Act
+            var networkEntities1 = await autoStore.PullAsync();
+
+            fc1.Answer = "7!";
+            fc1 = await networkStore.SaveAsync(fc1);
+            await networkStore.RemoveAsync(fc2.ID);
+
+            var networkEntities2 = await autoStore.PullAsync();
+
+            var localEntities = await syncStore.FindAsync();
+
+            //Teardown
+            await networkStore.RemoveAsync(fc1.ID);
+            await networkStore.RemoveAsync(fc3.ID);
+
+            // Assert
+            Assert.IsNotNull(networkEntities1);
+            Assert.IsNotNull(networkEntities2);
+            Assert.IsNotNull(localEntities);
+            Assert.AreEqual(3, networkEntities1.PullCount);
+            Assert.AreEqual(1, networkEntities2.PullCount);
+            Assert.AreEqual(fc1.Answer, localEntities.FirstOrDefault(e=> e.ID == fc1.ID).Answer);
+            Assert.AreEqual(fc3.Answer, localEntities.FirstOrDefault(e => e.ID == fc3.ID).Answer);
+        }
 
         [TestMethod]
         public async Task TestDeltaSetPullNoChanges()
