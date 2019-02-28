@@ -361,6 +361,11 @@ namespace Kinvey.Tests
         protected static void MockAppDataPost(HttpListenerContext context, List<JObject> items, Client client)
         {
             var obj = Read<JObject>(context);
+            MockAppDataPost(context, obj, items, client);
+        }
+
+        protected static void MockAppDataPost(HttpListenerContext context, JObject obj, List<JObject> items, Client client)
+        {
             if (obj["_id"] == null || obj["_id"].Type == JTokenType.Null)
             {
                 obj["_id"] = Guid.NewGuid().ToString();
@@ -467,6 +472,13 @@ namespace Kinvey.Tests
         {
             var obj = Read<JObject>(context);
             var index = items.FindIndex((x) => id.Equals(x["_id"].Value<string>()));
+
+            if(index == -1)
+            {
+                MockAppDataPost(context, obj, items, client);
+                return;
+            }
+
             var item = items[index];
             obj["_id"] = id;
             var acl = obj["_acl"];
