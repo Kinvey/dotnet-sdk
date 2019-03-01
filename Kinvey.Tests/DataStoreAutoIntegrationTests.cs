@@ -3986,7 +3986,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(7, kinveyClient);
+                MockResponses(6, kinveyClient);
             }
 
             // Arrange
@@ -4015,8 +4015,6 @@ namespace Kinvey.Tests
             // Act            
             var existingItemInNetwork = await autoStore.FindByIDAsync(savedItem1.ID);
 
-            var listToDoAuto = await autoStore.FindAsync();
-
             SetRootUrlToKinveyClient(unreachableUrl);
             var existingItemInLocalStorage = await autoStore.FindByIDAsync(savedItem1.ID);
             SetRootUrlToKinveyClient(kinveyUrl);
@@ -4026,10 +4024,8 @@ namespace Kinvey.Tests
             await networkStore.RemoveAsync(savedItem2.ID);
 
             // Assert
-            Assert.IsNotNull(listToDoAuto);
             Assert.IsNotNull(existingItemInNetwork);
             Assert.IsNotNull(existingItemInLocalStorage);
-            Assert.AreEqual(2, listToDoAuto.Count);
             Assert.AreEqual(existingItemInNetwork.ID, savedItem1.ID);
             Assert.AreEqual(existingItemInNetwork.Name, savedItem1.Name);
             Assert.AreEqual(existingItemInNetwork.Details, savedItem1.Details);
