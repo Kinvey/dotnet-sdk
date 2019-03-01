@@ -12,6 +12,9 @@ namespace Kinvey.Tests
 		public const string user = "testuser";
 		public const string pass = "testpass";
 
+        public const string user_without_permissions = "testuserwithoutpermissions";
+        public const string pass_for_user_without_permissions = "testuserwithoutpermissions";
+
         public const string app_key = "kid_Zy0JOYPKkZ";
 		public const string app_secret = "d83de70e64d540e49acd6cfce31415df";
 

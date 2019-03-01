@@ -3004,6 +3004,33 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestFindInvalidPermissionsNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.FindAsync();
+            });
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+        }
+
+        [TestMethod]
         public async Task TestFindNetworkConnectionIssueAsync()
         {
             // Setup
@@ -3927,6 +3954,33 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestFindByIDInvalidPermissionsNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.FindByIDAsync(Guid.NewGuid().ToString());
+            });
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+        }
+
+        [TestMethod]
         public async Task TestFindByIDExistingItemNetworkConnectionIssueAsync()
         {
             // Setup
@@ -4846,6 +4900,33 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestGetCountInvalidPermissionsNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.GetCountAsync();
+            });
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+        }
+
+        [TestMethod]
         public async Task TestGetCountNetworkConnectionAvailableAsync()
         {
             // Setup
@@ -5654,6 +5735,33 @@ namespace Kinvey.Tests
             Assert.AreEqual(4, localEntities.Count);
             Assert.AreEqual(fc1.Answer, localEntities.FirstOrDefault(e=> e.ID == fc1.ID).Answer);
             Assert.AreEqual(fc2.Answer, localEntities.FirstOrDefault(e => e.ID == fc2.ID).Answer);
+        }
+
+        [TestMethod]
+        public async Task TestPullDataInvalidPermissionsNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.PullAsync();
+            });
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
         }
 
         [TestMethod]
