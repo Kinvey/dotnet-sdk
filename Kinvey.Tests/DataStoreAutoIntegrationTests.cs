@@ -5142,8 +5142,6 @@ namespace Kinvey.Tests
 
         #endregion Get count
 
-        #region Delta set
-
         #region Push
 
         [TestMethod]
@@ -5367,11 +5365,14 @@ namespace Kinvey.Tests
                 exception = ex;
             }
 
-            var pendingWriteActionCount = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(false);
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
             // Assert
             Assert.IsNotNull(exception);
-            Assert.AreEqual(2, pendingWriteActionCount);
+            Assert.AreEqual(2, pendingWriteActions.Count);
+            Assert.AreEqual(exception.GetType(), typeof(AggregateException));
+            Assert.AreEqual(pendingWriteActions[0].action, "POST");
+            Assert.AreEqual(pendingWriteActions[1].action, "POST");
         }
 
         [TestMethod]
@@ -7106,6 +7107,53 @@ namespace Kinvey.Tests
 
         #endregion Sync
 
-        #endregion Delta set
+        #region Get sync count
+
+        [TestMethod]
+        public async Task TestGetSyncCountConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details for 3 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };          
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await syncStore.SaveAsync(newItem1);
+            newItem2 = await syncStore.SaveAsync(newItem2);
+            newItem3 = await syncStore.SaveAsync(newItem3);
+
+            // Act
+            var syncCount = autoStore.GetSyncCount();
+
+            // Assert
+            Assert.AreEqual(3, syncCount);
+        }
+
+        #endregion
     }
 }
