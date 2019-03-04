@@ -220,10 +220,20 @@ namespace Kinvey.Tests
 
                 if (user != null)
                 {
-                    user["_kmd"] = new JObject
+                    if (user["username"].ToString().Equals(TestSetup.user_without_permissions) && user["password"].ToString().Equals(TestSetup.pass_for_user_without_permissions))
                     {
-                        ["authtoken"] = Guid.NewGuid().ToString()
-                    };
+                        user["_kmd"] = new JObject
+                        {
+                            ["authtoken"] = TestSetup.auth_token_for_401_response_fake
+                        };
+                    }
+                    else
+                    {
+                        user["_kmd"] = new JObject
+                        {
+                            ["authtoken"] = Guid.NewGuid().ToString()
+                        };
+                    }
 
                     var clone = new JObject(user);
                     clone.Remove("password");
@@ -361,6 +371,11 @@ namespace Kinvey.Tests
         protected static void MockAppDataPost(HttpListenerContext context, List<JObject> items, Client client)
         {
             var obj = Read<JObject>(context);
+            MockAppDataPost(context, obj, items, client);
+        }
+
+        protected static void MockAppDataPost(HttpListenerContext context, JObject obj, List<JObject> items, Client client)
+        {
             if (obj["_id"] == null || obj["_id"].Type == JTokenType.Null)
             {
                 obj["_id"] = Guid.NewGuid().ToString();
@@ -467,6 +482,13 @@ namespace Kinvey.Tests
         {
             var obj = Read<JObject>(context);
             var index = items.FindIndex((x) => id.Equals(x["_id"].Value<string>()));
+
+            if(index == -1)
+            {
+                MockAppDataPost(context, obj, items, client);
+                return;
+            }
+
             var item = items[index];
             obj["_id"] = id;
             var acl = obj["_acl"];
@@ -732,10 +754,23 @@ namespace Kinvey.Tests
                         }
                     };
 
+                    var userWithoutPermissionsId = Guid.NewGuid().ToString();
+                    users[userWithoutPermissionsId] = new JObject
+                    {
+                        ["_id"] = userWithoutPermissionsId,
+                        ["username"] = TestSetup.user_without_permissions,
+                        ["password"] = TestSetup.pass_for_user_without_permissions,
+                        ["email"] = $"{Guid.NewGuid().ToString()}@kinvey.com",
+                        ["_acl"] = new JObject()
+                        {
+                            ["creator"] = userWithoutPermissionsId,
+                        },
+                    };
+
                     #endregion Existing users
 
                     #region Social networks users
-                    
+
                     var signedUsers = new Dictionary<string, JObject>();
 
                     signedUsers[TestSetup.facebook_access_token_fake] = new JObject
