@@ -7152,7 +7152,7 @@ namespace Kinvey.Tests
             Assert.AreEqual(3, syncCount);
         }
 
-        #endregion
+        #endregion Get sync count
 
         #region Purge
 
@@ -7263,7 +7263,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(7, kinveyClient);
+                MockResponses(8, kinveyClient);
             }
 
             //Arrange
@@ -7323,6 +7323,6 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem3.ID, pendingWriteActions[0].entityId);
         }
 
-        #endregion
+        #endregion Purge
     }
 }
