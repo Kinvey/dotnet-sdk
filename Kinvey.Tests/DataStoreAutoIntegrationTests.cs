@@ -5606,8 +5606,6 @@ namespace Kinvey.Tests
             var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
             var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
 
-            autoStore.DeltaSetFetchingEnabled = true;
-
             var fc1 = new FlashCard
             {
                 Question = "What is 2 + 5?",
@@ -5657,7 +5655,7 @@ namespace Kinvey.Tests
             Assert.IsNotNull(localEntities2);
             Assert.AreEqual(4, pullEntities1.PullCount);
             Assert.AreEqual(4, localEntities1.Count);
-            Assert.AreEqual(0, pullEntities2.PullCount);
+            Assert.AreEqual(2, pullEntities2.PullCount);
             Assert.AreEqual(2, localEntities2.Count);
         }
 
