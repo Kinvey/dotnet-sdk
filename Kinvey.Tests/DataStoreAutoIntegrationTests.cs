@@ -7258,7 +7258,73 @@ namespace Kinvey.Tests
             Assert.AreEqual(1, pendingWriteActions.Count);
             Assert.AreEqual(newItem3.ID, pendingWriteActions[0].entityId);
         }
-        
+
+        [TestMethod]
+        public async Task TestPurgeUpdatedItemsAccordingToQueryConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(7, kinveyClient);
+            }
+
+            //Arrange
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+            var newItem1 = new ToDo
+            {
+                Name = "todo1",
+                Details = "details for 1 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem2 = new ToDo
+            {
+                Name = "todo2",
+                Details = "details for 2 task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+            var newItem3 = new ToDo
+            {
+                Name = "todo3",
+                Details = "details3",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            var query = autoStore.Where(e => e.Details.StartsWith("details f"));
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            newItem1 = await syncStore.SaveAsync(newItem1);
+            newItem2 = await syncStore.SaveAsync(newItem2);
+            newItem3 = await syncStore.SaveAsync(newItem3);
+
+            await autoStore.PushAsync();
+
+            newItem1.Name = "todo11";
+            newItem1 = await syncStore.SaveAsync(newItem1);
+            newItem3.Name = "todo33";
+            newItem3 = await syncStore.SaveAsync(newItem3);
+
+            // Act
+            var purgedCount = autoStore.Purge(query);
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+
+            //Teardown
+            var networkEntities = await networkStore.FindAsync();
+            foreach (var networkEntity in networkEntities)
+            {
+                await networkStore.RemoveAsync(networkEntity.ID);
+            }
+
+            // Assert
+            Assert.AreEqual(1, purgedCount);
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            Assert.AreEqual(newItem3.ID, pendingWriteActions[0].entityId);
+        }
+
         #endregion
     }
 }
