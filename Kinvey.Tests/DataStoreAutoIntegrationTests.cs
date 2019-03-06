@@ -4626,6 +4626,347 @@ namespace Kinvey.Tests
         #region Save
 
         [TestMethod]
+        public async Task TestSaveCreatingItemWithoutProvidedIdNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(4, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            fc1 = await autoStore.SaveAsync(fc1);
+
+            var networkEntities = await networkStore.FindAsync();
+            var localEntities = await syncStore.FindAsync();
+
+            //Teardown
+            foreach (var networkEntity in networkEntities)
+            {
+                await networkStore.RemoveAsync(networkEntity.ID);
+            }
+
+            // Assert
+            Assert.IsNotNull(networkEntities);
+            Assert.AreEqual(1, networkEntities.Count);
+            Assert.AreEqual(1, localEntities.Count);
+            Assert.IsNotNull(networkEntities[0].ID);
+            Assert.AreEqual(fc1.Question, networkEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, networkEntities[0].Answer);
+            Assert.IsNotNull(localEntities[0].ID);
+            Assert.AreEqual(fc1.Question, localEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, localEntities[0].Answer);
+        }
+
+        [TestMethod]
+        public async Task TestSaveCreatingItemWithProvidedIdNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(4, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+            var syncStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+
+            var id = Guid.NewGuid().ToString();
+
+            var fc1 = new FlashCard
+            {
+                ID = id,
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            fc1 = await autoStore.SaveAsync(fc1);
+
+            var networkEntities = await networkStore.FindAsync();
+            var localEntities = await syncStore.FindAsync();
+
+            //Teardown
+            foreach (var networkEntity in networkEntities)
+            {
+                await networkStore.RemoveAsync(networkEntity.ID);
+            }
+
+            // Assert
+
+            Assert.IsNotNull(networkEntities);
+            Assert.AreEqual(1, networkEntities.Count);
+            Assert.AreEqual(1, localEntities.Count);
+            Assert.AreEqual(id, networkEntities[0].ID);
+            Assert.AreEqual(fc1.Question, networkEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, networkEntities[0].Answer);
+            Assert.AreEqual(id, localEntities[0].ID);
+            Assert.AreEqual(fc1.Question, localEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, localEntities[0].Answer);
+        }
+
+        [TestMethod]
+        public async Task TestSaveUpdatingItemWithExistingIdNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            fc1 = await autoStore.SaveAsync(fc1);
+            fc1.Answer = "7!";
+            fc1 = await autoStore.SaveAsync(fc1);
+
+            var networkEntities = await networkStore.FindAsync();
+
+            //Teardown
+            foreach (var networkEntity in networkEntities)
+            {
+                await networkStore.RemoveAsync(networkEntity.ID);
+            }
+
+            // Assert
+
+            Assert.IsNotNull(networkEntities);
+            Assert.AreEqual(1, networkEntities.Count);
+            Assert.AreEqual(fc1.Question, networkEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, networkEntities[0].Answer);
+        }
+
+        [TestMethod]
+        public async Task TestSaveDataNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+
+            fc1 = await autoStore.SaveAsync(fc1);           
+            var localEntities = await autoStore.FindAsync();
+
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
+
+            // Assert            
+            Assert.IsNotNull(localEntities);
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(1, localEntities.Count);
+            Assert.AreEqual(fc1.Question, localEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, localEntities[0].Answer);
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            Assert.AreEqual(fc1.ID, pendingWriteActions[0].entityId);
+            Assert.AreEqual("POST", pendingWriteActions[0].action);
+        }
+
+        [TestMethod]
+        public async Task TestSaveInvalidPermissionsNetworkConnectionAvailableAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2, kinveyClient);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+            var newItem = new ToDo
+            {
+                Name = "todo",
+                Details = "details for task",
+                DueDate = "2016-04-22T19:56:00.963Z"
+            };
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.SaveAsync(newItem);
+            });
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+        }
+
+        [TestMethod]
+        public async Task TestSaveDataAndPushNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+            var fc2 = new FlashCard
+            {
+                Question = "What is 3 + 5?",
+                Answer = "8"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+
+            fc1 = await autoStore.SaveAsync(fc1);
+            fc2 = await autoStore.SaveAsync(fc2);
+            var pendingWriteActions1 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
+            var localEntities = await autoStore.FindAsync();
+
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pushResult = await autoStore.PushAsync();
+
+            var pendingWriteActions2 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
+
+            var networkEntities = await networkStore.FindAsync();
+
+            //Teardown
+            foreach (var networkEntity in networkEntities)
+            {
+                await networkStore.RemoveAsync(networkEntity.ID);
+            }
+
+            // Assert
+            Assert.IsNotNull(pendingWriteActions1);
+            Assert.IsNotNull(localEntities);
+            Assert.IsNotNull(pushResult);
+            Assert.IsNotNull(pendingWriteActions2);
+            Assert.IsNotNull(networkEntities);
+            Assert.AreEqual(2, pendingWriteActions1.Count);
+            Assert.AreEqual(2, localEntities.Count);
+            Assert.AreEqual(2, pushResult.PushCount);
+            Assert.AreEqual(0, pendingWriteActions2.Count);
+            Assert.AreEqual(2, networkEntities.Count);
+        }
+
+        [TestMethod]
+        public async Task TestSaveUpdatingDataAndPushNetworkConnectionIssueAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5, kinveyClient);
+            }
+
+            //Arrange
+            var autoStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.AUTO);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await autoStore.SaveAsync(fc1);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+
+            fc1.Answer = "7!";
+            fc1 = await autoStore.SaveAsync(fc1);
+
+            var pendingWriteActions1 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
+            var localEntities = await autoStore.FindAsync();
+
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pushResult = await autoStore.PushAsync();
+
+            var pendingWriteActions2 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
+
+            var networkEntities = await networkStore.FindAsync();
+
+            //Teardown
+            foreach (var networkEntity in networkEntities)
+            {
+                await networkStore.RemoveAsync(networkEntity.ID);
+            }
+
+            // Assert
+            Assert.IsNotNull(pendingWriteActions1);
+            Assert.IsNotNull(localEntities);
+            Assert.IsNotNull(pushResult);
+            Assert.IsNotNull(pendingWriteActions2);
+            Assert.IsNotNull(networkEntities);
+            Assert.AreEqual(1, pendingWriteActions1.Count);
+            Assert.AreEqual(fc1.ID, pendingWriteActions1[0].entityId);
+            Assert.AreEqual("PUT", pendingWriteActions1[0].action);
+            Assert.AreEqual(1, localEntities.Count);
+            Assert.AreEqual(fc1.ID, localEntities[0].ID);
+            Assert.AreEqual(fc1.Question, localEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, localEntities[0].Answer);
+            Assert.AreEqual(1, pushResult.PushCount);
+            Assert.AreEqual(0, pendingWriteActions2.Count);
+            Assert.AreEqual(1, networkEntities.Count);
+            Assert.AreEqual(fc1.ID, networkEntities[0].ID);
+            Assert.AreEqual(fc1.Question, networkEntities[0].Question);
+            Assert.AreEqual(fc1.Answer, networkEntities[0].Answer);
+        }
+
+        [TestMethod]
         public async Task TestSaveAsync()
         {
             // Setup
@@ -5370,9 +5711,9 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(exception);
             Assert.AreEqual(2, pendingWriteActions.Count);
-            Assert.AreEqual(exception.GetType(), typeof(AggregateException));
-            Assert.AreEqual(pendingWriteActions[0].action, "POST");
-            Assert.AreEqual(pendingWriteActions[1].action, "POST");
+            Assert.AreEqual(typeof(AggregateException), exception.GetType());
+            Assert.AreEqual("POST", pendingWriteActions[0].action);
+            Assert.AreEqual("POST", pendingWriteActions[1].action);
         }
 
         [TestMethod]
@@ -6620,8 +6961,8 @@ namespace Kinvey.Tests
             Assert.IsNotNull(networkEntities);
             Assert.AreEqual(exception.GetType(), typeof(AggregateException));
             Assert.AreEqual(2, pendingWriteActions.Count);
-            Assert.AreEqual(pendingWriteActions[0].action, "POST");
-            Assert.AreEqual(pendingWriteActions[1].action, "POST");
+            Assert.AreEqual("POST", pendingWriteActions[0].action);
+            Assert.AreEqual("POST", pendingWriteActions[1].action);
             Assert.AreEqual(0, networkEntities.Count);
         }
 
