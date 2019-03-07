@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Kinvey
@@ -79,7 +80,6 @@ namespace Kinvey
                     break;
 
                 case WritePolicy.NETWORK_THEN_LOCAL:
-                case WritePolicy.LOCAL_THEN_NETWORK:
                     if (_query == null)
                     {
                         // cache
@@ -96,6 +96,60 @@ namespace Kinvey
                         // network
                         var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
                         kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
+                    }
+                    break;
+
+                case WritePolicy.LOCAL_THEN_NETWORK:                   
+                    if (_query == null)
+                    {
+                        // cache
+                        kdr = Cache.DeleteByID(entityID);
+
+                        var deleteRequest = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
+                        HttpRequestException exception = null;
+                        try
+                        { 
+                            // network
+                            kdr = await deleteRequest.ExecuteAsync();
+                        }
+                        catch (HttpRequestException httpRequestException)
+                        {
+                            exception = httpRequestException;
+                        }
+
+                        if(exception != null)
+                        {
+                            var pendingAction = PendingWriteAction.buildFromRequest(deleteRequest);
+                            SyncQueue.Enqueue(pendingAction);
+                        }
+                    }
+                    else
+                    {
+                        // cache
+                        kdr = Cache.DeleteByQuery(_query);
+
+                        // network
+                        HttpRequestException exception = null;
+                        try
+                        { 
+                            var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
+                            kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
+                        }
+                        catch (HttpRequestException httpRequestException)
+                        {
+                            exception = httpRequestException;
+                        }
+
+                        if (exception != null)
+                        {
+                            foreach (var id in kdr.IDs)
+                            {
+
+                                var request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, id);
+                                var pendingAction = PendingWriteAction.buildFromRequest(request);
+                                SyncQueue.Enqueue(pendingAction);
+                            }
+                        }
                     }
                     break;
 
