@@ -9,8 +9,11 @@ namespace Kinvey.Tests
 	{
 		private Client kinveyClient;
 
-		public const string user = "testuser";
-		public const string pass = "testpass";
+        //public const string user = "testuser";
+        //public const string pass = "testpass";
+
+        public const string user = "roman.ogolikhin@softteco.com";
+        public const string pass = "qwertYUIOP1z";
 
         public const string user_without_permissions = "testuserwithoutpermissions";
         public const string pass_for_user_without_permissions = "testuserwithoutpermissions";
