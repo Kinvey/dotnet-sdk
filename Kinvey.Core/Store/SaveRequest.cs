@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -44,21 +45,21 @@ namespace Kinvey
 			{
 				request = Client.NetworkFactory.buildCreateRequest(Collection, entity);
 			}
-
-			switch (Policy)
+        
+            switch (Policy)
 			{
 				case WritePolicy.FORCE_LOCAL:
 					// sync
 					PendingWriteAction pendingAction = PendingWriteAction.buildFromRequest(request);
 
-					string sm = request.RequestMethod;
-					string tID = null;
+					string saveModeLocal = request.RequestMethod;
+					string tempIdLocal = null;
 
-					if (String.Equals("POST", sm))
+					if (String.Equals("POST", saveModeLocal))
 					{
-						tID = PrepareCacheSave(ref entity);
+                        tempIdLocal = PrepareCacheSave(ref entity);
 						savedEntity = Cache.Save(entity);
-						pendingAction.entityId = tID;
+						pendingAction.entityId = tempIdLocal;
 					}
 					else
 					{
@@ -75,27 +76,70 @@ namespace Kinvey
 					break;
 
 				case WritePolicy.NETWORK_THEN_LOCAL:
-                case WritePolicy.LOCAL_THEN_NETWORK:
-					// cache
-					string saveMode = request.RequestMethod;
-					string tempID = null;
+                    // cache
+                    string saveModeNetworkThenLocal = request.RequestMethod;
+                    string tempIdNetworkThenLocal = null;
 
-					if (String.Equals("POST", saveMode))
+                    if (String.Equals("POST", saveModeNetworkThenLocal))
+                    {
+                        tempIdNetworkThenLocal = PrepareCacheSave(ref entity);
+                        Cache.Save(entity);
+                    }
+                    else
+                    {
+                        Cache.Update(entity);
+                    }
+
+                    // network save
+                    savedEntity = await request.ExecuteAsync();
+
+                    if (tempIdNetworkThenLocal != null)
+                    {
+                        Cache.UpdateCacheSave(savedEntity, tempIdNetworkThenLocal);
+                    }
+
+                    break;
+
+                case WritePolicy.LOCAL_THEN_NETWORK:                    
+                    string saveModeLocalThenNetwork = request.RequestMethod;
+                    string tempIdLocalThenNetwork = null;
+
+                    // cache
+                    if (String.Equals("POST", saveModeLocalThenNetwork))
 					{
-						tempID = PrepareCacheSave(ref entity);
-						Cache.Save(entity);
+                        tempIdLocalThenNetwork = PrepareCacheSave(ref entity);
+                        savedEntity = Cache.Save(entity);
 					}
 					else
 					{
-						Cache.Update(entity);
+                        savedEntity = Cache.Update(entity);
 					}
 
-					// network save
-					savedEntity = await request.ExecuteAsync();
+                    HttpRequestException exception = null;
+                    try
+                    {
+                        // network save
+                        savedEntity = await request.ExecuteAsync();
+                    }
+                    catch (HttpRequestException httpRequestException)
+                    {
+                        exception = httpRequestException;
+                    }
+                    
+                    if (exception != null)
+                    {
+                        // if the network request fails, save data to sync queue
+                        var localPendingAction = PendingWriteAction.buildFromRequest(request);
+                        if (string.Equals("POST", saveModeLocalThenNetwork))
+                        {
+                            localPendingAction.entityId = tempIdLocalThenNetwork;
+                        }
 
-					if (tempID != null)
+                        SyncQueue.Enqueue(localPendingAction);
+                    }
+                    else if (tempIdLocalThenNetwork != null)
 					{
-						Cache.UpdateCacheSave(savedEntity, tempID);
+						Cache.UpdateCacheSave(savedEntity, tempIdLocalThenNetwork);
 					}
 
 					break;
