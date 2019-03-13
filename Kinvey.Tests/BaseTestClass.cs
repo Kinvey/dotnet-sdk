@@ -1304,14 +1304,21 @@ namespace Kinvey.Tests
 
                 if (splitedMicData["grant_type"] == "refresh_token")
                 {
-                    signedUsers.Remove(TestSetup.access_token_for_401_response_fake);
+                    if (splitedMicData["refresh_token"].Equals(TestSetup.refresh_token_for_401_response_fake))
+                    {
+                        accessToken = TestSetup.access_token_for_401_response_fake;
+                    }
+                    else
+                    {
+                        signedUsers.Remove(TestSetup.access_token_for_401_response_fake);
 
-                    var existingUser = existingUsers.FirstOrDefault(x => x["username"].ToString().Equals("test3") && x["password"].ToString().Equals("test3"));
+                        var existingUser = existingUsers.FirstOrDefault(x => x["username"].ToString().Equals("test3") && x["password"].ToString().Equals("test3"));
 
-                    Assert.IsNotNull(existingUser);
+                        Assert.IsNotNull(existingUser);
 
-                    accessToken = Guid.NewGuid().ToString();
-                    signedUsers.Add(accessToken, existingUser);
+                        accessToken = Guid.NewGuid().ToString();
+                        signedUsers.Add(accessToken, existingUser);
+                    }                   
                 }
                 else
                 {
