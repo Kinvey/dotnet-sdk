@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Kinvey.Tests.RealtimeTests
+namespace Kinvey.Tests
 {
     [TestClass]
     public class KinveyRealtimeStatusTests
