@@ -5205,7 +5205,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses(4);
+                MockResponses(3);
             }
 
             //Arrange
