@@ -84,44 +84,6 @@ namespace Kinvey.Tests
 			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
-        [TestMethod]
-        public async Task TestRealtimeRegistrationWithDefaultValue()
-        {
-            // Setup
-            if (MockData) MockResponses(2);
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            // Arrange
-
-            // Act
-            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
-
-            // Assert
-            Assert.IsTrue(true);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
-        }
-
-        [TestMethod]
-		public async Task TestRealtimeUnregistration()
-		{
-            // Setup
-            if (MockData) MockResponses(2);
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-			// Arrange
-
-			// Act
-			await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
-
-			// Assert
-			Assert.IsTrue(true);
-
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
-		}
-
 		//[TestMethod]
   //      [Ignore("Fix inconsistent test")]
 		//public async Task TestRealtimeCollectionSubscription()
