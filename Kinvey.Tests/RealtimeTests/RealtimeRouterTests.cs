@@ -21,11 +21,19 @@ namespace Kinvey.Tests
                 ErrorData = new PubnubApi.PNErrorData("Test", null)
             };
 
-            RealtimeRouter.Initialize(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), null, RealtimeReconnectionPolicy.NONE);
+            //RealtimeRouter.Initialize(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), null, RealtimeReconnectionPolicy.NONE);
+
+            Type t = typeof(RealtimeRouter);
+
+            ConstructorInfo ci = t.GetConstructor(
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null, new Type[] { }, null);
+
+            var instance = (RealtimeRouter)ci.Invoke(null);
 
             // Act
-            var method = RealtimeRouter.Instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(RealtimeRouter.Instance, new object[] { status });
+            var method = instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = method.Invoke(instance, new object[] { status });
 
             //Assert
             Assert.AreEqual(typeof(KinveyException), result.GetType());
@@ -44,11 +52,17 @@ namespace Kinvey.Tests
                 ErrorData = new PubnubApi.PNErrorData("Test", null)
             };
 
-            RealtimeRouter.Initialize(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), null, RealtimeReconnectionPolicy.NONE);
+            Type t = typeof(RealtimeRouter);
+
+            ConstructorInfo ci = t.GetConstructor(
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null, new Type[] { }, null);
+
+            var instance = (RealtimeRouter)ci.Invoke(null);
 
             // Act
-            var method = RealtimeRouter.Instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(RealtimeRouter.Instance, new object[] { status });
+            var method = instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = method.Invoke(instance, new object[] { status });
 
             //Assert
             Assert.AreEqual(typeof(KinveyException), result.GetType());
@@ -259,11 +273,17 @@ namespace Kinvey.Tests
                 Operation = operationType
             };
 
-            RealtimeRouter.Initialize(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), null, RealtimeReconnectionPolicy.NONE);
+            Type t = typeof(RealtimeRouter);
+
+            ConstructorInfo ci = t.GetConstructor(
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null, new Type[] { }, null);
+
+            var instance = (RealtimeRouter)ci.Invoke(null);
 
             // Act
-            var method = RealtimeRouter.Instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(RealtimeRouter.Instance, new object[] { status });
+            var method = instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = method.Invoke(instance, new object[] { status });
 
             //Assert
             Assert.IsNull(result);
