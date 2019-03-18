@@ -844,7 +844,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestDoesUsernameExist()
+        public async Task TestDoesUsernameExistAsync()
         {
             // Arrange
             if (MockData) MockResponses(1);
@@ -858,7 +858,26 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestDoesUsernameExistBad()
+        public void TestUserExistenceRequest()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            string username = "testuser";
+            var existenceCheckRequest = kinveyClient.UserFactory.BuildUserExistenceRequest(username);
+
+            // Act
+            var existenceResult = existenceCheckRequest.Execute();
+
+            // Assert
+            Assert.IsNotNull(existenceResult);
+        }
+
+        [TestMethod]
+        public async Task TestDoesUsernameExistBadAsync()
         {
             // Setup
             if (MockData) MockResponses(2);
