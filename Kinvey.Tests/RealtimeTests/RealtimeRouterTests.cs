@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kinvey.Tests.RealtimeTests
+namespace Kinvey.Tests
 {
     [TestClass]
     public class RealtimeRouterTests
