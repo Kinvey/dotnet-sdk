@@ -21,19 +21,8 @@ namespace Kinvey.Tests
                 ErrorData = new PubnubApi.PNErrorData("Test", null)
             };
 
-            //RealtimeRouter.Initialize(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), null, RealtimeReconnectionPolicy.NONE);
-
-            Type t = typeof(RealtimeRouter);
-
-            ConstructorInfo ci = t.GetConstructor(
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, new Type[] { }, null);
-
-            var instance = (RealtimeRouter)ci.Invoke(null);
-
             // Act
-            var method = instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(instance, new object[] { status });
+            var result = CallHandleStatusMessageMethod(status);
 
             //Assert
             Assert.AreEqual(typeof(KinveyException), result.GetType());
@@ -52,17 +41,8 @@ namespace Kinvey.Tests
                 ErrorData = new PubnubApi.PNErrorData("Test", null)
             };
 
-            Type t = typeof(RealtimeRouter);
-
-            ConstructorInfo ci = t.GetConstructor(
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, new Type[] { }, null);
-
-            var instance = (RealtimeRouter)ci.Invoke(null);
-
-            // Act
-            var method = instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(instance, new object[] { status });
+            //Act
+            var result = CallHandleStatusMessageMethod(status);
 
             //Assert
             Assert.AreEqual(typeof(KinveyException), result.GetType());
@@ -273,20 +253,25 @@ namespace Kinvey.Tests
                 Operation = operationType
             };
 
-            Type t = typeof(RealtimeRouter);
-
-            ConstructorInfo ci = t.GetConstructor(
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, new Type[] { }, null);
-
-            var instance = (RealtimeRouter)ci.Invoke(null);
-
-            // Act
-            var method = instance.GetType().GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(instance, new object[] { status });
+            //Act
+            var result = CallHandleStatusMessageMethod(status);
 
             //Assert
             Assert.IsNull(result);
+        }
+
+        private object CallHandleStatusMessageMethod(PubnubApi.PNStatus status)
+        {
+            var type = typeof(RealtimeRouter);
+            var constructorInfo = type.GetConstructor(
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null, new Type[] { }, null);
+            var instance = (RealtimeRouter)constructorInfo.Invoke(null);
+            var method = type.GetMethod("HandleStatusMessage", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            var result = method.Invoke(instance, new object[] { status });
+
+            return result;
         }
     }
 }
