@@ -1164,7 +1164,15 @@ namespace Kinvey.Tests
                                         switch (context.Request.HttpMethod)
                                         {
                                             case "GET":
-                                                Write(context, users[id]);
+                                                if (users.ContainsKey(id))
+                                                {
+                                                    Write(context, users[id]);
+                                                }
+                                                else
+                                                {
+                                                    MockNotFound(context);
+                                                }
+                                                
                                                 break;
                                             case "PUT":
                                                 MockUserUpdate(context, users, id);
