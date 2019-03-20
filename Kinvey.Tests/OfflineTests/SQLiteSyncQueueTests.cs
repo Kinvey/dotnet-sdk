@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Kinvey.Tests
 {
     [TestClass]
-    public class SQLiteCacheManagerTests : BaseTestClass
+    public class SQLiteSyncQueueTests : BaseTestClass
     {
         private const string toDosCollection = "ToDos";
         private Client kinveyClient;
@@ -29,7 +29,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestDeleteQueryCacheItem()
+        public async Task TestPopSuccess()
         {
             // Setup
             if (MockData)
@@ -46,25 +46,47 @@ namespace Kinvey.Tests
                 Answer = "7"
             };
 
-            var queryQacheItem = new QueryCacheItem
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            fc1 = await syncStore.SaveAsync(fc1);
+
+            // Act
+            var removedPendingWriteAction = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Pop();
+
+            //Assert
+            Assert.AreEqual("POST", removedPendingWriteAction.action);
+            Assert.AreEqual(toDosCollection, removedPendingWriteAction.collection);
+        }
+
+        [TestMethod]
+        public async Task TestPopFail()
+        {
+            // Setup
+            if (MockData)
             {
-                collectionName = toDosCollection,
-                lastRequest = "lastRequest",
-                query = "query"
+                MockResponses(1, kinveyClient);
+            }
+
+            //Arrange
+            var syncStore = DataStore<FlashCard>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var fc1 = new FlashCard
+            {
+                Question = "What is 2 + 5?",
+                Answer = "7"
             };
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             fc1 = await syncStore.SaveAsync(fc1);
 
-            kinveyClient.CacheManager.SetQueryCacheItem(queryQacheItem);
-            queryQacheItem = kinveyClient.CacheManager.GetQueryCacheItem(toDosCollection, queryQacheItem.query, queryQacheItem.lastRequest);
+            kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Pop();
 
             // Act
-            var result = kinveyClient.CacheManager.DeleteQueryCacheItem(queryQacheItem);
+            var removedPendingWriteAction = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Pop();
 
             //Assert
-            Assert.IsTrue(result);
+            Assert.IsNull(removedPendingWriteAction);
         }
     }
 }
