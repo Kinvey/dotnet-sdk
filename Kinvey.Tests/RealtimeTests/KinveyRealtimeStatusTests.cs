@@ -18,15 +18,15 @@ namespace Kinvey.Tests
             var realtimeStatusType = KinveyRealtimeStatus.StatusType.STATUS_CONNECT;
 
             // Act
-            var kinveyRealtimeStatusObj = new KinveyRealtimeStatus(realtimeStatusType, new string[3] { Status.ToString(), Message, ChannelGroup });
+            var kinveyRealtimeStatus = new KinveyRealtimeStatus(realtimeStatusType, new string[3] { Status.ToString(), Message, ChannelGroup });
 
             // Assert
-            Assert.AreEqual(realtimeStatusType, kinveyRealtimeStatusObj.RealtimeStatusType);
-            Assert.AreEqual(Status, kinveyRealtimeStatusObj.Status);
-            Assert.AreEqual(Message, kinveyRealtimeStatusObj.Message);
-            Assert.IsNull(kinveyRealtimeStatusObj.TimeStamp);
-            Assert.IsNull(kinveyRealtimeStatusObj.Channel);
-            Assert.AreEqual(ChannelGroup, kinveyRealtimeStatusObj.ChannelGroup);                     
+            Assert.AreEqual(realtimeStatusType, kinveyRealtimeStatus.RealtimeStatusType);
+            Assert.AreEqual(Status, kinveyRealtimeStatus.Status);
+            Assert.AreEqual(Message, kinveyRealtimeStatus.Message);
+            Assert.IsNull(kinveyRealtimeStatus.TimeStamp);
+            Assert.IsNull(kinveyRealtimeStatus.Channel);
+            Assert.AreEqual(ChannelGroup, kinveyRealtimeStatus.ChannelGroup);                     
         }
 
 

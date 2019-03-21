@@ -1,8 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kinvey.Tests
 {
@@ -22,7 +19,6 @@ namespace Kinvey.Tests
         public void TestSerialize()
         {
             //Arrange
-
             var nativeCredential = new NativeCredential(userName, properties);
 
             // Act
@@ -43,7 +39,7 @@ namespace Kinvey.Tests
 
             //Assert
             Assert.AreEqual(userName, result.UserID);
-            Assert.AreEqual(1, result.Properties.Count);
+            Assert.AreEqual(properties.Count, result.Properties.Count);
             Assert.AreEqual(properties[key], result.Properties[key]);
         }
     }

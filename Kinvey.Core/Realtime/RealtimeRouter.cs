@@ -110,7 +110,6 @@ namespace Kinvey
                         instance.pubnubClient.Unsubscribe<string>().ChannelGroups(new string[] { instance.ChannelGroup }).Execute();
 
                         instance.pubnubClient.Destroy();
-
                         instance.pubnubClient = null;
 
                         instance.ChannelGroup = null;

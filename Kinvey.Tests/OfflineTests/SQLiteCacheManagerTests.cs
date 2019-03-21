@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kinvey.Tests
@@ -38,12 +35,12 @@ namespace Kinvey.Tests
             }
 
             //Arrange
-            var syncStore = DataStore<FlashCard>.Collection(toDosCollection, DataStoreType.SYNC);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
-            var fc1 = new FlashCard
+            var task1 = new ToDo
             {
-                Question = "What is 2 + 5?",
-                Answer = "7"
+                Name = "TestName1",
+                Details = "TestDetails1"
             };
 
             var queryQacheItem = new QueryCacheItem
@@ -55,7 +52,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            fc1 = await syncStore.SaveAsync(fc1);
+            task1 = await syncStore.SaveAsync(task1);
 
             kinveyClient.CacheManager.SetQueryCacheItem(queryQacheItem);
             queryQacheItem = kinveyClient.CacheManager.GetQueryCacheItem(toDosCollection, queryQacheItem.query, queryQacheItem.lastRequest);

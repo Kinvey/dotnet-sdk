@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Kinvey.Tests
 {
@@ -11,7 +9,7 @@ namespace Kinvey.Tests
         private string userId;
         private string ssoGroupKey;
         private Credential credential;
-        private InMemoryCredentialStore inMemoryCredentialStore;
+        private ICredentialStore inMemoryCredentialStore;
 
         [TestInitialize]
         public void Init()

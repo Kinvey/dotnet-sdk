@@ -56,34 +56,6 @@ namespace Kinvey.Tests
 			kinveyClient = builder.Build();
 		}
 
-        [TestCleanup]
-        public override void Tear()
-		{
-            try
-            {
-                if (kinveyClient != null)
-                {
-                    using (var client = kinveyClient)
-                    {
-                        var user = client.ActiveUser;
-                        if (user != null)
-                        {
-                            user.Logout();
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                kinveyClient = null;
-            }
-
-            base.Tear();
-
-            System.IO.File.Delete(TestSetup.SQLiteOfflineStoreFilePath);
-			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
-		}
-
 		//[TestMethod]
   //      [Ignore("Fix inconsistent test")]
 		//public async Task TestRealtimeCollectionSubscription()

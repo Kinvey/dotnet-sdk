@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kinvey.Tests
@@ -38,36 +37,36 @@ namespace Kinvey.Tests
             }
 
             //Arrange
-            var syncStore = DataStore<FlashCard>.Collection(toDosCollection, DataStoreType.SYNC);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
-            var fc1 = new FlashCard
+            var task1 = new ToDo
             {
                 ID = Guid.NewGuid().ToString(),
-                Question = "What is 2 + 5?",
-                Answer = "7"
+                Name = "TestName1",
+                Details = "TestDetails1"
             };
 
-            var fc2 = new FlashCard
+            var task2 = new ToDo
             {
                 ID = Guid.NewGuid().ToString(),
-                Question = "What is 3 + 5?",
-                Answer = "8"
+                Name = "TestName2",
+                Details = "TestDetails2"
             };
 
-            var listFlashCards = new List<FlashCard> { fc1, fc2 };
+            var listTasks = new List<ToDo> { task1, task2 };
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Act
-            kinveyClient.CacheManager.GetCache<FlashCard>(toDosCollection).Save(listFlashCards);
+            kinveyClient.CacheManager.GetCache<ToDo>(toDosCollection).Save(listTasks);
 
-            var existingFlashCards = kinveyClient.CacheManager.GetCache<FlashCard>(toDosCollection).FindAll();
+            var existingToDos = kinveyClient.CacheManager.GetCache<ToDo>(toDosCollection).FindAll();
 
             //Assert
-            Assert.IsNotNull(existingFlashCards);
-            Assert.AreEqual(2, existingFlashCards.Count);
-            Assert.IsNotNull(existingFlashCards.Find(e=> e.Answer.Equals(fc1.Answer)));
-            Assert.IsNotNull(existingFlashCards.Find(e => e.Answer.Equals(fc2.Answer)));
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(2, existingToDos.Count);
+            Assert.IsNotNull(existingToDos.Find(e => e.Name.Equals(task1.Name)));
+            Assert.IsNotNull(existingToDos.Find(e => e.Name.Equals(task2.Name)));
         }
 
         [TestMethod]
@@ -80,28 +79,28 @@ namespace Kinvey.Tests
             }
 
             //Arrange
-            var syncStore = DataStore<FlashCard>.Collection(toDosCollection, DataStoreType.SYNC);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
-            var fc1 = new FlashCard
+            var task1 = new ToDo
             {
-                Question = "What is 2 + 5?",
-                Answer = "7"
+                Name = "TestName1",
+                Details = "TestDetails1"
             };
 
-            var fc2 = new FlashCard
+            var task2 = new ToDo
             {
-                Question = "What is 3 + 5?",
-                Answer = "8"
+                Name = "TestName2",
+                Details = "TestDetails2"
             };
 
-            var listFlashCards = new List<FlashCard> { fc1, fc2 };
+            var listTasks = new List<ToDo> { task1, task2 };
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Act
             var exception = Assert.ThrowsException<KinveyException>(delegate
             {
-                kinveyClient.CacheManager.GetCache<FlashCard>(toDosCollection).Save(listFlashCards);
+                kinveyClient.CacheManager.GetCache<ToDo>(toDosCollection).Save(listTasks);
             });
 
             // Assert

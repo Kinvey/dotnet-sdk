@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kinvey.Tests
@@ -38,24 +35,27 @@ namespace Kinvey.Tests
             }
 
             //Arrange
-            var syncStore = DataStore<FlashCard>.Collection(toDosCollection, DataStoreType.SYNC);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
-            var fc1 = new FlashCard
+            var task1 = new ToDo
             {
-                Question = "What is 2 + 5?",
-                Answer = "7"
+                Name = "TestName",
+                Details = "TestDetails"
             };
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            fc1 = await syncStore.SaveAsync(fc1);
+            task1 = await syncStore.SaveAsync(task1);
 
             // Act
             var removedPendingWriteAction = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Pop();
+            var count = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(false);
 
             //Assert
+            Assert.AreEqual(task1.ID, removedPendingWriteAction.entityId);
             Assert.AreEqual("POST", removedPendingWriteAction.action);
             Assert.AreEqual(toDosCollection, removedPendingWriteAction.collection);
+            Assert.AreEqual(0, count);
         }
 
         [TestMethod]
@@ -68,17 +68,17 @@ namespace Kinvey.Tests
             }
 
             //Arrange
-            var syncStore = DataStore<FlashCard>.Collection(toDosCollection, DataStoreType.SYNC);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
-            var fc1 = new FlashCard
+            var task1 = new ToDo
             {
-                Question = "What is 2 + 5?",
-                Answer = "7"
+                Name = "TestName",
+                Details = "TestDetails"
             };
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            fc1 = await syncStore.SaveAsync(fc1);
+            task1 = await syncStore.SaveAsync(task1);
 
             kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Pop();
 

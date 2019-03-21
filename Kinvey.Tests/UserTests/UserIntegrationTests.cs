@@ -867,7 +867,7 @@ namespace Kinvey.Tests
                 MockResponses(1);
             }
 
-            string username = "testuser";
+            string username = TestSetup.user;
             var existenceCheckRequest = kinveyClient.UserFactory.BuildUserExistenceRequest(username);
 
             // Act
