@@ -188,7 +188,10 @@ namespace Kinvey
                 int ret = 0;
                 foreach (var pending in pendings)
                 {
-                    ret += this.Remove(pending);
+                    if (pending != null)
+                    {
+                        ret += this.Remove(pending);
+                    }
                 }
                 return ret;
             }

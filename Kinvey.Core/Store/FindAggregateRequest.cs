@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -90,7 +91,32 @@ namespace Kinvey
 					aggregateResult = await PerformNetworkAggregateFind();
 					break;
 
-				default:
+                case ReadPolicy.NETWORK_OTHERWISE_LOCAL:
+                    // auto
+
+                    KinveyException networkKinveyException = null;
+                    try
+                    {
+                        // first, perform a network request
+                        aggregateResult = await PerformNetworkAggregateFind();
+                    }
+                    catch (KinveyException exception)
+                    {
+                        if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+                        {
+                            throw;
+                        }
+                        networkKinveyException = exception;
+                    }
+
+                    // if the network request fails, fetch data from local cache
+                    if (networkKinveyException != null)
+                    {
+                        aggregateResult = PerformLocalAggregateFind();
+                    }
+                    break;
+
+                default:
 					throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid read policy");
 			}
 
@@ -119,7 +145,7 @@ namespace Kinvey
 				}
 				else
 				{
-					throw e;
+					throw;
 				}
 			}
 
@@ -147,11 +173,18 @@ namespace Kinvey
 					}
 				}
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
-			catch (Exception e)
+            catch (HttpRequestException e)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+                                            EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED,
+                                            "Error in FindAggregateAsync() for network results.",
+                                            e);
+            }
+            catch (Exception e)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
 										  EnumErrorCode.ERROR_GENERAL,

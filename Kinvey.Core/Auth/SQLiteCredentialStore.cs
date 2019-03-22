@@ -114,10 +114,10 @@ namespace Kinvey
                     _dbConnection.Insert(cred);
                     _dbConnection.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     _dbConnection.Rollback();
-                    throw ex;
+                    throw;
                 }
             }
 		}
@@ -137,10 +137,10 @@ namespace Kinvey
                     _dbConnection.Delete<SQLCredential>(userId);
                     _dbConnection.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     _dbConnection.Rollback();
-                    throw ex;
+                    throw;
                 }
             }
 		}

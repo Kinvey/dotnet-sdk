@@ -15,6 +15,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 
 namespace Kinvey
 {
@@ -181,7 +182,7 @@ namespace Kinvey
 				}
 				else
 				{
-					throw e;
+					throw;
 				}
 			}
 
@@ -252,7 +253,7 @@ namespace Kinvey
 
                                     default:
                                         // This is not a delta sync specific error
-                                        throw ke;
+                                        throw;
                                 }
                             }
 
@@ -292,11 +293,18 @@ namespace Kinvey
 
                 return await PerformNetworkGet(mongoQuery);
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
-			catch (Exception e)
+            catch (HttpRequestException e)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+                                            EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED,
+                                            "Error in FindAsync() for network results.",
+                                            e);
+            }
+            catch (Exception e)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
 										  EnumErrorCode.ERROR_GENERAL,

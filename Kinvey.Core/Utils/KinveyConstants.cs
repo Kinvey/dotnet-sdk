@@ -13,7 +13,7 @@
 
 namespace Kinvey
 {
-	public static class Constants
+	public static partial class Constants
 	{
 		// Const Characters
 		public const char CHAR_AMPERSAND = '&';

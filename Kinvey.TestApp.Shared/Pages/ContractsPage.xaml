@@ -25,6 +25,8 @@
             <Button Text="Unsubscribe Live Service" Clicked="UnsubscribeLiveService_OnClicked"/>
             <Button Text="Register GCM" Clicked="RegisterGCM_OnClicked"/>
             <Button Text="Disable GCM" Clicked="DisableGCM_OnClicked"/>
+            <Button Text="Register push" Clicked="RegisterPush_OnClicked"/>
+            <Button Text="Unregister push" Clicked="UnregisterPush_OnClicked"/>
         </StackLayout>
     </pages:BasePage.Content>
 </pages:BasePage>

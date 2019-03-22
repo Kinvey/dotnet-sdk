@@ -314,16 +314,17 @@ namespace Kinvey
 			return await loginRequest.ExecuteAsync();
 		}
 
-		#region User class login methods - Social Login Convenience APIs
+        #region User class login methods - Social Login Convenience APIs
 
-		/// <summary>
-		/// Login with Facebook Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accessToken">Facebook Access token.</param>
-		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task<User> LoginFacebookAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Login with Facebook Credentials
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="accessToken">Facebook Access token.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        [Obsolete("This method has been deprecated. Please use LoginWithMIC() instead.")]
+        static public async Task<User> LoginFacebookAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			Provider provider = new Provider();
@@ -333,14 +334,15 @@ namespace Kinvey
 			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
-		/// <summary>
-		/// Login with Google Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accessToken">Google Access token.</param>
-		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task<User> LoginGoogleAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Login with Google Credentials
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="accessToken">Google Access token.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        [Obsolete("This method has been deprecated. Please use LoginWithMIC() instead.")]
+        static public async Task<User> LoginGoogleAsync(string accessToken, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			Provider provider = new Provider();
@@ -350,17 +352,18 @@ namespace Kinvey
 			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
-		/// <summary>
-		/// Login with Twitter Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accesstoken">Twitter Accesstoken.</param>
-		/// <param name="accesstokensecret">Twitter Accesstokensecret.</param>
-		/// <param name="consumerkey">Twitter Consumerkey.</param>
-		/// <param name="consumersecret">Twitter Consumersecret.</param>
-		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Login with Twitter Credentials
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="accesstoken">Twitter Accesstoken.</param>
+        /// <param name="accesstokensecret">Twitter Accesstokensecret.</param>
+        /// <param name="consumerkey">Twitter Consumerkey.</param>
+        /// <param name="consumersecret">Twitter Consumersecret.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        [Obsolete("This method has been deprecated. Please use LoginWithMIC() instead.")]
+        static public async Task<User> LoginTwitterAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			Provider provider = new Provider();
@@ -370,17 +373,18 @@ namespace Kinvey
 			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
-		/// <summary>
-		/// Login with LinkedIn Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accesstoken">Linkedin Accesstoken.</param>
-		/// <param name="accesstokensecret">Linkedin Accesstokensecret.</param>
-		/// <param name="consumerkey">Linkedin Consumerkey.</param>
-		/// <param name="consumersecret">Linkedin Consumersecret.</param>
-		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Login with LinkedIn Credentials
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="accesstoken">Linkedin Accesstoken.</param>
+        /// <param name="accesstokensecret">Linkedin Accesstokensecret.</param>
+        /// <param name="consumerkey">Linkedin Consumerkey.</param>
+        /// <param name="consumersecret">Linkedin Consumersecret.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        [Obsolete("This method has been deprecated. Please use LoginWithMIC() instead.")]
+        static public async Task<User> LoginLinkedinAsync(string accesstoken, string accesstokensecret, string consumerkey, string consumersecret, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			Provider provider = new Provider();
@@ -390,17 +394,18 @@ namespace Kinvey
 			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
 		}
 
-		/// <summary>
-		/// Login with Salesforce Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="access">Salesforce Access.</param>
-		/// <param name="reauth">Salesforce Reauth.</param>
-		/// <param name="clientid">Salesforce Clientid.</param>
-		/// <param name="id">Salesforce Identifier.</param>
-		/// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		static public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Login with Salesforce Credentials
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="access">Salesforce Access.</param>
+        /// <param name="reauth">Salesforce Reauth.</param>
+        /// <param name="clientid">Salesforce Clientid.</param>
+        /// <param name="id">Salesforce Identifier.</param>
+        /// <param name="userClient">[optional] Client that the user is logged in for, defaulted to SharedClient.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        [Obsolete("This method has been deprecated. Please use LoginWithMIC() instead.")]
+        static public async Task<User> LoginSalesforceAsync(string access, string reauth, string clientid, string id, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			Provider provider = new Provider();
@@ -411,20 +416,7 @@ namespace Kinvey
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Sends a verification email
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="userID">Userid.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> EmailVerificationAsync(string userID, CancellationToken ct = default(CancellationToken))
-		{
-			EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
-			ct.ThrowIfCancellationRequested();
-			return await emailVerificationRequest.ExecuteAsync();
-		}
-
+		
 		private static readonly object classLock = new object();
 
 		/// <summary>
@@ -651,12 +643,12 @@ namespace Kinvey
                 //
                 var currentCred = uc.Store.Load(user.Id, uc.SSOGroupKey);
                 currentCred.AccessToken = accessResult["access_token"].ToString();
-                currentCred.RefreshToken = accessResult["refresh_token"].ToString();
+                currentCred.RefreshToken = accessResult.GetValidValue("refresh_token");
                 currentCred.RedirectUri = uc.MICRedirectURI;
                 currentCred.MICClientID = clientID;
                 uc.Store.Store(user.Id, uc.SSOGroupKey, currentCred);
             }
-            catch (KinveyException ke)
+            catch (KinveyException)
             {
                 throw;
             }
@@ -702,8 +694,8 @@ namespace Kinvey
 				//store the new refresh token
 				Credential currentCred = uc.Store.Load(u.Id, uc.SSOGroupKey);
 				currentCred.AccessToken = result["access_token"].ToString();
-				currentCred.RefreshToken = result["refresh_token"].ToString();
-				currentCred.RedirectUri = uc.MICRedirectURI;
+                currentCred.RefreshToken = result.GetValidValue("refresh_token");
+                currentCred.RedirectUri = uc.MICRedirectURI;
                 currentCred.MICClientID = clientID;
 				uc.Store.Store(u.Id, uc.SSOGroupKey, currentCred);
 
@@ -765,11 +757,9 @@ namespace Kinvey
 
 				RealtimeRouter.Initialize(channelGroupName, publishKey, subscribeKey, AuthToken, uc, realtimeReconnectionPolicy);
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				var msg = ke.Error;
-
-				throw ke;
+				throw;
 			}
 		}
 
@@ -790,11 +780,9 @@ namespace Kinvey
 				ct.ThrowIfCancellationRequested();
 				JObject responseUnregister = await realtimeRequest.ExecuteAsync();
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				var msg = ke.Error;
-
-				throw ke;
+				throw;
 			}
 		}
 
@@ -928,9 +916,9 @@ namespace Kinvey
 					}
 				}
 			}
-			catch (KinveyException ke)
+			catch (KinveyException)
 			{
-				throw ke;
+				throw;
 			}
 			catch (Exception e)
 			{
@@ -1027,14 +1015,27 @@ namespace Kinvey
 			return await deleteRequest.ExecuteAsync();
 		}
 
-		#endregion
+        /// <summary>
+		/// Sends a verification email
+		/// </summary>
+		/// <returns>The async task.</returns>
+		/// <param name="userID">Userid.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+		public async Task<User> EmailVerificationAsync(string userID, CancellationToken ct = default(CancellationToken))
+        {
+            EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
+            ct.ThrowIfCancellationRequested();
+            return await emailVerificationRequest.ExecuteAsync();
+        }
 
-		#endregion
+        #endregion
 
-		#region User class internal login methods - internal use only.
+        #endregion
 
-		// Logs a user in asynchronously with a credential object.  Internal use only.
-		static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
+        #region User class internal login methods - internal use only.
+
+        // Logs a user in asynchronously with a credential object.  Internal use only.
+        static internal async Task LoginAsync(Credential cred, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			if (!String.IsNullOrEmpty(cred.AccessToken) &&

@@ -5,6 +5,8 @@ using Kinvey.Kinvey.TestApp.Shared.Models;
 using Xamarin.Forms;
 using Plugin.Connectivity;
 using System.Linq;
+using Kinvey.TestApp.Shared.Interfaces;
+using Xamarin.Forms;
 
 namespace Kinvey.TestApp.Shared.Pages
 {
@@ -167,6 +169,19 @@ namespace Kinvey.TestApp.Shared.Pages
         private void DisableGCM_OnClicked(object sender, EventArgs e)
         {
             DependencyService.Get<IGCMService>().Disable(Client.SharedClient);
+            }
+        }
+
+        private void RegisterPush_OnClicked(object sender, EventArgs e)
+        {
+            var fcmService = DependencyService.Get<IFCMService>();
+            fcmService.Register(Client.SharedClient);
+        }
+
+        private void UnregisterPush_OnClicked(object sender, EventArgs e)
+        {
+            var fcmService = DependencyService.Get<IFCMService>();
+            fcmService.UnRegister(Client.SharedClient);
         }
     }
 }
