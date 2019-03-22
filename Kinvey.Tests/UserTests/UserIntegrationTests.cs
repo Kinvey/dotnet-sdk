@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Kinvey;
+using System.Linq;
 
 namespace Kinvey.Tests
 {
@@ -844,7 +845,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestDoesUsernameExist()
+        public async Task TestDoesUsernameExistAsync()
         {
             // Arrange
             if (MockData) MockResponses(1);
@@ -858,7 +859,26 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestDoesUsernameExistBad()
+        public void TestUserExistenceRequest()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            string username = TestSetup.user;
+            var existenceCheckRequest = kinveyClient.UserFactory.BuildUserExistenceRequest(username);
+
+            // Act
+            var existenceResult = existenceCheckRequest.Execute();
+
+            // Assert
+            Assert.IsNotNull(existenceResult);
+        }
+
+        [TestMethod]
+        public async Task TestDoesUsernameExistBadAsync()
         {
             // Setup
             if (MockData) MockResponses(2);
@@ -1114,6 +1134,31 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsNull(exception);
+        }
+
+        [TestMethod]
+        public async Task TestRetrieveNotFoundExceptionAsync()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act           
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await user.RetrieveAsync(string.Empty, new string[] { string.Empty }, 0, false);
+            });
+
+            // Assert
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(exception.GetType(), typeof(KinveyException));
+            var ke = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
         }
     }
 }
