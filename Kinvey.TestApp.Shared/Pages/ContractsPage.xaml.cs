@@ -6,7 +6,6 @@ using Xamarin.Forms;
 using Plugin.Connectivity;
 using System.Linq;
 using Kinvey.TestApp.Shared.Interfaces;
-using Xamarin.Forms;
 
 namespace Kinvey.TestApp.Shared.Pages
 {
@@ -154,22 +153,12 @@ namespace Kinvey.TestApp.Shared.Pages
         private void RegisterGCM_OnClicked(object sender, EventArgs e)
         {
             var gsmService = DependencyService.Get<IGCMService>();
-            gsmService.changed += GsmService_changed;
-            gsmService.Register(Client.SharedClient);
-
-            
-
-        }
-
-        private void GsmService_changed(object sender, EventArgs e)
-        {
-            
+            gsmService.Register(Client.SharedClient);       
         }
 
         private void DisableGCM_OnClicked(object sender, EventArgs e)
         {
-            DependencyService.Get<IGCMService>().Disable(Client.SharedClient);
-            }
+            DependencyService.Get<IGCMService>().Disable(Client.SharedClient);           
         }
 
         private void RegisterPush_OnClicked(object sender, EventArgs e)
