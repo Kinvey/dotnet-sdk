@@ -1016,6 +1016,13 @@ namespace Kinvey.Tests
                                     Write(context, jsonObject);
                                     break;
                                 }
+                            case "/appdata/_kid_/ToDos/_subscribe":
+                                {
+                                    Assert.AreEqual("POST", context.Request.HttpMethod);
+                                    var jsonObject = new JObject();
+                                    Write(context, jsonObject);
+                                    break;
+                                }
                             case "/blob/_kid_/":
                                 MockBlob(context, blobs);
                                 break;
@@ -1157,7 +1164,15 @@ namespace Kinvey.Tests
                                         switch (context.Request.HttpMethod)
                                         {
                                             case "GET":
-                                                Write(context, users[id]);
+                                                if (users.ContainsKey(id))
+                                                {
+                                                    Write(context, users[id]);
+                                                }
+                                                else
+                                                {
+                                                    MockNotFound(context);
+                                                }
+                                                
                                                 break;
                                             case "PUT":
                                                 MockUserUpdate(context, users, id);
