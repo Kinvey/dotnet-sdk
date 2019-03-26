@@ -1026,6 +1026,26 @@ namespace Kinvey.Tests
                             case "/blob/_kid_/":
                                 MockBlob(context, blobs);
                                 break;
+                            case "/push/_kid_/register-device":
+                            case "/push/_kid_/unregister-device":
+                                Assert.AreEqual("POST", context.Request.HttpMethod);
+
+                                var pushObj = Read<JObject>(context);
+                                var platformObj = pushObj["platform"];
+                                var tokenObj = pushObj["token"];
+                                var serviceObj = pushObj["service"];
+
+                                if (platformObj != null && tokenObj != null && serviceObj != null && platformObj.ToString().Equals("android") && serviceObj.ToString().Equals("firebase"))
+                                {
+                                    Write(context, pushObj);
+                                }
+                                else
+                                {
+                                    string content = null;
+                                    Write(context, content);
+                                }
+
+                                break;
                             default:
                                 {
                                     var regex = new Regex(@"/([^/]*)/([^/]*)/([^/]*)/?([^/]*)");

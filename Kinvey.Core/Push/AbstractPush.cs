@@ -84,7 +84,6 @@ namespace Kinvey
 			}
 		}
 
-
 		[JsonObject(MemberSerialization.OptIn)]
 		public class PushPayload : JObject{
 
