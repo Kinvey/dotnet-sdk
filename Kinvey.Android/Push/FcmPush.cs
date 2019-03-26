@@ -47,7 +47,7 @@ namespace Kinvey
                         return;
                     }
 
-                    //EnablePushViaRest(ANDROID, token).Execute();
+                    EnablePushViaRest(ANDROID, token).Execute();
 
                     var prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
                     ISharedPreferencesEditor editor = prefs.Edit();
@@ -87,7 +87,7 @@ namespace Kinvey
 
                 try
                 {
-                    //DisablePushViaRest(ANDROID, alreadyInitialized).Execute();
+                    DisablePushViaRest(ANDROID, alreadyInitialized).Execute();
 
                     ISharedPreferencesEditor editor = prefs.Edit();
                     editor.Remove(FCM_ID);

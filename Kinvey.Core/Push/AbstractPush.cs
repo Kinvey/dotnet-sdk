@@ -30,19 +30,19 @@ namespace Kinvey
 			this.client = client;
 		}
 
-		public async Task<PushPayload> EnablePushAsync(string platform, string deviceId){
-			return await EnablePushViaRest (platform, deviceId).ExecuteAsync ();
+		public async Task<PushPayload> EnablePushAsync(string platform, string token){
+			return await EnablePushViaRest (platform, token).ExecuteAsync ();
 		}
 
-		public async Task<PushPayload> DisablePushAsync(string platform, string deviceId){
-			return await DisablePushViaRest (platform, deviceId).ExecuteAsync ();
+		public async Task<PushPayload> DisablePushAsync(string platform, string token){
+			return await DisablePushViaRest (platform, token).ExecuteAsync ();
 		}
 
-		public EnablePush EnablePushViaRest(string platform, string deviceId){
+		public EnablePush EnablePushViaRest(string platform, string token){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload (platform, deviceId);
+			PushPayload input = new PushPayload (platform, token);
 
 
 			EnablePush enable = new EnablePush (client, input, urlParameters);
@@ -52,11 +52,11 @@ namespace Kinvey
 			return enable;
 		}
 
-		public RemovePush DisablePushViaRest(string platform, string deviceId){
+		public RemovePush DisablePushViaRest(string platform, string token){
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload (platform, deviceId);
+			PushPayload input = new PushPayload (platform, token);
 
 			RemovePush disable = new RemovePush (client, input, urlParameters);
 
@@ -89,15 +89,19 @@ namespace Kinvey
 		public class PushPayload : JObject{
 
 			[JsonProperty]
-			private String platform { get; set;} 
+			private string platform { get; set;} 
 
 			[JsonProperty]
-			private String deviceId {get; set;}
+			private string token {get; set;}
 
-			public PushPayload(string platform, string deviceId) {
+            [JsonProperty]
+            private string service { get; set; }
+
+            public PushPayload(string platform, string token) {
 				this.platform = platform;
-				this.deviceId = deviceId;
-			}
+				this.token = token;
+                this.service = "firebase";
+            }
 		}
 	}
 }
