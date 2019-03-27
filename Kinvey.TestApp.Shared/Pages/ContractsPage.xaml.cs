@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kinvey.Kinvey.TestApp.Shared.Interfaces;
 using Kinvey.Kinvey.TestApp.Shared.Models;
 using Xamarin.Forms;
 using Plugin.Connectivity;
@@ -148,17 +147,6 @@ namespace Kinvey.TestApp.Shared.Pages
                     await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, generalException.Message);
                 }
             }
-        }
-
-        private void RegisterGCM_OnClicked(object sender, EventArgs e)
-        {
-            var gsmService = DependencyService.Get<IGCMService>();
-            gsmService.Register(Client.SharedClient);       
-        }
-
-        private void DisableGCM_OnClicked(object sender, EventArgs e)
-        {
-            DependencyService.Get<IGCMService>().Disable(Client.SharedClient);           
         }
 
         private void RegisterPush_OnClicked(object sender, EventArgs e)

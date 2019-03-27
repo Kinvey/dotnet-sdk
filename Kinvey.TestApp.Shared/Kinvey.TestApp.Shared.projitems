@@ -11,7 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IGCMService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IFCMService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Contract.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AddContract.xaml.cs">
