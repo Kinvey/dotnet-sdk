@@ -43,7 +43,7 @@ namespace Kinvey
                 else if (action.Equals(Constants.STR_KINVEY_FCM_UNREGISTRATION))
                 {
                     var unregistrationId = intent.GetStringExtra(Constants.STR_UNREGISTRATION_ID);
-                    onRegistered(unregistrationId);
+                    onUnregistered(unregistrationId);
                 }
                 else if (action.Equals(Constants.STR_C2DM_INTENT_RECEIVE))
                 {
