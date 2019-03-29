@@ -31,12 +31,14 @@ namespace Kinvey
 			this.client = client;
 		}
 
-		public async Task<PushPayload> EnablePushAsync(string platform, string token){
-			return await EnablePushViaRest (platform, token).ExecuteAsync ();
+		public async Task<PushPayload> EnablePushAsync(string platform, string deviceId)
+        {
+			return await EnablePushViaRest (platform, deviceId).ExecuteAsync ();
 		}
 
-		public async Task<PushPayload> DisablePushAsync(string platform, string token){
-			return await DisablePushViaRest (platform, token).ExecuteAsync ();
+		public async Task<PushPayload> DisablePushAsync(string platform, string deviceId)
+        {
+			return await DisablePushViaRest (platform, deviceId).ExecuteAsync ();
 		}
 
 		public EnablePush EnablePushViaRest(string platform, string deviceId)
