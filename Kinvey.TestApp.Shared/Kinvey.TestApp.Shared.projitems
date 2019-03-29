@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IFCMService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IIOSPushService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Contract.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\AddContract.xaml.cs">
       <SubType>Code</SubType>

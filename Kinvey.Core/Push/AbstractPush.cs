@@ -23,9 +23,10 @@ namespace Kinvey
 	{
 
 		protected Client client;
+        protected const string ANDROID = "android";
 
 
-		public AbstractPush (Client client)
+        public AbstractPush (Client client)
 		{
 			this.client = client;
 		}
@@ -38,11 +39,12 @@ namespace Kinvey
 			return await DisablePushViaRest (platform, token).ExecuteAsync ();
 		}
 
-		public EnablePush EnablePushViaRest(string platform, string token){
+		public EnablePush EnablePushViaRest(string platform, string deviceId)
+        {
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload (platform, token);
+			PushPayload input = new PushPayload (platform, deviceId);
 
 
 			EnablePush enable = new EnablePush (client, input, urlParameters);
@@ -52,11 +54,12 @@ namespace Kinvey
 			return enable;
 		}
 
-		public RemovePush DisablePushViaRest(string platform, string token){
+		public RemovePush DisablePushViaRest(string platform, string deviceId)
+        {
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
-			PushPayload input = new PushPayload (platform, token);
+			PushPayload input = new PushPayload (platform, deviceId);
 
 			RemovePush disable = new RemovePush (client, input, urlParameters);
 
@@ -91,15 +94,19 @@ namespace Kinvey
 			private string platform { get; set;} 
 
 			[JsonProperty]
-			private string token {get; set;}
+			private string deviceId { get; set;}
 
             [JsonProperty]
             private string service { get; set; }
 
-            public PushPayload(string platform, string token) {
+            public PushPayload(string platform, string deviceId) {
 				this.platform = platform;
-				this.token = token;
-                this.service = "firebase";
+				this.deviceId = deviceId;
+
+                if (platform.Equals(ANDROID))
+                {
+                    this.service = "firebase";
+                }
             }
 		}
 	}

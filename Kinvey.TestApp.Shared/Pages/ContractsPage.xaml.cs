@@ -64,6 +64,8 @@ namespace Kinvey.TestApp.Shared.Pages
                 // Handle any General exception.
                 await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, generalException.Message);
             }
+
+            Platforms.SelectedIndex = 0;
         }
 
         private void AddContractButton_OnClicked(object sender, EventArgs e)
@@ -151,14 +153,40 @@ namespace Kinvey.TestApp.Shared.Pages
 
         private void RegisterPush_OnClicked(object sender, EventArgs e)
         {
-            var fcmService = DependencyService.Get<IFCMService>();
-            fcmService.Register(Client.SharedClient);
+            switch (Platforms.SelectedIndex)
+            {
+                //Android
+                case 0:
+                    var fcmService = DependencyService.Get<IFCMService>();
+                    fcmService.Register(Client.SharedClient);
+                    break;
+                //IOS
+                case 1:
+                    var iosPushService = DependencyService.Get<IIOSPushService>();
+                    iosPushService.Register();
+                    break;
+                default:
+                    throw new Exception("Wrong index.");
+            }
         }
 
         private void UnregisterPush_OnClicked(object sender, EventArgs e)
         {
-            var fcmService = DependencyService.Get<IFCMService>();
-            fcmService.UnRegister(Client.SharedClient);
+            switch (Platforms.SelectedIndex)
+            {
+                //Android
+                case 0:
+                    var fcmService = DependencyService.Get<IFCMService>();
+                    fcmService.UnRegister(Client.SharedClient);
+                    break;
+                //IOS
+                case 1:
+                    var iosPushService = DependencyService.Get<IIOSPushService>();
+                    iosPushService.UnRegister();
+                    break;
+                default:
+                    throw new Exception("Wrong index.");
+            }
         }
     }
 }

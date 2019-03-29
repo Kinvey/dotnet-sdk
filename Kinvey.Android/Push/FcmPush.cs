@@ -20,8 +20,7 @@ namespace Kinvey
         private const string C2DM_INTENT_REGISTER = "com.google.android.c2dm.intent.REGISTER";
         private const string ANDROID_GSF = "com.google.android.gsf";
         private const string APP = "app";
-        private const string SENDER = "sender";
-        private const string ANDROID = "android";
+        private const string SENDER = "sender";        
         private const string FCM_NOT_REGISTERED = "Firebase Cloud Messaging is not registered";
 
 
