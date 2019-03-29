@@ -9,7 +9,8 @@ namespace Kinvey.Tests
     {
         private Client kinveyClient;
         private AbstractPush testPush;
-        private const string platform = "android";
+        private const string androidPlatform = "android";
+        private const string iosPlatform = "ios";
         private string token;
 
         [TestInitialize]
@@ -31,7 +32,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestEnablePushViaRestAsync()
+        public async Task TestEnablePushViaRestAndroidAsync()
         {
             // Setup
             if (MockData)
@@ -47,14 +48,14 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             //Act
-            var pushPayload = testPush.EnablePushViaRest(platform, token).Execute();
+            var pushPayload = testPush.EnablePushViaRest(androidPlatform, token).Execute();
 
             //Assert
             Assert.IsNotNull(pushPayload);
         }
 
         [TestMethod]
-        public async Task TestDisablePushViaRestAsync()
+        public async Task TestEnablePushViaRestIosAsync()
         {
             // Setup
             if (MockData)
@@ -70,14 +71,14 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             //Act
-            var pushPayload = testPush.DisablePushViaRest(platform, token).Execute();
+            var pushPayload = testPush.EnablePushViaRest(iosPlatform, token).Execute();
 
             //Assert
             Assert.IsNotNull(pushPayload);
         }
 
         [TestMethod]
-        public async Task TestEnablePushAsync()
+        public async Task TestDisablePushViaRestAndroidAsync()
         {
             // Setup
             if (MockData)
@@ -93,14 +94,14 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             //Act
-            var pushPayload = await testPush.EnablePushAsync(platform, token);
+            var pushPayload = testPush.DisablePushViaRest(androidPlatform, token).Execute();
 
             //Assert
             Assert.IsNotNull(pushPayload);
         }
 
         [TestMethod]
-        public async Task TestDisablePushAsync()
+        public async Task TestDisablePushViaRestIosAsync()
         {
             // Setup
             if (MockData)
@@ -116,7 +117,100 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             //Act
-            var pushPayload = await testPush.DisablePushAsync(platform, token);
+            var pushPayload = testPush.DisablePushViaRest(iosPlatform, token).Execute();
+
+            //Assert
+            Assert.IsNotNull(pushPayload);
+        }
+
+        [TestMethod]
+        public async Task TestEnablePushAndroidAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+            else
+            {
+                Assert.Fail("Use this test only with mocks.");
+            }
+
+            //Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            //Act
+            var pushPayload = await testPush.EnablePushAsync(androidPlatform, token);
+
+            //Assert
+            Assert.IsNotNull(pushPayload);
+        }
+
+
+        [TestMethod]
+        public async Task TestEnablePushIosAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+            else
+            {
+                Assert.Fail("Use this test only with mocks.");
+            }
+
+            //Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            //Act
+            var pushPayload = await testPush.EnablePushAsync(iosPlatform, token);
+
+            //Assert
+            Assert.IsNotNull(pushPayload);
+        }
+
+        [TestMethod]
+        public async Task TestDisablePushAndroidAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+            else
+            {
+                Assert.Fail("Use this test only with mocks.");
+            }
+
+            //Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            //Act
+            var pushPayload = await testPush.DisablePushAsync(androidPlatform, token);
+
+            //Assert
+            Assert.IsNotNull(pushPayload);
+        }
+
+        [TestMethod]
+        public async Task TestDisablePushIosAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+            else
+            {
+                Assert.Fail("Use this test only with mocks.");
+            }
+
+            //Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            //Act
+            var pushPayload = await testPush.DisablePushAsync(iosPlatform, token);
 
             //Assert
             Assert.IsNotNull(pushPayload);

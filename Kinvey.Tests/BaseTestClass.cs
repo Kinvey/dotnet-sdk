@@ -1031,18 +1031,18 @@ namespace Kinvey.Tests
                                 Assert.AreEqual("POST", context.Request.HttpMethod);
 
                                 var pushObj = Read<JObject>(context);
-                                var platformObj = pushObj["platform"];
-                                var tokenObj = pushObj["token"];
-                                var serviceObj = pushObj["service"];
+                                var platform = pushObj["platform"].ToString();
+                                var deviceId = pushObj["deviceId"].ToString();
+                                var service = pushObj["service"].ToString();                               
 
-                                if (platformObj != null && tokenObj != null && serviceObj != null && platformObj.ToString().Equals("android") && serviceObj.ToString().Equals("firebase"))
+                                if (string.IsNullOrEmpty(platform) || string.IsNullOrEmpty(deviceId) || (platform.Equals("android") && !service.Equals("firebase")) || (platform.Equals("ios") && !string.IsNullOrEmpty(service)))
                                 {
-                                    Write(context, pushObj);
+                                    string content = null;
+                                    Write(context, content);                                    
                                 }
                                 else
                                 {
-                                    string content = null;
-                                    Write(context, content);
+                                    Write(context, pushObj);
                                 }
 
                                 break;
