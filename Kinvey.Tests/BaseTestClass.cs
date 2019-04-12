@@ -1114,10 +1114,13 @@ namespace Kinvey.Tests
                                         switch (context.Request.HttpMethod)
                                         {
                                             case "GET":
-                                                Write(context, blobs[id]);
+                                                MockBlobGet(context, blobs, id);
                                                 break;
                                             case "PUT":
                                                 MockBlobPut(context, blobs, id);
+                                                break;
+                                            case "DELETE":
+                                                MockBlobDelete(context, blobs, id);
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
@@ -1405,6 +1408,39 @@ namespace Kinvey.Tests
             blob["_requiredHeaders"] = new JObject();
             blobs[id] = blob;
             Write(context, blob);
+        }
+
+        private static void MockBlobDelete(HttpListenerContext context, Dictionary<string, JObject> blobs, string id)
+        {
+            var removedCount = 0;
+
+            if (blobs.ContainsKey(id))
+            {
+                if (blobs.Remove(id))
+                {
+                    removedCount++;
+                }
+            }
+
+            var deleteResponse = new JObject()
+            {
+                ["count"] = removedCount,
+                ["IDs"] = null
+            };
+
+            Write(context, deleteResponse);
+        }
+
+        private static void MockBlobGet(HttpListenerContext context, Dictionary<string, JObject> blobs, string id)
+        {
+            if (blobs.ContainsKey(id))
+            {
+                Write(context, blobs[id]);
+            }
+            else
+            {
+                MockNotFound(context);
+            }                    
         }
     }
 }
