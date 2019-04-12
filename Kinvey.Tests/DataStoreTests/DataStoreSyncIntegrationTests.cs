@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -171,7 +172,7 @@ namespace Kinvey.Tests
 		}
 
 		[TestMethod]
-		public async Task TestSyncStoreFindByIDAsync()
+		public async Task TestSyncStoreFindByIdSuccessfulOperationAsync()
 		{
 			// Setup
             if (MockData)
@@ -180,28 +181,114 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			// Arrange
-			ToDo newItem = new ToDo();
-			newItem.Name = "Next Task";
-			newItem.Details = "A test";
-			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
-			ToDo t = await todoStore.SaveAsync(newItem);
+            // Arrange
+            var newItem = new ToDo
+            {
+                Name = "Next Task",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			var savedEntity = await todoStore.SaveAsync(newItem);
 
 			// Act
-			ToDo entity = null;
-			entity = await todoStore.FindByIDAsync(t.ID);
+			var existingEntity = await todoStore.FindByIDAsync(savedEntity.ID);
 
 			// Assert
-			Assert.IsNotNull(entity);
-			Assert.IsTrue(string.Equals(entity.ID, t.ID));
-
-			// Teardown
-			await todoStore.RemoveAsync(t.ID);
-			kinveyClient.ActiveUser.Logout();
+			Assert.IsNotNull(existingEntity);
+			Assert.AreEqual(existingEntity.ID, savedEntity.ID);
 		}
 
-		[TestMethod]
+        [TestMethod]
+        public async Task TestSyncStoreFindByIdItemNotFoundExceptionAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var newItem = new ToDo
+            {
+                Name = "Next Task",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var savedEntity = await todoStore.SaveAsync(newItem);
+            await todoStore.RemoveAsync(savedEntity.ID);
+
+            // Act
+            KinveyException syncStoreException = null;
+            ToDo existingEntity = null;
+            try
+            {
+                existingEntity = await todoStore.FindByIDAsync(savedEntity.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                syncStoreException = kinveyException;
+            }
+
+            // Assert
+            Assert.IsNull(existingEntity);
+            Assert.IsNotNull(syncStoreException);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);
+        }
+
+        [TestMethod]
+        public async Task TestSyncStoreFindByIdGeneralExceptionAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var newItem = new ToDo
+            {
+                Name = "Next Task",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+         
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var savedEntity = await todoStore.SaveAsync(newItem);
+            await todoStore.RemoveAsync(savedEntity.ID);
+
+            var cacheProperty = todoStore.GetType().GetField("cache", BindingFlags.NonPublic | BindingFlags.Instance);
+            var cachePropertyValue = cacheProperty.GetValue(todoStore);
+
+            var dbConnectionSyncProperty = cachePropertyValue.GetType().GetField("dbConnectionSync", BindingFlags.NonPublic | BindingFlags.Instance);
+            dbConnectionSyncProperty.SetValue(cachePropertyValue, null);
+
+            cacheProperty.SetValue(todoStore, cachePropertyValue);
+
+            // Act
+            KinveyException syncStoreException = null;
+            ToDo existingEntity = null;
+            try
+            {
+                existingEntity = await todoStore.FindByIDAsync(savedEntity.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                syncStoreException = kinveyException;
+            }
+
+            // Assert
+            Assert.IsNull(existingEntity);
+            Assert.IsNotNull(syncStoreException);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_GENERAL, syncStoreException.ErrorCode);
+        }
+
+        [TestMethod]
 		public async Task TestSyncStoreFindByQuery()
 		{
 			// Setup

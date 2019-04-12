@@ -392,8 +392,17 @@ namespace Kinvey.Tests
                 exception = kinveyException;
             }
 
-            var existingItem1InLocalStorage = await syncStore.FindByIDAsync(savedItem1.ID);
-
+            KinveyException syncStoreException = null;
+            ToDo existingItem1InLocalStorage = null;
+            try
+            {
+                existingItem1InLocalStorage = await syncStore.FindByIDAsync(savedItem1.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                syncStoreException = kinveyException;
+            }
+           
             var networkEntities = await networkStore.FindAsync();
             var localEntities = await syncStore.FindAsync();
 
@@ -405,7 +414,10 @@ namespace Kinvey.Tests
             Assert.IsNotNull(autoDeleteResponse);
             Assert.IsNotNull(networkEntities);
             Assert.IsNotNull(localEntities);            
-            Assert.IsNull(existingItem1InLocalStorage);           
+            Assert.IsNull(existingItem1InLocalStorage);
+            Assert.IsNotNull(syncStoreException);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);
             Assert.AreEqual(1, networkDeleteResponse.count);
             Assert.AreEqual(0, autoDeleteResponse.count);
             Assert.AreEqual(1, networkEntities.Count);
@@ -2925,8 +2937,8 @@ namespace Kinvey.Tests
 
             // Act            
             var kinveyDeleteResponse = await autoStore.RemoveAsync(savedItem1.ID);
-
-            KinveyException exception = null;
+           
+            KinveyException networkStoreException = null;
             ToDo existingItem1InNetwork = null;
             try
             {
@@ -2934,28 +2946,39 @@ namespace Kinvey.Tests
             }
             catch (KinveyException kinveyException)
             {
-                exception = kinveyException;
+                networkStoreException = kinveyException;
             }
 
-            var existingItem1InLocal = await syncStore.FindByIDAsync(savedItem1.ID);
+            KinveyException syncStoreException = null;
+            ToDo existingItem1InLocal = null;
+            try
+            {
+                existingItem1InLocal = await syncStore.FindByIDAsync(savedItem1.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                syncStoreException = kinveyException;
+            }
 
             // Teardown
             await networkStore.RemoveAsync(savedItem2.ID);
 
-            // Assert            
+            // Assert   
             Assert.IsNotNull(kinveyDeleteResponse);
-            if (MockData)
-            {
-                Assert.IsNull(existingItem1InNetwork);
-            }
-            else
-            {
-                Assert.IsNotNull(exception);
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            }
-            Assert.IsNull(existingItem1InLocal);
             Assert.AreEqual(1, kinveyDeleteResponse.count);
+
+            Assert.IsNull(existingItem1InNetwork);
+            if (!MockData)
+            {            
+                Assert.IsNotNull(networkStoreException);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, networkStoreException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, networkStoreException.ErrorCode);
+            }
+
+            Assert.IsNull(existingItem1InLocal);
+            Assert.IsNotNull(syncStoreException);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);        
         }
        
         [TestMethod]
@@ -3095,13 +3118,26 @@ namespace Kinvey.Tests
                 exception = kinveyException;
             }
 
-            var existingItem1InLocal = await syncStore.FindByIDAsync(savedItem1.ID);
+            KinveyException syncStoreException = null;
+            ToDo existingItem1InLocal = null;
+            try
+            {
+                existingItem1InLocal = await syncStore.FindByIDAsync(savedItem1.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                syncStoreException = kinveyException;
+            }
 
             // Teardown
             await networkStore.RemoveAsync(savedItem2.ID);
 
             // Assert            
             Assert.IsNull(existingItem1InLocal);
+            Assert.IsNotNull(syncStoreException);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);
+
             if (MockData)
             {
                 Assert.IsNotNull(kinveyDeleteResponse2);
@@ -3112,7 +3148,7 @@ namespace Kinvey.Tests
                 Assert.IsNotNull(exception);
                 Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
                 Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            }
+            }           
         }
 
         [TestMethod]
@@ -3985,8 +4021,17 @@ namespace Kinvey.Tests
             var listToDoAuto1 = await autoStore.FindAsync();
             await networkStore.RemoveAsync(newItem1.ID);
             var listToDoAuto2 = await autoStore.FindAsync();
-
-            var existingToDo = await syncStore.FindByIDAsync(newItem1.ID);
+           
+            KinveyException syncStoreException = null;
+            ToDo existingToDo = null;
+            try
+            {
+                existingToDo = await syncStore.FindByIDAsync(newItem1.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                syncStoreException = kinveyException;
+            }
 
             // Teardown
             await networkStore.RemoveAsync(newItem2.ID);
@@ -4000,6 +4045,9 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem2.Details, listToDoAuto2[0].Details);
             Assert.AreEqual(newItem2.DueDate, listToDoAuto2[0].DueDate);
             Assert.IsNull(existingToDo);
+            Assert.IsNotNull(syncStoreException);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);
         }
 
         [TestMethod]
@@ -4642,7 +4690,16 @@ namespace Kinvey.Tests
                 exception = kinveyException;
             }
 
-            var existingItemInLocalStorage2 = await syncStore.FindByIDAsync(savedItem1.ID);
+            KinveyException syncStoreException = null;
+            ToDo existingItemInLocalStorage2 = null;
+            try
+            {
+                existingItemInLocalStorage2 = await syncStore.FindByIDAsync(savedItem1.ID);
+            }
+            catch (KinveyException kinveyException)
+            {
+                syncStoreException = kinveyException;
+            }
            
             // Teardown
             await autoStore.RemoveAsync(savedItem2.ID);
@@ -4660,9 +4717,11 @@ namespace Kinvey.Tests
                 Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
             }
 
-            // Assert
             Assert.IsNotNull(existingItemInLocalStorage1);
             Assert.IsNull(existingItemInLocalStorage2);
+            Assert.IsNotNull(syncStoreException);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);
         }
 
         [TestMethod]

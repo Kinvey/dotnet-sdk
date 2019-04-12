@@ -193,13 +193,16 @@ namespace Kinvey
 			{
                 item = dbConnectionSync.Get<T>(ID);
 			}
-			catch (Exception e)
-			{
-				// item not found, just return the default item
-				Logger.Log("Kinvey exception in cache find: item not found.  " + e.Message);
-			}
+            catch (InvalidOperationException invalidOperationException)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, string.Empty, invalidOperationException);
+            }
+            catch (Exception exception)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_GENERAL, string.Empty, exception);
+            }
 
-			return item;
+            return item;
 		}
 
 		public List<T> FindByIDs(List<string> IDs)
