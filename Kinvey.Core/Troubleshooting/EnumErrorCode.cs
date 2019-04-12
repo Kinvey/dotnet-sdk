@@ -43,10 +43,20 @@ namespace Kinvey
 		/// </summary>
 		ERROR_DATASTORE_CACHE_FIND_QUERY,
 
-		/// <summary>
-		/// Error refreshing the local cache with a list of new and updated entities.
+        /// <summary>
+		/// Error finding entities by id in the local cache.
 		/// </summary>
-		ERROR_DATASTORE_CACHE_REFRESH,
+        ERROR_DATASTORE_CACHE_FIND_BY_ID_GENERAL,
+
+        /// <summary>
+		/// Error finding entities by id in the local cache. An entity with the current id does not exist.
+		/// </summary>
+        ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND,
+
+        /// <summary>
+        /// Error refreshing the local cache with a list of new and updated entities.
+        /// </summary>
+        ERROR_DATASTORE_CACHE_REFRESH,
 
 		/// <summary>
 		/// Error removing all entities in the local cache table.

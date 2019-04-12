@@ -298,7 +298,19 @@ namespace Kinvey
 					description = "Error in the query expression used to find entities in the cache.";
 					break;
 
-				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID:
+                case EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_GENERAL:
+                    error = "An exception was thrown while trying to find entity by id in the cache.";
+                    debug = "";
+                    description = "Error in finding an entity by id in the cache";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND:
+                    error = "";
+                    debug = "";
+                    description = "Response status code does not indicate success: 404 (Not Found).";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID:
 					error = "An exception was thrown while trying to save an entity in the cache.";
 					debug = "";
 					description = "Error in updating cache with permanent entity ID.";
