@@ -175,14 +175,31 @@ namespace Kinvey
 			}
 		}
 
-		#endregion
-
-		#region User class Constructors and Initializers
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
+        /// <summary>
+		/// A boolean flag to know whether a user is active.
 		/// </summary>
-		internal User()
+        [JsonIgnore]
+        public bool IsActive
+        {
+            get
+            {
+                if (KinveyClient.IsUserLoggedIn() &&
+                KinveyClient.ActiveUser.Id == this.Id)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region User class Constructors and Initializers
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyXamarin.User"/> class.
+        /// </summary>
+        internal User()
 		{
 			// This ctor is necessary for deserailzation of the JSON representation of the User.
 			this.Attributes = new Dictionary<string, JToken>();
@@ -192,17 +209,6 @@ namespace Kinvey
 		{
 			this.client = client;
 			this.Attributes = new Dictionary<string, JToken>();
-		}
-
-		public bool IsActive()
-		{
-			if (KinveyClient.IsUserLoggedIn() &&
-			    KinveyClient.ActiveUser.Id == this.Id)
-			{
-				return true;
-			}
-
-			return false;
 		}
 
 		/// <summary>
@@ -736,7 +742,7 @@ namespace Kinvey
         /// <param name="realtimeReconnectionPolicy"> Realtime reconnection policy </param>
         public async Task RegisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken), RealtimeReconnectionPolicy realtimeReconnectionPolicy = RealtimeReconnectionPolicy.EXPONENTIAL)
 		{
-			if (!IsActive())
+			if (!IsActive)
 			{
 				// throw an error stating that user object has to be the active user in order to register for realtime messages
 			}
@@ -833,7 +839,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			User u = await retrieveRequest.ExecuteAsync();
 
-			if (this.IsActive())
+			if (this.IsActive)
 			{
 				UpdateActiveUser(u);
 			}
