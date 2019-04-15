@@ -104,7 +104,7 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsNotNull(kinveyClient.ActiveUser);
-            Assert.IsTrue(u.Active);
+            Assert.IsTrue(u.IsActive());
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsNotNull(Client.SharedClient.ActiveUser);
-            Assert.IsTrue(u.Active);
+            Assert.IsTrue(u.IsActive());
         }
 
         [TestMethod]
@@ -157,7 +157,7 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsNotNull(kinveyClient.ActiveUser);
-            Assert.IsTrue(u.Active);
+            Assert.IsTrue(u.IsActive());
         }
 
         [TestMethod]
