@@ -57,6 +57,7 @@ namespace Kinvey
 		/// <param name="customheaders">Custom request property as a JObject</param>
 		public void SetCustomRequestProperties(JObject customheaders)
 		{
+            var c = 1;
 			this.customRequestProperties = customheaders;
 		}
 
