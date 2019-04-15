@@ -176,7 +176,7 @@ namespace Kinvey
 		}
 
         /// <summary>
-		/// A boolean flag to know whether a user is active.
+		/// A boolean flag to know whether the current user is active.
 		/// </summary>
         [JsonIgnore]
         public bool IsActive
