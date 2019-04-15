@@ -179,7 +179,7 @@ namespace Kinvey
 		/// A boolean flag to know whether the current user is active.
 		/// </summary>
         [JsonIgnore]
-        public bool IsActive
+        public bool Active
         {
             get
             {
@@ -451,16 +451,22 @@ namespace Kinvey
 			}
 		}
 
-		#region User class login methods - MIC methods
+        [Obsolete("This method has been deprecated. Please use Active property instead.")]
+        public bool IsActive()
+        {
+            return this.Active;
+        }
 
-		/// <summary>
-		/// Login with Auth Link Credentials
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="accesstoken">Auth Link Accesstoken.</param>
-		/// <param name="refreshtoken">Auth Link Refreshtoken.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<User> LoginAuthlinkAsync(string accesstoken, string refreshtoken, CancellationToken ct = default(CancellationToken))
+        #region User class login methods - MIC methods
+
+        /// <summary>
+        /// Login with Auth Link Credentials
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="accesstoken">Auth Link Accesstoken.</param>
+        /// <param name="refreshtoken">Auth Link Refreshtoken.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<User> LoginAuthlinkAsync(string accesstoken, string refreshtoken, CancellationToken ct = default(CancellationToken))
 		{
 			Provider provider = new Provider();
 			ct.ThrowIfCancellationRequested();
@@ -742,7 +748,7 @@ namespace Kinvey
         /// <param name="realtimeReconnectionPolicy"> Realtime reconnection policy </param>
         public async Task RegisterRealtimeAsync(AbstractClient userClient = null, CancellationToken ct = default(CancellationToken), RealtimeReconnectionPolicy realtimeReconnectionPolicy = RealtimeReconnectionPolicy.EXPONENTIAL)
 		{
-			if (!IsActive)
+			if (!Active)
 			{
 				// throw an error stating that user object has to be the active user in order to register for realtime messages
 			}
@@ -839,7 +845,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			User u = await retrieveRequest.ExecuteAsync();
 
-			if (this.IsActive)
+			if (this.Active)
 			{
 				UpdateActiveUser(u);
 			}
