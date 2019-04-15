@@ -20,6 +20,7 @@ namespace Kinvey.TestApp.Shared.Pages
             try
             {
                 User user;
+                User user2;
 
                 //Verify that the current user already login.
                 if (!Client.SharedClient.IsUserLoggedIn())
