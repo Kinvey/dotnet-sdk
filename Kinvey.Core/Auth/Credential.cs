@@ -232,6 +232,7 @@ namespace Kinvey
 
 		internal static Credential From(SQLCredential sqlcred)
 		{
+
 			Dictionary<string, JToken> attributes = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(sqlcred.Attributes);
 			KinveyUserMetaData userKMD = JsonConvert.DeserializeObject<KinveyUserMetaData>(sqlcred.UserKMD);
 			KinveyAuthSocialID socialIdentity = JsonConvert.DeserializeObject<KinveyAuthSocialID>(sqlcred.AuthSocialID);
