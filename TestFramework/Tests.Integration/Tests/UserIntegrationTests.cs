@@ -73,7 +73,7 @@ namespace TestFramework
 
 			// Assert
 			Assert.NotNull(kinveyClient.ActiveUser);
-			Assert.True(u.Active);
+			Assert.True(u.IsActive());
 
 			// Teardown
 			kinveyClient.ActiveUser.Logout();
@@ -89,7 +89,7 @@ namespace TestFramework
 
 			// Assert
 			Assert.NotNull(Client.SharedClient.ActiveUser);
-			Assert.True(u.Active);
+			Assert.True(u.IsActive());
 
 			// Teardown
 			Client.SharedClient.ActiveUser.Logout();
@@ -125,7 +125,7 @@ namespace TestFramework
 
 			// Assert
 			Assert.NotNull(kinveyClient.ActiveUser);
-			Assert.True(u.Active);
+			Assert.True(u.IsActive());
 
 			// Teardown
 			kinveyClient.ActiveUser.Logout();

@@ -183,12 +183,7 @@ namespace Kinvey
         {
             get
             {
-                if (KinveyClient.IsUserLoggedIn() &&
-                KinveyClient.ActiveUser.Id == this.Id)
-                {
-                    return true;
-                }
-                return false;
+                return KinveyClient.IsUserLoggedIn() && KinveyClient.ActiveUser.Id == this.Id;
             }
         }
 
