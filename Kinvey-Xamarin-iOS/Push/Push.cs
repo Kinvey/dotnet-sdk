@@ -4,6 +4,7 @@ using UIKit;
 using System.Threading;
 using Foundation;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Kinvey
 {
@@ -29,7 +30,8 @@ namespace Kinvey
 		
 		}
 
-		public async void Initialize(string deviceToken){
+        [Obsolete("This method has been deprecated. Please use InitializeAsync(deviceToken) instead.")]
+        public async void Initialize(string deviceToken){
 			if (deviceToken == null) {
 				Logger.Log ("Cannot Initialize for push, device Token cannot be null!");
 				return;
@@ -66,7 +68,41 @@ namespace Kinvey
 //			});
 		}
 
-		public void DisablePush(){
+        public async Task InitializeAsync(string deviceToken)
+        {
+            if (deviceToken == null)
+            {
+                Logger.Log("Cannot Initialize for push, device Token cannot be null!");
+                return;
+            }
+
+            if (deviceToken.StartsWith("<"))
+            {
+                deviceToken = deviceToken.Substring(1, deviceToken.Length - 1);
+            }
+
+            if (deviceToken.EndsWith(">"))
+            {
+                deviceToken = deviceToken.Substring(0, deviceToken.Length - 1);
+            }
+
+            deviceToken = Regex.Replace(deviceToken, @"\s+", "");
+            deviceToken = deviceToken.ToUpper();
+
+            NSUserDefaults.StandardUserDefaults.SetString(deviceToken, APN_Token);
+            NSUserDefaults.StandardUserDefaults.Synchronize();
+            try
+            {
+                await EnablePushAsync("ios", deviceToken);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        [Obsolete("This method has been deprecated. Please use DisablePushAsync() instead.")]
+        public void DisablePush(){
 			
 			string value = NSUserDefaults.StandardUserDefaults.StringForKey(APN_Token);
 			if (value == null || value.Length == 0) {
@@ -85,6 +121,18 @@ namespace Kinvey
 			});
 		}
 
-	}
+        public async Task DisablePushAsync()
+        {
+            string value = NSUserDefaults.StandardUserDefaults.StringForKey(APN_Token);
+            if (value == null || value.Length == 0)
+            {
+                Logger.Log("Cannot Disable Push, this device has not already registered");
+                return;
+            }
+
+            await DisablePushAsync("ios", value);
+        }
+
+    }
 }
 
