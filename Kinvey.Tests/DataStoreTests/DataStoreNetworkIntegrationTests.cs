@@ -3018,7 +3018,7 @@ namespace Kinvey.Tests
 		    // Setup
             if (MockData)
             {
-                MockResponses();
+                MockResponses(1);
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -3199,7 +3199,7 @@ namespace Kinvey.Tests
 			// Setup
             if (MockData)
             {
-                MockResponses();
+                MockResponses(6);
             }
 			if (kinveyClient.ActiveUser != null)
 			{
@@ -3596,7 +3596,7 @@ namespace Kinvey.Tests
             // Setup
             if (MockData)
             {
-                MockResponses();
+                MockResponses(8);
             }
             if (kinveyClient.ActiveUser != null)
             {

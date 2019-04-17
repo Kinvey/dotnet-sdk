@@ -1160,5 +1160,22 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
         }
+
+        [TestMethod]
+        public async Task TestActiveFalse()
+        {
+            // Arrange
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            var user = await User.LoginAsync(Client.SharedClient);
+            user.Logout();
+
+            // Act
+            // Assert
+            Assert.IsFalse(user.Active);
+        }
     }
 }

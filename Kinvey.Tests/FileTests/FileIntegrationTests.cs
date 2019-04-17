@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -14,7 +14,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Kinvey;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Kinvey.Tests
@@ -25,7 +24,7 @@ namespace Kinvey.Tests
 		private Client kinveyClient;
 
 		private static string image_name = "TestFileUploadImage.png";
-        private static string image_dir = Path.Combine(Environment.CurrentDirectory, "../../../../TestFramework/TestSupportFiles");
+        private static string image_dir = Path.Combine(Environment.CurrentDirectory, "../../../Support Files/Images");
         private static string image_path = Path.Combine(image_dir, image_name);
 
 		private static string downloadByteArrayFilePath = image_dir + "downloadByteArrayTest.png";
@@ -47,7 +46,6 @@ namespace Kinvey.Tests
 		{
 			System.IO.File.Delete(downloadByteArrayFilePath);
 			System.IO.File.Delete(downloadStreamFilePath);
-			kinveyClient.ActiveUser?.Logout();
 
             base.Tear();
 		}
@@ -55,8 +53,11 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestFileUploadByteAsync()
 		{
-			// Setup
-            if (MockData) MockResponses(4);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5);
+            };
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -71,21 +72,24 @@ namespace Kinvey.Tests
 			// Act
 			FileMetaData fmd = await kinveyClient.File().uploadAsync(fileMetaData, content);
 
-			// Assert
-			Assert.IsNotNull(fmd);
+            //Teardown
+            await kinveyClient.File().delete(fmd.id);
+
+            // Assert
+            Assert.IsNotNull(fmd);
 			Assert.AreEqual(contentSize, fmd.size);
             Assert.IsFalse(string.IsNullOrEmpty(fmd.uploadUrl));
 			Assert.AreEqual(publicAccess, fmd._public);
-
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
 		}
 
         [TestMethod]
 		public async Task TestFileUploadByteSharedClientAsync()
 		{
-			// Setup
-            if (MockData) MockResponses(4);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5);
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
 			// Arrange
@@ -100,21 +104,24 @@ namespace Kinvey.Tests
 			// Act
 			FileMetaData fmd = await Client.SharedClient.File().uploadAsync(fileMetaData, content);
 
-			// Assert
-			Assert.IsNotNull(fmd);
+            //Teardown
+            await kinveyClient.File().delete(fmd.id);
+
+            // Assert
+            Assert.IsNotNull(fmd);
 			Assert.AreEqual(contentSize, fmd.size);
             Assert.IsFalse(string.IsNullOrEmpty(fmd.uploadUrl));
 			Assert.AreEqual(publicAccess, fmd._public);
-
-			// Teardown
-			Client.SharedClient.ActiveUser.Logout();
 		}
 
         [TestMethod]
 		public async Task TestFileUploadStreamAsync()
 		{
-			// Setup
-            if (MockData) MockResponses(4);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(5);
+            };
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -131,21 +138,24 @@ namespace Kinvey.Tests
 			// Act
 			FileMetaData fmd = await kinveyClient.File().uploadAsync(fileMetaData, streamContent);
 
-			// Assert
-			Assert.IsNotNull(fmd);
+            //Teardown
+            await kinveyClient.File().delete(fmd.id);
+
+            // Assert
+            Assert.IsNotNull(fmd);
 			Assert.AreEqual(contentSize, fmd.size);
             Assert.IsFalse(string.IsNullOrEmpty(fmd.uploadUrl));
 			Assert.AreEqual(publicAccess, fmd._public);
-
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
 		}
 
         [TestMethod]
 		public async Task TestFileUploadAsyncBad()
 		{
-			// Setup
-            if (MockData) MockResponses(1);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            };
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -158,16 +168,17 @@ namespace Kinvey.Tests
 			{
 				await kinveyClient.File().uploadAsync(fileMetaData, content);
 			});
-
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
 		}
 
         [TestMethod]
 		public async Task TestFileUploadMetadataAsync()
 		{
-			// Setup
-            if (MockData) MockResponses(5);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6);
+
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -187,19 +198,22 @@ namespace Kinvey.Tests
 			// Act
 			FileMetaData fmdUpdate = await kinveyClient.File().uploadMetadataAsync(fmd);
 
-			// Assert
-			Assert.IsNotNull(fmdUpdate);
-			Assert.AreEqual(fmdUpdate._public, fmd._public);
+            //Teardown
+            await kinveyClient.File().delete(fmd.id);
 
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
+            // Assert
+            Assert.IsNotNull(fmdUpdate);
+			Assert.AreEqual(fmdUpdate._public, fmd._public);
 		}
 
         [TestMethod]
 		public async Task TestFileUploadMetadataAsyncBad()
 		{
-			// Setup
-            if (MockData) MockResponses(1);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -213,16 +227,16 @@ namespace Kinvey.Tests
 			{
 				await kinveyClient.File().uploadMetadataAsync(fileMetaData);
 			});
-
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
 		}
 
         [TestMethod]
 		public async Task TestFileDownloadByteAsync()
 		{
-			// Setup
-            if (MockData) MockResponses(7);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8);
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -244,19 +258,22 @@ namespace Kinvey.Tests
 			FileMetaData downloadFMD = await kinveyClient.File().downloadAsync(downloadMetaData, downloadContent);
 			System.IO.File.WriteAllBytes(downloadByteArrayFilePath, content);
 
-			// Assert
-			Assert.IsNotNull(content);
-            Assert.IsTrue(content.Length > 0);
+            //Teardown
+            await kinveyClient.File().delete(uploadFMD.id);
 
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
+            // Assert
+            Assert.IsNotNull(content);
+            Assert.IsTrue(content.Length > 0);
 		}
 
         [TestMethod]
 		public async Task TestFileDownloadStreamAsync()
 		{
-			// Setup
-            if (MockData) MockResponses(7);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(8);
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -282,19 +299,22 @@ namespace Kinvey.Tests
 			downloadStreamContent.Close();
 			fs.Close();
 
-			// Assert
-			Assert.IsNotNull(content);
-			Assert.IsTrue(content.Length > 0);
+            //Teardown
+            await kinveyClient.File().delete(uploadFMD.id);
 
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
+            // Assert
+            Assert.IsNotNull(content);
+			Assert.IsTrue(content.Length > 0);
 		}
 
         [TestMethod]
 		public async Task TestFileDownloadAsyncBad()
 		{
             // Setup
-            if (MockData) MockResponses(1);
+            if (MockData)
+            {
+                MockResponses(1);
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -307,16 +327,16 @@ namespace Kinvey.Tests
 			{
 				await kinveyClient.File().downloadAsync(fileMetaData, content);
 			});
-
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
 		}
 
         [TestMethod]
 		public async Task TestFileDownloadMetadataAsync()
 		{
-			// Setup
-            if (MockData) MockResponses(5);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6);
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -332,19 +352,22 @@ namespace Kinvey.Tests
 			// Act
 			FileMetaData downloadMetaData = await kinveyClient.File().downloadMetadataAsync(uploadFMD.id);
 
-			// Assert
-			Assert.IsNotNull(downloadMetaData);
-			Assert.AreEqual(downloadMetaData._public, uploadFMD._public);
+            //Teardown
+            await kinveyClient.File().delete(uploadFMD.id);
 
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
+            // Assert
+            Assert.IsNotNull(downloadMetaData);
+			Assert.AreEqual(downloadMetaData._public, uploadFMD._public);
 		}
 
         [TestMethod]
 		public async Task TestFileDownloadMetadataAsyncBad()
 		{
-			// Setup
-            if (MockData) MockResponses(1);
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
@@ -356,9 +379,46 @@ namespace Kinvey.Tests
 			{
 				await kinveyClient.File().downloadMetadataAsync(fileID);
 			});
-
-			// Teardown
-			kinveyClient.ActiveUser.Logout();
 		}
-	}
+
+        [TestMethod]
+        public async Task TestFileDeleteAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var fileMetaData = new FileMetaData
+            {
+                fileName = image_name
+            };
+            var publicAccess = true;
+            fileMetaData._public = publicAccess;
+            var content = System.IO.File.ReadAllBytes(image_path);
+            int contentSize = (content.Length) * sizeof(byte);
+            fileMetaData.size = contentSize;
+
+            var fmd = await kinveyClient.File().uploadAsync(fileMetaData, content);
+
+            // Act
+            var deleteResponse = await kinveyClient.File().delete(fmd.id);
+
+            // Assert
+            Assert.IsNotNull(deleteResponse);
+            Assert.AreEqual(1, deleteResponse.count);
+
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+            {
+                await kinveyClient.File().downloadMetadataAsync(fmd.id);
+            });
+            Assert.AreEqual(404, exception.StatusCode);
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+        }
+    }
 }
