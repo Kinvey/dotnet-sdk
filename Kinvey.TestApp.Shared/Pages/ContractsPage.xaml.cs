@@ -5,6 +5,7 @@ using Xamarin.Forms;
 using Plugin.Connectivity;
 using System.Linq;
 using Kinvey.TestApp.Shared.Interfaces;
+using System.Threading.Tasks;
 
 namespace Kinvey.TestApp.Shared.Pages
 {
@@ -151,14 +152,14 @@ namespace Kinvey.TestApp.Shared.Pages
             }
         }
 
-        private void RegisterPush_OnClicked(object sender, EventArgs e)
+        private async Task RegisterPush_OnClickedAsync(object sender, EventArgs e)
         {
             switch (Platforms.SelectedIndex)
             {
                 //Android
                 case 0:
                     var fcmService = DependencyService.Get<IFCMService>();
-                    fcmService.Register(Client.SharedClient);
+                    await fcmService.RegisterAsync(Client.SharedClient);
                     break;
                 //IOS
                 case 1:
@@ -170,14 +171,14 @@ namespace Kinvey.TestApp.Shared.Pages
             }
         }
 
-        private void UnregisterPush_OnClicked(object sender, EventArgs e)
+        private async Task UnregisterPush_OnClickedAsync(object sender, EventArgs e)
         {
             switch (Platforms.SelectedIndex)
             {
                 //Android
                 case 0:
                     var fcmService = DependencyService.Get<IFCMService>();
-                    fcmService.UnRegister(Client.SharedClient);
+                    await fcmService.UnRegisterAsync(Client.SharedClient);
                     break;
                 //IOS
                 case 1:

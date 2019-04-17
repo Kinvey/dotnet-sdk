@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Kinvey.TestApp.Shared.Interfaces
 {
     public interface IFCMService
     {
-        void Register(Client client);
+        Task RegisterAsync(Client client);
 
-        void UnRegister(Client client);
+        Task UnRegisterAsync(Client client);
     }
 }
