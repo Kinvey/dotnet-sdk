@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -26,50 +27,46 @@ namespace Kinvey
 
         public FCMPush(Client client) : base(client) { }
 
-        public void Initialize(Context appContext)
+        public async Task InitializeAsync(Context appContext)
         {
             var senders = base.client.senderID;
+            Intent intent;
 
-            ThreadPool.QueueUserWorkItem(o => {
+            try
+            {
+                var token = FirebaseInstanceId.Instance.Token;
 
-                Intent intent;
-
-                try
-                {
-                    var token = FirebaseInstanceId.Instance.Token;
-
-                    if (string.IsNullOrEmpty(token))
-                    {
-                        intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
-                        intent.PutExtra(Constants.STR_GENERAL_ERROR, FCM_NOT_REGISTERED);
-                        appContext.SendBroadcast(intent);
-                        return;
-                    }
-
-                    EnablePushViaRest(ANDROID, token).Execute();
-
-                    var prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
-                    ISharedPreferencesEditor editor = prefs.Edit();
-                    editor.PutString(FCM_ID, token);
-                    editor.Apply();
-
-                    intent = new Intent(C2DM_INTENT_REGISTER);
-                    intent.SetPackage(ANDROID_GSF);
-                    intent.PutExtra(APP, PendingIntent.GetBroadcast(appContext, 0, new Intent(), 0));
-                    intent.PutExtra(SENDER, senders);
-                    appContext.StartService(intent);
-                }
-                catch (Exception ex)
+                if (string.IsNullOrEmpty(token))
                 {
                     intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
-                    intent.PutExtra(Constants.STR_GENERAL_ERROR, ex.Message);
+                    intent.PutExtra(Constants.STR_GENERAL_ERROR, FCM_NOT_REGISTERED);
                     appContext.SendBroadcast(intent);
+                    return;
                 }
-            });
+
+                await EnablePushAsync(ANDROID, token);
+
+                var prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
+                ISharedPreferencesEditor editor = prefs.Edit();
+                editor.PutString(FCM_ID, token);
+                editor.Apply();
+
+                intent = new Intent(C2DM_INTENT_REGISTER);
+                intent.SetPackage(ANDROID_GSF);
+                intent.PutExtra(APP, PendingIntent.GetBroadcast(appContext, 0, new Intent(), 0));
+                intent.PutExtra(SENDER, senders);
+                appContext.StartService(intent);
+            }
+            catch (Exception ex)
+            {
+                intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
+                intent.PutExtra(Constants.STR_GENERAL_ERROR, ex.Message);
+                appContext.SendBroadcast(intent);
+            }
         }
 
 
-        public void DisablePush(Context appContext)
+        public async Task DisablePushAsync(Context appContext)
         {
             var prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
             var alreadyInitialized = prefs.GetString(FCM_ID, string.Empty);
@@ -80,29 +77,26 @@ namespace Kinvey
                 return;
             }
 
-            ThreadPool.QueueUserWorkItem(o =>
+            Intent intent;
+
+            try
             {
-                Intent intent;
+                await DisablePushAsync(ANDROID, alreadyInitialized);
 
-                try
-                {
-                    DisablePushViaRest(ANDROID, alreadyInitialized).Execute();
+                ISharedPreferencesEditor editor = prefs.Edit();
+                editor.Remove(FCM_ID);
+                editor.Apply();
 
-                    ISharedPreferencesEditor editor = prefs.Edit();
-                    editor.Remove(FCM_ID);
-                    editor.Apply();
-
-                    intent = new Intent(Constants.STR_KINVEY_FCM_UNREGISTRATION);
-                    intent.PutExtra(Constants.STR_UNREGISTRATION_ID, alreadyInitialized);
-                    appContext.SendBroadcast(intent);
-                }
-                catch (Exception ex)
-                {
-                    intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
-                    intent.PutExtra(Constants.STR_GENERAL_ERROR, ex.Message);
-                    appContext.SendBroadcast(intent);
-                }
-            });
+                intent = new Intent(Constants.STR_KINVEY_FCM_UNREGISTRATION);
+                intent.PutExtra(Constants.STR_UNREGISTRATION_ID, alreadyInitialized);
+                appContext.SendBroadcast(intent);
+            }
+            catch (Exception ex)
+            {
+                intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
+                intent.PutExtra(Constants.STR_GENERAL_ERROR, ex.Message);
+                appContext.SendBroadcast(intent);
+            }
         }
     }
 }
