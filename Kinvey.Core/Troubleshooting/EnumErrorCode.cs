@@ -219,10 +219,15 @@ namespace Kinvey
 		/// </summary>
 		ERROR_REQUIREMENT_INVALID_PARAMETER,
 
-		/// <summary>
-		/// Error condition for a method not being implemented
+        /// <summary>
+		/// Requirement Error - Missing configuration for push. FCM receivers are absent.
 		/// </summary>
-		ERROR_METHOD_NOT_IMPLEMENTED,
+        ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_RECEIVERS,
+
+        /// <summary>
+        /// Error condition for a method not being implemented
+        /// </summary>
+        ERROR_METHOD_NOT_IMPLEMENTED,
 
 		/// <summary>
 		/// Error condition for a LINQ where clause not supported.
