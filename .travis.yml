@@ -4,7 +4,7 @@ matrix:
       os: linux
       language: csharp
       mono: none
-      dotnet: 2.1
+      dist: xenial
       after_success:
         - bash <(curl -s https://codecov.io/bash) -F Linux
     - name: "macOS"
