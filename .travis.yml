@@ -4,8 +4,7 @@ matrix:
       os: linux
       language: csharp
       mono: none
-      dotnet: 2.2
-      dist: xenial
+      dotnet: 2.1
       after_success:
         - bash <(curl -s https://codecov.io/bash) -F Linux
     - name: "macOS"
@@ -44,7 +43,7 @@ matrix:
     #   after_success:
     #     - bash <(curl -s https://codecov.io/bash) -F Mono
 install:
-  - dotnet tool install --global coverlet.console
+  - dotnet tool install --global coverlet.console --version 1.4.1
   - export PATH="$PATH:/home/travis/.dotnet/tools"
 script:
   - cd Kinvey.Tests; dotnet build
