@@ -11,6 +11,7 @@
             public const string Password = "";
             public const string ContractsCollection = "contracts";
 
+
         }
 
         public static class Exceptions

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Preferences;
 using Android.Runtime;
@@ -23,12 +24,15 @@ namespace Kinvey
         private const string APP = "app";
         private const string SENDER = "sender";        
         private const string FCM_NOT_REGISTERED = "Firebase Cloud Messaging is not registered";
-
+        private const string FirebaseInstanceIdInternalReceiver = "com.google.firebase.iid.FirebaseInstanceIdInternalReceiver";
+        private const string FirebaseInstanceIdReceiver = "com.google.firebase.iid.FirebaseInstanceIdReceiver";
 
         public FCMPush(Client client) : base(client) { }
 
         public async Task InitializeAsync(Context appContext)
         {
+            CheckPushReceiversExistence(appContext);
+
             var senders = base.client.senderID;
             Intent intent;
 
@@ -96,6 +100,19 @@ namespace Kinvey
                 intent = new Intent(Constants.STR_KINVEY_ANDROID_ERROR);
                 intent.PutExtra(Constants.STR_GENERAL_ERROR, ex.Message);
                 appContext.SendBroadcast(intent);
+            }
+        }
+
+        private void CheckPushReceiversExistence(Context appContext)
+        {
+            var packageInfo = appContext.PackageManager.GetPackageInfo(appContext.PackageName, PackageInfoFlags.Receivers);
+
+            var existFirebaseInstanceIdInternalReceiver = packageInfo.Receivers.Any(receiver => receiver.Name.Equals(FirebaseInstanceIdInternalReceiver));
+            var existFirebaseInstanceIdReceiver = packageInfo.Receivers.Any(receiver => receiver.Name.Equals(FirebaseInstanceIdReceiver));
+
+            if (!existFirebaseInstanceIdInternalReceiver || !existFirebaseInstanceIdReceiver)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_RECEIVERS, string.Empty);
             }
         }
     }
