@@ -238,6 +238,12 @@ namespace Kinvey
                     description = "To use FCM for push notifications, add com.google.firebase.iid.FirebaseInstanceIdInternalReceiver and com.google.firebase.iid.FirebaseInstanceIdReceiver to your project.";
                     break;
 
+                case EnumErrorCode.ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_CLASS_OVERRIDE:
+                    error = "KinveyFCMService class override is absent for push configuration.";
+                    debug = "";
+                    description = "To use FCM for push notifications, add KinveyFCMService class override to your project.";
+                    break;
+
                 case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
 					error = "Attempting to login when a user is already logged in";
 					debug = "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again";
