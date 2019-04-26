@@ -23,22 +23,26 @@ namespace Kinvey
 	{
 
 		protected Client client;
+        protected const string ANDROID = "android";
 
 
-		public AbstractPush (Client client)
+        public AbstractPush (Client client)
 		{
 			this.client = client;
 		}
 
-		public async Task<PushPayload> EnablePushAsync(string platform, string deviceId){
+		public async Task<PushPayload> EnablePushAsync(string platform, string deviceId)
+        {
 			return await EnablePushViaRest (platform, deviceId).ExecuteAsync ();
 		}
 
-		public async Task<PushPayload> DisablePushAsync(string platform, string deviceId){
+		public async Task<PushPayload> DisablePushAsync(string platform, string deviceId)
+        {
 			return await DisablePushViaRest (platform, deviceId).ExecuteAsync ();
 		}
 
-		public EnablePush EnablePushViaRest(string platform, string deviceId){
+		public EnablePush EnablePushViaRest(string platform, string deviceId)
+        {
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
@@ -52,7 +56,8 @@ namespace Kinvey
 			return enable;
 		}
 
-		public RemovePush DisablePushViaRest(string platform, string deviceId){
+		public RemovePush DisablePushViaRest(string platform, string deviceId)
+        {
 			var urlParameters = new Dictionary<string, string>();
 			urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
 
@@ -84,20 +89,27 @@ namespace Kinvey
 			}
 		}
 
-
 		[JsonObject(MemberSerialization.OptIn)]
 		public class PushPayload : JObject{
 
 			[JsonProperty]
-			private String platform { get; set;} 
+			private string platform { get; set;} 
 
 			[JsonProperty]
-			private String deviceId {get; set;}
+			private string deviceId { get; set;}
 
-			public PushPayload(string platform, string deviceId) {
+            [JsonProperty]
+            private string service { get; set; }
+
+            public PushPayload(string platform, string deviceId) {
 				this.platform = platform;
 				this.deviceId = deviceId;
-			}
+
+                if (platform.Equals(ANDROID))
+                {
+                    this.service = "firebase";
+                }
+            }
 		}
 	}
 }

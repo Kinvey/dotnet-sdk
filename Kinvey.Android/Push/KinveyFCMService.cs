@@ -13,6 +13,7 @@ namespace Kinvey
         static PowerManager.WakeLock sWakeLock;
         static object LOCK = new object();
         private const string MESSAGE_FROM_FCM = "gcm.notification.body";
+        private const string MESSAGE_FROM_KINVEY_CONSOLE = "msg";
         private const string REGISTRATION_ID = "registration_id";
         private const string KINVEY_FCM = "KinveyFCM";
 
@@ -43,11 +44,21 @@ namespace Kinvey
                 else if (action.Equals(Constants.STR_KINVEY_FCM_UNREGISTRATION))
                 {
                     var unregistrationId = intent.GetStringExtra(Constants.STR_UNREGISTRATION_ID);
-                    onRegistered(unregistrationId);
+                    onUnregistered(unregistrationId);
                 }
                 else if (action.Equals(Constants.STR_C2DM_INTENT_RECEIVE))
                 {
-                    onMessage(intent.GetStringExtra(MESSAGE_FROM_FCM));
+                    string message = null;
+
+                    if (intent.HasExtra(MESSAGE_FROM_KINVEY_CONSOLE))
+                    {
+                        message = intent.GetStringExtra(MESSAGE_FROM_KINVEY_CONSOLE);
+                    } else if (intent.HasExtra(MESSAGE_FROM_FCM))
+                    {
+                        message = intent.GetStringExtra(MESSAGE_FROM_FCM);
+                    }
+
+                    onMessage(message);
                 }
                 else if (action.Equals(Constants.STR_KINVEY_ANDROID_ERROR))
                 {
