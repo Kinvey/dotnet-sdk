@@ -232,7 +232,13 @@ namespace Kinvey
 					description = "A valid username and password is required for login.";
 					break;
 
-				case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
+                case EnumErrorCode.ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_RECEIVERS:
+                    error = "FCM receivers are absent for push configuration.";
+                    debug = "";
+                    description = "To use FCM for push notifications, add com.google.firebase.iid.FirebaseInstanceIdInternalReceiver and com.google.firebase.iid.FirebaseInstanceIdReceiver to your project.";
+                    break;
+
+                case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
 					error = "Attempting to login when a user is already logged in";
 					debug = "call `myClient.user().logout().execute() first -or- check `myClient.user().isUserLoggedIn()` before attempting to login again";
 					description = "Only one user can be active at a time, and logging in a new user will replace the current user which might not be intended\")";

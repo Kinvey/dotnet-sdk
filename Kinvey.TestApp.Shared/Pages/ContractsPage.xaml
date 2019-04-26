@@ -20,11 +20,18 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <Picker x:Name="Platforms" Title="Platforms" SelectedIndex="0" HorizontalOptions="FillAndExpand">
+              <Picker.Items>
+                <x:String>Android</x:String>
+                <x:String>IOS</x:String>
+              </Picker.Items>
+            </Picker>
+
             <Button Text="Add contract" Clicked="AddContractButton_OnClicked"/>
             <Button Text="Subscribe Live Service" Clicked="SubscribeLiveService_OnClicked"/>
             <Button Text="Unsubscribe Live Service" Clicked="UnsubscribeLiveService_OnClicked"/>
-            <Button Text="Register push" Clicked="RegisterPush_OnClicked"/>
-            <Button Text="Unregister push" Clicked="UnregisterPush_OnClicked"/>
+            <Button Text="Register push" Clicked="RegisterPush_OnClickedAsync"/>
+            <Button Text="Unregister push" Clicked="UnregisterPush_OnClickedAsync"/>
         </StackLayout>
     </pages:BasePage.Content>
 </pages:BasePage>

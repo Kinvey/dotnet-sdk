@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kinvey.Kinvey.TestApp.Shared.Models;
+using Xamarin.Forms;
 using Plugin.Connectivity;
 using System.Linq;
 using Kinvey.TestApp.Shared.Interfaces;
-using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace Kinvey.TestApp.Shared.Pages
 {
@@ -64,6 +65,8 @@ namespace Kinvey.TestApp.Shared.Pages
                 // Handle any General exception.
                 await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, generalException.Message);
             }
+
+            Platforms.SelectedIndex = 0;
         }
 
         private void AddContractButton_OnClicked(object sender, EventArgs e)
@@ -149,16 +152,42 @@ namespace Kinvey.TestApp.Shared.Pages
             }
         }
 
-        private void RegisterPush_OnClicked(object sender, EventArgs e)
+        private async Task RegisterPush_OnClickedAsync(object sender, EventArgs e)
         {
-            var fcmService = DependencyService.Get<IFCMService>();
-            fcmService.Register(Client.SharedClient);
+            switch (Platforms.SelectedIndex)
+            {
+                //Android
+                case 0:
+                    var fcmService = DependencyService.Get<IFCMService>();
+                    await fcmService.RegisterAsync(Client.SharedClient);
+                    break;
+                //IOS
+                case 1:
+                    var iosPushService = DependencyService.Get<IIOSPushService>();
+                    iosPushService.Register();
+                    break;
+                default:
+                    throw new Exception("Wrong index.");
+            }
         }
 
-        private void UnregisterPush_OnClicked(object sender, EventArgs e)
+        private async Task UnregisterPush_OnClickedAsync(object sender, EventArgs e)
         {
-            var fcmService = DependencyService.Get<IFCMService>();
-            fcmService.UnRegister(Client.SharedClient);
+            switch (Platforms.SelectedIndex)
+            {
+                //Android
+                case 0:
+                    var fcmService = DependencyService.Get<IFCMService>();
+                    await fcmService.UnRegisterAsync(Client.SharedClient);
+                    break;
+                //IOS
+                case 1:
+                    var iosPushService = DependencyService.Get<IIOSPushService>();
+                    iosPushService.UnRegister();
+                    break;
+                default:
+                    throw new Exception("Wrong index.");
+            }
         }
     }
 }

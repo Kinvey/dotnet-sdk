@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Kinvey.TestApp.Shared.Interfaces;
 using Kinvey.TestLocalLibApp.Droid;
+using System.Threading.Tasks;
 
 [assembly: Xamarin.Forms.Dependency(typeof(FCMService))]
 namespace Kinvey.TestLocalLibApp.Droid
@@ -28,14 +29,14 @@ namespace Kinvey.TestLocalLibApp.Droid
 
         }
 
-        public void Register(Client client)
+        public async Task RegisterAsync(Client client)
         {
-            client.FcmPush().Initialize(Application.Context);
+            await client.FcmPush().InitializeAsync(Application.Context);
         }
 
-        public void UnRegister(Client client)
+        public async Task UnRegisterAsync(Client client)
         {
-            client.FcmPush().DisablePush(Application.Context);
+            await client.FcmPush().DisablePushAsync(Application.Context);
         }
     }
 }

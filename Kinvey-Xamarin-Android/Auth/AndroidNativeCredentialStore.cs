@@ -153,12 +153,11 @@ namespace Kinvey
 		{
 			return Load(string.Empty, ssoGroupKey);
 		}
+        #endregion
 
-		#endregion
+        #region Helper methods
 
-		#region Helper methods
-
-		private IEnumerable<NativeCredential> FindCredentialsForOrg(string ssoGroupKey)
+        private IEnumerable<NativeCredential> FindCredentialsForOrg(string ssoGroupKey)
 		{
 			List<NativeCredential> credentials = new List<NativeCredential>();
 
