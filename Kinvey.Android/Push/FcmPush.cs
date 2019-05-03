@@ -86,6 +86,7 @@ namespace Kinvey
             try
             {
                 await DisablePushAsync(ANDROID, alreadyInitialized);
+                await DeleteFirebaseInstanceId();
 
                 ISharedPreferencesEditor editor = prefs.Edit();
                 editor.Remove(FCM_ID);
@@ -114,6 +115,13 @@ namespace Kinvey
             {
                 throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_RECEIVERS, string.Empty);
             }
+        }
+
+        private async Task DeleteFirebaseInstanceId()
+        {
+            await Task.Run(() => {
+                FirebaseInstanceId.Instance.DeleteInstanceId();
+                });
         }
     }
 }
