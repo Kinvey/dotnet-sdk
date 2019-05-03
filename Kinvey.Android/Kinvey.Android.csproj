@@ -128,7 +128,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-Android\Client\AndroidClientBuilder.cs">
       <Link>Client\AndroidClientBuilder.cs</Link>
     </Compile>
-    <Compile Include="Push\FCMPush.cs" />
     <Compile Include="Push\FCMPushExtension.cs" />
     <Compile Include="Push\KinveyFCMService.cs" />
     <Compile Include="Utils\Constants.cs" />
