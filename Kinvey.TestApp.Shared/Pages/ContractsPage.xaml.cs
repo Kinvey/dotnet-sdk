@@ -75,7 +75,7 @@ namespace Kinvey.TestApp.Shared.Pages
             Navigation.PushModalAsync(new AddContract());
         }
 
-        private async System.Threading.Tasks.Task SubscribeLiveService_OnClicked(object sender, EventArgs e)
+        private async void SubscribeLiveService_OnClicked(object sender, EventArgs e)
         {
             // Listen for connectivity changes.
             CrossConnectivity.Current.ConnectivityChanged += (senderOfConnectivityChanged, args) =>
@@ -131,7 +131,7 @@ namespace Kinvey.TestApp.Shared.Pages
             }
         }
 
-        private async System.Threading.Tasks.Task UnsubscribeLiveService_OnClicked(object sender, EventArgs e)
+        private async void UnsubscribeLiveService_OnClicked(object sender, EventArgs e)
         {
             if (Client.SharedClient.IsUserLoggedIn())
             {
@@ -152,7 +152,7 @@ namespace Kinvey.TestApp.Shared.Pages
             }
         }
 
-        private async Task RegisterPush_OnClickedAsync(object sender, EventArgs e)
+        private async void RegisterPush_OnClickedAsync(object sender, EventArgs e)
         {
             switch (Platforms.SelectedIndex)
             {
@@ -171,7 +171,7 @@ namespace Kinvey.TestApp.Shared.Pages
             }
         }
 
-        private async Task UnregisterPush_OnClickedAsync(object sender, EventArgs e)
+        private async void UnregisterPush_OnClickedAsync(object sender, EventArgs e)
         {
             switch (Platforms.SelectedIndex)
             {
