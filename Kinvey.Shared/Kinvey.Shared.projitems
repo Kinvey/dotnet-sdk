@@ -113,7 +113,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\CustomEndpoint\CustomEndpointRequest.cs">
       <Link>CustomEndpoint\CustomEndpointRequest.cs</Link>
     </Compile>
-	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Extensions\CustomExtension.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Extensions\CustomExtension.cs">
       <Link>Extensions\CustomExtension.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\File\File.cs">
@@ -200,10 +200,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\StringQueryBuilder.cs">
       <Link>Query\StringQueryBuilder.cs</Link>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\KinveyMongoQueryBuilder.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\KinveyMongoQueryBuilder.cs">
       <Link>Query\KinveyMongoQueryBuilder.cs</Link>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\VisitorClause.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Query\VisitorClause.cs">
       <Link>Query\VisitorClause.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\KinveyRealtimeDelegate.cs">
@@ -218,10 +218,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeRouter.cs">
       <Link>Realtime\RealtimeRouter.cs</Link>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicy.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicy.cs">
       <Link>Realtime\RealtimeReconnectionPolicy</Link>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicyExtension.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Realtime\RealtimeReconnectionPolicyExtension.cs">
       <Link>Realtime\RealtimeReconnectionPolicyExtension</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\DataStore.cs">
@@ -305,6 +305,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Utils\KinveyConstants.cs">
       <Link>Utils\KinveyConstants.cs</Link>
     </Compile>
+	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Utils\Logger.cs">
+      <Link>Utils\Logger.css</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Offline\CollectionTableMap.cs">
       <Link>Offline\CollectionTableMap.cs</Link>
     </Compile>
@@ -335,6 +338,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Offline\SQLiteSyncQueue.cs">
       <Link>Offline\SQLiteSyncQueue.cs</Link>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\Logger.cs" />
   </ItemGroup>
 </Project>
