@@ -142,20 +142,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <ItemGroup>
-    <Folder Include="Core\" />
-    <Folder Include="Client\" />
-    <Folder Include="CustomEndpoint\" />
-    <Folder Include="Offline\" />
-    <Folder Include="Model\" />
-    <Folder Include="Query\" />
-    <Folder Include="Troubleshooting\" />
-    <Folder Include="File\" />
-    <Folder Include="Store\" />
-    <Folder Include="Push\" />
-    <Folder Include="Utils\" />
-    <Folder Include="Realtime\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
@@ -186,10 +173,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kinvey-Utils\Kinvey-Utils.csproj">
-      <Project>{444456B1-5B55-48D6-9637-00ADCA92B7C9}</Project>
-      <Name>Kinvey-Utils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\sqlite-net\nuget\SQLite-net\SQLite-net.csproj">
       <Project>{7F946494-8EE0-432B-8A87-98961143D5C1}</Project>
       <Name>SQLite-net</Name>

@@ -63,8 +63,8 @@ namespace testdroidapp
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060000
-			public const int myButton = 2131099648;
+			// aapt resource value: 0x7f070000
+			public const int myButton = 2131165184;
 			
 			static Id()
 			{
@@ -72,6 +72,22 @@ namespace testdroidapp
 			}
 			
 			private Id()
+			{
+			}
+		}
+		
+		public partial class Integer
+		{
+			
+			// aapt resource value: 0x7f050000
+			public const int google_play_services_version = 2131034112;
+			
+			static Integer()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Integer()
 			{
 			}
 		}
@@ -111,11 +127,14 @@ namespace testdroidapp
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f050001
-			public const int app_name = 2131034113;
+			// aapt resource value: 0x7f060002
+			public const int app_name = 2131099650;
 			
-			// aapt resource value: 0x7f050000
-			public const int hello = 2131034112;
+			// aapt resource value: 0x7f060000
+			public const int common_google_play_services_unknown_issue = 2131099648;
+			
+			// aapt resource value: 0x7f060001
+			public const int hello = 2131099649;
 			
 			static String()
 			{
