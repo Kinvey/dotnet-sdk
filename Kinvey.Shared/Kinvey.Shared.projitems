@@ -306,7 +306,7 @@
       <Link>Utils\KinveyConstants.cs</Link>
     </Compile>
 	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Utils\Logger.cs">
-      <Link>Utils\Logger.css</Link>
+      <Link>Utils\Logger.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Offline\CollectionTableMap.cs">
       <Link>Offline\CollectionTableMap.cs</Link>
