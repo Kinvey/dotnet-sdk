@@ -286,7 +286,25 @@ namespace Kinvey
 					description = "Refer to the documentation on DataStore types for proper usage of the DataStore caching and syncing APIs.";
 					break;
 
-				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY:
+                case EnumErrorCode.ERROR_DATASTORE_INVALID_CLEAR_CACHE_OPERATION:
+                    error = "Invalid operation for this data store";
+                    debug = "Calling ClearCache() on this type of data store is not allowed. Use a different type of data store if you need to remove data from local storage.";
+                    description = "Refer to the documentation on DataStore types for proper usage of removing data from local storage.";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_INVALID_PURGE_OPERATION:
+                    error = "Invalid operation for this data store";
+                    debug = "Calling Purge() on this type of data store is not allowed. Use a different type of data store if you need to remove pending write operations from local storage.";
+                    description = "Refer to the documentation on DataStore types for proper usage of removing pending write operations from local storage.";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_INVALID_SYNC_COUNT_OPERATION:
+                    error = "Invalid operation for this data store";
+                    debug = "Calling GetSyncCount() on this type of data store is not allowed. Use a different type of data store if you need to get the current count of items in the sync queue.";
+                    description = "Refer to the documentation on DataStore types for proper usage of getting the current count of items in the sync queue.";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY:
 					error = "An exception was thrown while trying to save an entity in the cache.";
 					debug = "";
 					description = "Error in inserting new entity cache with temporary ID.";
