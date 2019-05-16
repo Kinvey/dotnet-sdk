@@ -131,8 +131,12 @@ namespace Kinvey
 				this.client = Client.SharedClient;
 			}
 
-			this.cache = this.client.CacheManager.GetCache<T> (collectionName);
-			this.syncQueue = this.client.CacheManager.GetSyncQueue (collectionName);
+            if (type != DataStoreType.NETWORK)
+            {
+                this.cache = this.client.CacheManager.GetCache<T>(collectionName);
+                this.syncQueue = this.client.CacheManager.GetSyncQueue(collectionName);
+            }
+
 			this.storeType = type;
 			this.customRequestProperties = this.client.GetCustomRequestProperties();
 			this.networkFactory = new NetworkFactory(this.client);
@@ -473,7 +477,12 @@ namespace Kinvey
 		/// <param name="allCollections">[optional] Flag to determine if count should be for all collections.  Default to false.</param>
 		public int GetSyncCount(bool allCollections = false)
 		{
-			return syncQueue.Count(allCollections);
+            if (this.storeType == DataStoreType.NETWORK)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_INVALID_SYNC_COUNT_OPERATION, "");
+            }
+
+            return syncQueue.Count(allCollections);
 		}
 
 		/// <summary>
@@ -483,7 +492,12 @@ namespace Kinvey
 		/// <param name="query">Optional Query parameter.</param>
 		public KinveyDeleteResponse ClearCache(IQueryable<T> query = null)
 		{
-			var ret = cache.Clear(query?.Expression);
+            if (this.storeType == DataStoreType.NETWORK)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_INVALID_CLEAR_CACHE_OPERATION, "");
+            }
+
+            var ret = cache.Clear(query?.Expression);
 			if (ret?.IDs != null)
 			{
                 var pendings = ret.IDs.Select(entityId => syncQueue.GetByID(entityId));
@@ -525,7 +539,12 @@ namespace Kinvey
 		/// <param name="query">Optional Query parameter.</param>
 		public int Purge(IQueryable<T> query = null)
 		{
-			if (query!=null) 
+            if (this.storeType == DataStoreType.NETWORK)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_DATASTORE_INVALID_PURGE_OPERATION, "");
+            }
+
+            if (query!=null) 
 			{
 				var ids = new List<string>();
 				var entities = cache.FindByQuery(query.Expression);
