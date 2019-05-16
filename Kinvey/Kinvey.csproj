@@ -36,8 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Auth\Credential.cs" />
-    <Compile Remove="Client\AbstractClient.cs" />
-    <Compile Remove="Client\AbstractKinveyClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitignore" />
@@ -47,9 +45,6 @@
     <None Remove="toc.yml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Net\Client\DotnetClientBuilder.cs">
-      <Link>Client\DotnetClientBuilder.cs</Link>
-    </Compile>
   </ItemGroup>
   <Import Project="..\Kinvey.Shared\Kinvey.Shared.projitems" Label="Shared" Condition="Exists('..\Kinvey.Shared\Kinvey.Shared.projitems')" />
 </Project>
