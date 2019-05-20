@@ -341,19 +341,6 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-		public async Task TestCollection()
-		{
-			// Arrange
-
-			// Act
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName);
-
-			// Assert
-			Assert.IsNotNull(todoStore);
-			Assert.AreEqual(todoStore.CollectionName, collectionName);
-		}
-
-        [TestMethod]
         public async Task TestCollectionSharedClient()
         {
             // Arrange
@@ -5199,6 +5186,87 @@ namespace Kinvey.Tests
 
             //Assert
             Assert.IsTrue(isSuccess);
+        }
+
+        [TestMethod]
+        public async Task TestGetSyncCount()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            //Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            // Act
+            var exception = Assert.ThrowsException<KinveyException>(delegate
+            {
+                todoStore.GetSyncCount();
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_INVALID_SYNC_COUNT_OPERATION, kinveyException.ErrorCode);
+        }
+
+        [TestMethod]
+        public async Task TestClearCacheAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            //Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            // Act
+            var exception = Assert.ThrowsException<KinveyException>(delegate
+            {
+                todoStore.ClearCache();
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_INVALID_CLEAR_CACHE_OPERATION, kinveyException.ErrorCode);
+        }
+
+        [TestMethod]
+        public async Task TestPurge()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            //Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            // Act
+            var exception = Assert.ThrowsException<KinveyException>(delegate
+            {
+                todoStore.Purge();
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_INVALID_PURGE_OPERATION, kinveyException.ErrorCode);
         }
     }
 }
