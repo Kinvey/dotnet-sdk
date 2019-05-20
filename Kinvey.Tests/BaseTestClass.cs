@@ -919,11 +919,13 @@ namespace Kinvey.Tests
                         count++;
                         Console.WriteLine($"{count}");
 
+                        const string uploadUrlSection = "/_uploadURL/";
+
                         var apiVersion = context.Request.Headers[Constants.STR_REQUEST_HEADER_API_VERSION];
                         var version = 0;
                         var isParsed = int.TryParse(apiVersion, out version);
 
-                        if (!isParsed || (isParsed && version > MaxApiVersion))
+                        if (!context.Request.Url.LocalPath.StartsWith(uploadUrlSection, StringComparison.Ordinal) && (!isParsed || (isParsed && version > MaxApiVersion)))
                         {
                             context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
                             Write(context, "Not implemented");
@@ -931,7 +933,7 @@ namespace Kinvey.Tests
                         }
 
                         var authorization = context.Request.Headers["Authorization"];
-                        if (!context.Request.Url.LocalPath.StartsWith("/_uploadURL/", StringComparison.Ordinal) && !context.Request.Url.LocalPath.StartsWith("/_downloadURL/", StringComparison.Ordinal))
+                        if (!context.Request.Url.LocalPath.StartsWith(uploadUrlSection, StringComparison.Ordinal) && !context.Request.Url.LocalPath.StartsWith("/_downloadURL/", StringComparison.Ordinal))
                         {
                             Assert.IsNotNull(authorization);
                             Assert.IsFalse(string.IsNullOrEmpty(authorization));
