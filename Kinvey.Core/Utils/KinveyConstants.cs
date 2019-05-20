@@ -72,6 +72,7 @@ namespace Kinvey
 
         // Request Headers
         internal const string STR_REQUEST_HEADER_DEVICE_INFO = "X-Kinvey-Device-Info";
+        internal const string STR_REQUEST_HEADER_API_VERSION = "X-Kinvey-API-Version";
 
         // X-Kinvey-Device-Info Strings
         internal const string STR_DEVICE_INFO_HEADER_KEY = "hv";

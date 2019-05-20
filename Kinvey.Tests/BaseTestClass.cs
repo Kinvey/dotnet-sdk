@@ -68,6 +68,8 @@ namespace Kinvey.Tests
         private static readonly string REQUEST_START_HEADER = "X-Kinvey-Request-Start";
         private static readonly string DATE_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffK";
 
+        private static readonly int MaxApiVersion = 5;
+
         protected static HttpListener httpListener;
 
         public void Delete(string fileName)
@@ -916,6 +918,17 @@ namespace Kinvey.Tests
 
                         count++;
                         Console.WriteLine($"{count}");
+
+                        var apiVersion = context.Request.Headers[Constants.STR_REQUEST_HEADER_API_VERSION];
+                        var version = 0;
+                        var isParsed = int.TryParse(apiVersion, out version);
+
+                        if (!isParsed || (isParsed && version > MaxApiVersion))
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                            Write(context, "Not implemented");
+                            continue;
+                        }
 
                         var authorization = context.Request.Headers["Authorization"];
                         if (!context.Request.Url.LocalPath.StartsWith("/_uploadURL/", StringComparison.Ordinal) && !context.Request.Url.LocalPath.StartsWith("/_downloadURL/", StringComparison.Ordinal))
