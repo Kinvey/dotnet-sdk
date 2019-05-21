@@ -225,6 +225,11 @@ namespace Kinvey
         ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_RECEIVERS,
 
         /// <summary>
+        /// Requirement Error - Missing configuration for push. KinveyFCMService class override is absent.
+        /// </summary>
+        ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_CLASS_OVERRIDE,
+
+        /// <summary>
         /// Error condition for a method not being implemented
         /// </summary>
         ERROR_METHOD_NOT_IMPLEMENTED,
