@@ -107,10 +107,6 @@
     <Reference Include="Xamarin.GooglePlayServices.Basement, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.60.1142.1\lib\MonoAndroid80\Xamarin.GooglePlayServices.Basement.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Gcm">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Gcm.25.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Gcm.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -119,19 +115,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\AndroidNativeCredentialStore.cs" />
+    <Compile Include="Auth\KinveyAccountService.cs" />
+    <Compile Include="Auth\UserExtension.cs" />
+    <Compile Include="Client\AndroidClientBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-Android\Auth\AndroidNativeCredentialStore.cs">
-      <Link>Auth\AndroidNativeCredentialStore.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-Android\Auth\KinveyAccountService.cs">
-      <Link>Auth\KinveyAccountService.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-Android\Auth\UserExtension.cs">
-      <Link>Auth\UserExtension.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-Android\Client\AndroidClientBuilder.cs">
-      <Link>Client\AndroidClientBuilder.cs</Link>
-    </Compile>
     <Compile Include="Push\FCMPush.cs" />
     <Compile Include="Push\FCMPushExtension.cs" />
     <Compile Include="Push\KinveyFCMService.cs" />

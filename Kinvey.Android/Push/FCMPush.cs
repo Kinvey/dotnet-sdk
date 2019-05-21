@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.OS;
 using Android.Preferences;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Firebase.Iid;
 
 namespace Kinvey
@@ -87,6 +80,7 @@ namespace Kinvey
             try
             {
                 await DisablePushAsync(ANDROID, alreadyInitialized);
+                await DeleteFirebaseInstanceId();
 
                 ISharedPreferencesEditor editor = prefs.Edit();
                 editor.Remove(FCM_ID);
@@ -115,6 +109,13 @@ namespace Kinvey
             {
                 throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_RECEIVERS, string.Empty);
             }
+        }
+
+        private async Task DeleteFirebaseInstanceId()
+        {
+            await Task.Run(() => {
+                FirebaseInstanceId.Instance.DeleteInstanceId();
+                });
         }
 
         private void CheckKinveyFCMServiceClassOverrideExistence()

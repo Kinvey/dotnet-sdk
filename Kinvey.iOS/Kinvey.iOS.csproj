@@ -74,22 +74,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\IOSNativeCredentialStore.cs" />
+    <Compile Include="Auth\UserExtension.cs" />
+    <Compile Include="Client\IOSClientBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-iOS\Push\PushExtension.cs">
-      <Link>Push\PushExtension.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-iOS\Push\Push.cs">
-      <Link>Push\Push.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-iOS\Auth\IOSNativeCredentialStore.cs">
-      <Link>Auth\IOSNativeCredentialStore.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-iOS\Auth\UserExtension.cs">
-      <Link>Auth\UserExtension.cs</Link>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey-Xamarin-iOS\Client\IOSClientBuilder.cs">
-      <Link>Client\IOSClientBuilder.cs</Link>
-    </Compile>
+    <Compile Include="Push\Push.cs" />
+    <Compile Include="Push\PushExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sqlite-net\nuget\SQLite-net-std\SQLite-net-std.csproj">

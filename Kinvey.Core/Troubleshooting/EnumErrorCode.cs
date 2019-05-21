@@ -93,10 +93,25 @@ namespace Kinvey
 		/// </summary>
 		ERROR_DATASTORE_INVALID_SYNC_OPERATION,
 
-		/// <summary>
-		/// Error due to attempting to pull when the sync queue has not been cleared.  Try to perform a <see cref="KinveyXamarin.DataStore{T}.PushAsync"/> operation first.
+        /// <summary>
+		/// Error due to an invalid clear cache operation being performed on this type of datastore.
 		/// </summary>
-		ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
+		ERROR_DATASTORE_INVALID_CLEAR_CACHE_OPERATION,
+       
+        /// <summary>
+		/// Error due to an invalid purge operation being performed on this type of datastore.
+		/// </summary>
+		ERROR_DATASTORE_INVALID_PURGE_OPERATION,
+
+        /// <summary>
+		/// Error due to an invalid sync count operation being performed on this type of datastore.
+		/// </summary>
+		ERROR_DATASTORE_INVALID_SYNC_COUNT_OPERATION,
+
+        /// <summary>
+        /// Error due to attempting to pull when the sync queue has not been cleared.  Try to perform a <see cref="KinveyXamarin.DataStore{T}.PushAsync"/> operation first.
+        /// </summary>
+        ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE,
 
         /// <summary>
 		/// Error due to attempting to remove entities with null query.
