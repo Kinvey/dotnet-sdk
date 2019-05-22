@@ -25,6 +25,7 @@ namespace Kinvey
         public async Task InitializeAsync(Context appContext)
         {
             CheckPushReceiversExistence(appContext);
+            CheckKinveyFCMServiceClassOverrideExistence();
 
             var senders = base.client.senderID;
             Intent intent;
@@ -116,5 +117,26 @@ namespace Kinvey
                 FirebaseInstanceId.Instance.DeleteInstanceId();
                 });
         }
+
+        private void CheckKinveyFCMServiceClassOverrideExistence()
+        {
+            Type kinveyFCMServiceSubType = null;
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                kinveyFCMServiceSubType = assembly.GetTypes().FirstOrDefault(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(KinveyFCMService)));
+
+                if (kinveyFCMServiceSubType != null)
+                {
+                    break;
+                }
+            }
+
+            if (kinveyFCMServiceSubType == null)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_REQUIREMENT, EnumErrorCode.ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_CLASS_OVERRIDE, string.Empty);
+            }
+        }
+
     }
 }
