@@ -124,6 +124,11 @@ namespace Kinvey
 		ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY,
 
         /// <summary>
+        /// Error due to using not compatible Kinvey api version.
+        /// </summary>
+        ERROR_DATASTORE_NOT_COMPATIBLE_KINVEY_API_VERSION,
+
+        /// <summary>
         /// Error due to attempting a file metadata operation without a file ID.
         /// </summary>
         ERROR_FILE_MISSING_FILE_ID,

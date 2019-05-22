@@ -370,7 +370,13 @@ namespace Kinvey
 					description = "Error while trying to clear data in the cache based on a query.  No data was deleted from the cache.";
 					break;
 
-				case EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED:
+                case EnumErrorCode.ERROR_DATASTORE_NOT_COMPATIBLE_KINVEY_API_VERSION:
+                    error = "Not compatible Kinvey api version.";
+                    debug = "";
+                    description = "The current functionality is not compatible with the existing Kinvey api version.";
+                    break;
+
+                case EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED:
 					error = "An exception was thrown while trying to call a method that is not implemented.";
 					debug = "Consult the reference guides for information on supported methods for the given class.";
 					description = "The method being called on this class/object is not currently implemnted by the SDK.";

@@ -353,7 +353,12 @@ namespace Kinvey
 		/// <param name="ct">[optional] CancellationToken used to cancel a request.</param>
         public async Task<KinveyDataStoreResponse<T>> SaveAsync(List<T> entities, CancellationToken ct = default(CancellationToken))
         {
-            MultiInsertRequest<T, KinveyDataStoreResponse<T>> request = new MultiInsertRequest<T, KinveyDataStoreResponse<T>>(entities, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
+            if (!int.TryParse(KinveyClient.ApiVersion, out int apiVersion) || apiVersion < 5)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_NOT_COMPATIBLE_KINVEY_API_VERSION, "Query cannot be null.");
+            }
+
+            var request = new MultiInsertRequest<T, KinveyDataStoreResponse<T>>(entities, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
             ct.ThrowIfCancellationRequested();
             return await request.ExecuteAsync();
         }
