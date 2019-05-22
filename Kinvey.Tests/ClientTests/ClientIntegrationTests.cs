@@ -270,5 +270,117 @@ namespace Kinvey.Tests
 			KinveyException ke = e as KinveyException;
 			Assert.AreEqual(404, ke.StatusCode);
 		}
-	}
+
+        [TestMethod]
+        public async Task TestSetApiVersionAuthRequests()
+        {
+            // Arrange
+            var notSupportingApiVersion = int.MaxValue.ToString();
+
+            var builder = new Client.Builder(AppKey, AppSecret);
+            builder.SetFilePath(TestSetup.db_dir);
+           
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+                builder.setMICHostName("http://localhost:8081");
+            }
+
+            var client1 = builder.Build();
+
+            builder.SetApiVersion(notSupportingApiVersion);
+            var client2 = builder.Build();
+
+            builder.SetApiVersion(KinveyHeaders.kinveyApiVersion);
+            var client3 = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(3);
+            }
+          
+            // Act
+            var userForClient1 = await User.LoginAsync(client1);
+
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await User.LoginAsync(client2);
+            });
+
+            var userForClient3 = await User.LoginAsync(client3);
+           
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.IsTrue(kinveyException.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(kinveyException.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+
+            Assert.IsNotNull(client1.ActiveUser);
+            Assert.IsTrue(userForClient1.Active);
+
+            Assert.IsNotNull(client3.ActiveUser);
+            Assert.IsTrue(userForClient3.Active);
+
+            Assert.AreEqual(KinveyHeaders.kinveyApiVersion, client1.ApiVersion);
+            Assert.AreEqual(notSupportingApiVersion, client2.ApiVersion);
+            Assert.AreEqual(KinveyHeaders.kinveyApiVersion, client3.ApiVersion);
+        }
+
+        [TestMethod]
+        public async Task TestSetApiVersionKinveyClientRequests()
+        {
+            // Arrange
+            var notSupportingApiVersion = int.MaxValue.ToString();
+
+            var builder = new Client.Builder(AppKey, AppSecret);
+            builder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+                builder.setMICHostName("http://localhost:8081");
+            }
+
+            var client1 = builder.Build();
+
+            builder.SetApiVersion(notSupportingApiVersion);
+            var client2 = builder.Build();
+
+            builder.SetApiVersion(KinveyHeaders.kinveyApiVersion);
+            var client3 = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(3);
+            }
+
+            // Act
+            var pingResponse1 = await client1.PingAsync();
+
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await client2.PingAsync();
+            });
+
+            var pingResponse3 = await client3.PingAsync();
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.IsTrue(kinveyException.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(kinveyException.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+
+            Assert.IsNotNull(pingResponse1.kinvey);
+            Assert.IsTrue(pingResponse1.kinvey.StartsWith("hello", StringComparison.Ordinal));
+            Assert.IsNotNull(pingResponse1.version);
+
+            Assert.IsNotNull(pingResponse3.kinvey);
+            Assert.IsTrue(pingResponse3.kinvey.StartsWith("hello", StringComparison.Ordinal));
+            Assert.IsNotNull(pingResponse3.version);
+
+            Assert.AreEqual(KinveyHeaders.kinveyApiVersion, client1.ApiVersion);
+            Assert.AreEqual(notSupportingApiVersion, client2.ApiVersion);
+            Assert.AreEqual(KinveyHeaders.kinveyApiVersion, client3.ApiVersion);
+        }
+    }
 }
