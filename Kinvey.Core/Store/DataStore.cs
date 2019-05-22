@@ -345,14 +345,26 @@ namespace Kinvey
 			return await request.ExecuteAsync();
 		}
 
-
-		/// <summary>
-		/// Deletes the entity associated with the provided id
+        /// <summary>
+		/// Saves specified entities to a Kinvey collection.
 		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entityID">The Kinvey ID of the entity to delete.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<KinveyDeleteResponse> RemoveAsync(string entityID, CancellationToken ct = default(CancellationToken))
+		/// <returns>An async task with the <see cref="Kinvey.KinveyDataStoreResponse{T}"/> result.</returns>
+		/// <param name="entities">Entities to save.</param>
+		/// <param name="ct">[optional] CancellationToken used to cancel a request.</param>
+        public async Task<KinveyDataStoreResponse<T>> SaveAsync(List<T> entities, CancellationToken ct = default(CancellationToken))
+        {
+            MultiInsertRequest<T, KinveyDataStoreResponse<T>> request = new MultiInsertRequest<T, KinveyDataStoreResponse<T>>(entities, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
+            ct.ThrowIfCancellationRequested();
+            return await request.ExecuteAsync();
+        }
+
+        /// <summary>
+        /// Deletes the entity associated with the provided id
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="entityID">The Kinvey ID of the entity to delete.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<KinveyDeleteResponse> RemoveAsync(string entityID, CancellationToken ct = default(CancellationToken))
 		{
 			RemoveRequest<T> request = new RemoveRequest<T>(entityID, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();

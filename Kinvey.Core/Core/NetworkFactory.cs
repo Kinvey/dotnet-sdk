@@ -219,7 +219,26 @@ namespace Kinvey
 			return create;
 		}
 
-		public NetworkRequest<T> buildUpdateRequest <T> (string collectionName, T entity, string entityID)
+        /// <summary>
+        /// Creates a network request for multi insert operation.
+        /// </summary>
+        /// <returns>A created network request.</returns>
+        /// <param name="collectionName">A name of a collection.</param>
+        /// <param name="entities">Entities to insert.</param>
+        public NetworkRequest<U> buildMultiInsertRequest<T, U>(string collectionName, List<T> entities)
+        {
+            const string REST_PATH = "appdata/{appKey}/{collectionName}";
+
+            var urlParameters = new Dictionary<string, string>();
+            urlParameters.Add("appKey", ((KinveyClientRequestInitializer)client.RequestInitializer).AppKey);
+            urlParameters.Add("collectionName", collectionName);
+
+            NetworkRequest<U> create = new NetworkRequest<U>(client, "POST", REST_PATH, entities, urlParameters);
+            client.InitializeRequest(create);
+            return create;
+        }
+
+        public NetworkRequest<T> buildUpdateRequest <T> (string collectionName, T entity, string entityID)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";
 

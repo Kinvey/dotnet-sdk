@@ -32,6 +32,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Extensions\CustomExtension.cs" />
+    <Compile Include="Model\Error.cs" />
+    <Compile Include="Model\KinveyDataStoreResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Auth\Credential.cs" />
     <Compile Include="Auth\CredentialManager.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="Realtime\RealtimeReconnectionPolicy.cs" />
     <Compile Include="Realtime\RealtimeReconnectionPolicyExtension.cs" />
     <Compile Include="Store\RemoveRequest.cs" />
+    <Compile Include="Store\MultiInsertRequest.cs" />
     <Compile Include="Store\WriteRequest.cs" />
     <Compile Include="Store\PushRequest.cs" />
     <Compile Include="Store\ReadRequest.cs" />
