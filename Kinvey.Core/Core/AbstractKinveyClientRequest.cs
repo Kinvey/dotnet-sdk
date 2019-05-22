@@ -288,6 +288,12 @@ namespace Kinvey
 
             foreach (var header in requestHeaders)
             {
+                if (header.Key.Equals(Constants.STR_REQUEST_HEADER_API_VERSION) && !string.IsNullOrEmpty(client.ApiVersion) && !header.Value.FirstOrDefault().Equals(client.ApiVersion))
+                {
+                    request.Headers.Add(header.Key, client.ApiVersion);
+                    continue;
+                }
+
                 if (header.Value.Count() > 1)
                 {
                     request.Headers.Add(header.Key, header.Value);

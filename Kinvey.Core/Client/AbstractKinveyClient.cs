@@ -41,6 +41,8 @@ namespace Kinvey
 		/// </summary>
 		private HttpClient httpClient;
 
+        private string apiVersion;
+
 		private string clientAppVersion = null;
 
 		private JObject customRequestProperties = new JObject();
@@ -208,11 +210,21 @@ namespace Kinvey
             get { return this.httpClient; }
         }
 
-		/// <summary>
-		/// Initializes the request.
+        /// <summary>
+		/// Gets Kinvey api version.
 		/// </summary>
-		/// <param name="request">Request.</param>
-		/// <typeparam name="T">The Type of the response</typeparam>
+		/// <value>Kinvey api version.</value>
+        public string ApiVersion
+        {
+            get { return string.IsNullOrEmpty(apiVersion) ? KinveyHeaders.kinveyApiVersion: apiVersion; }
+            internal set { this.apiVersion = value; }
+        }
+
+        /// <summary>
+        /// Initializes the request.
+        /// </summary>
+        /// <param name="request">Request.</param>
+        /// <typeparam name="T">The Type of the response</typeparam>
         public void InitializeRequest<T>(AbstractKinveyClientRequest<T> request, string clientID = null)
         {
             if (RequestInitializer != null) 
