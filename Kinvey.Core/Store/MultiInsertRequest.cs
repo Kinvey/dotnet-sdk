@@ -11,6 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace Kinvey
     /// <summary>
     /// Represents a multi insert request. 
     /// </summary>
-    public class MultiInsertRequest<T, U> : WriteRequest<T, U>
+    public class MultiInsertRequest<T> : WriteRequest<T, KinveyDataStoreResponse<T>>
     {
         private List<T> entities;
 
@@ -33,33 +34,77 @@ namespace Kinvey
         /// Executes a multi insert request.
         /// </summary>
         /// <returns>An async task with the request result.</returns>
-        public override async Task<U> ExecuteAsync()
+        public override async Task<KinveyDataStoreResponse<T>> ExecuteAsync()
         {
-            U savedEntities = default(U);
+            KinveyDataStoreResponse<T> kinveyDataStoreResponse = default(KinveyDataStoreResponse<T>);
 
             switch (Policy)
             {
                 case WritePolicy.FORCE_LOCAL:
 
-                    for (var index = 0; index < entities.Count; index++)
+                    kinveyDataStoreResponse = new KinveyDataStoreResponse<T>
                     {
-                        var entity = entities[index];
-                        var tempIdLocal = PrepareCacheSave(ref entity);
-                        var savedEntity = Cache.Save(entity);
+                        Entities = new List<T>(),
+                        Errors = new List<Error>()
+                    };                    
+                    var pendingWriteActions = new List<PendingWriteAction>();
+
+                    if (entities.Count == 1)
+                    {
+                        //tempIdLocal = CacheSave(ref entity);
                     }
+                    else
+                    {
+                        for (var index = 0; index < entities.Count; index++)
+                        {
+                            string tempIdLocal = null;
+                            try
+                            {
+                                var entity = entities[index];
+                                tempIdLocal = CacheSave(ref entity);
+                                kinveyDataStoreResponse.Entities.Add(entity);
+                            }
+                            catch (Exception exception)
+                            {
+                                kinveyDataStoreResponse.Entities.Add(default(T));
+
+                                var error = new Error
+                                {
+                                    Index = index,
+                                    Code = 0,
+                                    Errmsg = exception.Message
+                                };
+
+                                kinveyDataStoreResponse.Errors.Add(error);
+                            }
+
+                            var createRequest = Client.NetworkFactory.buildCreateRequest(Collection, entities[index]);
+
+                            var pendingAction = PendingWriteAction.buildFromRequest(createRequest);
+                            pendingAction.entityId = tempIdLocal;
+
+                            pendingWriteActions.Add(pendingAction);
+                        }
+                    }
+
+                    foreach (var pendingWriteAction in  pendingWriteActions)
+                    {
+                        SyncQueue.Enqueue(pendingWriteAction);
+                    }
+
                     break;
 
                 case WritePolicy.FORCE_NETWORK:
                     // network
-                    var request = Client.NetworkFactory.buildMultiInsertRequest<T, U>(Collection, entities);
-                    savedEntities = await request.ExecuteAsync();
+                    var request = Client.NetworkFactory.buildMultiInsertRequest<T, KinveyDataStoreResponse<T>>(Collection, entities);
+                    kinveyDataStoreResponse = await request.ExecuteAsync();
                     break;
 
                 default:
                     throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_GENERAL, "Invalid write policy");
             }
             
-            return savedEntities;
+            return kinveyDataStoreResponse;
         }
 
         /// <summary>
@@ -69,6 +114,14 @@ namespace Kinvey
         public override Task<bool> Cancel()
         {
             throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on MultiInsertRequest not implemented.");
+        }
+
+
+        private string CacheSave(ref T entity)
+        {
+            var tempIdLocal = PrepareCacheSave(ref entity);
+            Cache.Save(entity);
+            return tempIdLocal;
         }
     }
 }
