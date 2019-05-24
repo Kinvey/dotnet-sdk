@@ -26,11 +26,10 @@ namespace Kinvey
 		/// <summary>
 		/// The version of the SDK.
 		/// </summary>
-		public static string VERSION = "4.0.1";
+		public static string VERSION = "4.1.0";
 
 		// The kinvey API version.
-        static string kinveyApiVersionKey = "X-Kinvey-API-Version";
-        static string kinveyApiVersion = "4";
+        internal static readonly string kinveyApiVersion = "4";
 
 		// The user agent.
         static string userAgentKey = "user-agent";
@@ -72,7 +71,7 @@ namespace Kinvey
                 userAgentKey, new List<string> { userAgent }
             ));
             Add(new KeyValuePair<string, IEnumerable<string>>(
-                kinveyApiVersionKey, new List<string> { kinveyApiVersion }
+                Constants.STR_REQUEST_HEADER_API_VERSION, new List<string> { kinveyApiVersion }
             ));
 
             JObject deviceInfo = new JObject();

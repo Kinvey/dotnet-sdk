@@ -190,7 +190,14 @@ namespace Kinvey
 
             foreach (var header in kinveyHeaders)
             {
-                request.Headers.Add(header.Key, header.Value.FirstOrDefault());
+                var key = header.Key;
+                var value = header.Value.FirstOrDefault();
+
+                if (key.Equals(Constants.STR_REQUEST_HEADER_API_VERSION) && !string.IsNullOrEmpty(client.ApiVersion) && !value.Equals(client.ApiVersion))
+                {
+                    value = client.ApiVersion;
+                }
+                request.Headers.Add(key, value);
             }
 
             appKeyAuthentication.Authenticate(request);

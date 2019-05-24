@@ -39,11 +39,17 @@ namespace Kinvey.TestLocalLibApp.iOS
         }
         public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
         {
-            
+            var alert = UIAlertController.Create("Message", "Failed", UIAlertControllerStyle.Alert);
+            alert.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
+            Window.MakeKeyAndVisible();
+            this.Window.RootViewController.PresentViewController(alert, true, null);
         }
         public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
         {
-
+            var alert = UIAlertController.Create("Message", "Received", UIAlertControllerStyle.Alert);
+            alert.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
+            Window.MakeKeyAndVisible();
+            this.Window.RootViewController.PresentViewController(alert, true, null);
         }
     }
 }
