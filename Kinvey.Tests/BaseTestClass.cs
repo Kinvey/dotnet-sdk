@@ -281,7 +281,8 @@ namespace Kinvey.Tests
         {
             using (var streamReader = new StreamReader(context.Request.InputStream))
             {
-                return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd());
+                var content = streamReader.ReadToEnd();
+                return JsonConvert.DeserializeObject<T>(content);
             }
         }
 
@@ -372,11 +373,101 @@ namespace Kinvey.Tests
 
         protected static void MockAppDataPost(HttpListenerContext context, List<JObject> items, Client client)
         {
-            var obj = Read<JObject>(context);
-            MockAppDataPost(context, obj, items, client);
+            JObject jObj = null;
+            var binaryData = Read(context);
+            var stringJson = Encoding.Default.GetString(binaryData);
+
+            try
+            {                
+                jObj = JsonConvert.DeserializeObject<JObject>(stringJson);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            if(jObj != null)
+            {
+                MockAppDataPost(context, jObj, items, client);
+            }
+            else
+            {
+                var jArray = JsonConvert.DeserializeObject<JArray>(stringJson);
+                MockAppDataPost(context, jArray, items, client);
+            }
+            
         }
 
         protected static void MockAppDataPost(HttpListenerContext context, JObject obj, List<JObject> items, Client client)
+        {
+            PopulateEntity(obj, client);
+            items.Add(obj);
+            Write(context, obj);
+        }
+
+        protected static void MockAppDataPost(HttpListenerContext context, JArray jArray, List<JObject> items, Client client)
+        {
+            var jObjects = jArray.ToObject<List<JObject>>();
+            var jObjectsToSave = new List<JObject>();
+            var jObjectErrors = new List<JObject>();
+
+            if (jObjects.Count == 0)
+            {
+                var response = context.Response;
+                response.StatusCode = 504;
+                Write(context, "Timeout");
+                return;
+            }
+
+            if (jObjects.Count > 100)
+            {
+                var response = context.Response;
+                response.StatusCode = 413;
+                Write(context, "Payload too large");
+                return;
+            }
+
+            for(var index = 0; index < jObjects.Count; index ++)
+            {
+                if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_with_error))
+                {
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
+                    {
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Error"
+                    };
+
+                    jObjectErrors.Add(jObjectError);
+                }
+                else
+                {
+                    PopulateEntity(jObjects[index], client);
+                    items.Add(jObjects[index]);
+                    jObjectsToSave.Add(jObjects[index]);
+                }
+            }
+
+            if(!jObjectsToSave.Any(j=> j != null) && jObjectErrors.Count > 0)
+            {
+                var response = context.Response;
+                response.StatusCode = 500;
+                Write(context, "The Kinvey server encountered an unexpected error. Please retry your request.");
+                return;
+            }
+
+            var multiInsertResultJsonObject = new JObject
+            {
+                ["Entities"] = new JArray(jObjectsToSave),
+                ["Errors"] = new JArray(jObjectErrors)
+            };
+
+            Write(context, multiInsertResultJsonObject);
+        }
+
+        private static void PopulateEntity(JObject obj, Client client)
         {
             if (obj["_id"] == null || obj["_id"].Type == JTokenType.Null)
             {
@@ -395,9 +486,6 @@ namespace Kinvey.Tests
             kmd["ect"] = date;
             kmd["lmt"] = date;
             obj["_kmd"] = kmd;
-
-            items.Add(obj);
-            Write(context, obj);
         }
 
         protected static void MockAppDataGet(HttpListenerContext context, List<JObject> items, Client client)
