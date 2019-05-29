@@ -305,6 +305,13 @@ namespace Kinvey.Tests
             Write(context, "Not Found");
         }
 
+        protected static void MockInternal(HttpListenerContext context)
+        {
+            var response = context.Response;
+            response.StatusCode = 500;
+            Write(context, "The Kinvey server encountered an unexpected error. Please retry your request.");
+        }
+
         private static bool Filter(JObject item, string key, JToken jToken)
         {
             switch (jToken.Type)
@@ -419,7 +426,7 @@ namespace Kinvey.Tests
                 return;
             }
 
-            if (jObjects.Count > 100)
+            if (jObjects.Count > Constants.NUMBER_LIMIT_OF_ENTITIES)
             {
                 var response = context.Response;
                 response.StatusCode = 413;
@@ -452,9 +459,7 @@ namespace Kinvey.Tests
 
             if(!jObjectsToSave.Any(j=> j != null) && jObjectErrors.Count > 0)
             {
-                var response = context.Response;
-                response.StatusCode = 500;
-                Write(context, "The Kinvey server encountered an unexpected error. Please retry your request.");
+                MockInternal(context);
                 return;
             }
 
@@ -579,7 +584,13 @@ namespace Kinvey.Tests
                 return;
             }
 
-            var item = items[index];
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
+            {
+                MockInternal(context);
+                return;
+            }
+
+                var item = items[index];
             obj["_id"] = id;
             var acl = obj["_acl"];
             if (acl == null || acl.Type == JTokenType.Null)

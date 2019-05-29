@@ -5525,36 +5525,54 @@ namespace Kinvey.Tests
 
                 kinveyClient = builder.Build();
 
-                MockResponses(3);
+                MockResponses(8);
 
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
                 var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
-                var toDos = new List<ToDo>
-                {
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 },
-                    new ToDo { Name = "Name2", Details = "Details2", Value = 2 },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 }
-                };
+                var toDos = new List<ToDo>();
+                                                          
+                var toDo1 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
+                toDo1 = await todoStoreNetwork.SaveAsync(toDo1);
+                toDo1.Name = TestSetup.entity_with_error;
+                toDo1.Details = "Details33";
+                toDo1.Value = 33;
+
+                toDos.Add(toDo1);
+                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 });
+                toDos.Add(toDo1);
+                toDos.Add(new ToDo { Name = "Name2", Details = "Details2", Value = 2 });
+                toDos.Add(toDo1);
+                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 });
+                toDos.Add(toDo1);
 
                 // Act
                 var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Teardown
-                await todoStoreNetwork.RemoveAsync(savedToDos.Entities[1].ID);
+                await todoStoreNetwork.RemoveAsync(savedToDos.Entities[3].ID);
 
                 // Assert
-                Assert.AreEqual(3, savedToDos.Entities.Count);
-                Assert.AreEqual(2, savedToDos.Errors.Count);
+                Assert.AreEqual(7, savedToDos.Entities.Count);
+                Assert.AreEqual(6, savedToDos.Errors.Count);
                 Assert.IsNull(savedToDos.Entities[0]);
-                Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
-                Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
-                Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
+                Assert.IsNull(savedToDos.Entities[1]);
                 Assert.IsNull(savedToDos.Entities[2]);
+                Assert.IsNotNull(savedToDos.Entities[3]);               
+                Assert.IsNull(savedToDos.Entities[4]);
+                Assert.IsNull(savedToDos.Entities[5]);
+                Assert.IsNull(savedToDos.Entities[6]);
+                Assert.AreEqual(toDos[3].Name, savedToDos.Entities[3].Name);
+                Assert.AreEqual(toDos[3].Details, savedToDos.Entities[3].Details);
+                Assert.AreEqual(toDos[3].Value, savedToDos.Entities[3].Value);                
                 Assert.AreEqual(0, savedToDos.Errors[0].Index);
-                Assert.AreEqual(2, savedToDos.Errors[1].Index);
+                Assert.AreEqual(1, savedToDos.Errors[1].Index);
+                Assert.AreEqual(2, savedToDos.Errors[2].Index);
+                Assert.AreEqual(4, savedToDos.Errors[3].Index);
+                Assert.AreEqual(5, savedToDos.Errors[4].Index);
+                Assert.AreEqual(6, savedToDos.Errors[5].Index);
             }
         }
 

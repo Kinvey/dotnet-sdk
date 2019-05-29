@@ -112,8 +112,13 @@ namespace Kinvey
 
                         if(error != null)
                         {
-                            error.Index = initialIndexes[index];
-                            kinveyDataStoreResponse.Errors.Add(error);
+                            var newError = new Error
+                            {
+                                Index = initialIndexes[index],
+                                Code = error.Code,
+                                Errmsg = error.Errmsg
+                            };
+                            kinveyDataStoreResponse.Errors.Add(newError);
                         }
                     }
 
@@ -138,6 +143,9 @@ namespace Kinvey
 
                         kinveyDataStoreResponse.Entities[updateRequest.Key] = updatedEntity;
                     }
+
+                    kinveyDataStoreResponse.Errors.Sort((x, y) => x.Index.CompareTo(y.Index));
+
                     break;
 
                 case WritePolicy.LOCAL_THEN_NETWORK:
