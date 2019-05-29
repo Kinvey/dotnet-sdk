@@ -316,7 +316,13 @@ namespace Kinvey
 					description = "Error in inserting new entity cache with temporary ID.";
 					break;
 
-				case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY:
+                case EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE:
+                    error = "An exception was thrown while trying to save multiple entities to the cache.";
+                    debug = "";
+                    description = "An error in multiple inserting new entities or updating existing ones.";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_CACHE_SAVE_UPDATE_ENTITY:
 					error = "An exception was thrown while trying to update an entity in the cache.";
 					debug = "";
 					description = "Error in updating an existing entity in the cache.";
@@ -374,6 +380,18 @@ namespace Kinvey
                     error = "Not compatible Kinvey api version.";
                     debug = "";
                     description = "The current functionality is not compatible with the existing Kinvey api version.";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_EMPTY_ARRAY_OF_ENTITIES:
+                    error = "An empty array of entities.";
+                    debug = "";
+                    description = "An array of entities to be saved must not be empty.";
+                    break;
+
+                case EnumErrorCode.ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED:
+                    error = "Entities count limit was exceeded.";
+                    debug = "";
+                    description = string.Concat("The current limit of entities count is ", Constants.NUMBER_LIMIT_OF_ENTITIES);
                     break;
 
                 case EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED:

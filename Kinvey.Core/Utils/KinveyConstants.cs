@@ -112,5 +112,8 @@ namespace Kinvey
         internal const string STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE = "ParameterValueOutOfRange";
 
         #endregion
+
+        //Limits
+        internal const int NUMBER_LIMIT_OF_ENTITIES = 100;
     }
 }

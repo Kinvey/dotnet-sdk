@@ -40,47 +40,46 @@ namespace Kinvey
         {
             var kinveyDataStoreResponse = new KinveyDataStoreResponse<T>
             {
-                Entities = HelperMethods.Initialize<T>(default(T), entities.Count),
+                Entities = new List<T>(),
                 Errors = new List<Error>()
             };
 
             switch (Policy)
             {
                 case WritePolicy.FORCE_LOCAL:
-                                       
+                    //local cache                   
                     var pendingWriteActions = new List<PendingWriteAction>();
 
-                    if (entities.Count == 1)
+                    for (var index = 0; index < entities.Count; index++)
                     {
-                        CacheSave(entities[0], kinveyDataStoreResponse);                                                           
-                    }
-                    else
-                    {
-                        for (var index = 0; index < entities.Count; index++)
+                        try
                         {
-                            try
-                            {
-                                CacheSave(entities[index], kinveyDataStoreResponse);
-                            }
-                            catch (Exception ex)
-                            {
-                                kinveyDataStoreResponse.Entities.Add(default(T));
-
-                                var error = new Error
-                                {
-                                    Index = index,
-                                    Code = 0,
-                                    Errmsg = ex.Message
-                                };
-                                kinveyDataStoreResponse.Errors.Add(error);
-                            }
+                            CacheSave(entities[index], kinveyDataStoreResponse);
                         }
+                        catch (Exception ex)
+                        {
+                            kinveyDataStoreResponse.Entities.Add(default(T));
+
+                            var error = new Error
+                            {
+                                Index = index,
+                                Code = 0,
+                                Errmsg = ex.Message
+                            };
+                            kinveyDataStoreResponse.Errors.Add(error);
+                        }
+                    }
+
+                    if (kinveyDataStoreResponse.Entities.FindAll(item => item != null).Count == 0 && kinveyDataStoreResponse.Errors.Count > 0)
+                    {
+                        throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE, string.Empty);
                     }
 
                     break;
 
                 case WritePolicy.FORCE_NETWORK:
                     // network
+                    kinveyDataStoreResponse.Entities = HelperMethods.Initialize<T>(default(T), entities.Count);
 
                     var updateRequests = new Dictionary<int, NetworkRequest<T>>();
 
