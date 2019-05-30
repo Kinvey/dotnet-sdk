@@ -48,13 +48,13 @@ namespace Kinvey
             {
                 case WritePolicy.FORCE_LOCAL:
                     //local cache                   
-                    var pendingWriteActions = new List<PendingWriteAction>();
-
                     for (var index = 0; index < entities.Count; index++)
                     {
                         try
                         {
-                            CacheSave(entities[index], kinveyDataStoreResponse);
+                            var cacheSaveResult = CacheSave(entities[index]);
+                            SyncQueue.Enqueue(cacheSaveResult.Item1);
+                            kinveyDataStoreResponse.Entities.Add(cacheSaveResult.Item2);
                         }
                         catch (Exception ex)
                         {
@@ -79,140 +79,75 @@ namespace Kinvey
 
                 case WritePolicy.FORCE_NETWORK:
                     // network
-                    kinveyDataStoreResponse.Entities = HelperMethods.Initialize<T>(default(T), entities.Count);
-
-                    var updateRequests = new Dictionary<int, NetworkRequest<T>>();
-
-                    var entitiesToMultiInsert = new List<T>();
-                    var initialIndexes = new List<int>();
-
-                    for (var index = 0; index < entities.Count; index++)
-                    {
-                        var idToken = JObject.FromObject(entities[index])["_id"];
-                        if (idToken != null && !string.IsNullOrEmpty(idToken.ToString()))
-                        {
-                            var updateRequest = Client.NetworkFactory.buildUpdateRequest(Collection, entities[index], idToken.ToString());
-                            updateRequests.Add(index, updateRequest);
-                        }
-                        else
-                        {
-                            entitiesToMultiInsert.Add(entities[index]);
-                            initialIndexes.Add(index);
-                        }
-                    }
-
-                    var multiInsertRequest = Client.NetworkFactory.buildMultiInsertRequest<T, KinveyDataStoreResponse<T>>(Collection, entitiesToMultiInsert);
-                    var multiInsertKinveyDataStoreResponse = await multiInsertRequest.ExecuteAsync();
-
-                    for (var index = 0; index < multiInsertKinveyDataStoreResponse.Entities.Count; index++)
-                    {
-                        kinveyDataStoreResponse.Entities[initialIndexes[index]] = multiInsertKinveyDataStoreResponse.Entities[index];
-
-                        var error = multiInsertKinveyDataStoreResponse.Errors?.Find(er => er.Index == index);
-
-                        if(error != null)
-                        {
-                            var newError = new Error
-                            {
-                                Index = initialIndexes[index],
-                                Code = error.Code,
-                                Errmsg = error.Errmsg
-                            };
-                            kinveyDataStoreResponse.Errors.Add(newError);
-                        }
-                    }
-
-                    foreach (var updateRequest in updateRequests)
-                    {
-                        T updatedEntity = default(T);
-                        try
-                        {
-                            updatedEntity = await updateRequest.Value.ExecuteAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            var error = new Error
-                            {
-                                Index = updateRequest.Key,
-                                Code = 0,
-                                Errmsg = ex.Message
-                            };
-
-                            kinveyDataStoreResponse.Errors.Add(error);
-                        }
-
-                        kinveyDataStoreResponse.Entities[updateRequest.Key] = updatedEntity;
-                    }
-
-                    kinveyDataStoreResponse.Errors.Sort((x, y) => x.Index.CompareTo(y.Index));
-
+                    kinveyDataStoreResponse = await HandleNetworkRequestAsync(entities);
                     break;
 
                 case WritePolicy.LOCAL_THEN_NETWORK:
+                    //local cache
+                    KinveyDataStoreResponse<T> kinveyDataStoreNetworkResponse = null;
 
-                    //var pendingWriteActions2 = new List<PendingWriteAction>();
+                    var pendingWriteActions = new List<PendingWriteAction>();
 
-                    //var dictionary = new Dictionary<string, T>();
+                    for (var index = 0; index < entities.Count; index++)
+                    {
+                        try
+                        {
+                            var cacheSaveResult = CacheSave(entities[index]);
+                            pendingWriteActions.Add(cacheSaveResult.Item1);
+                            kinveyDataStoreResponse.Entities.Add(cacheSaveResult.Item2);                            
+                        }
+                        catch (Exception ex)
+                        {
+                            kinveyDataStoreResponse.Entities.Add(default(T));
 
-                    //if (entities.Count == 1)
-                    //{
-                    //    var tempIdLocal = CacheSave(entities[0], kinveyDataStoreResponse);
-                    //    dictionary.Add(tempIdLocal, entities[0]);
-                    //}
-                    //else
-                    //{
-                    //    for (var index = 0; index < entities.Count; index++)
-                    //    {
-                    //        try
-                    //        {
-                    //            var tempIdLocal = CacheSave(entities[index], kinveyDataStoreResponse);
-                    //            dictionary.Add(tempIdLocal, entities[index]);
-                    //        }
-                    //        catch (Exception ex)
-                    //        {
-                    //            kinveyDataStoreResponse.Entities.Add(default(T));
+                            var error = new Error
+                            {
+                                Index = index,
+                                Code = 0,
+                                Errmsg = ex.Message
+                            };
+                            kinveyDataStoreResponse.Errors.Add(error);
+                        }
+                    }
 
-                    //            var error = new Error
-                    //            {
-                    //                Index = index,
-                    //                Code = 0,
-                    //                Errmsg = ex.Message
-                    //            };
+                    if (kinveyDataStoreResponse.Entities.FindAll(item => item != null).Count == 0 && kinveyDataStoreResponse.Errors.Count > 0)
+                    {
+                        throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE, string.Empty);
+                    }
 
-                    //            kinveyDataStoreResponse.Errors.Add(error);
-                    //        }                           
-                    //    }
-                    //}
+                    HttpRequestException exception = null;
+                    try
+                    {
+                        // network
+                        kinveyDataStoreNetworkResponse = await HandleNetworkRequestAsync(entities);
+                    }
+                    catch (HttpRequestException httpRequestException)
+                    {
+                        exception = httpRequestException;
+                    }
 
-                    //HttpRequestException exception = null;
-                    //try
-                    //{
-                    //    // network save
-                    //    var request2 = Client.NetworkFactory.buildMultiInsertRequest<T, KinveyDataStoreResponse<T>>(Collection, entities);
-                    //    kinveyDataStoreResponse = await request2.ExecuteAsync();
-                    //}
-                    //catch (HttpRequestException httpRequestException)
-                    //{
-                    //    exception = httpRequestException;
-                    //}
+                    if (exception != null)
+                    {
+                        foreach (var pendingAction in pendingWriteActions)
+                        {
+                            SyncQueue.Enqueue(pendingAction);
+                        }                       
+                    }
+                    else 
+                    {
+                        for (var index = 0; index < kinveyDataStoreResponse.Entities.Count; index++)
+                        {
+                            if (kinveyDataStoreResponse.Entities[index] != null )
+                            {
+                                var obj = JObject.FromObject(kinveyDataStoreResponse.Entities[index]);
+                                var id = obj["_id"].ToString();
 
-                    //if (exception != null)
-                    //{
-                    //    foreach (var item in dictionary)
-                    //    {
-                    //        var pendingAction = CreatePendingWriteAction(item.Key, item.Value);
-                    //        SyncQueue.Enqueue(pendingAction);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    foreach (var item in kinveyDataStoreResponse.Entities)
-                    //    {
-                    //        //Cache.UpdateCacheSave(savedEntity, tempIdLocalThenNetwork);
-                    //    }
-                    //}
+                                Cache.UpdateCacheSave(kinveyDataStoreNetworkResponse.Entities[index], id);
+                            }
+                        }
 
-
+                        kinveyDataStoreResponse = kinveyDataStoreNetworkResponse;
+                    }
 
                     break;
 
@@ -232,16 +167,7 @@ namespace Kinvey
             throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on MultiInsertRequest not implemented.");
         }
 
-
-        //private string CacheSave(T entity, KinveyDataStoreResponse<T> kinveyDataStoreResponse)
-        //{
-        //    var tempIdLocal = PrepareCacheSave(ref entity);
-        //    Cache.Save(entity);
-        //    kinveyDataStoreResponse.Entities.Add(entities[0]);
-        //    return tempIdLocal;
-        //}
-
-        private void CacheSave(T entity, KinveyDataStoreResponse<T> kinveyDataStoreResponse)
+        private Tuple<PendingWriteAction, T> CacheSave(T entity)
         {
             PendingWriteAction pendingAction = null;
             T savedEntity = default(T);
@@ -266,18 +192,83 @@ namespace Kinvey
                 pendingAction.entityId = tempIdLocal;
             }
 
-            SyncQueue.Enqueue(pendingAction);
-            kinveyDataStoreResponse.Entities.Add(savedEntity);
+            return new Tuple<PendingWriteAction, T>(pendingAction, savedEntity);
         }
 
-        private PendingWriteAction CreatePendingWriteAction(string localTempId, T entity)
+        private async Task<KinveyDataStoreResponse<T>> HandleNetworkRequestAsync(IList<T> entities)
         {
-            var createRequest = Client.NetworkFactory.buildCreateRequest(Collection, entity);
+            var kinveyDataStoreResponse = new KinveyDataStoreResponse<T>
+            {
+                Entities = HelperMethods.Initialize<T>(default(T), entities.Count),
+                Errors = new List<Error>()
+            };
 
-            var pendingAction = PendingWriteAction.buildFromRequest(createRequest);
-            pendingAction.entityId = localTempId;
+            var updateRequests = new Dictionary<int, NetworkRequest<T>>();
 
-            return pendingAction;
+            var entitiesToMultiInsert = new List<T>();
+            var initialIndexes = new List<int>();
+
+            for (var index = 0; index < entities.Count; index++)
+            {
+                var idToken = JObject.FromObject(entities[index])["_id"];
+                if (idToken != null && !string.IsNullOrEmpty(idToken.ToString()))
+                {
+                    var updateRequest = Client.NetworkFactory.buildUpdateRequest(Collection, entities[index], idToken.ToString());
+                    updateRequests.Add(index, updateRequest);
+                }
+                else
+                {
+                    entitiesToMultiInsert.Add(entities[index]);
+                    initialIndexes.Add(index);
+                }
+            }
+
+            var multiInsertRequest = Client.NetworkFactory.buildMultiInsertRequest<T, KinveyDataStoreResponse<T>>(Collection, entitiesToMultiInsert);
+            var multiInsertKinveyDataStoreResponse = await multiInsertRequest.ExecuteAsync();
+
+            for (var index = 0; index < multiInsertKinveyDataStoreResponse.Entities.Count; index++)
+            {
+                kinveyDataStoreResponse.Entities[initialIndexes[index]] = multiInsertKinveyDataStoreResponse.Entities[index];
+
+                var error = multiInsertKinveyDataStoreResponse.Errors?.Find(er => er.Index == index);
+
+                if (error != null)
+                {
+                    var newError = new Error
+                    {
+                        Index = initialIndexes[index],
+                        Code = error.Code,
+                        Errmsg = error.Errmsg
+                    };
+                    kinveyDataStoreResponse.Errors.Add(newError);
+                }
+            }
+
+            foreach (var updateRequest in updateRequests)
+            {
+                T updatedEntity = default(T);
+                try
+                {
+                    updatedEntity = await updateRequest.Value.ExecuteAsync();
+                }
+                catch (Exception ex)
+                {
+                    var error = new Error
+                    {
+                        Index = updateRequest.Key,
+                        Code = 0,
+                        Errmsg = ex.Message
+                    };
+
+                    kinveyDataStoreResponse.Errors.Add(error);
+                }
+
+                kinveyDataStoreResponse.Entities[updateRequest.Key] = updatedEntity;
+            }
+
+            kinveyDataStoreResponse.Errors.Sort((x, y) => x.Index.CompareTo(y.Index));
+
+            return kinveyDataStoreResponse;
         }
     }
 }
