@@ -348,10 +348,10 @@ namespace Kinvey
         /// <summary>
 		/// Saves specified entities to a Kinvey collection.
 		/// </summary>
-		/// <returns>An async task with the <see cref="Kinvey.KinveyDataStoreResponse{T}"/> result.</returns>
+		/// <returns>An async task with the <see cref="Kinvey.KinveyMultiInsertResponse{T}"/> result.</returns>
 		/// <param name="entities">Entities to save.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel a request.</param>
-        public async Task<KinveyDataStoreResponse<T>> SaveAsync(IList<T> entities, CancellationToken ct = default(CancellationToken))
+        public async Task<KinveyMultiInsertResponse<T>> SaveAsync(IList<T> entities, CancellationToken ct = default(CancellationToken))
         {
             if (!int.TryParse(KinveyClient.ApiVersion, out int apiVersion) || apiVersion < 5)
             {

@@ -22,7 +22,7 @@ namespace Kinvey
     /// <summary>
     /// Represents a multi insert request. 
     /// </summary>
-    public class MultiInsertRequest<T> : WriteRequest<T, KinveyDataStoreResponse<T>>
+    public class MultiInsertRequest<T> : WriteRequest<T, KinveyMultiInsertResponse<T>>
     {
         private IList<T> entities;
 
@@ -36,9 +36,9 @@ namespace Kinvey
         /// Executes a multi insert request.
         /// </summary>
         /// <returns>An async task with the request result.</returns>
-        public override async Task<KinveyDataStoreResponse<T>> ExecuteAsync()
+        public override async Task<KinveyMultiInsertResponse<T>> ExecuteAsync()
         {
-            var kinveyDataStoreResponse = new KinveyDataStoreResponse<T>
+            var kinveyDataStoreResponse = new KinveyMultiInsertResponse<T>
             {
                 Entities = new List<T>(),
                 Errors = new List<Error>()
@@ -84,7 +84,7 @@ namespace Kinvey
 
                 case WritePolicy.LOCAL_THEN_NETWORK:
                     //local cache
-                    KinveyDataStoreResponse<T> kinveyDataStoreNetworkResponse = null;
+                    KinveyMultiInsertResponse<T> kinveyDataStoreNetworkResponse = null;
 
                     var pendingWriteActions = new List<PendingWriteAction>();
 
@@ -195,9 +195,9 @@ namespace Kinvey
             return new Tuple<PendingWriteAction, T>(pendingAction, savedEntity);
         }
 
-        private async Task<KinveyDataStoreResponse<T>> HandleNetworkRequestAsync(IList<T> entities)
+        private async Task<KinveyMultiInsertResponse<T>> HandleNetworkRequestAsync(IList<T> entities)
         {
-            var kinveyDataStoreResponse = new KinveyDataStoreResponse<T>
+            var kinveyDataStoreResponse = new KinveyMultiInsertResponse<T>
             {
                 Entities = HelperMethods.Initialize<T>(default(T), entities.Count),
                 Errors = new List<Error>()
@@ -223,7 +223,7 @@ namespace Kinvey
                 }
             }
 
-            var multiInsertRequest = Client.NetworkFactory.buildMultiInsertRequest<T, KinveyDataStoreResponse<T>>(Collection, entitiesToMultiInsert);
+            var multiInsertRequest = Client.NetworkFactory.buildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entitiesToMultiInsert);
             var multiInsertKinveyDataStoreResponse = await multiInsertRequest.ExecuteAsync();
 
             for (var index = 0; index < multiInsertKinveyDataStoreResponse.Entities.Count; index++)

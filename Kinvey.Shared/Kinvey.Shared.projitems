@@ -161,8 +161,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\KinveyAuthSocialID.cs">
       <Link>Model\KinveyAuthSocialID.cs</Link>
     </Compile>
-	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\KinveyDataStoreResponse.cs">
-      <Link>Model\KinveyDataStoreResponse.cs</Link>
+	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\KinveyMultiInsertResponse.cs">
+      <Link>Model\KinveyMultiInsertResponse.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\KinveyDeleteResponse.cs">
       <Link>Model\KinveyDeleteResponse.cs</Link>

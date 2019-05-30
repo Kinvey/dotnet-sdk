@@ -20,7 +20,7 @@ namespace Kinvey
 	/// This class represents a response sent from Kinvey backend after a multi insert operation has been executed.
 	/// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class KinveyDataStoreResponse<T>
+    public class KinveyMultiInsertResponse<T>
     {
         /// <summary>
 		/// Represents a collection of entities which were inserted to Kinvey data source.

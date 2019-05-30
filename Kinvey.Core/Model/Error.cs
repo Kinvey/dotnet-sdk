@@ -9,7 +9,7 @@ namespace Kinvey
     public class Error
     {
         /// <summary>
-		/// An index of an entity in the collection <see cref="Kinvey.KinveyDataStoreResponse{T}.Entities"/>.
+		/// An index of an entity in the collection <see cref="Kinvey.KinveyMultiInsertResponse{T}.Entities"/>.
 		/// </summary>
         [JsonProperty]
         public int Index { get; set; }

@@ -5702,7 +5702,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(4);
+                MockResponses(3);
             }
 
             // Arrange
@@ -5854,7 +5854,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(9);
+                MockResponses(6);
             }
 
             // Arrange
