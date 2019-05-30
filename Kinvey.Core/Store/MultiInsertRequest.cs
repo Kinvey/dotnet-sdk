@@ -24,9 +24,9 @@ namespace Kinvey
     /// </summary>
     public class MultiInsertRequest<T> : WriteRequest<T, KinveyDataStoreResponse<T>>
     {
-        private List<T> entities;
+        private IList<T> entities;
 
-        public MultiInsertRequest(List<T> entities, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy)
+        public MultiInsertRequest(IList<T> entities, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy)
             : base(client, collection, cache, sync, policy)
         {
             this.entities = entities;

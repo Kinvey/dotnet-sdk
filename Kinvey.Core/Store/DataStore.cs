@@ -351,7 +351,7 @@ namespace Kinvey
 		/// <returns>An async task with the <see cref="Kinvey.KinveyDataStoreResponse{T}"/> result.</returns>
 		/// <param name="entities">Entities to save.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel a request.</param>
-        public async Task<KinveyDataStoreResponse<T>> SaveAsync(List<T> entities, CancellationToken ct = default(CancellationToken))
+        public async Task<KinveyDataStoreResponse<T>> SaveAsync(IList<T> entities, CancellationToken ct = default(CancellationToken))
         {
             if (!int.TryParse(KinveyClient.ApiVersion, out int apiVersion) || apiVersion < 5)
             {
