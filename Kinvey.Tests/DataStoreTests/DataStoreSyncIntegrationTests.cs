@@ -5640,6 +5640,9 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStore.SaveAsync(toDos);
 
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var existingToDos = await todoStore.FindAsync();
+
             // Teardown
             await todoStore.RemoveAsync(savedToDos.Entities[0].ID);
             await todoStore.RemoveAsync(savedToDos.Entities[1].ID);
@@ -5653,6 +5656,16 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
             Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
             Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
+            Assert.AreEqual(2, pendingWriteActions.Count);
+            Assert.AreEqual(2, existingToDos.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("POST", pendingWriteAction1.action);
+            var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
+            Assert.IsNotNull(pendingWriteAction2);
+            Assert.AreEqual("POST", pendingWriteAction2.action);
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
         }
 
         [TestMethod]
@@ -5699,6 +5712,9 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStore.SaveAsync(toDos);
 
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var existingToDos = await todoStore.FindAsync();
+
             // Teardown
             await todoStore.RemoveAsync(savedToDos.Entities[0].ID);
             await todoStore.RemoveAsync(savedToDos.Entities[1].ID);
@@ -5721,6 +5737,24 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[3].Name, savedToDos.Entities[3].Name);
             Assert.AreEqual(toDos[3].Details, savedToDos.Entities[3].Details);
             Assert.AreEqual(toDos[3].Value, savedToDos.Entities[3].Value);
+            Assert.AreEqual(4, pendingWriteActions.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("POST", pendingWriteAction1.action);
+            var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
+            Assert.IsNotNull(pendingWriteAction2);
+            Assert.AreEqual("POST", pendingWriteAction2.action);
+            var pendingWriteAction3 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[2].ID);
+            Assert.IsNotNull(pendingWriteAction3);
+            Assert.AreEqual("POST", pendingWriteAction3.action);
+            var pendingWriteAction4 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[3].ID);
+            Assert.IsNotNull(pendingWriteAction4);
+            Assert.AreEqual("PUT", pendingWriteAction4.action);
+            Assert.AreEqual(4, existingToDos.Count);
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[2].ID));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[3].ID));
         }
 
         [TestMethod]
@@ -5885,6 +5919,9 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStore.SaveAsync(toDos);
 
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var existingToDos = await todoStore.FindAsync();
+
             // Teardown
             await todoStore.RemoveAsync(savedToDos.Entities[1].ID);
 
@@ -5898,6 +5935,12 @@ namespace Kinvey.Tests
             Assert.IsNull(savedToDos.Entities[2]);
             Assert.AreEqual(0, savedToDos.Errors[0].Index);
             Assert.AreEqual(2, savedToDos.Errors[1].Index);
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("POST", pendingWriteAction1.action);
+            Assert.AreEqual(1, existingToDos.Count);
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
         }
 
         [TestMethod]

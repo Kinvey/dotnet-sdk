@@ -137,7 +137,7 @@ namespace Kinvey
                     {
                         for (var index = 0; index < kinveyDataStoreResponse.Entities.Count; index++)
                         {
-                            if (kinveyDataStoreResponse.Entities[index] != null )
+                            if (kinveyDataStoreResponse.Entities[index] != null && kinveyDataStoreNetworkResponse.Entities[index] != null)
                             {
                                 var obj = JObject.FromObject(kinveyDataStoreResponse.Entities[index]);
                                 var id = obj["_id"].ToString();
