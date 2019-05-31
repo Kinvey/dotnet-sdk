@@ -5268,5 +5268,352 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_INVALID_PURGE_OPERATION, kinveyException.ErrorCode);
         }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertNewItemsAsync()
+        {
+            // Setup
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("5");
+
+            kinveyClient = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(4);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2 }
+            };
+
+            // Act
+            var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
+
+            // Teardown
+            await todoStoreNetwork.RemoveAsync(savedToDos.Entities[0].ID);
+            await todoStoreNetwork.RemoveAsync(savedToDos.Entities[1].ID);
+
+            // Assert
+            Assert.AreEqual(2, savedToDos.Entities.Count);
+            Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(toDos[0].Name, savedToDos.Entities[0].Name);
+            Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
+            Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
+            Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
+            Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
+            Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertNewItemsExistingItemsAsync()
+        {
+            // Setup
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("5");
+
+            kinveyClient = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(9);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2 }
+            };
+
+            var toDo1 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
+            toDo1 = await todoStoreNetwork.SaveAsync(toDo1);
+            toDo1.Name = "Name33";
+            toDo1.Details = "Details33";
+            toDo1.Value = 33;
+            toDos.Add(toDo1);
+
+            var toDo2 = new ToDo { ID = Guid.NewGuid().ToString() , Name = "Name4", Details = "Details4", Value = 4 };
+            toDos.Add(toDo2);
+
+            // Act
+            var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
+
+            // Teardown
+            await todoStoreNetwork.RemoveAsync(savedToDos.Entities[0].ID);
+            await todoStoreNetwork.RemoveAsync(savedToDos.Entities[1].ID);
+            await todoStoreNetwork.RemoveAsync(savedToDos.Entities[2].ID);
+            await todoStoreNetwork.RemoveAsync(savedToDos.Entities[3].ID);
+
+            // Assert
+            Assert.AreEqual(4, savedToDos.Entities.Count);
+            Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(toDos[0].Name, savedToDos.Entities[0].Name);
+            Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
+            Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
+            Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
+            Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
+            Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
+            Assert.AreEqual(toDos[2].Name, savedToDos.Entities[2].Name);
+            Assert.AreEqual(toDos[2].Details, savedToDos.Entities[2].Details);
+            Assert.AreEqual(toDos[2].Value, savedToDos.Entities[2].Value);
+            Assert.AreEqual(toDos[3].ID, savedToDos.Entities[3].ID);
+            Assert.AreEqual(toDos[3].Name, savedToDos.Entities[3].Name);
+            Assert.AreEqual(toDos[3].Details, savedToDos.Entities[3].Details);
+            Assert.AreEqual(toDos[3].Value, savedToDos.Entities[3].Value);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertEmptyArrayAsync()
+        {
+            // Setup
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("5");
+
+            kinveyClient = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStoreNetwork.SaveAsync(new List<ToDo>());
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_GENERAL, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_EMPTY_ARRAY_OF_ENTITIES, kinveyException.ErrorCode);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertCount101Async()
+        {
+            // Setup
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("5");
+
+            kinveyClient = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>();
+
+            for(var index = 0; index <101; index++)
+            {
+                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+            }
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStoreNetwork.SaveAsync(toDos);
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_GENERAL, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED, kinveyException.ErrorCode);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertIncorrectKinveyApiVersionAsync()
+        {
+            // Setup
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("4");
+
+            kinveyClient = builder.Build();
+            
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2 }
+            };
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStoreNetwork.SaveAsync(toDos);
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_GENERAL, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_NOT_COMPATIBLE_KINVEY_API_VERSION, kinveyException.ErrorCode);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertNewItemsExistingItemsWithErrorsAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+                builder.setBaseURL("http://localhost:8080");
+                builder.SetApiVersion("5");
+
+                kinveyClient = builder.Build();
+
+                MockResponses(8);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+                var toDos = new List<ToDo>();
+                                                          
+                var toDo1 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
+                toDo1 = await todoStoreNetwork.SaveAsync(toDo1);
+                toDo1.Name = TestSetup.entity_with_error;
+                toDo1.Details = "Details33";
+                toDo1.Value = 33;
+
+                toDos.Add(toDo1);
+                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 });
+                toDos.Add(toDo1);
+                toDos.Add(new ToDo { Name = "Name2", Details = "Details2", Value = 2 });
+                toDos.Add(toDo1);
+                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 });
+                toDos.Add(toDo1);
+
+                // Act
+                var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
+
+                // Teardown
+                await todoStoreNetwork.RemoveAsync(savedToDos.Entities[3].ID);
+
+                // Assert
+                Assert.AreEqual(7, savedToDos.Entities.Count);
+                Assert.AreEqual(6, savedToDos.Errors.Count);
+                Assert.IsNull(savedToDos.Entities[0]);
+                Assert.IsNull(savedToDos.Entities[1]);
+                Assert.IsNull(savedToDos.Entities[2]);
+                Assert.IsNotNull(savedToDos.Entities[3]);               
+                Assert.IsNull(savedToDos.Entities[4]);
+                Assert.IsNull(savedToDos.Entities[5]);
+                Assert.IsNull(savedToDos.Entities[6]);
+                Assert.AreEqual(toDos[3].Name, savedToDos.Entities[3].Name);
+                Assert.AreEqual(toDos[3].Details, savedToDos.Entities[3].Details);
+                Assert.AreEqual(toDos[3].Value, savedToDos.Entities[3].Value);                
+                Assert.AreEqual(0, savedToDos.Errors[0].Index);
+                Assert.AreEqual(1, savedToDos.Errors[1].Index);
+                Assert.AreEqual(2, savedToDos.Errors[2].Index);
+                Assert.AreEqual(4, savedToDos.Errors[3].Index);
+                Assert.AreEqual(5, savedToDos.Errors[4].Index);
+                Assert.AreEqual(6, savedToDos.Errors[5].Index);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertThrowingExceptionAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+                builder.setBaseURL("http://localhost:8080");
+                builder.SetApiVersion("5");
+
+                kinveyClient = builder.Build();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+                var toDos = new List<ToDo>
+                {
+                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 },
+                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 }
+                };
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await todoStoreNetwork.SaveAsync(toDos);
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(500, kinveyException.StatusCode);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            }
+        }
     }
 }

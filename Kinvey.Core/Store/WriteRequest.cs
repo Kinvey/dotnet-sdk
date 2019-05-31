@@ -11,6 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
 
@@ -31,5 +32,17 @@ namespace Kinvey
 			this.SyncQueue = queue;
 			this.Policy = policy;
 		}
-	}
+
+        protected string PrepareCacheSave(ref T entity)
+        {
+            string guid = System.Guid.NewGuid().ToString();
+            string tempID = "temp_" + guid;
+
+            JObject obj = JObject.FromObject(entity);
+            obj["_id"] = tempID;
+            entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
+
+            return tempID;
+        }
+    }
 }

@@ -157,18 +157,6 @@ namespace Kinvey
 		public override Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on SaveRequest not implemented.");
-		}
-
-		private string PrepareCacheSave(ref T entity)
-		{
-			string guid = System.Guid.NewGuid().ToString();
-			string tempID = "temp_" + guid;
-
-			JObject obj = JObject.FromObject(entity);
-			obj["_id"] = tempID;
-			entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
-
-			return tempID;
-		}
+		}	
 	}
 }
