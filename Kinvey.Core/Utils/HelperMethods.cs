@@ -97,5 +97,12 @@ namespace Kinvey
 			DateTime dateOfOrig = DateTime.Parse(date2);
 			return dateToCheck.CompareTo(dateOfOrig);
 		}
-	}
+
+        internal static List<T> Initialize<T>(T value, int count)
+        {
+            var list = new List<T>(count);
+            list.AddRange(Enumerable.Repeat(value, count));
+            return list;
+        }
+    }
 }

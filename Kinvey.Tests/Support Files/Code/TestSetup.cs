@@ -30,6 +30,8 @@ namespace Kinvey.Tests
         public const string auth_token_for_401_response_fake = "eda5d4bc-6a47-46d2-9637-07dec479bf9c";
         public const string refresh_token_for_401_response_fake = "0f550503-f033-44ee-8c2d-ae8f9773b70a";
 
+        public const string entity_with_error = "Entity with error";
+
         public const string mic_id_fake = "ade8db71f61c46a69c91910d8fbf3994";
 
         public static string db_dir = Environment.CurrentDirectory;

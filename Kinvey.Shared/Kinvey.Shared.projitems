@@ -137,6 +137,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\Entity.cs">
       <Link>Model\Entity.cs</Link>
     </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\Error.cs">
+      <Link>Model\Error.cs</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\GroupAggregationResults.cs">
       <Link>Model\GroupAggregationResults.cs</Link>
     </Compile>
@@ -157,6 +160,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\KinveyAuthSocialID.cs">
       <Link>Model\KinveyAuthSocialID.cs</Link>
+    </Compile>
+	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\KinveyMultiInsertResponse.cs">
+      <Link>Model\KinveyMultiInsertResponse.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\KinveyDeleteResponse.cs">
       <Link>Model\KinveyDeleteResponse.cs</Link>
@@ -271,6 +277,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\RemoveRequest.cs">
       <Link>Store\RemoveRequest.cs</Link>
+    </Compile>
+	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\MultiInsertRequest.cs">
+      <Link>Store\MultiInsertRequest.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\SaveRequest.cs">
       <Link>Store\SaveRequest.cs</Link>

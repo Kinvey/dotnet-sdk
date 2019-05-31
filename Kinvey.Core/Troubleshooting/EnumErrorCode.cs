@@ -28,10 +28,15 @@ namespace Kinvey
 		/// </summary>
 		ERROR_DATASTORE_CACHE_SAVE_INSERT_ENTITY,
 
-		/// <summary>
-		/// Error saving the permanent entity ID in the local cache.
-		/// </summary>
-		ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID,
+        /// <summary>
+        /// Error of multiple saving entities to the local cache.
+        /// </summary>
+        ERROR_DATASTORE_CACHE_MULTIPLE_SAVE,
+
+        /// <summary>
+        /// Error saving the permanent entity ID in the local cache.
+        /// </summary>
+        ERROR_DATASTORE_CACHE_SAVE_UPDATE_ID,
 
 		/// <summary>
 		/// Error saving an updated entity in the local cache.
@@ -122,6 +127,21 @@ namespace Kinvey
 		/// Error due to 'where' clause is absent in query.
 		/// </summary>
 		ERROR_DATASTORE_WHERE_CLAUSE_IS_ABSENT_IN_QUERY,
+
+        /// <summary>
+        /// Error due to using not compatible Kinvey api version.
+        /// </summary>
+        ERROR_DATASTORE_NOT_COMPATIBLE_KINVEY_API_VERSION,
+
+        /// <summary>
+        /// Error due to using an empty array of entities.
+        /// </summary>
+        ERROR_DATASTORE_EMPTY_ARRAY_OF_ENTITIES,
+
+        /// <summary>
+        /// Error due to exceeding of entities count limit.
+        /// </summary>
+        ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED,
 
         /// <summary>
         /// Error due to attempting a file metadata operation without a file ID.
