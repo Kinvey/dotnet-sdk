@@ -225,7 +225,7 @@ namespace Kinvey
         /// <returns>A created network request.</returns>
         /// <param name="collectionName">A name of a collection.</param>
         /// <param name="entities">Entities to insert.</param>
-        public NetworkRequest<U> buildMultiInsertRequest<T, U>(string collectionName, List<T> entities)
+        public NetworkRequest<U> BuildMultiInsertRequest<T, U>(string collectionName, List<T> entities)
         {
             const string REST_PATH = "appdata/{appKey}/{collectionName}";
 
