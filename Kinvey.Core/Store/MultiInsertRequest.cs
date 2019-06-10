@@ -223,8 +223,17 @@ namespace Kinvey
                 }
             }
 
-            var multiInsertRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entitiesToMultiInsert);
-            var multiInsertKinveyDataStoreResponse = await multiInsertRequest.ExecuteAsync();
+            var multiInsertKinveyDataStoreResponse = new KinveyMultiInsertResponse<T>
+            {
+                Entities = new List<T>(),
+                Errors = new List<Error>()
+            };
+
+            if (entitiesToMultiInsert.Count > 0)
+            {
+                var multiInsertRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entitiesToMultiInsert);
+                multiInsertKinveyDataStoreResponse = await multiInsertRequest.ExecuteAsync();
+            }
 
             for (var index = 0; index < multiInsertKinveyDataStoreResponse.Entities.Count; index++)
             {
