@@ -415,6 +415,14 @@ namespace Kinvey.Tests
                 return;
             }
 
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
+            {
+                var response = context.Response;
+                response.StatusCode = 400;
+                Write(context, "Error.");
+                return;
+            }
+
             PopulateEntity(obj, client);
             items.Add(obj);
             Write(context, obj);
