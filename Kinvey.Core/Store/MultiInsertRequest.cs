@@ -137,12 +137,33 @@ namespace Kinvey
                     {
                         for (var index = 0; index < kinveyDataStoreResponse.Entities.Count; index++)
                         {
-                            if (kinveyDataStoreResponse.Entities[index] != null && kinveyDataStoreNetworkResponse.Entities[index] != null)
+                            if (kinveyDataStoreNetworkResponse.Entities[index] != null)
+                            {                               
+                                if (kinveyDataStoreResponse.Entities[index] != null)
+                                {
+                                    var obj = JObject.FromObject(kinveyDataStoreResponse.Entities[index]);
+                                    var id = obj["_id"].ToString();
+                                    Cache.UpdateCacheSave(kinveyDataStoreNetworkResponse.Entities[index], id);
+                                }
+                                else
+                                {
+                                    CacheSave(kinveyDataStoreNetworkResponse.Entities[index]);
+                                }
+                            }
+                            else
                             {
-                                var obj = JObject.FromObject(kinveyDataStoreResponse.Entities[index]);
-                                var id = obj["_id"].ToString();
+                                if (kinveyDataStoreResponse.Entities[index] != null)
+                                {
+                                    var obj = JObject.FromObject(kinveyDataStoreResponse.Entities[index]);
+                                    var id = obj["_id"].ToString();
 
-                                Cache.UpdateCacheSave(kinveyDataStoreNetworkResponse.Entities[index], id);
+                                    var existingPendingWriteAction = pendingWriteActions.Find(e => e.entityId.Equals(id));
+
+                                    if (existingPendingWriteAction!= null)
+                                    {
+                                        SyncQueue.Enqueue(existingPendingWriteAction);
+                                    }
+                                }
                             }
                         }
 
