@@ -6454,7 +6454,6 @@ namespace Kinvey.Tests
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDo2.Name) && e.Details.Equals(toDo2.Details) && e.Value == toDo2.Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
         }
 
-
         [TestMethod]
         public async Task TestSyncStoreSyncNewItemsWithErrorsAsync()
         {
@@ -6508,6 +6507,8 @@ namespace Kinvey.Tests
             Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
 
             Assert.AreEqual(1, syncResponse.PullResponse.KinveyExceptions.Count);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE, syncResponse.PullResponse.KinveyExceptions[0].ErrorCode);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, syncResponse.PullResponse.KinveyExceptions[0].ErrorCategory);
 
             Assert.AreEqual(1, syncResponse.PushResponse.KinveyExceptions.Count);
             Assert.AreEqual(400, syncResponse.PushResponse.KinveyExceptions[0].StatusCode);
