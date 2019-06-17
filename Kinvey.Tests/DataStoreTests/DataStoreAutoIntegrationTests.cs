@@ -5833,7 +5833,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(2);
+                MockResponses(1);
             }
 
             // Arrange
@@ -6656,7 +6656,7 @@ namespace Kinvey.Tests
 
                 kinveyClient = builder.Build();
 
-                MockResponses(7);
+                MockResponses(8);
 
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
