@@ -6420,6 +6420,106 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestSaveMultiInsertCountLimitConnectionAvailableAsync()
+        {
+            // Setup
+            const int countOfEntities = 100;
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("5");
+
+            kinveyClient = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(3 + (countOfEntities / Constants.NUMBER_LIMIT_OF_ENTITIES));
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+
+            var toDos = new List<ToDo>();
+
+            for (var index = 0; index < countOfEntities; index++)
+            {
+                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+            }
+
+            // Act
+            var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
+
+            var existingToDos = await todoStoreNetwork.FindAsync();
+
+            //Teardown
+            await todoStoreNetwork.RemoveAsync(todoStoreNetwork.Where(e => e.Name.StartsWith("Name")));
+
+            // Assert
+            Assert.AreEqual(countOfEntities, savedToDos.Entities.Count);
+            Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(countOfEntities, existingToDos.Count);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertCountLimitConnectionIssueAsync()
+        {
+            // Setup
+            const int countOfEntities = 100;
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("5");
+
+            kinveyClient = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreAuto = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreSync = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+
+            var toDos = new List<ToDo>();
+
+            for (var index = 0; index < countOfEntities; index++)
+            {
+                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+            }
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var savedToDos = await todoStoreAuto.SaveAsync(toDos);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var existingToDosSync = await todoStoreSync.FindAsync();
+            var existingToDosNetwork = await todoStoreNetwork.FindAsync();            
+
+            //Teardown
+            await todoStoreSync.RemoveAsync(todoStoreAuto.Where(e => e.Name.StartsWith("Name")));
+
+            // Assert
+            Assert.AreEqual(countOfEntities, savedToDos.Entities.Count);
+            Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(0, existingToDosNetwork.Count);
+            Assert.AreEqual(countOfEntities, existingToDosSync.Count);
+        }
+
+        [TestMethod]
         public async Task TestSaveMultiInsertIncorrectKinveyApiVersionAsync()
         {
             // Setup
