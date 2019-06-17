@@ -3997,6 +3997,8 @@ namespace Kinvey.Tests
                 const int countEntitiesInThread = 1001;
                 const int countThreads = 10;
 
+                MockResponses(countEntitiesInThread * countThreads * 2 + 4);
+
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
                 DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
