@@ -6416,7 +6416,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(7);
+                MockResponses(5);
             }
 
             // Arrange
