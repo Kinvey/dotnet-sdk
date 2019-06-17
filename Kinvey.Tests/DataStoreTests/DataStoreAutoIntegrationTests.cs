@@ -6310,7 +6310,7 @@ namespace Kinvey.Tests
             Assert.AreEqual(0, pendingWriteActions.Count);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task TestSaveInvalidPermissionsAsync()
         {
             // Setup
@@ -6656,7 +6656,7 @@ namespace Kinvey.Tests
 
                 kinveyClient = builder.Build();
 
-                MockResponses(8);
+                MockResponses(7);
 
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
