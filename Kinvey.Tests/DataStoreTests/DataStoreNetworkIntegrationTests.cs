@@ -5908,39 +5908,40 @@ namespace Kinvey.Tests
             if (MockData)
             {
                 MockResponses(4);
+
+
+                //Arrange
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
+
+                //Act
+                var isSuccess = await todoStore.Subscribe(new KinveyDataStoreDelegate<ToDo>
+                {
+                    OnNext = (result) =>
+                    {
+
+                    },
+                    OnStatus = (status) =>
+                    {
+
+                    },
+                    OnError = (error) =>
+                    {
+
+                    }
+                });
+
+                await todoStore.Unsubscribe();
+
+                //Teardown
+                await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
+
+                //Assert
+                Assert.IsTrue(isSuccess);
             }
-
-            //Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
-
-            //Act
-            var isSuccess = await todoStore.Subscribe(new KinveyDataStoreDelegate<ToDo>
-            {
-                OnNext = (result) =>
-                {
-
-                },
-                OnStatus = (status) =>
-                {
-
-                },
-                OnError = (error) =>
-                {
-
-                }
-            });
-
-            await todoStore.Unsubscribe();
-
-            //Teardown
-            await Client.SharedClient.ActiveUser.UnregisterRealtimeAsync();
-
-            //Assert
-            Assert.IsTrue(isSuccess);
         }
 
         [TestMethod]

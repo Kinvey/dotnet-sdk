@@ -7840,8 +7840,8 @@ namespace Kinvey.Tests
             var existingToDos = await todoNetworkStore.FindAsync();
 
             // Teardown
-            await todoNetworkStore.RemoveAsync(toDo1.ID);
-            await todoNetworkStore.RemoveAsync(toDo2.ID);
+            await todoNetworkStore.RemoveAsync(existingToDos[0].ID);
+            await todoNetworkStore.RemoveAsync(existingToDos[1].ID);
 
             // Assert
             Assert.AreEqual(2, pushResponse.PushCount);
@@ -9572,8 +9572,8 @@ namespace Kinvey.Tests
             var existingToDosLocal = await todoSyncStore.FindAsync();
 
             // Teardown
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[0].ID);
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[2].ID);
+            await todoNetworkStore.RemoveAsync(existingToDosNetwork[0].ID);
+            await todoNetworkStore.RemoveAsync(existingToDosNetwork[1].ID);
 
             // Assert
             Assert.AreEqual(3, syncResponse.PushResponse.PushCount);

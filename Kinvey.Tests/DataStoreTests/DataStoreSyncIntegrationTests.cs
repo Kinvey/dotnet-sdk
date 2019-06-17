@@ -3991,56 +3991,51 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestSyncStorePullWithAutoPaginationReceivingMoreThan10kRecordsAsync()
         {
-            const int countEntitiesInThread = 1001;
-            const int countThreads = 10;
-
-            // Setup
             if (MockData)
             {
-                MockResponses(countEntitiesInThread * countThreads * 2 + 4);
-            }
-            else
-            {
-                Assert.Fail("Use this test only with mocks since it operates with big data size.");
-            }
+                // Arrange
+                const int countEntitiesInThread = 1001;
+                const int countThreads = 10;
 
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
-            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
-            syncStore.AutoPagination = true;
+                DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+                DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+                syncStore.AutoPagination = true;
+              
+                var tasks = new List<Task>();
 
-            // Arrange
-            var tasks = new List<Task>();
-
-            for (var i = 0; i < countThreads; i++)
-            {
-                tasks.Add(Task.Run(async () => {
-                    for (var index = 0; index < countEntitiesInThread; index++)
+                for (var i = 0; i < countThreads; i++)
+                {
+                    tasks.Add(Task.Run(async () =>
                     {
-                        ToDo newItem = new ToDo
+                        for (var index = 0; index < countEntitiesInThread; index++)
                         {
-                            Name = Guid.NewGuid().ToString(),
-                            Details = "A test",
-                            DueDate = "2018-04-19T20:02:17.635Z"
-                        };
-                        await networkStore.SaveAsync(newItem);
-                    }
-                }));
+                            ToDo newItem = new ToDo
+                            {
+                                Name = Guid.NewGuid().ToString(),
+                                Details = "A test",
+                                DueDate = "2018-04-19T20:02:17.635Z"
+                            };
+                            await networkStore.SaveAsync(newItem);
+                        }
+                    }));
+                }
+
+                await Task.WhenAll(tasks.ToArray());
+
+                //Act
+                await syncStore.PullAsync();
+                var savedTasks = await syncStore.FindAsync();
+
+                // Teardown
+                await syncStore.RemoveAsync(syncStore.Where(e => e.Details.Equals("A test")));
+                await syncStore.PushAsync();
+
+                // Assert
+                Assert.IsNotNull(savedTasks);
+                Assert.AreEqual(countEntitiesInThread * countThreads, savedTasks.Count);
             }
-
-            await Task.WhenAll(tasks.ToArray());
-
-            await syncStore.PullAsync();
-            var savedTasks = await syncStore.FindAsync();
-
-            // Teardown
-            await syncStore.RemoveAsync(syncStore.Where(e => e.Details.Equals("A test")));
-            await syncStore.PushAsync();
-
-            // Assert
-            Assert.IsNotNull(savedTasks);
-            Assert.AreEqual(countEntitiesInThread * countThreads, savedTasks.Count);
         }
 
         [TestMethod]
@@ -6192,8 +6187,8 @@ namespace Kinvey.Tests
             var existingToDos = await todoSyncStore.FindAsync();
 
             // Teardown
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[0].ID);
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[1].ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[1].ID);
 
             // Assert
             Assert.AreEqual(2, pushResponse.PushCount);
@@ -6250,10 +6245,10 @@ namespace Kinvey.Tests
             var existingToDos = await todoSyncStore.FindAsync();
 
             // Teardown
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[0].ID);
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[1].ID);
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[2].ID);
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[3].ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[1].ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[2].ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[3].ID);
 
             // Assert
             Assert.AreEqual(4, pushResponse.PushCount);
@@ -6438,8 +6433,8 @@ namespace Kinvey.Tests
             var existingToDos = await todoSyncStore.FindAsync();
 
             // Teardown
-            await todoNetworkStore.RemoveAsync(toDo1.ID);
-            await todoNetworkStore.RemoveAsync(toDo2.ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
+            await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[1].ID);
 
             // Assert
             Assert.AreEqual(2, pushResponse.PushCount);
@@ -6497,8 +6492,8 @@ namespace Kinvey.Tests
             var existingToDosLocal = await todoSyncStore.FindAsync();
 
             // Teardown
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[0].ID);
-            await todoNetworkStore.RemoveAsync(savedToDos.Entities[2].ID);
+            await todoNetworkStore.RemoveAsync(existingToDosNetwork[0].ID);
+            await todoNetworkStore.RemoveAsync(existingToDosNetwork[1].ID);
 
             // Assert
             Assert.AreEqual(3, syncResponse.PushResponse.PushCount);
