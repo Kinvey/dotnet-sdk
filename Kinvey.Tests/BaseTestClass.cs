@@ -847,7 +847,8 @@ namespace Kinvey.Tests
                 httpListener.Prefixes.Add(client.MICHostName);
             }
             httpListener.Start();
-            var thread = new Thread(new ThreadStart(async () => {
+            var thread = new Thread(new ThreadStart(() =>
+            {
                 try
                 {
                     #region Existing users
@@ -1063,11 +1064,12 @@ namespace Kinvey.Tests
                     while (
                         (expectedRequests == null && httpListener.IsListening) ||
                         (expectedRequests != null && count < expectedRequests)
-                    ) {
+                    )
+                    {
                         HttpListenerContext context;
                         try
                         {
-                            context = await httpListener.GetContextAsync();
+                            context = httpListener.GetContext();
                         }
                         catch (HttpListenerException)
                         {
