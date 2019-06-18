@@ -847,7 +847,7 @@ namespace Kinvey.Tests
                 httpListener.Prefixes.Add(client.MICHostName);
             }
             httpListener.Start();
-            var thread = new Thread(new ThreadStart(() =>
+            var thread = new Thread(new ThreadStart(async () =>
             {
                 try
                 {
@@ -1069,11 +1069,15 @@ namespace Kinvey.Tests
                         HttpListenerContext context;
                         try
                         {
-                            context = httpListener.GetContext();
+                            context = await httpListener.GetContextAsync();
                         }
                         catch (HttpListenerException)
                         {
                             continue;
+                        }
+                        catch (System.ObjectDisposedException)
+                        {
+                            break;
                         }
 
                         count++;
