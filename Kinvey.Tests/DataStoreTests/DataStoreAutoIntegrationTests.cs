@@ -6443,7 +6443,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var todoStoreAuto = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
 
             var toDos = new List<ToDo>();
 
@@ -6453,12 +6453,12 @@ namespace Kinvey.Tests
             }
 
             // Act
-            var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
+            var savedToDos = await todoStoreAuto.SaveAsync(toDos);
 
-            var existingToDos = await todoStoreNetwork.FindAsync();
+            var existingToDos = await todoStoreAuto.FindAsync();
 
             //Teardown
-            await todoStoreNetwork.RemoveAsync(todoStoreNetwork.Where(e => e.Name.StartsWith("Name")));
+            await todoStoreAuto.RemoveAsync(todoStoreAuto.Where(e => e.Name.StartsWith("Name")));
 
             // Assert
             Assert.AreEqual(countOfEntities, savedToDos.Entities.Count);
