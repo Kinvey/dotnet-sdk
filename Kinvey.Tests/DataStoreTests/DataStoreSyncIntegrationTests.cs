@@ -52,17 +52,6 @@ namespace Kinvey.Tests
             }
 
             base.Setup();
-
-			Client.Builder builder = ClientBuilder
-                .SetFilePath(TestSetup.db_dir)
-                .setLogger(delegate (string msg) { System.Diagnostics.Debug.WriteLine(msg); });
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-			kinveyClient = builder.Build();
 		}
 
         [TestCleanup]
@@ -96,10 +85,11 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestCollection()
 		{
-			// Arrange
+            // Arrange
+            kinveyClient = BuildClient();
 
-			// Act
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            // Act
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(todoStore);
@@ -109,10 +99,11 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestCollectionSharedClient()
 		{
-			// Arrange
+            // Arrange
+            kinveyClient = BuildClient();
 
-			// Act
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            // Act
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
 			// Assert
 			Assert.IsNotNull(todoStore);
@@ -122,8 +113,10 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public void TestDeltaSetFetchEnable()
 		{
-			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            // Arrange
+            kinveyClient = BuildClient();
+
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
 
 			// Act
 			todoStore.DeltaSetFetchingEnabled = true;
@@ -135,7 +128,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -174,7 +169,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByIdSuccessfulOperationAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -203,6 +200,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreFindByIdItemNotFoundExceptionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -243,6 +242,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreFindByIdGeneralExceptionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -291,7 +292,9 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestSyncStoreFindByQuery()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -345,6 +348,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryStringValueStartsWithExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -425,6 +430,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -505,6 +512,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryBoolValueExplicitEqualsExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -586,6 +595,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryBoolValueImplicitEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -667,6 +678,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryDateTimeValueGreaterThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -756,6 +769,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryDateTimeValueGreaterThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -844,6 +859,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryDateTimeValueLessThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -932,6 +949,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryDateTimeValueLessThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1021,6 +1040,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryIntValueGreaterThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1108,6 +1129,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryIntValueGreaterThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1197,6 +1220,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryIntValueLessThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1286,6 +1311,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryIntValueLessThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1373,6 +1400,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryIntValueEqualsExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1460,6 +1489,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryLogicalAndExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1547,6 +1578,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryLogicalAndWithOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1636,6 +1669,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryLogicalOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1724,6 +1759,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryLogicalOrWithAndExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1812,6 +1849,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryMultipleWhereClausesStartsWithAndEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1900,6 +1939,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryMultipleWhereClausesEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -1988,6 +2029,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryMultipleWhereClausesDifferentEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2077,6 +2120,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryMultipleWhereClausesFluentSyntaxEqualExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2166,6 +2211,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryMultipleWhereClausesWithLogicalAndExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2256,6 +2303,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryMultipleWhereClausesWithLogicalOrExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2345,6 +2394,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryWhereClauseIsAbsentInQueryUsingSelectClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2409,6 +2460,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryWhereClauseIsAbsentInQueryUsingOrderClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2473,6 +2526,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryWhereClauseIsAbsentInQueryUsingTakeClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2537,6 +2592,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryNullQueryAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2600,6 +2657,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryNotSupportedBoolExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2665,6 +2724,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreDeleteByQueryNotSupportedStringExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2729,7 +2790,9 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityGreaterThan()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2788,7 +2851,9 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityGreaterThanOrEqual()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2849,7 +2914,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityLessThan()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2908,7 +2975,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityLessThanOrEqual()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -2967,7 +3036,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectGreaterThan()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3027,7 +3098,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectGreaterThanOrEqual()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3087,7 +3160,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectLessThan()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3147,7 +3222,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryInequalityDateTimeObjectLessThanOrEqual()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3207,7 +3284,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestGetCountAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3247,7 +3326,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreGetSumAsync()
 		{
-			// Arrange
+            // Arrange
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3299,7 +3380,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreGetMinAsync()
 		{
-			// Arrange
+            // Arrange
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3350,7 +3433,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreGetMaxAsync()
 		{
-			// Arrange
+            // Arrange
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3402,7 +3487,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreGetAverageAsync()
 		{
-			// Arrange
+            // Arrange
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3458,7 +3545,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestDeleteAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3486,7 +3575,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestDeleteCustomIDAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3526,7 +3617,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncQueueAdd()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3558,7 +3651,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncQueueAddWithID()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3596,7 +3691,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncQueueAddThenDelete()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3636,7 +3733,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncQueuePushUpdate()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5);
@@ -3688,7 +3787,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncQueueCount()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -3731,6 +3832,8 @@ namespace Kinvey.Tests
         public async Task TestSyncQueuePush()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -3793,7 +3896,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncQueuePush10Items()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(23);
@@ -3839,7 +3944,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStorePullAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -3890,6 +3997,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStorePullWithAutoPaginationQueryNullAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -3939,6 +4048,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStorePullWithAutoPaginationQueryNotNullAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -3993,6 +4104,8 @@ namespace Kinvey.Tests
         {
             if (MockData)
             {
+                kinveyClient = BuildClient();
+
                 // Arrange
                 const int countEntitiesInThread = 1001;
                 const int countThreads = 10;
@@ -4043,7 +4156,9 @@ namespace Kinvey.Tests
         [TestMethod]
 		public async Task TestSyncStorePullWithQueryAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -4096,7 +4211,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreSyncWithQueryAsync()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -4146,7 +4263,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryWithSortAscending()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4214,7 +4333,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestSyncStoreFindByQueryWithSortDescending()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4285,7 +4406,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestORM_IPersistable()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4336,7 +4459,9 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestORM_Entity()
 		{
-			// Setup
+            // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4387,6 +4512,8 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestPurge()
         {
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4413,6 +4540,8 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestPurgeByQuery()
 		{
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4449,6 +4578,8 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestClear()
         {
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4479,6 +4610,8 @@ namespace Kinvey.Tests
 		[TestMethod]
 		public async Task TestClearByQuery()
 		{
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -4523,6 +4656,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullNoChanges()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -4569,6 +4704,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullReturnOnlyChanges()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -4630,6 +4767,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullReturnOnlyUpdates()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -4693,6 +4832,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullReturnOnlyDeletes()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -4767,6 +4908,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullReturnCorrectNumberOfCreatedItems()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -4824,6 +4967,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullReturnCorrectNumberOfUpdates()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -4895,6 +5040,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullReturnCorrectNumberOfDeletes()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -4962,6 +5109,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetPullReturnCorrectNumberOfDeletesAndUpdates()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5038,6 +5187,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncNoChanges()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5077,6 +5228,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncReturnOnlyChanges()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5135,6 +5288,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncReturnOnlyUpdates()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5197,6 +5352,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncReturnOnlyDeletes()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5271,6 +5428,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncReturnCorrectNumberOfCreatedItems()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5326,6 +5485,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncReturnCorrectNumberOfUpdates()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5397,6 +5558,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletes()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5462,6 +5625,8 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletesAndUpdates()
         {
+            kinveyClient = BuildClient();
+
             // Arrange
             if (MockData)
             {
@@ -5538,16 +5703,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveCreateAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5594,6 +5750,8 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveCustomIDAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1);
@@ -5637,16 +5795,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveUpdateAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5695,16 +5844,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertNewItemsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5761,16 +5901,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertExistingItemsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5829,16 +5960,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertNewItemsExistingItemsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5918,16 +6040,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertEmptyArrayAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5956,16 +6069,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertCount101Async()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6001,16 +6105,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertIncorrectKinveyApiVersionAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("4");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("4");
 
             if (MockData)
             {
@@ -6045,16 +6140,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertNewItemsExistingItemsWithErrorsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6104,16 +6190,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSaveMultiInsertThrowingExceptionAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6152,16 +6229,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStorePushNewItemsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6208,16 +6276,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStorePushNewExistingItemsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6272,16 +6331,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStorePushNewItemsInvalidPermissionsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6340,11 +6390,7 @@ namespace Kinvey.Tests
             if (MockData)
             {
                 // Setup
-                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-                builder.setBaseURL("http://localhost:8080");
-                builder.SetApiVersion("5");
-
-                kinveyClient = builder.Build();
+                kinveyClient = BuildClient("5");
 
                 MockResponses(5);
 
@@ -6400,16 +6446,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStorePushNewSeparateItemsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6455,16 +6492,7 @@ namespace Kinvey.Tests
         public async Task TestSyncStoreSyncNewItemsWithErrorsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {

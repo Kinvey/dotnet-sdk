@@ -25,16 +25,6 @@ namespace Kinvey.Tests
         public override void Setup()
         {
             base.Setup();
-
-            Client.Builder builder = ClientBuilder
-                .SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            kinveyClient = builder.Build();
         }
 
         private void SetRootUrlToKinveyClient(string url)
@@ -49,6 +39,7 @@ namespace Kinvey.Tests
         public void TestCollectionWithDefaultParameters()
         {
             // Arrange
+            kinveyClient = BuildClient();
 
             // Act
             DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection);
@@ -63,6 +54,7 @@ namespace Kinvey.Tests
         public void TestCollectionWithParameters()
         {
             // Arrange
+            kinveyClient = BuildClient();
 
             // Act
             DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
@@ -82,6 +74,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -144,6 +138,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDeleteItemsFromBackendAfterLocalDeletionConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -218,6 +214,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNoItemsToBeDeletedConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -276,6 +274,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -351,6 +351,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDeleteItemsFromLocalStorageAfterNetworkDeletionConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -429,6 +431,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryStringValueStartsWithExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -493,6 +497,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -585,6 +591,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryBoolValueExplicitEqualsExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -678,6 +686,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryBoolValueImplicitEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -770,6 +780,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueGreaterThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -868,6 +880,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueGreaterThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -966,6 +980,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueLessThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1065,6 +1081,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueLessThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1164,6 +1182,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueGreaterThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1263,6 +1283,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueGreaterThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1363,6 +1385,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueLessThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1463,6 +1487,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueLessThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1562,6 +1588,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueEqualsExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1661,6 +1689,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalAndExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1760,6 +1790,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalAndWithOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1861,6 +1893,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1961,6 +1995,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalOrWithAndExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -2061,6 +2097,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesStartsWithAndEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2136,6 +2174,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2211,6 +2251,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesDifferentEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2287,6 +2329,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesFluentSyntaxEqualExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2364,6 +2408,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesWithLogicalAndExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2440,6 +2486,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesWithLogicalOrExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2516,6 +2564,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryWhereClauseIsAbsentInQueryUsingSelectClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2581,6 +2631,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryWhereClauseIsAbsentInQueryUsingOrderClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2646,6 +2698,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryWhereClauseIsAbsentInQueryUsingTakeClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2711,6 +2765,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNullQueryAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2774,6 +2830,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNotSupportedExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2839,6 +2897,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNotSupportedStringExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2910,6 +2970,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6);
@@ -2986,6 +3048,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4);
@@ -3038,6 +3102,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdNotExistingIdConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2);
@@ -3079,6 +3145,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdDeleteItemsFromLocalStorageAfterNetworkDeletionConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6);
@@ -3156,6 +3224,8 @@ namespace Kinvey.Tests
         public async Task TestRemoveByIdAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(3, kinveyClient);
@@ -3191,6 +3261,8 @@ namespace Kinvey.Tests
         public async Task TestFindNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -3257,6 +3329,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3316,6 +3390,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithSkipLimitQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3375,6 +3451,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithDeltaSetTurnOnNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -3450,6 +3528,8 @@ namespace Kinvey.Tests
         public async Task TestFindDescendingOrderNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3505,6 +3585,8 @@ namespace Kinvey.Tests
         public async Task TestFindDeletingItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -3551,6 +3633,8 @@ namespace Kinvey.Tests
         public async Task TestFindInvalidQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -3601,6 +3685,8 @@ namespace Kinvey.Tests
         public async Task TestFindInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -3628,6 +3714,8 @@ namespace Kinvey.Tests
         public async Task TestFindNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3686,6 +3774,8 @@ namespace Kinvey.Tests
         public async Task TestFindNetworkConnectionEliminatedAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -3757,6 +3847,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3818,6 +3910,8 @@ namespace Kinvey.Tests
         public async Task TestFindSkip1Take1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3879,6 +3973,8 @@ namespace Kinvey.Tests
         public async Task TestFindDescendingOrderNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3939,6 +4035,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithDeltaSetTurnOnNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -3990,6 +4088,8 @@ namespace Kinvey.Tests
         public async Task TestFindDeletedItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7, kinveyClient);
@@ -4055,6 +4155,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4103,6 +4205,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4154,6 +4258,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryTake1NetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4199,6 +4305,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryTake1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4247,6 +4355,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1NetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4292,6 +4402,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4340,6 +4452,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1Take1NetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -4394,6 +4508,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1Take1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4455,6 +4571,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDExistingItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4509,6 +4627,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDNotExistingItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -4563,6 +4683,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -4590,6 +4712,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDExistingItemNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4646,6 +4770,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDDeletedItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4729,6 +4855,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -4766,6 +4894,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4810,6 +4940,8 @@ namespace Kinvey.Tests
         public async Task TestGetSumNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -4862,6 +4994,8 @@ namespace Kinvey.Tests
         public async Task TestGetSumNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4917,6 +5051,8 @@ namespace Kinvey.Tests
         public async Task TestGetMinNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -4967,6 +5103,8 @@ namespace Kinvey.Tests
         public async Task TestGetMinNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5020,6 +5158,8 @@ namespace Kinvey.Tests
         public async Task TestGetMaxNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -5070,6 +5210,8 @@ namespace Kinvey.Tests
         public async Task TestGetMaxNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5123,6 +5265,8 @@ namespace Kinvey.Tests
         public async Task TestGetAverageNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -5181,6 +5325,8 @@ namespace Kinvey.Tests
         public async Task TestGetAverageNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5246,6 +5392,8 @@ namespace Kinvey.Tests
         public async Task TestSaveCreatingItemWithoutProvidedIdNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -5292,6 +5440,8 @@ namespace Kinvey.Tests
         public async Task TestSaveCreatingItemWithProvidedIdNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -5342,6 +5492,8 @@ namespace Kinvey.Tests
         public async Task TestSaveUpdatingItemWithExistingIdNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -5384,6 +5536,8 @@ namespace Kinvey.Tests
         public async Task TestSaveDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5425,6 +5579,8 @@ namespace Kinvey.Tests
         public async Task TestSaveInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -5459,6 +5615,8 @@ namespace Kinvey.Tests
         public async Task TestSaveDataAndPushNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -5520,6 +5678,8 @@ namespace Kinvey.Tests
         public async Task TestSaveUpdatingDataAndPushNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -5587,6 +5747,8 @@ namespace Kinvey.Tests
         public async Task TestSaveAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -5630,16 +5792,7 @@ namespace Kinvey.Tests
         public async Task TestSaveCreateVersion5ConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5693,16 +5846,7 @@ namespace Kinvey.Tests
         public async Task TestSaveCreateVersion5ConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5756,16 +5900,7 @@ namespace Kinvey.Tests
         public async Task TestSaveUpdateVersion5ConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5820,16 +5955,7 @@ namespace Kinvey.Tests
         public async Task TestSaveUpdateVersion5ConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5885,16 +6011,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertNewItemsConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5949,16 +6066,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertNewItemsConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6018,16 +6126,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertExistingItemsConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6082,16 +6181,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertNewItemsExistingItemsConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6174,16 +6264,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertNewItemsExistingItemsConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6273,16 +6354,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertEmptyArrayAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6314,16 +6386,7 @@ namespace Kinvey.Tests
         public async Task TestSaveInvalidPermissionsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6378,16 +6441,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertCount101Async()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6424,16 +6478,8 @@ namespace Kinvey.Tests
         {
             // Setup
             const int countOfEntities = 100;
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
 
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6471,16 +6517,8 @@ namespace Kinvey.Tests
         {
             // Setup
             const int countOfEntities = 100;
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
 
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6523,16 +6561,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertIncorrectKinveyApiVersionAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("4");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("4");
 
             if (MockData)
             {
@@ -6569,11 +6598,7 @@ namespace Kinvey.Tests
             if (MockData)
             {
                 // Setup
-                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-                builder.setBaseURL("http://localhost:8080");
-                builder.SetApiVersion("5");
-
-                kinveyClient = builder.Build();
+                kinveyClient = BuildClient("5");
 
                 MockResponses(2);
 
@@ -6607,16 +6632,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertNewItemsWithErrorsConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6677,11 +6693,7 @@ namespace Kinvey.Tests
             if (MockData)
             {
                 // Setup
-                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-                builder.setBaseURL("http://localhost:8080");
-                builder.SetApiVersion("5");
-
-                kinveyClient = builder.Build();
+                kinveyClient = BuildClient("5");
 
                 MockResponses(6);
 
@@ -6750,11 +6762,7 @@ namespace Kinvey.Tests
             if (MockData)
             {
                 // Setup
-                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-                builder.setBaseURL("http://localhost:8080");
-                builder.SetApiVersion("5");
-
-                kinveyClient = builder.Build();
+                kinveyClient = BuildClient("5");
 
                 MockResponses(8);
 
@@ -6819,16 +6827,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertThrowingLocalExceptionAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6866,6 +6865,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountAllItemsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -6924,6 +6925,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountByQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -6979,6 +6982,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountInvalidQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -7029,6 +7034,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountAllItemsNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -7089,6 +7096,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -7116,6 +7125,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -7168,6 +7179,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -7223,6 +7236,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountWithQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -7277,6 +7292,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountWithQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -7338,6 +7355,8 @@ namespace Kinvey.Tests
         public async Task TestPushCreatedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -7387,6 +7406,8 @@ namespace Kinvey.Tests
         public async Task TestPushUpdatedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -7446,6 +7467,8 @@ namespace Kinvey.Tests
         public async Task TestPushDeletedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -7513,6 +7536,8 @@ namespace Kinvey.Tests
         public async Task TestPushCreatedDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -7569,6 +7594,8 @@ namespace Kinvey.Tests
         public async Task TestPushRecreatedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -7627,16 +7654,7 @@ namespace Kinvey.Tests
         public async Task TestPushNewItemsConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -7686,16 +7704,7 @@ namespace Kinvey.Tests
         public async Task TestPushNewItemsExistingItemsConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -7766,16 +7775,7 @@ namespace Kinvey.Tests
         public async Task TestPushNewItemsInvalidPermissionsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -7835,11 +7835,7 @@ namespace Kinvey.Tests
             if (MockData)
             {
                 // Setup
-                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-                builder.setBaseURL("http://localhost:8080");
-                builder.SetApiVersion("5");
-
-                kinveyClient = builder.Build();
+                kinveyClient = BuildClient("5");
 
                 MockResponses(6);
 
@@ -7902,16 +7898,7 @@ namespace Kinvey.Tests
         public async Task TestPushNewSeparateItemsAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -7966,6 +7953,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -8014,6 +8003,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -8064,6 +8055,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataWithQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+            
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -8121,6 +8114,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataDeletedFromBackendNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -8188,6 +8183,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataChangedInBackendNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(13, kinveyClient);
@@ -8259,6 +8256,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -8286,6 +8285,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataNotSyncedNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -8330,6 +8331,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataDeletedAndChangedInBackendNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -8393,6 +8396,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullNoChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -8432,6 +8437,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnOnlyChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -8491,6 +8498,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnOnlyUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -8554,6 +8563,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnOnlyDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -8620,6 +8631,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfCreatedItems()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -8676,6 +8689,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(15, kinveyClient);
@@ -8748,6 +8763,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetWithQueryPullReturnCorrectNumberOfUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -8811,6 +8828,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -8877,6 +8896,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfDeletesAndUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -8944,6 +8965,8 @@ namespace Kinvey.Tests
         public async Task TestSyncDataConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(13, kinveyClient);
@@ -9018,6 +9041,8 @@ namespace Kinvey.Tests
         public async Task TestSyncDataWithQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(13, kinveyClient);
@@ -9094,6 +9119,8 @@ namespace Kinvey.Tests
         public async Task TestSyncDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -9154,6 +9181,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncNoChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -9192,6 +9221,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnOnlyChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -9250,6 +9281,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnOnlyUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -9312,6 +9345,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnOnlyDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -9377,6 +9412,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfCreatedItems()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -9432,6 +9469,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(15, kinveyClient);
@@ -9503,6 +9542,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -9568,6 +9609,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletesAndUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -9630,6 +9673,8 @@ namespace Kinvey.Tests
         public async Task TestSyncNewItemsWithErrorsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
 
             if (MockData)
@@ -9711,6 +9756,8 @@ namespace Kinvey.Tests
         public async Task TestGetSyncCountConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -9760,6 +9807,8 @@ namespace Kinvey.Tests
         public async Task TestPurgeAllItemsConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -9809,6 +9858,8 @@ namespace Kinvey.Tests
         public async Task TestPurgeCreatedItemsAccordingToQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -9861,6 +9912,8 @@ namespace Kinvey.Tests
         public async Task TestPurgeUpdatedItemsAccordingToQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -9931,6 +9984,8 @@ namespace Kinvey.Tests
         public async Task TestClearAllItemsConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -9978,6 +10033,8 @@ namespace Kinvey.Tests
         public async Task TestClearItemsByQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -10038,6 +10095,8 @@ namespace Kinvey.Tests
         public async Task TestClearItemsByQueryFromSyncQueueConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7, kinveyClient);
@@ -10104,6 +10163,8 @@ namespace Kinvey.Tests
         public async Task TestClearAllItemsFromSyncQueueConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);

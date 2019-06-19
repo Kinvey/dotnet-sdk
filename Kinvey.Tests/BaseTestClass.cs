@@ -58,6 +58,23 @@ namespace Kinvey.Tests
             }
         }
 
+        protected Client BuildClient(string apiVersion = null)
+        {
+            Client.Builder builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            if (!string.IsNullOrEmpty(apiVersion))
+            {
+                builder.SetApiVersion(apiVersion);
+            }
+
+            return builder.Build();
+        }
+
         public static class EnvironmentVariable
         {
             public static string AppKey => Environment.GetEnvironmentVariable("KINVEY_APP_KEY");
