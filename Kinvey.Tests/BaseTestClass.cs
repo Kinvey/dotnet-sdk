@@ -454,8 +454,8 @@ namespace Kinvey.Tests
             if (jObjects.Count == 0)
             {
                 var response = context.Response;
-                response.StatusCode = 504;
-                Write(context, "Timeout");
+                response.StatusCode = 400;
+                Write(context, "Request body cannot be an empty array");
                 return;
             }
 
@@ -1091,10 +1091,6 @@ namespace Kinvey.Tests
                         catch (HttpListenerException)
                         {
                             continue;
-                        }
-                        catch (System.ObjectDisposedException)
-                        {
-                            break;
                         }
 
                         count++;
