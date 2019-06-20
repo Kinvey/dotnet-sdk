@@ -4,29 +4,26 @@
 
 [Kinvey](http://www.kinvey.com) (pronounced Kin-vey, like convey) makes it ridiculously easy for developers to setup, use and operate a cloud backend for their mobile apps. You don't have to worry about connecting to various cloud services, setting up servers for your backend, or maintaining and scaling them.
 
-The Kinvey .NET SDK repo represents the packages that can be used to develop .NET and Xamarin applications on the Kinvey platform. The Kinvey SDK is developed as a Portable Class Library (PCL) for various supported .NET runtimes, including Xamarin. Platform-specific features for iOS and Android are supported through the Xamarin-iOS and Xamarin-Android packages respectively.
+The Kinvey .NET SDK repo represents the package that can be used to develop .NET and Xamarin applications on the Kinvey platform. The Kinvey SDK is developed as a .NET Standard library for various supported .NET runtimes, including Xamarin with platform-specific features for iOS and Android.
 
 The following is a high-level overview of the most important projects in the solution:
 
-* `Kinvey-Xamarin`: project for the PCL, which contains most of the SDK functionality. This PCL project is also compatible with a majority of .NET environments. [Details](http://devcenter.kinvey.com/dotnet-v3.0/guides/getting-started#PlatformCompatibility).
-* `Kinvey-Xamarin-Android`: project which provides Android-specific functionality
-* `Kinvey-Xamarin-iOS`: project which provides iOS-specific functionality
-* `UnitTestFramework`: test project for the Kinvey-Xamarin project
+* `Kinvey`: project for the .NET Standard 2.0, which contains most of the SDK functionality. This .NET Standard 2.0 project is also compatible with a majority of .NET environments. [Details](http://devcenter.kinvey.com/dotnet-v3.0/guides/getting-started#PlatformCompatibility).
+* `Kinvey.Android`: project which provides Android-specific functionality
+* `Kinvey.iOS`: project which provides iOS-specific functionality
+* `Kinvey.Tests`: test project for the Kinvey project
 
 Refer to the Kinvey [DevCenter](http://devcenter.kinvey.com/) for documentation on using Kinvey.
 
 ## Build
 
-This repository contains the solution file: `Kinvey-Xamarin.sln`.  
+This repository contains the solution file: `Kinvey.sln`.  
 
-For .NET open the solution in Visual Studio and use the PCL project `Kinvey-Xamarin`.
-For Xamarin, open the solution in Xamarin Studio. Once the solution is loaded, run `Build->Rebuild All` to build the entire solution.
+Open the solution in Visual Studio. Once the solution is loaded, run `Build->Rebuild` to build the entire solution.
 
 ## Test
 
-Build the `UnitTestFramework` project to build all the Kinvey Xamarin SDK tests, which can then be run from Xamarin Studio Unit Tests window.
-
-We are working on adding support to run the unit tests in Visual Studio.
+Build the `Kinvey.Tests` project to build all the Kinvey Xamarin SDK tests.
 
 ## License
 See [LICENSE](LICENSE.txt) for details.
