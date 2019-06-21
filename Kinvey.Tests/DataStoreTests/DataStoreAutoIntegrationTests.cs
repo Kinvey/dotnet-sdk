@@ -25,16 +25,6 @@ namespace Kinvey.Tests
         public override void Setup()
         {
             base.Setup();
-
-            Client.Builder builder = ClientBuilder
-                .SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            kinveyClient = builder.Build();
         }
 
         private void SetRootUrlToKinveyClient(string url)
@@ -49,6 +39,7 @@ namespace Kinvey.Tests
         public void TestCollectionWithDefaultParameters()
         {
             // Arrange
+            kinveyClient = BuildClient();
 
             // Act
             DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection);
@@ -63,6 +54,7 @@ namespace Kinvey.Tests
         public void TestCollectionWithParameters()
         {
             // Arrange
+            kinveyClient = BuildClient();
 
             // Act
             DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
@@ -82,6 +74,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -144,6 +138,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDeleteItemsFromBackendAfterLocalDeletionConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -218,6 +214,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNoItemsToBeDeletedConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -276,6 +274,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -351,6 +351,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDeleteItemsFromLocalStorageAfterNetworkDeletionConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -429,6 +431,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryStringValueStartsWithExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -493,6 +497,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -585,6 +591,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryBoolValueExplicitEqualsExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -678,6 +686,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryBoolValueImplicitEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -770,6 +780,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueGreaterThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -868,6 +880,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueGreaterThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -966,6 +980,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueLessThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1065,6 +1081,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryDateTimeValueLessThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1164,6 +1182,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueGreaterThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1263,6 +1283,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueGreaterThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1363,6 +1385,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueLessThanExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1463,6 +1487,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueLessThanOrEqualExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1562,6 +1588,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryIntValueEqualsExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1661,6 +1689,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalAndExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1760,6 +1790,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalAndWithOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1861,6 +1893,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalOrExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -1961,6 +1995,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryLogicalOrWithAndExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9);
@@ -2061,6 +2097,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesStartsWithAndEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2136,6 +2174,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2211,6 +2251,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesDifferentEqualsExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2287,6 +2329,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesFluentSyntaxEqualExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2364,6 +2408,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesWithLogicalAndExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2440,6 +2486,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryMultipleWhereClausesWithLogicalOrExpressionsAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8);
@@ -2516,6 +2564,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryWhereClauseIsAbsentInQueryUsingSelectClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2581,6 +2631,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryWhereClauseIsAbsentInQueryUsingOrderClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2646,6 +2698,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryWhereClauseIsAbsentInQueryUsingTakeClauseAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2711,6 +2765,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNullQueryAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2774,6 +2830,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNotSupportedExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2839,6 +2897,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByQueryNotSupportedStringExpressionAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7);
@@ -2910,6 +2970,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6);
@@ -2986,6 +3048,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4);
@@ -3038,6 +3102,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdNotExistingIdConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2);
@@ -3079,6 +3145,8 @@ namespace Kinvey.Tests
         public async Task TestDeleteByIdDeleteItemsFromLocalStorageAfterNetworkDeletionConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6);
@@ -3156,6 +3224,8 @@ namespace Kinvey.Tests
         public async Task TestRemoveByIdAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(3, kinveyClient);
@@ -3191,6 +3261,8 @@ namespace Kinvey.Tests
         public async Task TestFindNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -3257,6 +3329,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3316,6 +3390,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithSkipLimitQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3375,6 +3451,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithDeltaSetTurnOnNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -3450,6 +3528,8 @@ namespace Kinvey.Tests
         public async Task TestFindDescendingOrderNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3505,6 +3585,8 @@ namespace Kinvey.Tests
         public async Task TestFindDeletingItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -3551,6 +3633,8 @@ namespace Kinvey.Tests
         public async Task TestFindInvalidQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -3601,6 +3685,8 @@ namespace Kinvey.Tests
         public async Task TestFindInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -3628,6 +3714,8 @@ namespace Kinvey.Tests
         public async Task TestFindNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3686,6 +3774,8 @@ namespace Kinvey.Tests
         public async Task TestFindNetworkConnectionEliminatedAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -3757,6 +3847,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3818,6 +3910,8 @@ namespace Kinvey.Tests
         public async Task TestFindSkip1Take1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3879,6 +3973,8 @@ namespace Kinvey.Tests
         public async Task TestFindDescendingOrderNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -3939,6 +4035,8 @@ namespace Kinvey.Tests
         public async Task TestFindWithDeltaSetTurnOnNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -3990,6 +4088,8 @@ namespace Kinvey.Tests
         public async Task TestFindDeletedItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7, kinveyClient);
@@ -4055,6 +4155,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4103,6 +4205,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4154,6 +4258,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryTake1NetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4199,6 +4305,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQueryTake1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4247,6 +4355,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1NetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4292,6 +4402,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4340,6 +4452,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1Take1NetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -4394,6 +4508,8 @@ namespace Kinvey.Tests
         public async Task TestFindByQuerySkip1Take1NetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4455,6 +4571,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDExistingItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4509,6 +4627,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDNotExistingItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -4563,6 +4683,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -4590,6 +4712,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDExistingItemNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4646,6 +4770,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDDeletedItemNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -4729,6 +4855,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -4766,6 +4894,8 @@ namespace Kinvey.Tests
         public async Task TestFindByIDNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4810,6 +4940,8 @@ namespace Kinvey.Tests
         public async Task TestGetSumNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -4862,6 +4994,8 @@ namespace Kinvey.Tests
         public async Task TestGetSumNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -4917,6 +5051,8 @@ namespace Kinvey.Tests
         public async Task TestGetMinNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -4967,6 +5103,8 @@ namespace Kinvey.Tests
         public async Task TestGetMinNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5020,6 +5158,8 @@ namespace Kinvey.Tests
         public async Task TestGetMaxNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -5070,6 +5210,8 @@ namespace Kinvey.Tests
         public async Task TestGetMaxNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5123,6 +5265,8 @@ namespace Kinvey.Tests
         public async Task TestGetAverageNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -5181,6 +5325,8 @@ namespace Kinvey.Tests
         public async Task TestGetAverageNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5246,6 +5392,8 @@ namespace Kinvey.Tests
         public async Task TestSaveCreatingItemWithoutProvidedIdNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -5292,6 +5440,8 @@ namespace Kinvey.Tests
         public async Task TestSaveCreatingItemWithProvidedIdNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -5342,6 +5492,8 @@ namespace Kinvey.Tests
         public async Task TestSaveUpdatingItemWithExistingIdNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -5384,6 +5536,8 @@ namespace Kinvey.Tests
         public async Task TestSaveDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -5425,6 +5579,8 @@ namespace Kinvey.Tests
         public async Task TestSaveInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -5459,6 +5615,8 @@ namespace Kinvey.Tests
         public async Task TestSaveDataAndPushNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -5520,6 +5678,8 @@ namespace Kinvey.Tests
         public async Task TestSaveUpdatingDataAndPushNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -5587,6 +5747,8 @@ namespace Kinvey.Tests
         public async Task TestSaveAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(4, kinveyClient);
@@ -5627,19 +5789,10 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertNewItemsConnectionAvailableAsync()
+        public async Task TestSaveCreateVersion5ConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5647,10 +5800,230 @@ namespace Kinvey.Tests
             }
 
             // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem = new ToDo
+            {
+                Name = "todo save",
+                Details = "details for save",
+                DueDate = "2016-04-22T19:56:00.961Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            var savedItem = await autoStore.SaveAsync(newItem);
+
+            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
+            var existingItemNetwork = await networkStore.FindByIDAsync(savedItem.ID);
+            
+
+            //Teardown
+            await networkStore.RemoveAsync(savedItem.ID);
+
+            // Assert
+            Assert.IsNotNull(savedItem);
+            Assert.AreEqual(newItem.Name, savedItem.Name);
+            Assert.AreEqual(newItem.Details, savedItem.Details);
+            Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
+            Assert.IsNotNull(existingItemCache);
+            Assert.AreEqual(newItem.Name, existingItemCache.Name);
+            Assert.AreEqual(newItem.Details, existingItemCache.Details);
+            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
+            Assert.IsNotNull(existingItemCache.Acl);
+            Assert.IsNotNull(existingItemCache.Kmd);
+            Assert.AreNotEqual(string.Empty, existingItemCache.Kmd.entityCreationTime);
+            Assert.AreNotEqual(string.Empty, existingItemCache.Kmd.lastModifiedTime);
+            Assert.IsNotNull(existingItemNetwork);
+            Assert.AreEqual(newItem.Name, existingItemNetwork.Name);
+            Assert.AreEqual(newItem.Details, existingItemNetwork.Details);
+            Assert.AreEqual(newItem.DueDate, existingItemNetwork.DueDate);          
+        }
+
+        [TestMethod]
+        public async Task TestSaveCreateVersion5ConnectionIssueAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem = new ToDo
+            {
+                Name = "todo save",
+                Details = "details for save",
+                DueDate = "2016-04-22T19:56:00.961Z",
+                GeoLoc = "[200,200]"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act          
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var savedItem = await autoStore.SaveAsync(newItem);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+
+            //Teardown
+            await syncStore.RemoveAsync(savedItem.ID);
+
+            // Assert
+            Assert.IsNotNull(savedItem);
+            Assert.AreEqual(newItem.Name, savedItem.Name);
+            Assert.AreEqual(newItem.Details, savedItem.Details);
+            Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
+            Assert.IsNotNull(existingItemCache);
+            Assert.AreEqual(newItem.Name, existingItemCache.Name);
+            Assert.AreEqual(newItem.Details, existingItemCache.Details);
+            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
+            Assert.IsNull(existingItemCache.Acl);
+            Assert.IsNull(existingItemCache.Kmd);
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedItem.ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("POST", pendingWriteAction1.action);
+        }
+
+        [TestMethod]
+        public async Task TestSaveUpdateVersion5ConnectionAvailableAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(4);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem = new ToDo
+            {
+                ID = Guid.NewGuid().ToString(),
+                Name = "todo save",
+                Details = "details for save",
+                DueDate = "2016-04-22T19:56:00.961Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            var savedItem = await autoStore.SaveAsync(newItem);
+
+            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
+            var existingItemNetwork = await networkStore.FindByIDAsync(savedItem.ID);
+
+
+            //Teardown
+            await networkStore.RemoveAsync(savedItem.ID);
+
+            // Assert
+            Assert.IsNotNull(savedItem);
+            Assert.AreEqual(newItem.ID, savedItem.ID);
+            Assert.AreEqual(newItem.Name, savedItem.Name);
+            Assert.AreEqual(newItem.Details, savedItem.Details);
+            Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
+            Assert.IsNotNull(existingItemCache);
+            Assert.AreEqual(newItem.Name, existingItemCache.Name);
+            Assert.AreEqual(newItem.Details, existingItemCache.Details);
+            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
+            Assert.IsNull(existingItemCache.Acl);
+            Assert.IsNull(existingItemCache.Kmd);
+            Assert.IsNotNull(existingItemNetwork);
+            Assert.AreEqual(newItem.ID, existingItemNetwork.ID);
+            Assert.AreEqual(newItem.Name, existingItemNetwork.Name);
+            Assert.AreEqual(newItem.Details, existingItemNetwork.Details);
+            Assert.AreEqual(newItem.DueDate, existingItemNetwork.DueDate);
+        }
+
+        [TestMethod]
+        public async Task TestSaveUpdateVersion5ConnectionIssueAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+
+            // Arrange
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            var newItem = new ToDo
+            {
+                ID = Guid.NewGuid().ToString(),
+                Name = "todo save",
+                Details = "details for save",
+                DueDate = "2016-04-22T19:56:00.961Z"
+            };
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var savedItem = await autoStore.SaveAsync(newItem);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+
+            //Teardown
+            await syncStore.RemoveAsync(savedItem.ID);
+
+            // Assert
+            Assert.IsNotNull(savedItem);
+            Assert.AreEqual(newItem.ID, savedItem.ID);
+            Assert.AreEqual(newItem.Name, savedItem.Name);
+            Assert.AreEqual(newItem.Details, savedItem.Details);
+            Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
+            Assert.IsNotNull(existingItemCache);
+            Assert.AreEqual(newItem.ID, existingItemCache.ID);
+            Assert.AreEqual(newItem.Name, existingItemCache.Name);
+            Assert.AreEqual(newItem.Details, existingItemCache.Details);
+            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
+            Assert.IsNull(existingItemCache.Acl);
+            Assert.IsNull(existingItemCache.Kmd);
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == newItem.ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("PUT", pendingWriteAction1.action);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertNewItemsConnectionAvailableAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(5);
+            }
+
+            // Arrange
             var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
             var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -5662,7 +6035,8 @@ namespace Kinvey.Tests
             var savedToDos = await autoToDoStore.SaveAsync(toDos);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncToDoStore.FindAsync();
+            var existingToDosCache = await syncToDoStore.FindAsync();
+            var existingToDosNetwork = await networkToDoStore.FindAsync();
 
             // Teardown
             await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -5680,25 +6054,19 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
             Assert.AreEqual(user.Id, savedToDos.Entities[1].Acl.Creator);
             Assert.AreEqual(0, pendingWriteActions.Count);
-            Assert.AreEqual(2, existingToDos.Count);
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e=> e.ID == savedToDos.Entities[0].ID));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
+            Assert.AreEqual(2, existingToDosCache.Count);
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e=> e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID && savedToDos.Entities[1].Kmd != null && savedToDos.Entities[1].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.AreEqual(2, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
         }
 
         [TestMethod]
         public async Task TestSaveMultiInsertNewItemsConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5755,23 +6123,14 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertNewItemsExistingItemsConnectionAvailableAsync()
+        public async Task TestSaveMultiInsertExistingItemsConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
-
-            if (MockData)
-            {
-                MockResponses(9);
+                MockResponses(6);
             }
 
             // Arrange
@@ -5779,28 +6138,87 @@ namespace Kinvey.Tests
 
             var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
             var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
-                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
-                new ToDo { Name = "Name2", Details = "Details2", Value = 2 }
+                new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name2", Details = "Details2", Value = 2 }
             };
-
-            var toDo1 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
-            toDo1 = await autoToDoStore.SaveAsync(toDo1);
-            toDo1.Name = "Name33";
-            toDo1.Details = "Details33";
-            toDo1.Value = 33;
-            toDos.Add(toDo1);
-
-            var toDo2 = new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name4", Details = "Details4", Value = 4 };
-            toDos.Add(toDo2);
 
             // Act
             var savedToDos = await autoToDoStore.SaveAsync(toDos);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncToDoStore.FindAsync();
+            var existingToDosCache = await syncToDoStore.FindAsync();
+            var existingToDosNetwork = await networkToDoStore.FindAsync();
+
+            // Teardown
+            await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
+            await autoToDoStore.RemoveAsync(savedToDos.Entities[1].ID);
+
+            // Assert
+            Assert.AreEqual(2, savedToDos.Entities.Count);
+            Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(toDos[0].Name, savedToDos.Entities[0].Name);
+            Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
+            Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
+            Assert.AreEqual(user.Id, savedToDos.Entities[0].Acl.Creator);
+            Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
+            Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
+            Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
+            Assert.AreEqual(user.Id, savedToDos.Entities[1].Acl.Creator);
+            Assert.AreEqual(0, pendingWriteActions.Count);
+            Assert.AreEqual(2, existingToDosCache.Count);
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID && savedToDos.Entities[1].Kmd != null && savedToDos.Entities[1].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.AreEqual(2, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertNewItemsExistingItemsConnectionAvailableAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(10);
+            }
+
+            // Arrange
+            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>();
+
+            var toDo1 = new ToDo { Name = "Name1", Details = "Details1", Value = 1 };
+            toDos.Add(toDo1);
+
+            var toDo2 = new ToDo { Name = "Name2", Details = "Details2", Value = 2 };
+            toDo2 = await autoToDoStore.SaveAsync(toDo2);
+            toDo2.Name = "Name22";
+            toDo2.Details = "Details22";
+            toDo2.Value = 22;
+            toDos.Add(toDo2);
+
+            var toDo3 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
+            toDos.Add(toDo3);
+
+            var toDo4 = new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name4", Details = "Details4", Value = 4 };
+            toDos.Add(toDo4);
+
+            // Act
+            var savedToDos = await autoToDoStore.SaveAsync(toDos);
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDosLocal = await syncToDoStore.FindAsync();
+            var existingToDosNetwork = await networkToDoStore.FindAsync();
 
             // Teardown
             await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -5815,11 +6233,11 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
             Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
             Assert.AreEqual(user.Id, savedToDos.Entities[0].Acl.Creator);
+            Assert.AreEqual(toDos[1].ID, savedToDos.Entities[1].ID);
             Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
             Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
             Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
-            Assert.AreEqual(user.Id, savedToDos.Entities[1].Acl.Creator);
-            Assert.AreEqual(toDos[2].ID, savedToDos.Entities[2].ID);
+            Assert.AreEqual(user.Id, savedToDos.Entities[1].Acl.Creator);            
             Assert.AreEqual(toDos[2].Name, savedToDos.Entities[2].Name);
             Assert.AreEqual(toDos[2].Details, savedToDos.Entities[2].Details);
             Assert.AreEqual(toDos[2].Value, savedToDos.Entities[2].Value);
@@ -5830,27 +6248,23 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[3].Value, savedToDos.Entities[3].Value);
             Assert.AreEqual(user.Id, savedToDos.Entities[3].Acl.Creator);
             Assert.AreEqual(0, pendingWriteActions.Count);
-            Assert.AreEqual(4, existingToDos.Count);
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[2].ID));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[3].ID));
+            Assert.AreEqual(4, existingToDosLocal.Count);
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID && savedToDos.Entities[1].Kmd != null && savedToDos.Entities[1].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[2].ID && savedToDos.Entities[2].Kmd != null && savedToDos.Entities[2].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[3].ID && savedToDos.Entities[3].Kmd != null && savedToDos.Entities[3].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.AreEqual(4, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[2].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[3].ID));
         }
 
         [TestMethod]
         public async Task TestSaveMultiInsertNewItemsExistingItemsConnectionIssueAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5940,16 +6354,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertEmptyArrayAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -5967,27 +6372,76 @@ namespace Kinvey.Tests
                 await todoStore.SaveAsync(new List<ToDo>());
             });
 
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();          
+
             // Assert
             Assert.AreEqual(typeof(KinveyException), exception.GetType());
             var kinveyException = exception as KinveyException;
             Assert.AreEqual(EnumErrorCategory.ERROR_GENERAL, kinveyException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_EMPTY_ARRAY_OF_ENTITIES, kinveyException.ErrorCode);
+            Assert.AreEqual(0, pendingWriteActions.Count);
+        }
+
+        //[TestMethod]
+        public async Task TestSaveInvalidPermissionsAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2 }
+            };
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoAutoStore.SaveAsync(toDos);
+            });
+
+            //var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            //var existingToDos = await todoSyncStore.FindAsync();
+
+            //Teardown
+            //await todoSyncStore.RemoveAsync(todoSyncStore.Where(e=> e.Name.Equals("Name")));
+
+            // Assert
+            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            KinveyException ke = exception as KinveyException;
+            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
+            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+            Assert.IsTrue(401 == ke.StatusCode);
+
+            //Assert.AreEqual(2, pendingWriteActions.Count);
+            //var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDos[0].ID);
+            //Assert.IsNotNull(pendingWriteAction1);
+            //Assert.AreEqual("POST", pendingWriteAction1.action);
+            //var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDos[1].ID);
+            //Assert.IsNotNull(pendingWriteAction2);
+            //Assert.AreEqual("POST", pendingWriteAction2.action);
+
+            //Assert.AreEqual(2, existingToDos.Count);
+            //Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));
+            //Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
         }
 
         [TestMethod]
         public async Task TestSaveMultiInsertCount101Async()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6020,19 +6474,94 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertIncorrectKinveyApiVersionAsync()
+        public async Task TestSaveMultiInsertCountLimitConnectionAvailableAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+            const int countOfEntities = 100;
+
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
-                builder.setBaseURL("http://localhost:8080");
+                MockResponses(3 + (countOfEntities / Constants.NUMBER_LIMIT_OF_ENTITIES));
             }
 
-            builder.SetApiVersion("4");
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            kinveyClient = builder.Build();
+            var todoStoreAuto = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+
+            var toDos = new List<ToDo>();
+
+            for (var index = 0; index < countOfEntities; index++)
+            {
+                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+            }
+
+            // Act
+            var savedToDos = await todoStoreAuto.SaveAsync(toDos);
+
+            var existingToDos = await todoStoreAuto.FindAsync();
+
+            //Teardown
+            await todoStoreAuto.RemoveAsync(todoStoreAuto.Where(e => e.Name.StartsWith("Name")));
+
+            // Assert
+            Assert.AreEqual(countOfEntities, savedToDos.Entities.Count);
+            Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(countOfEntities, existingToDos.Count);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertCountLimitConnectionIssueAsync()
+        {
+            // Setup
+            const int countOfEntities = 100;
+
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStoreAuto = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreSync = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+
+            var toDos = new List<ToDo>();
+
+            for (var index = 0; index < countOfEntities; index++)
+            {
+                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+            }
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var savedToDos = await todoStoreAuto.SaveAsync(toDos);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var existingToDosSync = await todoStoreSync.FindAsync();
+            var existingToDosNetwork = await todoStoreNetwork.FindAsync();            
+
+            //Teardown
+            await todoStoreSync.RemoveAsync(todoStoreAuto.Where(e => e.Name.StartsWith("Name")));
+
+            // Assert
+            Assert.AreEqual(countOfEntities, savedToDos.Entities.Count);
+            Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(0, existingToDosNetwork.Count);
+            Assert.AreEqual(countOfEntities, existingToDosSync.Count);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertIncorrectKinveyApiVersionAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("4");
 
             if (MockData)
             {
@@ -6069,11 +6598,7 @@ namespace Kinvey.Tests
             if (MockData)
             {
                 // Setup
-                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-                builder.setBaseURL("http://localhost:8080");
-                builder.SetApiVersion("5");
-
-                kinveyClient = builder.Build();
+                kinveyClient = BuildClient("5");
 
                 MockResponses(2);
 
@@ -6104,16 +6629,140 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertNewItemsExistingItemsWithErrorsConnectionAvailableAsync()
+        public async Task TestSaveMultiInsertNewItemsWithErrorsConnectionAvailableAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(4);
+            }
+
+            // Arrange
+            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2,  GeoLoc = "[200,200]" }
+            };
+
+            // Act
+            var savedToDos = await autoToDoStore.SaveAsync(toDos);
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDosCache = await syncToDoStore.FindAsync();
+            var existingToDosNetwork = await networkToDoStore.FindAsync();
+
+            // Teardown
+            await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
+
+            // Assert
+            Assert.AreEqual(2, savedToDos.Entities.Count);
+            Assert.AreEqual(1, savedToDos.Errors.Count);
+            Assert.AreEqual(toDos[0].Name, savedToDos.Entities[0].Name);
+            Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
+            Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
+            Assert.AreEqual(user.Id, savedToDos.Entities[0].Acl.Creator);
+            Assert.IsNull(savedToDos.Entities[1]);
+            Assert.AreEqual(1, savedToDos.Errors[0].Index);
+
+            var existingToDo1 = existingToDosCache.FirstOrDefault(e => e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value);
+
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDo1.ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("POST", pendingWriteAction1.action);
+
+            Assert.AreEqual(2, existingToDosCache.Count);
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == existingToDo1.ID && existingToDo1.Kmd == null && existingToDo1.Acl == null));
+
+            Assert.AreEqual(1, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertGeolocationErrorsConnectionAvailableAsync()
         {
             if (MockData)
             {
                 // Setup
-                var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-                builder.setBaseURL("http://localhost:8080");
-                builder.SetApiVersion("5");
+                kinveyClient = BuildClient("5");
 
-                kinveyClient = builder.Build();
+                MockResponses(6);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var toDoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+                var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+
+                var toDos = new List<ToDo>
+                {
+                    new ToDo { Name = "Name1", Details = "Details1", Value = 1, GeoLoc = "[200,200]" },
+                    new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name2", Details = "Details2", Value = 2, },
+                    new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name3", Details = "Details3", Value = 3, GeoLoc = "[200,200]" },
+                    new ToDo { Name = "Name4", Details = "Details4", Value = 1 }
+                };
+
+                // Act
+                var savedToDos = await toDoAutoStore.SaveAsync(toDos);
+
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+                var existingToDos = await syncToDoStore.FindAsync();
+
+                // Teardown
+                await toDoAutoStore.RemoveAsync(savedToDos.Entities[1].ID);
+                await toDoAutoStore.RemoveAsync(savedToDos.Entities[3].ID);
+
+                // Assert
+                Assert.AreEqual(4, savedToDos.Entities.Count);
+                Assert.AreEqual(2, savedToDos.Errors.Count);
+                Assert.IsNull(savedToDos.Entities[0]);
+                Assert.IsNull(savedToDos.Entities[2]);
+                Assert.IsNotNull(savedToDos.Entities[1]);
+                Assert.IsNotNull(savedToDos.Entities[3]);
+                Assert.AreEqual(toDos[1].ID, savedToDos.Entities[1].ID);
+                Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
+                Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
+                Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
+                Assert.AreEqual(toDos[3].Name, savedToDos.Entities[3].Name);
+                Assert.AreEqual(toDos[3].Details, savedToDos.Entities[3].Details);
+                Assert.AreEqual(toDos[3].Value, savedToDos.Entities[3].Value);
+                Assert.AreEqual(0, savedToDos.Errors[0].Index);
+                Assert.AreEqual(2, savedToDos.Errors[1].Index);
+
+                var existingToDo1 = existingToDos.Find(e=> e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value);
+
+                Assert.AreEqual(2, pendingWriteActions.Count);
+                var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDo1.ID);
+                Assert.IsNotNull(pendingWriteAction1);
+                Assert.AreEqual("POST", pendingWriteAction1.action);
+                var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == toDos[2].ID);
+                Assert.IsNotNull(pendingWriteAction2);
+                Assert.AreEqual("PUT", pendingWriteAction2.action);
+                
+                Assert.AreEqual(4, existingToDos.Count);
+                Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == existingToDo1.ID));
+                Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
+                Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == toDos[2].ID));                
+                Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[3].ID));
+            }
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertTestSetupEntityErrorsConnectionAvailableAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient("5");
 
                 MockResponses(8);
 
@@ -6162,7 +6811,7 @@ namespace Kinvey.Tests
                 Assert.AreEqual(toDos[3].Name, savedToDos.Entities[3].Name);
                 Assert.AreEqual(toDos[3].Details, savedToDos.Entities[3].Details);
                 Assert.AreEqual(toDos[3].Value, savedToDos.Entities[3].Value);
-                Assert.AreEqual(0, pendingWriteActions.Count);
+                Assert.AreEqual(3, pendingWriteActions.Count);
                 Assert.AreEqual(0, savedToDos.Errors[0].Index);
                 Assert.AreEqual(1, savedToDos.Errors[1].Index);
                 Assert.AreEqual(2, savedToDos.Errors[2].Index);
@@ -6178,16 +6827,7 @@ namespace Kinvey.Tests
         public async Task TestSaveMultiInsertThrowingLocalExceptionAsync()
         {
             // Setup
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
-            if (MockData)
-            {
-                builder.setBaseURL("http://localhost:8080");
-            }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
+            kinveyClient = BuildClient("5");
 
             if (MockData)
             {
@@ -6225,6 +6865,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountAllItemsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -6283,6 +6925,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountByQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -6338,6 +6982,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountInvalidQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -6388,6 +7034,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountAllItemsNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -6448,6 +7096,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -6475,6 +7125,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -6527,6 +7179,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -6582,6 +7236,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountWithQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -6636,6 +7292,8 @@ namespace Kinvey.Tests
         public async Task TestGetCountWithQueryNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -6697,6 +7355,8 @@ namespace Kinvey.Tests
         public async Task TestPushCreatedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -6746,6 +7406,8 @@ namespace Kinvey.Tests
         public async Task TestPushUpdatedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -6805,6 +7467,8 @@ namespace Kinvey.Tests
         public async Task TestPushDeletedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -6872,6 +7536,8 @@ namespace Kinvey.Tests
         public async Task TestPushCreatedDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -6928,6 +7594,8 @@ namespace Kinvey.Tests
         public async Task TestPushRecreatedDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(9, kinveyClient);
@@ -6982,6 +7650,301 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem1.Details, networkEntities2.FirstOrDefault(e=> e.ID == newItem1.ID).Details);
         }
 
+        [TestMethod]
+        public async Task TestPushNewItemsConnectionIssueAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+
+            // Arrange
+            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2 }
+            };
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var savedToDos = await autoToDoStore.SaveAsync(toDos);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pushResponse = await autoToDoStore.PushAsync();
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDosNetwork = await networkToDoStore.FindAsync();
+
+            // Teardown
+            await networkToDoStore.RemoveAsync(existingToDosNetwork[0].ID);
+            await networkToDoStore.RemoveAsync(existingToDosNetwork[1].ID);
+
+            // Assert
+            Assert.AreEqual(2, pushResponse.PushCount);
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+
+            Assert.AreEqual(0, pendingWriteActions.Count);
+
+            Assert.AreEqual(2, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == pushResponse.PushEntities[0].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == pushResponse.PushEntities[1].ID));
+        }
+
+        [TestMethod]
+        public async Task TestPushNewItemsExistingItemsConnectionIssueAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(11);
+            }
+
+            // Arrange
+            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+               
+            };
+
+            var toDo1 = new ToDo { Name = "Name1", Details = "Details1", Value = 1 };
+            toDos.Add(toDo1);
+
+            var toDo2 = new ToDo { Name = "Name2", Details = "Details2", Value = 2 };
+            toDo2 = await autoToDoStore.SaveAsync(toDo2);
+            toDo2.Name = "Name22";
+            toDo2.Details = "Details22";
+            toDo2.Value = 22;
+            toDos.Add(toDo2);
+
+            var toDo3 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
+            toDos.Add(toDo3);
+
+            var toDo4 = new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name4", Details = "Details4", Value = 4 };
+            toDos.Add(toDo4);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var savedToDos = await autoToDoStore.SaveAsync(toDos);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pushResponse = await autoToDoStore.PushAsync();
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDosNetwork = await networkToDoStore.FindAsync();
+
+            // Teardown
+            await networkToDoStore.RemoveAsync(pushResponse.PushEntities[0].ID);
+            await networkToDoStore.RemoveAsync(pushResponse.PushEntities[1].ID);
+            await networkToDoStore.RemoveAsync(pushResponse.PushEntities[2].ID);
+            await networkToDoStore.RemoveAsync(pushResponse.PushEntities[3].ID);
+
+            // Assert
+            Assert.AreEqual(4, pushResponse.PushCount);
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[3].Name) && e.Details.Equals(toDos[3].Details) && e.Value == toDos[3].Value));
+
+            Assert.AreEqual(0, pendingWriteActions.Count);
+
+            Assert.AreEqual(4, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == pushResponse.PushEntities[0].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == pushResponse.PushEntities[1].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == pushResponse.PushEntities[2].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == pushResponse.PushEntities[3].ID));
+        }
+
+        //[TestMethod]
+        public async Task TestPushNewItemsInvalidPermissionsAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(3);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2 }
+            };
+
+            // Act
+            var savedToDos = await todoSyncStore.SaveAsync(toDos);
+
+            var pushResponse = await todoAutoStore.PushAsync();
+
+            //var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            //var existingToDos = await todoSyncStore.FindAsync();
+
+            // Teardown
+            //await todoSyncStore.RemoveAsync(savedToDos.Entities[0].ID);
+            //await todoSyncStore.RemoveAsync(savedToDos.Entities[1].ID);
+
+            // Assert
+            Assert.AreEqual(2, pushResponse.PushCount);
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+
+            Assert.AreEqual(2, pushResponse.KinveyExceptions.Count);
+            Assert.IsTrue(!pushResponse.KinveyExceptions.Any(e => e.StatusCode != 401));
+
+
+            //Assert.AreEqual(2, pendingWriteActions.Count);
+            //var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
+            //Assert.IsNotNull(pendingWriteAction1);
+            //Assert.AreEqual("POST", pendingWriteAction1.action);
+            //var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
+            //Assert.IsNotNull(pendingWriteAction2);
+            //Assert.AreEqual("POST", pendingWriteAction2.action);
+
+            //Assert.AreEqual(2, existingToDos.Count);
+            //Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));
+            //Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
+        }
+
+        [TestMethod]
+        public async Task TestPushNewItemsWithErrorsAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient("5");
+
+                MockResponses(6);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+                var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+                var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+                var toDos = new List<ToDo>
+                {
+                    new ToDo { Name = "Name1", Details = "Details1", Value = 1, GeoLoc = "[200,200]" },
+                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details2", Value = 2 },
+                    new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
+                };
+
+                // Act
+                SetRootUrlToKinveyClient(unreachableUrl);
+                var savedToDos = await todoAutoStore.SaveAsync(toDos);
+                SetRootUrlToKinveyClient(kinveyUrl);
+
+                var pushResponse = await todoAutoStore.PushAsync();
+
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+                var existingToDosLocal = await todoSyncStore.FindAsync();
+                var existingToDosNetwork = await todoNetworkStore.FindAsync();
+
+                // Teardown
+                await todoNetworkStore.RemoveAsync(savedToDos.Entities[2].ID);
+
+                // Assert
+                Assert.AreEqual(3, pushResponse.PushCount);
+                Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+                Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+                Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+
+                Assert.AreEqual(2, pushResponse.KinveyExceptions.Count);
+                Assert.IsTrue(!pushResponse.KinveyExceptions.Any(e => e.StatusCode != 400));
+
+                Assert.AreEqual(2, pendingWriteActions.Count);
+                var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
+                Assert.IsNotNull(pendingWriteAction1);
+                Assert.AreEqual("POST", pendingWriteAction1.action);
+                var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
+                Assert.IsNotNull(pendingWriteAction2);
+                Assert.AreEqual("POST", pendingWriteAction2.action);
+
+                Assert.AreEqual(3, existingToDosLocal.Count);
+                Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));
+                Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
+                Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+
+                Assert.AreEqual(1, existingToDosNetwork.Count);
+                Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+            }
+        }
+
+        [TestMethod]
+        public async Task TestPushNewSeparateItemsAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+            var toDo1 = new ToDo { Name = "Name1", Details = "Details1", Value = 1 };
+            var toDo2 = new ToDo { Name = "Name2", Details = "Details2", Value = 2 };
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            toDo1 = await todoAutoStore.SaveAsync(toDo1);
+            toDo2 = await todoAutoStore.SaveAsync(toDo2);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pushResponse = await todoAutoStore.PushAsync();
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDos = await todoNetworkStore.FindAsync();
+
+            // Teardown
+            await todoNetworkStore.RemoveAsync(existingToDos[0].ID);
+            await todoNetworkStore.RemoveAsync(existingToDos[1].ID);
+
+            // Assert
+            Assert.AreEqual(2, pushResponse.PushCount);
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDo1.Name) && e.Details.Equals(toDo1.Details) && e.Value == toDo1.Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDo2.Name) && e.Details.Equals(toDo2.Details) && e.Value == toDo2.Value));
+            Assert.AreEqual(0, pushResponse.KinveyExceptions.Count);
+
+            Assert.AreEqual(0, pushResponse.KinveyExceptions.Count);
+
+            Assert.AreEqual(0, pendingWriteActions.Count);
+
+            Assert.AreEqual(2, existingToDos.Count);
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDo1.Name) && e.Details.Equals(toDo1.Details) && e.Value == toDo1.Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDo2.Name) && e.Details.Equals(toDo2.Details) && e.Value == toDo2.Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+        }
+
         #endregion
 
         #region Pull
@@ -6990,6 +7953,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -7038,6 +8003,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(5, kinveyClient);
@@ -7088,6 +8055,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataWithQueryNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+            
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -7145,6 +8114,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataDeletedFromBackendNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -7212,6 +8183,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataChangedInBackendNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(13, kinveyClient);
@@ -7283,6 +8256,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataInvalidPermissionsNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -7310,6 +8285,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataNotSyncedNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -7354,6 +8331,8 @@ namespace Kinvey.Tests
         public async Task TestPullDataDeletedAndChangedInBackendNetworkConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -7417,6 +8396,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullNoChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -7456,6 +8437,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnOnlyChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -7515,6 +8498,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnOnlyUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -7578,6 +8563,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnOnlyDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -7644,6 +8631,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfCreatedItems()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -7700,6 +8689,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(15, kinveyClient);
@@ -7772,6 +8763,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetWithQueryPullReturnCorrectNumberOfUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -7835,6 +8828,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -7901,6 +8896,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetPullReturnCorrectNumberOfDeletesAndUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -7968,6 +8965,8 @@ namespace Kinvey.Tests
         public async Task TestSyncDataConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(13, kinveyClient);
@@ -8042,6 +9041,8 @@ namespace Kinvey.Tests
         public async Task TestSyncDataWithQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(13, kinveyClient);
@@ -8118,6 +9119,8 @@ namespace Kinvey.Tests
         public async Task TestSyncDataNetworkConnectionIssueAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(2, kinveyClient);
@@ -8178,6 +9181,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncNoChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -8216,6 +9221,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnOnlyChanges()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -8274,6 +9281,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnOnlyUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -8336,6 +9345,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnOnlyDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -8401,6 +9412,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfCreatedItems()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(10, kinveyClient);
@@ -8456,6 +9469,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(15, kinveyClient);
@@ -8527,6 +9542,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletes()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(11, kinveyClient);
@@ -8592,6 +9609,8 @@ namespace Kinvey.Tests
         public async Task TestDeltaSetSyncReturnCorrectNumberOfDeletesAndUpdates()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(12, kinveyClient);
@@ -8650,6 +9669,85 @@ namespace Kinvey.Tests
             Assert.AreEqual(1, deleteResponse.count);
         }
 
+        [TestMethod]
+        public async Task TestSyncNewItemsWithErrorsAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            builder.SetApiVersion("5");
+
+            kinveyClient = builder.Build();
+
+            if (MockData)
+            {
+                MockResponses(7);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { Name = "Name2", Details = "Details2", Value = 2, GeoLoc = "[200,200]" },
+                new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
+            };
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            var savedToDos = await todoAutoStore.SaveAsync(toDos);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var syncResponse = await todoAutoStore.SyncAsync();
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDosNetwork = await todoNetworkStore.FindAsync();
+            var existingToDosLocal = await todoSyncStore.FindAsync();
+
+            // Teardown
+            await todoNetworkStore.RemoveAsync(existingToDosNetwork[0].ID);
+            await todoNetworkStore.RemoveAsync(existingToDosNetwork[1].ID);
+
+            // Assert
+            Assert.AreEqual(3, syncResponse.PushResponse.PushCount);
+            Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+            Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+            Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+
+            Assert.AreEqual(1, syncResponse.PullResponse.KinveyExceptions.Count);
+            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE, syncResponse.PullResponse.KinveyExceptions[0].ErrorCode);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, syncResponse.PullResponse.KinveyExceptions[0].ErrorCategory);
+
+            Assert.AreEqual(1, syncResponse.PushResponse.KinveyExceptions.Count);
+            Assert.AreEqual(400, syncResponse.PushResponse.KinveyExceptions[0].StatusCode);
+
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("POST", pendingWriteAction1.action);
+
+            Assert.AreEqual(2, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+
+            Assert.AreEqual(3, existingToDosLocal.Count);
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+        }
+
         #endregion Sync
 
         #region Get sync count
@@ -8658,6 +9756,8 @@ namespace Kinvey.Tests
         public async Task TestGetSyncCountConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -8707,6 +9807,8 @@ namespace Kinvey.Tests
         public async Task TestPurgeAllItemsConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -8756,6 +9858,8 @@ namespace Kinvey.Tests
         public async Task TestPurgeCreatedItemsAccordingToQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
@@ -8808,6 +9912,8 @@ namespace Kinvey.Tests
         public async Task TestPurgeUpdatedItemsAccordingToQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -8878,6 +9984,8 @@ namespace Kinvey.Tests
         public async Task TestClearAllItemsConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(6, kinveyClient);
@@ -8925,6 +10033,8 @@ namespace Kinvey.Tests
         public async Task TestClearItemsByQueryConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(8, kinveyClient);
@@ -8985,6 +10095,8 @@ namespace Kinvey.Tests
         public async Task TestClearItemsByQueryFromSyncQueueConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(7, kinveyClient);
@@ -9051,6 +10163,8 @@ namespace Kinvey.Tests
         public async Task TestClearAllItemsFromSyncQueueConnectionAvailableAsync()
         {
             // Setup
+            kinveyClient = BuildClient();
+
             if (MockData)
             {
                 MockResponses(1, kinveyClient);
