@@ -58,6 +58,23 @@ namespace Kinvey.Tests
             }
         }
 
+        protected Client BuildClient(string apiVersion = null)
+        {
+            Client.Builder builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
+
+            if (MockData)
+            {
+                builder.setBaseURL("http://localhost:8080");
+            }
+
+            if (!string.IsNullOrEmpty(apiVersion))
+            {
+                builder.SetApiVersion(apiVersion);
+            }
+
+            return builder.Build();
+        }
+
         public static class EnvironmentVariable
         {
             public static string AppKey => Environment.GetEnvironmentVariable("KINVEY_APP_KEY");
@@ -407,6 +424,22 @@ namespace Kinvey.Tests
 
         protected static void MockAppDataPost(HttpListenerContext context, JObject obj, List<JObject> items, Client client)
         {
+            if (obj["_geoloc"] != null && !IsValidGeolocation(obj["_geoloc"].ToString()))
+            {
+                var response = context.Response;
+                response.StatusCode = 400;
+                Write(context, "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90");
+                return;
+            }
+
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
+            {
+                var response = context.Response;
+                response.StatusCode = 400;
+                Write(context, "Error.");
+                return;
+            }
+
             PopulateEntity(obj, client);
             items.Add(obj);
             Write(context, obj);
@@ -421,8 +454,8 @@ namespace Kinvey.Tests
             if (jObjects.Count == 0)
             {
                 var response = context.Response;
-                response.StatusCode = 504;
-                Write(context, "Timeout");
+                response.StatusCode = 400;
+                Write(context, "Request body cannot be an empty array");
                 return;
             }
 
@@ -451,6 +484,22 @@ namespace Kinvey.Tests
                 }
                 else
                 {
+                    if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
+                    {
+                        jObjectsToSave.Add(null);
+
+                        var jObjectError = new JObject
+                        {
+                            ["index"] = index,
+                            ["code"] = 1,
+                            ["errmsg"] = "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90"
+                        };
+
+                        jObjectErrors.Add(jObjectError);
+
+                        continue;
+                    }
+
                     PopulateEntity(jObjects[index], client);
                     items.Add(jObjects[index]);
                     jObjectsToSave.Add(jObjects[index]);
@@ -470,6 +519,25 @@ namespace Kinvey.Tests
             };
 
             Write(context, multiInsertResultJsonObject);
+        }
+
+        private static bool IsValidGeolocation(string geolocation)
+        {
+            if (!string.IsNullOrEmpty(geolocation))
+            {
+                var splitStrings = geolocation.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                if (splitStrings.Count() > 0)
+                {
+                    splitStrings = splitStrings[0].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (!double.TryParse(splitStrings[0], out double longitude) || !(longitude >= -180 && longitude <= 180) || !double.TryParse(splitStrings[1], out double latutude) || !(latutude >= -90 && latutude <= 90))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private static void PopulateEntity(JObject obj, Client client)
@@ -590,7 +658,15 @@ namespace Kinvey.Tests
                 return;
             }
 
-                var item = items[index];
+            if (obj["_geoloc"] != null && !IsValidGeolocation(obj["_geoloc"].ToString()))
+            {                   
+                    var response = context.Response;
+                    response.StatusCode = 400;
+                    Write(context, "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90");
+                    return;                
+            }
+
+            var item = items[index];
             obj["_id"] = id;
             var acl = obj["_acl"];
             if (acl == null || acl.Type == JTokenType.Null)
@@ -788,7 +864,8 @@ namespace Kinvey.Tests
                 httpListener.Prefixes.Add(client.MICHostName);
             }
             httpListener.Start();
-            var thread = new Thread(new ThreadStart(() => {
+            var thread = new Thread(new ThreadStart(async () =>
+            {
                 try
                 {
                     #region Existing users
@@ -1004,11 +1081,12 @@ namespace Kinvey.Tests
                     while (
                         (expectedRequests == null && httpListener.IsListening) ||
                         (expectedRequests != null && count < expectedRequests)
-                    ) {
+                    )
+                    {
                         HttpListenerContext context;
                         try
                         {
-                            context = httpListener.GetContext();
+                            context = await httpListener.GetContextAsync();
                         }
                         catch (HttpListenerException)
                         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Kinvey;
 
 namespace Kinvey.Tests
 {
@@ -24,6 +23,9 @@ namespace Kinvey.Tests
 
 		[JsonProperty("bool_value")]
 		public bool BoolVal { get; set; }
-	}
+
+        [JsonProperty("_geoloc")]
+        public string GeoLoc { get; set; }
+    }
 }
 
