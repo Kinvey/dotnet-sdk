@@ -145,7 +145,9 @@ namespace Kinvey
 				NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
 				entity = await request.ExecuteAsync();
 
-				result = SyncQueue.Remove(pwa);
+                Cache.UpdateCacheSave(entity, pwa.entityId);
+
+                result = SyncQueue.Remove(pwa);
 
 				if (result == 0)
 				{
