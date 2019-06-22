@@ -4,7 +4,7 @@
 
 [Kinvey](http://www.kinvey.com) (pronounced Kin-vey, like convey) makes it ridiculously easy for developers to setup, use and operate a cloud backend for their mobile apps. You don't have to worry about connecting to various cloud services, setting up servers for your backend, or maintaining and scaling them.
 
-The Kinvey .NET SDK repo represents the package that can be used to develop .NET and Xamarin applications on the Kinvey platform. The Kinvey SDK is developed as a .NET Standard library for various supported .NET runtimes, including Xamarin with platform-specific features for iOS and Android.
+The Kinvey .NET SDK repo represents the package that can be used to develop .NET and Xamarin applications on the Kinvey platform. The Kinvey SDK is developed as a .NET Standard library for various supported .NET runtimes, including Xamarin, with platform-specific features for iOS and Android.
 
 The following is a high-level overview of the most important projects in the solution:
 
@@ -23,7 +23,7 @@ Open the solution in Visual Studio. Once the solution is loaded, run `Build->Reb
 
 ## Test
 
-Build the `Kinvey.Tests` project to build all the Kinvey Xamarin SDK tests.
+Build the `Kinvey.Tests` project to build all the Kinvey .NET SDK tests.
 
 ## License
 See [LICENSE](LICENSE.txt) for details.
