@@ -269,6 +269,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\PushRequest.cs">
       <Link>Store\PushRequest.cs</Link>
     </Compile>
+	 <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\PushSingleRequest.cs">
+      <Link>Store\PushSingleRequest.cs</Link>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\PushMultiRequest.cs">
+      <Link>Store\PushMultiRequest.cs</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Store\ReadPolicy.cs">
       <Link>Store\ReadPolicy.cs</Link>
     </Compile>

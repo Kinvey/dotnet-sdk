@@ -109,11 +109,20 @@ namespace Kinvey
             }
 		}
 
-		public List<PendingWriteAction> GetFirstN(int limit, int offset)
-		{
+        public List<PendingWriteAction> GetFirstN(int limit, int offset)
+        {
             lock (dbConnection)
             {
                 string query = $"SELECT * FROM PendingWriteAction WHERE collection == \"{this.Collection}\" LIMIT {limit} OFFSET {offset}";
+                return dbConnection.Query<PendingWriteAction>(query);
+            }
+        }
+
+        public List<PendingWriteAction> GetFirstN(int limit, int offset, string action)
+		{
+            lock (dbConnection)
+            {
+                string query = $"SELECT * FROM PendingWriteAction WHERE collection == \"{this.Collection}\" AND action == \"{action}\" LIMIT {limit} OFFSET {offset}";
                 return dbConnection.Query<PendingWriteAction>(query);
             }
 		}
