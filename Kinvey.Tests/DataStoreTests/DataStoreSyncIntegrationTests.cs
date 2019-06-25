@@ -1,5 +1,5 @@
 ﻿
-// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -6551,6 +6551,57 @@ namespace Kinvey.Tests
             Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
             Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
             Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+        }
+
+        [TestMethod]
+        public async Task TestSyncStorePush2kAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(24);
+            }
+
+            var count = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            var toDos = new List<ToDo>();
+
+            for (var index = 0; index < count; index++)
+            {
+                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+            }
+
+            // Act
+            var savedToDos = await todoSyncStore.SaveAsync(toDos);
+
+            var pushResponse = await todoSyncStore.PushAsync();
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var existingToDosSync = await todoSyncStore.FindAsync();
+            var existingToDosNetwork = await todoNetworkStore.FindAsync();
+
+            // Teardown
+            await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e=> e.Name.StartsWith("Name")));
+
+            // Assert
+            Assert.AreEqual(count, pushResponse.PushCount);
+            Assert.AreEqual(0, pushResponse.KinveyExceptions.Count);
+
+            Assert.AreEqual(0, pendingWriteActions.Count);
+
+            Assert.AreEqual(count, existingToDosSync.Count);
+            Assert.IsFalse(existingToDosSync.Any(e => e.Acl == null && e.Kmd == null));
+            Assert.IsFalse(existingToDosSync.Any(e => e.ID.StartsWith("temp")));
+
+            Assert.AreEqual(count, existingToDosNetwork.Count);
         }
 
         #endregion Push
