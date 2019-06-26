@@ -42,16 +42,17 @@ namespace Kinvey
                 //var pushMultiPostActionsResponse = await PushMultiPostActionsAsync();
                 //response.AddEntities(pushMultiPostActionsResponse.PushEntities);
                 //response.AddExceptions(pushMultiPostActionsResponse.KinveyExceptions);
+                //response.PushCount += pushMultiPostActionsResponse.PushCount;
 
                 //var pushSinglePutActionsResponse = await PushSingleActionsAsync("PUT");
                 //response.AddEntities(pushSinglePutActionsResponse.PushEntities);
                 //response.AddExceptions(pushSinglePutActionsResponse.KinveyExceptions);
+                //response.PushCount += pushSinglePutActionsResponse.PushCount;
 
                 //var pushSingleDeleteActionsResponse = await PushSingleActionsAsync("DELETE");
                 //response.AddEntities(pushSingleDeleteActionsResponse.PushEntities);
                 //response.AddExceptions(pushSingleDeleteActionsResponse.KinveyExceptions);
-
-                //response.PushCount += response.PushEntities.Count;
+                //response.PushCount += pushSingleDeleteActionsResponse.PushCount;
             }
 
             return response;
@@ -147,13 +148,13 @@ namespace Kinvey
 
                 string tempID = pwa.entityId;
 
-                entity = Cache.FindByID(pwa.entityId);
+                var localEntity = Cache.FindByID(pwa.entityId);
 
-                JObject obj = JObject.FromObject(entity);
+                JObject obj = JObject.FromObject(localEntity);
                 obj["_id"] = null;
-                entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
+                localEntity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
 
-                NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest<T>(pwa.collection, entity);
+                NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest<T>(pwa.collection, localEntity);
                 entity = await request.ExecuteAsync();
 
                 Cache.UpdateCacheSave(entity, tempID);
@@ -185,9 +186,9 @@ namespace Kinvey
                 int result = 0;
 
                 string tempID = pwa.entityId;
-                entity = Cache.FindByID(pwa.entityId);
+                var localEntity = Cache.FindByID(pwa.entityId);
 
-                NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
+                NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, localEntity, pwa.entityId);
                 entity = await request.ExecuteAsync();
 
                 Cache.UpdateCacheSave(entity, pwa.entityId);
@@ -276,11 +277,10 @@ namespace Kinvey
                     offset += task.Result.Item2;
                 }
 
+                response.PushCount += pendingPostActions.Count;
+
                 pendingPostActions = SyncQueue.GetFirstN(limit, offset, "POST");
             }
-
-            response.PushCount = response.PushEntities.Count;
-
             return response;
         }
 
