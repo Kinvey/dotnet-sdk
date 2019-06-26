@@ -6553,7 +6553,7 @@ namespace Kinvey.Tests
             Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task TestSyncStorePush2kAsync()
         {
             // Setup
@@ -6602,6 +6602,69 @@ namespace Kinvey.Tests
             Assert.IsFalse(existingToDosSync.Any(e => e.ID.StartsWith("temp")));
 
             Assert.AreEqual(count, existingToDosNetwork.Count);
+        }
+
+        //[TestMethod]
+        public async Task TestSyncStorePush2kWithErrorsAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(24);
+
+                var count = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+                var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+                var toDos = new List<ToDo>();
+
+                var successCount = 0;
+                var errorCount = 0;
+
+                for (var index = 0; index < count; index++)
+                {
+                    if (index % 2 == 0)
+                    {
+                        toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index });
+                        successCount++;
+                    }
+                    else
+                    {
+                        toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index, GeoLoc = "[200,200]" });
+                        errorCount++;
+                    }
+                }
+
+                // Act
+                var savedToDos = await todoSyncStore.SaveAsync(toDos);
+
+                var pushResponse = await todoSyncStore.PushAsync();
+
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+                var existingToDosSync = await todoSyncStore.FindAsync();
+                var existingToDosNetwork = await todoNetworkStore.FindAsync();
+
+                // Teardown
+                await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e => e.Name.StartsWith("Name")));
+
+                // Assert
+                Assert.AreEqual(successCount, pushResponse.PushCount);
+                Assert.AreEqual(errorCount, pushResponse.KinveyExceptions.Count);
+
+                Assert.AreEqual(errorCount, pendingWriteActions.Count);
+
+                Assert.AreEqual(count, existingToDosSync.Count);
+                Assert.AreEqual(errorCount, existingToDosSync.Count(e => e.Acl == null && e.Kmd == null && e.ID.StartsWith("temp")));
+                Assert.AreEqual(successCount, existingToDosSync.Count(e => e.Acl != null && e.Kmd != null));
+
+                Assert.AreEqual(successCount, existingToDosNetwork.Count);
+            }
         }
 
         #endregion Push

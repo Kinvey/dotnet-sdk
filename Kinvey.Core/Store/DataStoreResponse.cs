@@ -68,5 +68,10 @@ namespace Kinvey
 		{
 			entities.AddRange(newEntities);
 		}
-	}
+
+        internal void AddExceptions(ICollection<KinveyException> exceptions)
+        {
+            kinveyExceptions.AddRange(exceptions);
+        }
+    }
 }

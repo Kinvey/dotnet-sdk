@@ -73,8 +73,6 @@
     <Compile Include="Query\VisitorClause.cs" />
     <Compile Include="Realtime\RealtimeReconnectionPolicy.cs" />
     <Compile Include="Realtime\RealtimeReconnectionPolicyExtension.cs" />
-    <Compile Include="Store\PushMultiRequest.cs" />
-    <Compile Include="Store\PushSingleRequest.cs" />
     <Compile Include="Store\RemoveRequest.cs" />
     <Compile Include="Store\MultiInsertRequest.cs" />
     <Compile Include="Store\WriteRequest.cs" />
