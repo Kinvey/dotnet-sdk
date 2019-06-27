@@ -6561,28 +6561,56 @@ namespace Kinvey.Tests
             // Setup
             kinveyClient = BuildClient("5");
 
+            var countToAdd = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+            var countToUpdate = 11;
+            var countToDelete = 11;
+
             if (MockData)
             {
-                MockResponses(24);
+                MockResponses(21 + (uint)countToUpdate + (uint)countToDelete + 7);
             }
-
-            var count = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
-
+          
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
             var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoAutoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.AUTO, kinveyClient);
 
-            var toDos = new List<ToDo>();
-
-            for (var index = 0; index < count; index++)
+            var toDosToAdd = new List<ToDo>();
+            for (var index = 0; index < countToAdd; index++)
             {
-                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+                toDosToAdd.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index });
+            }
+
+            var toDosToUpdate = new List<ToDo>();
+            for (var index = 0; index < countToUpdate; index++)
+            {
+                toDosToUpdate.Add(new ToDo { Name = "UpdateName" + index.ToString(), Details = "UpdateDetails" + index.ToString(), Value =  index});
+            }
+
+
+            var toDosToDelete = new List<ToDo>();
+            for (var index = 0; index < countToDelete; index++)
+            {
+                toDosToDelete.Add(new ToDo { Name = "DeleteName" + index.ToString(), Details = "UpdateDetails" + index.ToString(), Value = index });
             }
 
             // Act
-            var savedToDos = await todoSyncStore.SaveAsync(toDos);
+            var savedToDosToAdd = await todoSyncStore.SaveAsync(toDosToAdd);
+            var savedToDosToUpdate = await todoAutoStore.SaveAsync(toDosToUpdate);
+            var savedToDosToDelete = await todoAutoStore.SaveAsync(toDosToDelete);
+
+            foreach (var entity in savedToDosToUpdate.Entities)
+            {
+                entity.Name = string.Concat(entity.Name, "new");
+            }
+            savedToDosToUpdate = await todoSyncStore.SaveAsync(savedToDosToUpdate.Entities);
+
+            foreach (var entity in savedToDosToDelete.Entities)
+            {
+                await todoSyncStore.RemoveAsync(entity.ID);
+            }
 
             var pushResponse = await todoSyncStore.PushAsync();
 
@@ -6592,59 +6620,105 @@ namespace Kinvey.Tests
 
             // Teardown
             await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e=> e.Name.StartsWith("Name")));
+            await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e => e.Name.StartsWith("Update")));
+            await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e => e.Name.StartsWith("Delete")));
 
             // Assert
-            Assert.AreEqual(count, pushResponse.PushCount);
+            Assert.AreEqual(countToAdd + countToUpdate + countToDelete, pushResponse.PushCount);
             Assert.AreEqual(0, pushResponse.KinveyExceptions.Count);
 
             Assert.AreEqual(0, pendingWriteActions.Count);
 
-            Assert.AreEqual(count, existingToDosSync.Count);
-            Assert.IsFalse(existingToDosSync.Any(e => e.Acl == null && e.Kmd == null));
-            Assert.IsFalse(existingToDosSync.Any(e => e.ID.StartsWith("temp")));
+            Assert.AreEqual(countToAdd + countToUpdate, existingToDosSync.Count);
+            Assert.IsTrue(existingToDosSync.Any(e => e.Acl != null && e.Kmd != null));
+            Assert.IsTrue(existingToDosSync.Any(e => !e.ID.StartsWith("temp")));
 
-            Assert.AreEqual(count, existingToDosNetwork.Count);
+            Assert.AreEqual(countToAdd + countToUpdate, existingToDosNetwork.Count);
         }
 
         //[TestMethod]
         public async Task TestSyncStorePush2kWithErrorsAsync()
         {
-            // Setup
-            kinveyClient = BuildClient("5");
-
+            // Setup           
             if (MockData)
             {
-                MockResponses(24);
+                kinveyClient = BuildClient("5");
 
-                var count = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+                var countToAdd = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+                var countToUpdate = 11;
+                var countToDelete = 11;
+
+                MockResponses(21 + (uint)countToUpdate + (uint)countToDelete + 7);
 
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
                 var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
                 var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoAutoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.AUTO, kinveyClient);
 
-                var toDos = new List<ToDo>();
+                var toDosToAdd = new List<ToDo>();
 
                 var successCount = 0;
+                var successPostsCount = 0;
                 var errorCount = 0;
+                var errorPostsCount = 0;
 
-                for (var index = 0; index < count; index++)
+                for (var index = 0; index < countToAdd; index++)
                 {
                     if (index % 2 == 0)
                     {
-                        toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index });
+                        toDosToAdd.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index });
                         successCount++;
                     }
                     else
                     {
-                        toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index, GeoLoc = "[200,200]" });
+                        toDosToAdd.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index, GeoLoc = "[200,200]" });
                         errorCount++;
                     }
                 }
 
+                errorPostsCount += errorCount;
+                successPostsCount += successCount;
+
+                var toDosToUpdate = new List<ToDo>();
+                for (var index = 0; index < countToUpdate; index++)
+                {
+                    toDosToUpdate.Add(new ToDo { Name = "UpdateName" + index.ToString(), Details = "UpdateDetails" + index.ToString(), Value = index });
+                }
+
+                var toDosToDelete = new List<ToDo>();
+                for (var index = 0; index < countToDelete; index++)
+                {
+                    toDosToDelete.Add(new ToDo { Name = "DeleteName" + index.ToString(), Details = "UpdateDetails" + index.ToString(), Value = index });
+                }
+
                 // Act
-                var savedToDos = await todoSyncStore.SaveAsync(toDos);
+                var savedToDosToCreate = await todoSyncStore.SaveAsync(toDosToAdd);
+                var savedToDosToUpdate = await todoAutoStore.SaveAsync(toDosToUpdate);
+                var savedToDosToDelete = await todoAutoStore.SaveAsync(toDosToDelete);
+
+                for (var index = 0; index < countToUpdate; index++)
+                {
+                    savedToDosToUpdate.Entities[index].Name = string.Concat(savedToDosToUpdate.Entities[index].Name, "new");
+
+                    if (index % 2 == 0)
+                    {
+                        successCount++;
+                    }
+                    else
+                    {
+                        errorCount++;
+                        savedToDosToUpdate.Entities[index].GeoLoc = "[200,200]";
+                    }
+                }
+
+                savedToDosToUpdate = await todoSyncStore.SaveAsync(savedToDosToUpdate.Entities);
+
+                for (var index = 0; index < countToDelete; index++)
+                {
+                    await todoSyncStore.RemoveAsync(savedToDosToDelete.Entities[index].ID);
+                }
 
                 var pushResponse = await todoSyncStore.PushAsync();
 
@@ -6654,18 +6728,21 @@ namespace Kinvey.Tests
 
                 // Teardown
                 await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e => e.Name.StartsWith("Name")));
+                await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e => e.Name.StartsWith("Update")));
+                await todoNetworkStore.RemoveAsync(todoSyncStore.Where(e => e.Name.StartsWith("Delete")));
 
                 // Assert
-                Assert.AreEqual(successCount, pushResponse.PushCount);
+                Assert.AreEqual(countToAdd + countToUpdate + countToDelete, pushResponse.PushCount);
+                Assert.AreEqual(successCount, pushResponse.PushEntities.Count);
                 Assert.AreEqual(errorCount, pushResponse.KinveyExceptions.Count);
 
                 Assert.AreEqual(errorCount, pendingWriteActions.Count);
 
-                Assert.AreEqual(count, existingToDosSync.Count);
-                Assert.AreEqual(errorCount, existingToDosSync.Count(e => e.Acl == null && e.Kmd == null && e.ID.StartsWith("temp")));
-                Assert.AreEqual(successCount, existingToDosSync.Count(e => e.Acl != null && e.Kmd != null));
+                Assert.AreEqual(countToAdd + countToUpdate, existingToDosSync.Count);
+                Assert.AreEqual(errorPostsCount, existingToDosSync.Count(e => e.Acl == null && e.Kmd == null && e.ID.StartsWith("temp")));
+                Assert.AreEqual(successPostsCount + countToUpdate, existingToDosSync.Count(e => e.Acl != null && e.Kmd != null));
 
-                Assert.AreEqual(successCount, existingToDosNetwork.Count);
+                Assert.AreEqual(successPostsCount + countToUpdate, existingToDosNetwork.Count);
             }
         }
 
