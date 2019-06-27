@@ -37,22 +37,20 @@ namespace Kinvey
             }
             else
             {
-                response = await PushSingleActionsAsync();
+                var pushMultiPostActionsResponse = await PushMultiPostActionsAsync();
+                response.AddEntities(pushMultiPostActionsResponse.PushEntities);
+                response.AddExceptions(pushMultiPostActionsResponse.KinveyExceptions);
+                response.PushCount += pushMultiPostActionsResponse.PushCount;
 
-                //var pushMultiPostActionsResponse = await PushMultiPostActionsAsync();
-                //response.AddEntities(pushMultiPostActionsResponse.PushEntities);
-                //response.AddExceptions(pushMultiPostActionsResponse.KinveyExceptions);
-                //response.PushCount += pushMultiPostActionsResponse.PushCount;
+                var pushSinglePutActionsResponse = await PushSingleActionsAsync("PUT");
+                response.AddEntities(pushSinglePutActionsResponse.PushEntities);
+                response.AddExceptions(pushSinglePutActionsResponse.KinveyExceptions);
+                response.PushCount += pushSinglePutActionsResponse.PushCount;
 
-                //var pushSinglePutActionsResponse = await PushSingleActionsAsync("PUT");
-                //response.AddEntities(pushSinglePutActionsResponse.PushEntities);
-                //response.AddExceptions(pushSinglePutActionsResponse.KinveyExceptions);
-                //response.PushCount += pushSinglePutActionsResponse.PushCount;
-
-                //var pushSingleDeleteActionsResponse = await PushSingleActionsAsync("DELETE");
-                //response.AddEntities(pushSingleDeleteActionsResponse.PushEntities);
-                //response.AddExceptions(pushSingleDeleteActionsResponse.KinveyExceptions);
-                //response.PushCount += pushSingleDeleteActionsResponse.PushCount;
+                var pushSingleDeleteActionsResponse = await PushSingleActionsAsync("DELETE");
+                response.AddEntities(pushSingleDeleteActionsResponse.PushEntities);
+                response.AddExceptions(pushSingleDeleteActionsResponse.KinveyExceptions);
+                response.PushCount += pushSingleDeleteActionsResponse.PushCount;
             }
 
             return response;
