@@ -38,19 +38,13 @@ namespace Kinvey
             else
             {
                 var pushMultiPostActionsResponse = await PushMultiPostActionsAsync();
-                response.AddEntities(pushMultiPostActionsResponse.PushEntities);
-                response.AddExceptions(pushMultiPostActionsResponse.KinveyExceptions);
-                response.PushCount += pushMultiPostActionsResponse.PushCount;
+                response.SetResponse(pushMultiPostActionsResponse);
 
                 var pushSinglePutActionsResponse = await PushSingleActionsAsync("PUT");
-                response.AddEntities(pushSinglePutActionsResponse.PushEntities);
-                response.AddExceptions(pushSinglePutActionsResponse.KinveyExceptions);
-                response.PushCount += pushSinglePutActionsResponse.PushCount;
+                response.SetResponse(pushSinglePutActionsResponse);
 
                 var pushSingleDeleteActionsResponse = await PushSingleActionsAsync("DELETE");
-                response.AddEntities(pushSingleDeleteActionsResponse.PushEntities);
-                response.AddExceptions(pushSingleDeleteActionsResponse.KinveyExceptions);
-                response.PushCount += pushSingleDeleteActionsResponse.PushCount;
+                response.SetResponse(pushSingleDeleteActionsResponse);
             }
 
             return response;
@@ -61,7 +55,7 @@ namespace Kinvey
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PushRequest not implemented.");
 		}
 
-        #region Single action pushes
+        #region Single actions pushes
 
         private async Task<PushDataStoreResponse<T>> PushSingleActionsAsync(string action = null)
         {
@@ -183,7 +177,6 @@ namespace Kinvey
             {
                 int result = 0;
 
-                string tempID = pwa.entityId;
                 var localEntity = Cache.FindByID(pwa.entityId);
 
                 NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, localEntity, pwa.entityId);
@@ -238,7 +231,7 @@ namespace Kinvey
             return new Tuple<T, KinveyException, int>(default(T), kinveyException, offset);
         }
 
-        #endregion Single action pushes
+        #endregion Single actions pushes
 
         #region Multiple actions pushes
 
