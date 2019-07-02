@@ -6304,7 +6304,7 @@ namespace Kinvey.Tests
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
             var existingToDosSync = await todoSyncStore.FindAsync();
-            var existingToDosNetwork = await todoSyncStore.FindAsync();
+            var existingToDosNetwork = await todoNetworkStore.FindAsync();
 
             // Teardown
             await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
