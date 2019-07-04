@@ -104,5 +104,10 @@ namespace Kinvey
             list.AddRange(Enumerable.Repeat(value, count));
             return list;
         }
+
+        internal static bool IsLessThan(string checkingValue, int comparingValue)
+        {
+            return !int.TryParse(checkingValue, out int checkingValueNumber) || checkingValueNumber < comparingValue;
+        }
     }
 }
