@@ -33,5 +33,8 @@ namespace Kinvey
 		int Remove(PendingWriteAction pending);
         int Remove(IEnumerable<PendingWriteAction> pendings);
 		int RemoveAll ();
-	}
+
+        List<PendingWriteAction> GetFirstN(int limit, int offset, string action);
+
+    }
 }

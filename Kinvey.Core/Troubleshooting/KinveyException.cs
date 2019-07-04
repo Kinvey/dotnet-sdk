@@ -35,11 +35,13 @@ namespace Kinvey
 
 		private string requestID;
 
-		/// <summary>
-		/// Gets the error category.
-		/// </summary>
-		/// <value>The <see cref="KinveyXamarin.EnumErrorCategory"/>  enumeration for this exception.</value>
-		public EnumErrorCategory ErrorCategory
+        private string info;
+
+        /// <summary>
+        /// Gets the error category.
+        /// </summary>
+        /// <value>The <see cref="KinveyXamarin.EnumErrorCategory"/>  enumeration for this exception.</value>
+        public EnumErrorCategory ErrorCategory
 		{
 			get { return this.errorCategory; }
 		}
@@ -83,13 +85,24 @@ namespace Kinvey
 			set { this.debug = value; }
 		}
 
-		/// <summary>
-		/// Gets or sets the request ID associated with this exception.
-		/// This field may be empty if there is no associated request ID with
-		/// this exception (e.g. a client-side validation exception).
-		/// </summary>
-		/// <value>The request ID associated with this exception.</value>
-		public string RequestID
+
+        /// <summary>
+        /// Gets or sets the info string.
+        /// </summary>
+        /// <value>The info string is additional information about the exception.</value>
+        public string Info
+        {
+            get { return info; }
+            set { this.info = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the request ID associated with this exception.
+        /// This field may be empty if there is no associated request ID with
+        /// this exception (e.g. a client-side validation exception).
+        /// </summary>
+        /// <value>The request ID associated with this exception.</value>
+        public string RequestID
 		{
 			get { return this.requestID == null ? String.Empty : this.requestID; }
 			set { this.requestID = value; }
@@ -117,6 +130,7 @@ namespace Kinvey
 		{
 			this.errorCategory = errorCategory;
 			this.errorCode = errorCode;
+            this.info = info;
 
 			Tuple<string, string, string> errorInfo = InfoFromErrorCode(errorCategory, errorCode);
 			this.error = errorInfo.Item1;

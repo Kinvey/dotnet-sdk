@@ -53,5 +53,15 @@ namespace Kinvey
 				entities = value;
 			}
 		}
+
+        /// <summary>
+		/// Sets the response.
+		/// </summary>
+        public void SetResponse(PushDataStoreResponse<T> response)
+        {
+            AddEntities(response.PushEntities);
+            AddExceptions(response.KinveyExceptions);
+            PushCount += response.PushCount;
+        }
 	}
 }
