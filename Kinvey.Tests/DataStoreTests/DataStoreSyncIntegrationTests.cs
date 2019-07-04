@@ -6280,7 +6280,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(9);
             }
 
             // Arrange
@@ -6303,7 +6303,8 @@ namespace Kinvey.Tests
             var pushResponse = await todoSyncStore.PushAsync();
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
-            var existingToDos = await todoSyncStore.FindAsync();
+            var existingToDosSync = await todoSyncStore.FindAsync();
+            var existingToDosNetwork = await todoNetworkStore.FindAsync();
 
             // Teardown
             await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
@@ -6320,11 +6321,17 @@ namespace Kinvey.Tests
 
             Assert.AreEqual(0, pendingWriteActions.Count);
 
-            Assert.AreEqual(4, existingToDos.Count);
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[3].Name) && e.Details.Equals(toDos[3].Details) && e.Value == toDos[3].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.AreEqual(4, existingToDosSync.Count);
+            Assert.IsNotNull(existingToDosSync.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosSync.FirstOrDefault(e => e.ID.Equals(toDos[1].ID) && e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosSync.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosSync.FirstOrDefault(e => e.ID.Equals(toDos[3].ID) && e.Name.Equals(toDos[3].Name) && e.Details.Equals(toDos[3].Details) && e.Value == toDos[3].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+
+            Assert.AreEqual(4, existingToDosNetwork.Count);
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID.Equals(toDos[1].ID) && e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID.Equals(toDos[3].ID) && e.Name.Equals(toDos[3].Name) && e.Details.Equals(toDos[3].Details) && e.Value == toDos[3].Value ));
         }
 
         //[TestMethod]
