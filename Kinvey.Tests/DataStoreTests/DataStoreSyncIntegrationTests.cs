@@ -6280,7 +6280,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(8);
+                MockResponses(9);
             }
 
             // Arrange
