@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -15,79 +15,39 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace Kinvey
 {
 	public class PushRequest <T> : WriteRequest<T, PushDataStoreResponse<T>>
 	{
-		int limit;
-		int offset;
-
-		PushDataStoreResponse<T> response;
-
 		public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
 			: base (client, collection, cache, queue, policy)
 		{
-			limit = 10;
-			offset = 0;
 
-			response = new PushDataStoreResponse<T>();
 		}
 
 		public override async Task <PushDataStoreResponse<T>> ExecuteAsync()
 		{
-			List<PendingWriteAction> pendingActions = SyncQueue.GetFirstN(limit, offset);
+            var response = new PushDataStoreResponse<T>();
 
-			while (pendingActions != null && pendingActions.Count > 0)
-			{
-				var tasks = new List<Task<T>>();
-				foreach (PendingWriteAction pwa in pendingActions)
-				{
-						if (String.Equals("POST", pwa.action))
-						{
-							tasks.Add(HandlePushPOST(pwa));
-						}
-						else if (String.Equals("PUT", pwa.action))
-						{
-							tasks.Add(HandlePushPUT(pwa));
-						}
-						else if (String.Equals("DELETE", pwa.action))
-						{
-							tasks.Add(HandlePushDELETE(pwa));
-						}
-				}
-				try
-				{
-					await Task.WhenAll(tasks.ToArray());
-				}
-				catch (Exception e)
-				{
-					//Do nothing for now
-					response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
-																	EnumErrorCode.ERROR_JSON_RESPONSE,
-																	"",
-																   e));  // TODO provide correct exception
-				}
+            if (HelperMethods.IsLessThan(Client.ApiVersion, 5))
+            {
+                response = await PushSingleActionsAsync();
+            }
+            else
+            {
+                var pushMultiPostActionsResponse = await PushMultiPostActionsAsync();
+                response.SetResponse(pushMultiPostActionsResponse);
 
-				List<T> resultEntities = new List<T>();
-				int resultCount = 0;
-				foreach (var t in tasks)
-				{
-					if (!EqualityComparer<T>.Default.Equals(t.Result, default(T)))
-					{
-						resultEntities.Add(t.Result);
-					}
+                var pushSinglePutActionsResponse = await PushSingleActionsAsync("PUT");
+                response.SetResponse(pushSinglePutActionsResponse);
 
-					resultCount++;
-				}
+                var pushSingleDeleteActionsResponse = await PushSingleActionsAsync("DELETE");
+                response.SetResponse(pushSingleDeleteActionsResponse);
+            }
 
-				response.AddEntities(resultEntities);
-				response.PushCount += resultCount;
-
-				pendingActions = SyncQueue.GetFirstN(limit, offset);
-			}
-
-			return response;
+            return response;
 		}
 
 		public override Task<bool> Cancel()
@@ -95,100 +55,320 @@ namespace Kinvey
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PushRequest not implemented.");
 		}
 
-		private async Task<T> HandlePushPOST(PendingWriteAction pwa)
-		{
-			T entity = default(T);
+        #region Single actions pushes
 
-			try
-			{
-				int result = 0;
+        private async Task<PushDataStoreResponse<T>> PushSingleActionsAsync(string action = null)
+        {
+            var response = new PushDataStoreResponse<T>();
+            var offset = 0;
+            var limit = 10;
 
-				string tempID = pwa.entityId;
+            var pendingActions = string.IsNullOrEmpty(action) ? SyncQueue.GetFirstN(limit, offset) :
+                SyncQueue.GetFirstN(limit, offset, action);
 
-				entity = Cache.FindByID(pwa.entityId);
+            while (pendingActions != null && pendingActions.Count > 0)
+            {
+                var tasks = new List<Task<Tuple<T, KinveyException, int>>>();
+                foreach (PendingWriteAction pwa in pendingActions)
+                {
+                    if (string.Equals("POST", pwa.action))
+                    {
+                        tasks.Add(HandlePushPOST(pwa));
+                    }
+                    else if (string.Equals("PUT", pwa.action))
+                    {
+                        tasks.Add(HandlePushPUT(pwa));
+                    }
+                    else if (string.Equals("DELETE", pwa.action))
+                    {
+                        tasks.Add(HandlePushDELETE(pwa));
+                    }
+                }
 
-				JObject obj = JObject.FromObject(entity);
-				obj["_id"] = null;
-				entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
+                try
+                {
+                    await Task.WhenAll(tasks.ToArray());
+                }
+                catch (Exception e)
+                {
+                    response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+                                                                    EnumErrorCode.ERROR_JSON_RESPONSE,
+                                                                    e.Message,
+                                                                   e));
+                }
 
-				NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest<T>(pwa.collection, entity);
-				entity = await request.ExecuteAsync();
+                var resultEntities = new List<T>();
+                var kinveyExceptions = new List<KinveyException>();
+                var resultCount = 0;
+                foreach (var task in tasks)
+                {
+                    if (!EqualityComparer<T>.Default.Equals(task.Result.Item1, default(T)))
+                    {
+                        resultEntities.Add(task.Result.Item1);
+                    }
 
-				Cache.UpdateCacheSave(entity, tempID);
+                    if (task.Result.Item2 != null)
+                    {
+                        kinveyExceptions.Add(task.Result.Item2);
+                    }
 
-				result = SyncQueue.Remove(pwa);
+                    offset += task.Result.Item3;
 
-				if (result == 0)
-				{
-					offset++;
-				}
-			}
-			catch (KinveyException ke)
-			{
-				response.AddKinveyException(ke);
-				offset++;
-			}
-			return entity;
-		}
+                    resultCount++;
+                }
 
-		private async Task<T> HandlePushPUT(PendingWriteAction pwa)
-		{
-			T entity = default(T);
+                response.AddEntities(resultEntities);
+                response.AddExceptions(kinveyExceptions);
+                response.PushCount += resultCount;
 
-			try
-			{
-				int result = 0;
+                pendingActions = string.IsNullOrEmpty(action) ? SyncQueue.GetFirstN(limit, offset) :
+                SyncQueue.GetFirstN(limit, offset, action);
+            }
 
-				string tempID = pwa.entityId;
-				entity = Cache.FindByID(pwa.entityId);
+            return response;
+        }
 
-				NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, entity, pwa.entityId);
-				entity = await request.ExecuteAsync();
+        private async Task<Tuple<T, KinveyException, int>> HandlePushPOST(PendingWriteAction pwa)
+        {
+            T entity = default(T);
+            var offset = 0;
+            KinveyException kinveyException = null;
+
+            try
+            {
+                int result = 0;
+
+                string tempID = pwa.entityId;
+
+                var localEntity = Cache.FindByID(pwa.entityId);
+
+                JObject obj = JObject.FromObject(localEntity);
+                obj["_id"] = null;
+                localEntity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
+
+                NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest<T>(pwa.collection, localEntity);
+                entity = await request.ExecuteAsync();
+
+                Cache.UpdateCacheSave(entity, tempID);
+
+                result = SyncQueue.Remove(pwa);
+
+                if (result == 0)
+                {
+                    offset++;
+                }
+            }
+            catch (KinveyException ke)
+            {
+                kinveyException = ke;
+                offset++;
+            }
+
+            return new Tuple<T, KinveyException, int>(entity, kinveyException, offset);
+        }
+
+        private async Task<Tuple<T, KinveyException, int>> HandlePushPUT(PendingWriteAction pwa)
+        {
+            T entity = default(T);
+            var offset = 0;
+            KinveyException kinveyException = null;
+
+            try
+            {
+                int result = 0;
+
+                var localEntity = Cache.FindByID(pwa.entityId);
+
+                NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, localEntity, pwa.entityId);
+                entity = await request.ExecuteAsync();
 
                 Cache.UpdateCacheSave(entity, pwa.entityId);
 
                 result = SyncQueue.Remove(pwa);
 
-				if (result == 0)
-				{
-					offset++;
-				}
-			}
-			catch (KinveyException ke)
-			{
-				response.AddKinveyException(ke);
-				offset++;
-			}
+                if (result == 0)
+                {
+                    offset++;
+                }
+            }
+            catch (KinveyException ke)
+            {
+                kinveyException = ke;
+                offset++;
+            }
 
-			return entity;
-		}
+            return new Tuple<T, KinveyException, int>(entity, kinveyException, offset);
+        }
 
-		private async Task<T> HandlePushDELETE(PendingWriteAction pwa)
-		{
-			try
-			{
-				int result = 0;
+        private async Task<Tuple<T, KinveyException, int>> HandlePushDELETE(PendingWriteAction pwa)
+        {
+            var offset = 0;
+            KinveyException kinveyException = null;
 
-				NetworkRequest<KinveyDeleteResponse> request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(pwa.collection, pwa.entityId);
-				KinveyDeleteResponse kdr = await request.ExecuteAsync();
+            try
+            {
+                int result = 0;
 
-				if (kdr.count == 1)
-				{
-					result = SyncQueue.Remove(pwa);
+                NetworkRequest<KinveyDeleteResponse> request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(pwa.collection, pwa.entityId);
+                KinveyDeleteResponse kdr = await request.ExecuteAsync();
 
-					if (result == 0)
-					{
-						offset++;
-					}
-				}
-			}
-			catch (KinveyException ke)
-			{
-				response.AddKinveyException(ke);
-				offset++;
-			}
+                if (kdr.count == 1)
+                {
+                    result = SyncQueue.Remove(pwa);
 
-			return default(T);
-		}
-	}
+                    if (result == 0)
+                    {
+                        offset++;
+                    }
+                }
+            }
+            catch (KinveyException ke)
+            {
+                kinveyException = ke;
+                offset++;
+            }
+
+            return new Tuple<T, KinveyException, int>(default(T), kinveyException, offset);
+        }
+
+        #endregion Single actions pushes
+
+        #region Multiple actions pushes
+
+        private async Task<PushDataStoreResponse<T>> PushMultiPostActionsAsync()
+        {
+            var response = new PushDataStoreResponse<T>();
+            var limit = 10 * Constants.NUMBER_LIMIT_OF_ENTITIES;
+            var offset = 0;
+            var pendingPostActions = SyncQueue.GetFirstN(limit, offset, "POST");
+
+            while (pendingPostActions != null && pendingPostActions.Count > 0)
+            {
+                var tasks = new List<Task<Tuple<PushDataStoreResponse<T>, int>>>();
+
+                var realCountOfMultiInsertOperations = pendingPostActions.Count / (double)Constants.NUMBER_LIMIT_OF_ENTITIES;
+                realCountOfMultiInsertOperations = Math.Ceiling(realCountOfMultiInsertOperations);
+
+                for (var index = 0; index < realCountOfMultiInsertOperations; index++)
+                {
+                    var pendingWritePostActionsForPush = pendingPostActions.Skip(index * Constants.NUMBER_LIMIT_OF_ENTITIES).Take(Constants.NUMBER_LIMIT_OF_ENTITIES).ToList();
+
+                    if (pendingWritePostActionsForPush.Count > 0)
+                    {
+                        tasks.Add(HandlePushMultiPOST(pendingWritePostActionsForPush));
+                    }
+                }
+
+                await Task.WhenAll(tasks.ToArray());
+
+                foreach (var task in tasks)
+                {
+                    response.AddEntities(task.Result.Item1.PushEntities);
+                    response.AddExceptions(task.Result.Item1.KinveyExceptions);
+                    offset += task.Result.Item2;
+                }
+
+                response.PushCount += pendingPostActions.Count;
+
+                pendingPostActions = SyncQueue.GetFirstN(limit, offset, "POST");
+            }
+            return response;
+        }
+
+        private async Task<Tuple<PushDataStoreResponse<T>, int>> HandlePushMultiPOST(ICollection<PendingWriteAction> pendingWriteActions)
+        {
+            var offset = 0;
+            var response = new PushDataStoreResponse<T>();
+
+            var multiInsertNetworkResponse = new KinveyMultiInsertResponse<T>
+            {
+                Entities = new List<T>(),
+                Errors = new List<Error>()
+            };
+            var localData = new List<Tuple<string, T, PendingWriteAction>>();
+            var isException = false;
+
+            try
+            {
+                foreach (var pendingWriteAction in pendingWriteActions)
+                {
+                    var entity = Cache.FindByID(pendingWriteAction.entityId);
+
+                    var obj = JObject.FromObject(entity);
+                    obj["_id"] = null;
+                    entity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
+
+                    localData.Add(new Tuple<string, T, PendingWriteAction>(pendingWriteAction.entityId, entity, pendingWriteAction));
+                }
+
+                var multiInsertNetworkRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, localData.Select(e => e.Item2).ToList());
+                multiInsertNetworkResponse = await multiInsertNetworkRequest.ExecuteAsync();
+
+            }
+            catch (KinveyException ke)
+            {
+                response.AddKinveyException(ke);
+                offset += pendingWriteActions.Count;
+                isException = true;
+            }
+            catch (Exception ex)
+            {
+                response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_GENERAL,
+                                                                EnumErrorCode.ERROR_GENERAL,
+                                                                ex.Message,
+                                                               ex));
+                offset += pendingWriteActions.Count;
+                isException = true;
+            }
+
+            if (!isException)
+            {
+                for (var index = 0; index < localData.Count; index++)
+                {
+                    try
+                    {
+                        if (multiInsertNetworkResponse.Entities[index] != null)
+                        {
+                            Cache.UpdateCacheSave(multiInsertNetworkResponse.Entities[index], localData[index].Item1);
+
+                            var removeResult = SyncQueue.Remove(localData[index].Item3);
+
+                            if (removeResult == 0)
+                            {
+                                offset++;
+                            }
+                        }
+                    }
+                    catch (KinveyException ke)
+                    {
+                        response.AddKinveyException(ke);
+                        offset++;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_GENERAL,
+                                                                        EnumErrorCode.ERROR_GENERAL,
+                                                                        ex.Message,
+                                                                       ex));
+                        offset++;
+                    }
+                }
+            }
+
+            var entities = multiInsertNetworkResponse.Entities.Where(e => e != null).ToList();
+            response.AddEntities(entities);
+
+            foreach (var error in multiInsertNetworkResponse.Errors)
+            {
+                response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_GENERAL, error.Errmsg));
+                offset++;
+            }
+
+            var result = new Tuple<PushDataStoreResponse<T>, int>(response, offset);
+
+            return result;
+        }
+
+        #endregion Multiple actions pushes
+    }
 }
