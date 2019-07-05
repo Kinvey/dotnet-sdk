@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -26,7 +26,7 @@ namespace Kinvey
 		/// <summary>
 		/// The version of the SDK.
 		/// </summary>
-		public static string VERSION = "4.2.1";
+		public static string VERSION = "4.2.2";
 
 		// The kinvey API version.
         internal static readonly string kinveyApiVersion = "4";
