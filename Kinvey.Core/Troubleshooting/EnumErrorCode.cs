@@ -11,6 +11,8 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+
 namespace Kinvey
 {
 	/// <summary>
@@ -141,6 +143,7 @@ namespace Kinvey
         /// <summary>
         /// Error due to exceeding of entities count limit.
         /// </summary>
+        [Obsolete("This enum value has been deprecated.")]
         ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED,
 
         /// <summary>

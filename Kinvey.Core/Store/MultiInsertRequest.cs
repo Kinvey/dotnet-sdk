@@ -14,6 +14,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -244,7 +245,7 @@ namespace Kinvey
                 }
             }
 
-            var multiInsertKinveyDataStoreResponse = new KinveyMultiInsertResponse<T>
+            var multiInsertNetworkResponse = new KinveyMultiInsertResponse<T>
             {
                 Entities = new List<T>(),
                 Errors = new List<Error>()
@@ -252,15 +253,57 @@ namespace Kinvey
 
             if (entitiesToMultiInsert.Count > 0)
             {
-                var multiInsertRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entitiesToMultiInsert);
-                multiInsertKinveyDataStoreResponse = await multiInsertRequest.ExecuteAsync();
+                var countOfMultiInsertOperations = Math.Ceiling(entitiesToMultiInsert.Count / (double)Constants.NUMBER_LIMIT_OF_ENTITIES);
+                var currentIndex = 0;
+                var currentCountOfMultiInsertOperations = 0;
+
+                while (currentCountOfMultiInsertOperations < countOfMultiInsertOperations)
+                {
+                    var tasks = new List<Task<KinveyMultiInsertResponse<T>>>();
+
+                    for (var index = currentCountOfMultiInsertOperations; index < currentCountOfMultiInsertOperations + 10; index++)
+                    {
+                        if (index < countOfMultiInsertOperations)
+                        {
+                            tasks.Add(HandleMultiInsertRequestAsync(entitiesToMultiInsert.Skip(index * Constants.NUMBER_LIMIT_OF_ENTITIES).Take(Constants.NUMBER_LIMIT_OF_ENTITIES).ToList()));
+                        }
+                    }
+
+                    await Task.WhenAll(tasks.ToArray());
+                   
+                    foreach (var task in tasks)
+                    {
+                        for (var index = 0; index < task.Result.Entities.Count; index++)
+                        {
+                            multiInsertNetworkResponse.Entities.Add(task.Result.Entities[index]);
+                            if (task.Result.Entities[index] == null)
+                            {
+                                var error = task.Result.Errors?.Find(er => er.Index == index);
+
+                                if (error != null)
+                                {
+                                    var newError = new Error
+                                    {
+                                        Index = currentIndex,
+                                        Code = error.Code,
+                                        Errmsg = error.Errmsg
+                                    };
+                                    multiInsertNetworkResponse.Errors.Add(newError);
+                                }
+                            }
+                            currentIndex++;
+                        }
+                    }
+
+                    currentCountOfMultiInsertOperations += 10;
+                }
             }
 
-            for (var index = 0; index < multiInsertKinveyDataStoreResponse.Entities.Count; index++)
+            for (var index = 0; index < multiInsertNetworkResponse.Entities.Count; index++)
             {
-                kinveyDataStoreResponse.Entities[initialIndexes[index]] = multiInsertKinveyDataStoreResponse.Entities[index];
+                kinveyDataStoreResponse.Entities[initialIndexes[index]] = multiInsertNetworkResponse.Entities[index];
 
-                var error = multiInsertKinveyDataStoreResponse.Errors?.Find(er => er.Index == index);
+                var error = multiInsertNetworkResponse.Errors?.Find(er => er.Index == index);
 
                 if (error != null)
                 {
@@ -299,6 +342,29 @@ namespace Kinvey
             kinveyDataStoreResponse.Errors.Sort((x, y) => x.Index.CompareTo(y.Index));
 
             return kinveyDataStoreResponse;
+        }
+
+        private async Task<KinveyMultiInsertResponse<T>> HandleMultiInsertRequestAsync(IList<T> entities)
+        {
+            var response = new KinveyMultiInsertResponse<T>();
+
+            try
+            {
+                var multiInsertRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entities.ToList());
+                response = await multiInsertRequest.ExecuteAsync();
+            }
+            catch (Exception exeption)
+            {
+                response.Entities = new List<T>();
+                response.Errors = new List<Error>();
+                for(var index = 0; index < entities.Count(); index ++)
+                {
+                    response.Entities.Add(default(T));
+                    response.Errors.Add(new Error { Code = 0, Errmsg = exeption.Message, Index = index });
+                }                
+            }
+
+            return response;
         }
     }
 }

@@ -5651,78 +5651,168 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertCount101Async()
+        public async Task TestSaveMultiInsert2kCountAsync()
         {
             // Setup
             kinveyClient = BuildClient("5");
+            uint countToUpdate = 21;
+
+            var countToAdd = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
 
             if (MockData)
             {
-                MockResponses(1);
+                MockResponses(21 + 2*countToUpdate + 3);
             }
 
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
-            var toDos = new List<ToDo>();
-
-            for (var index = 0; index < 101; index++)
+            var toDosToAdd = new List<ToDo>();
+            for (var index = 0; index < countToAdd; index++)
             {
-                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
+                var toDo = new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index };
+
+                if ( index % 100 == 0 )
+                {                
+                    toDo = await todoNetworkStore.SaveAsync(toDo);
+                    toDo.Name = string.Concat(toDo.Name, "updated");
+                    toDo.Details = string.Concat(toDo.Details, "updated");
+                }
+
+                toDosToAdd.Add(toDo);
             }
 
             // Act
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-            {
-                await todoStoreNetwork.SaveAsync(toDos);
-            });
+            var savedToDosToAdd = await todoNetworkStore.SaveAsync(toDosToAdd);
+
+            var existingToDosNetwork = await todoNetworkStore.FindAsync();
+
+            // Teardown
+            await todoNetworkStore.RemoveAsync(todoNetworkStore.Where(e => e.Name.StartsWith("Name")));
 
             // Assert
-            Assert.AreEqual(typeof(KinveyException), exception.GetType());
-            var kinveyException = exception as KinveyException;
-            Assert.AreEqual(EnumErrorCategory.ERROR_GENERAL, kinveyException.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED, kinveyException.ErrorCode);
+            Assert.AreEqual(toDosToAdd.Count, savedToDosToAdd.Entities.Count);
+            Assert.AreEqual(0, savedToDosToAdd.Errors.Count);
+
+            for (var index = 0; index < toDosToAdd.Count; index++)
+            {
+                Assert.AreEqual(toDosToAdd[index].Name, savedToDosToAdd.Entities[index].Name);
+                Assert.AreEqual(toDosToAdd[index].Details, savedToDosToAdd.Entities[index].Details);
+                Assert.AreEqual(toDosToAdd[index].Value, savedToDosToAdd.Entities[index].Value);
+            }
+
+            Assert.AreEqual(toDosToAdd.Count, existingToDosNetwork.Count);
+
+            foreach (var toDo in toDosToAdd)
+            {
+                Assert.IsNotNull(existingToDosNetwork.Find(e=> e.Name.Equals(toDo.Name) && e.Details.Equals(toDo.Details) &&
+                e.Value.Equals(toDo.Value)));
+            }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertCountLimitAsync()
+        public async Task TestSaveMultiInsert2kCountWithErrorsAsync()
         {
             // Setup
-            const int countOfEntities = 100;
-
-            kinveyClient = BuildClient("5");
-
             if (MockData)
             {
-                MockResponses(3 + (countOfEntities / Constants.NUMBER_LIMIT_OF_ENTITIES));
+                kinveyClient = BuildClient("5");
+                uint countToUpdate = 21;
+
+                var countToAdd = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+
+                if (MockData)
+                {
+                    MockResponses(20 + 2 * countToUpdate + 3);
+                }
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+                var toDosToAdd = new List<ToDo>();
+                var toDosAdded = new List<ToDo>();
+                var updateCount = 0;
+                var errorCount = 0;
+                var successCount = 0;
+
+                for (var index = 0; index < countToAdd; index++)
+                {
+                    var toDo = new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index };
+
+                    if (index % 100 == 0)
+                    {
+                        toDo = await todoNetworkStore.SaveAsync(toDo);
+                        successCount++;
+                        toDo.Name = string.Concat(toDo.Name, "updated");
+                        toDo.Details = string.Concat(toDo.Details, "updated");
+
+                        if (updateCount % 2 != 0)
+                        {
+                            toDo.GeoLoc = "[200,200]";
+                            errorCount++;
+                        }
+                        else
+                        {
+                            toDosAdded.Add(toDo);
+                        }
+
+                        updateCount++;
+                    }
+                    else
+                    {
+                        if (index % 2 != 0)
+                        {
+                            toDo.GeoLoc = "[200,200]";
+                            errorCount++;
+                        }
+                        else
+                        {
+                            toDosAdded.Add(toDo);
+                            successCount++;
+                        }
+                    }
+
+                    toDosToAdd.Add(toDo);
+                }
+
+                // Act
+                var savedToDosToAdd = await todoNetworkStore.SaveAsync(toDosToAdd);
+
+                var existingToDosNetwork = await todoNetworkStore.FindAsync();
+
+                // Teardown
+                await todoNetworkStore.RemoveAsync(todoNetworkStore.Where(e => e.Name.StartsWith("Name")));
+
+                // Assert
+                Assert.AreEqual(toDosToAdd.Count, savedToDosToAdd.Entities.Count);
+                Assert.AreEqual(errorCount, savedToDosToAdd.Errors.Count);
+
+                for (var index = 0; index < toDosToAdd.Count; index++)
+                {
+                    if (savedToDosToAdd.Entities[index] != null)
+                    {
+                        Assert.AreEqual(toDosToAdd[index].Name, savedToDosToAdd.Entities[index].Name);
+                        Assert.AreEqual(toDosToAdd[index].Details, savedToDosToAdd.Entities[index].Details);
+                        Assert.AreEqual(toDosToAdd[index].Value, savedToDosToAdd.Entities[index].Value);
+                    }
+                    else
+                    {
+                        Assert.IsNotNull(savedToDosToAdd.Errors.Find(e => e.Index == index));
+                    }
+                }
+
+                Assert.AreEqual(successCount, existingToDosNetwork.Count);
+
+                foreach (var toDo in toDosAdded)
+                {
+                    Assert.IsNotNull(existingToDosNetwork.Find(e => e.Name.Equals(toDo.Name) && e.Details.Equals(toDo.Details) &&
+                    e.Value.Equals(toDo.Value)));
+                }
             }
-
-            // Arrange
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-
-            var toDos = new List<ToDo>();
-
-            for (var index = 0; index < countOfEntities; index++)
-            {
-                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
-            }
-
-            // Act
-            var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
-
-            var existingToDos = await todoStoreNetwork.FindAsync();
-
-            //Teardown
-            await todoStoreNetwork.RemoveAsync(todoStoreNetwork.Where(e => e.Name.StartsWith("Name")));
-
-            // Assert
-            Assert.AreEqual(countOfEntities, savedToDos.Entities.Count);
-            Assert.AreEqual(0, savedToDos.Errors.Count);
-            Assert.AreEqual(countOfEntities, existingToDos.Count);
         }
 
         [TestMethod]
