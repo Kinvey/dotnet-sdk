@@ -6066,42 +6066,6 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSyncStoreSaveMultiInsertCount101Async()
-        {
-            // Setup
-            kinveyClient = BuildClient("5");
-
-            if (MockData)
-            {
-                MockResponses(1);
-            }
-
-            // Arrange
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-
-            var toDos = new List<ToDo>();
-
-            for (var index = 0; index < 101; index++)
-            {
-                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
-            }
-
-            // Act
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-            {
-                await todoStore.SaveAsync(toDos);
-            });
-
-            // Assert
-            Assert.AreEqual(typeof(KinveyException), exception.GetType());
-            var kinveyException = exception as KinveyException;
-            Assert.AreEqual(EnumErrorCategory.ERROR_GENERAL, kinveyException.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED, kinveyException.ErrorCode);
-        }
-
-        [TestMethod]
         public async Task TestSyncStoreSaveMultiInsertIncorrectKinveyApiVersionAsync()
         {
             // Setup
@@ -6562,7 +6526,7 @@ namespace Kinvey.Tests
             }
         }
 
-        //[TestMethod]
+        [TestMethod]
         public async Task TestSyncStorePush2kAsync()
         {
             // Setup
@@ -6643,7 +6607,7 @@ namespace Kinvey.Tests
             Assert.AreEqual(countToAdd + countToUpdate, existingToDosNetwork.Count);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public async Task TestSyncStorePush2kWithErrorsAsync()
         {
             // Setup           

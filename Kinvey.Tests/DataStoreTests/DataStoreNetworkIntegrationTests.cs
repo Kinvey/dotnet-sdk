@@ -21,6 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Threading;
 using System.Net.Http;
+using System.Diagnostics;
 
 namespace Kinvey.Tests
 {
@@ -5661,7 +5662,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(21 + 2*countToUpdate + 3);
+                MockResponses(20 + 2*countToUpdate + 3);
             }
 
             // Arrange
@@ -6038,7 +6039,6 @@ namespace Kinvey.Tests
                 Assert.AreEqual(typeof(KinveyException), exception.GetType());
                 var kinveyException = exception as KinveyException;
                 Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(500, kinveyException.StatusCode);
                 Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
             }
         }

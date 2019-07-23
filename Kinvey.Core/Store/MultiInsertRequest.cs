@@ -341,6 +341,11 @@ namespace Kinvey
 
             kinveyDataStoreResponse.Errors.Sort((x, y) => x.Index.CompareTo(y.Index));
 
+            if (kinveyDataStoreResponse.Entities.All(e => e == null) && kinveyDataStoreResponse.Errors.Count > 0)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, kinveyDataStoreResponse.Errors[0].Errmsg);
+            }
+
             return kinveyDataStoreResponse;
         }
 
@@ -353,15 +358,22 @@ namespace Kinvey
                 var multiInsertRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entities.ToList());
                 response = await multiInsertRequest.ExecuteAsync();
             }
-            catch (Exception exeption)
+            catch (KinveyException exeption)
             {
-                response.Entities = new List<T>();
-                response.Errors = new List<Error>();
-                for(var index = 0; index < entities.Count(); index ++)
+                if (exeption.StatusCode == 500)
                 {
-                    response.Entities.Add(default(T));
-                    response.Errors.Add(new Error { Code = 0, Errmsg = exeption.Message, Index = index });
-                }                
+                    response.Entities = new List<T>();
+                    response.Errors = new List<Error>();
+                    for (var index = 0; index < entities.Count(); index++)
+                    {
+                        response.Entities.Add(default(T));
+                        response.Errors.Add(new Error { Code = 0, Errmsg = exeption.Message, Index = index });
+                    }
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return response;

@@ -6449,42 +6449,6 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertCount101Async()
-        {
-            // Setup
-            kinveyClient = BuildClient("5");
-
-            if (MockData)
-            {
-                MockResponses(1);
-            }
-
-            // Arrange
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
-
-            var toDos = new List<ToDo>();
-
-            for (var index = 0; index < 101; index++)
-            {
-                toDos.Add(new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = 0 });
-            }
-
-            // Act
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-            {
-                await todoStore.SaveAsync(toDos);
-            });
-
-            // Assert
-            Assert.AreEqual(typeof(KinveyException), exception.GetType());
-            var kinveyException = exception as KinveyException;
-            Assert.AreEqual(EnumErrorCategory.ERROR_GENERAL, kinveyException.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED, kinveyException.ErrorCode);
-        }
-
-        [TestMethod]
         public async Task TestSaveMultiInsertCountLimitConnectionAvailableAsync()
         {
             // Setup
@@ -6634,7 +6598,6 @@ namespace Kinvey.Tests
                 Assert.AreEqual(typeof(KinveyException), exception.GetType());
                 var kinveyException = exception as KinveyException;
                 Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(500, kinveyException.StatusCode);
                 Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
             }
         }
