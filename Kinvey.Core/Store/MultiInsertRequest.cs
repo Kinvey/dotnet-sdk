@@ -71,16 +71,14 @@ namespace Kinvey
                         }
                     }
 
-                    if (kinveyDataStoreResponse.Entities.FindAll(item => item != null).Count == 0 && kinveyDataStoreResponse.Errors.Count > 0)
-                    {
-                        throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE, string.Empty);
-                    }
+                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE);
 
                     break;
 
                 case WritePolicy.FORCE_NETWORK:
                     // network
                     kinveyDataStoreResponse = await HandleNetworkRequestAsync(entities);
+                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE);
                     break;
 
                 case WritePolicy.LOCAL_THEN_NETWORK:
@@ -111,10 +109,7 @@ namespace Kinvey
                         }
                     }
 
-                    if (kinveyDataStoreResponse.Entities.FindAll(item => item != null).Count == 0 && kinveyDataStoreResponse.Errors.Count > 0)
-                    {
-                        throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE, string.Empty);
-                    }
+                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE);
 
                     HttpRequestException exception = null;
                     try
@@ -168,8 +163,10 @@ namespace Kinvey
                             }
                         }
 
-                        kinveyDataStoreResponse = kinveyDataStoreNetworkResponse;
+                        kinveyDataStoreResponse = kinveyDataStoreNetworkResponse;                        
                     }
+
+                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE);
 
                     break;
 
@@ -341,11 +338,6 @@ namespace Kinvey
 
             kinveyDataStoreResponse.Errors.Sort((x, y) => x.Index.CompareTo(y.Index));
 
-            if (kinveyDataStoreResponse.Entities.All(e => e == null) && kinveyDataStoreResponse.Errors.Count > 0)
-            {
-                throw new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE, kinveyDataStoreResponse.Errors[0].Errmsg);
-            }
-
             return kinveyDataStoreResponse;
         }
 
@@ -377,6 +369,14 @@ namespace Kinvey
             }
 
             return response;
+        }
+
+        private void ThrowExceptionIfOnlyErrors(KinveyMultiInsertResponse<T> kinveyDataStoreResponse, EnumErrorCategory errorCategory, EnumErrorCode errorCode)
+        {
+            if (kinveyDataStoreResponse.Entities.All(e => e == null) && kinveyDataStoreResponse.Errors.Count > 0)
+            {
+                throw new KinveyException(errorCategory, errorCode, kinveyDataStoreResponse.Errors[0].Errmsg);
+            }
         }
     }
 }

@@ -6831,6 +6831,198 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE, kinveyException.ErrorCode);
         }
 
+        [TestMethod]
+        public async Task TestSaveMultiInsert2kCountAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+            uint countToUpdate = 21;
+
+            var countToAdd = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+
+            if (MockData)
+            {
+                MockResponses(20 + 2 * countToUpdate + 3);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+
+            var toDosToAdd = new List<ToDo>();
+            for (var index = 0; index < countToAdd; index++)
+            {
+                var toDo = new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index };
+
+                if (index % 100 == 0)
+                {
+                    toDo = await todoAutoStore.SaveAsync(toDo);
+                    toDo.Name = string.Concat(toDo.Name, "updated");
+                    toDo.Details = string.Concat(toDo.Details, "updated");
+                }
+
+                toDosToAdd.Add(toDo);
+            }
+
+            // Act
+            var savedToDosToAdd = await todoAutoStore.SaveAsync(toDosToAdd);
+
+            var existingToDosNetwork = await todoNetworkStore.FindAsync();
+            var existingToDosSync = await todoSyncStore.FindAsync();
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+
+            // Teardown
+            await todoAutoStore.RemoveAsync(todoAutoStore.Where(e => e.Name.StartsWith("Name")));
+
+            // Assert
+            Assert.AreEqual(toDosToAdd.Count, savedToDosToAdd.Entities.Count);
+            Assert.AreEqual(0, savedToDosToAdd.Errors.Count);
+
+            for (var index = 0; index < toDosToAdd.Count; index++)
+            {
+                Assert.AreEqual(toDosToAdd[index].Name, savedToDosToAdd.Entities[index].Name);
+                Assert.AreEqual(toDosToAdd[index].Details, savedToDosToAdd.Entities[index].Details);
+                Assert.AreEqual(toDosToAdd[index].Value, savedToDosToAdd.Entities[index].Value);
+            }
+
+            Assert.AreEqual(toDosToAdd.Count, existingToDosNetwork.Count);
+
+            foreach (var toDo in toDosToAdd)
+            {
+                Assert.IsNotNull(existingToDosNetwork.Find(e => e.Name.Equals(toDo.Name) && e.Details.Equals(toDo.Details) &&
+                e.Value.Equals(toDo.Value)));
+            }
+
+            Assert.AreEqual(toDosToAdd.Count, existingToDosSync.Count);
+            Assert.IsTrue(existingToDosSync.Any(e => e.Acl != null && e.Kmd != null));
+            Assert.IsTrue(existingToDosSync.Any(e => !e.ID.StartsWith("temp")));
+
+            Assert.AreEqual(0, pendingWriteActions.Count);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsert2kCountWithErrorsAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                kinveyClient = BuildClient("5");
+                uint countToUpdate = 21;
+
+                var countToAdd = 20 * Constants.NUMBER_LIMIT_OF_ENTITIES + 1;
+
+                if (MockData)
+                {
+                    MockResponses(20 + 2 * countToUpdate + 3);
+                }
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+                var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+                var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+
+                var toDosToAdd = new List<ToDo>();
+                var toDosAdded = new List<ToDo>();
+                var updateCount = 0;
+                var errorCount = 0;
+                var errorAddCount = 0;
+                var errorUpdateCount = 0;
+                var successCount = 0;
+
+                for (var index = 0; index < countToAdd; index++)
+                {
+                    var toDo = new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index };
+
+                    if (index % 100 == 0)
+                    {
+                        toDo = await todoAutoStore.SaveAsync(toDo);
+                        successCount++;
+                        toDo.Name = string.Concat(toDo.Name, "updated");
+                        toDo.Details = string.Concat(toDo.Details, "updated");
+
+                        if (updateCount % 2 != 0)
+                        {
+                            toDo.GeoLoc = "[200,200]";
+                            errorUpdateCount++;
+                        }
+                        else
+                        {
+                            toDosAdded.Add(toDo);
+                        }
+
+                        updateCount++;
+                    }
+                    else
+                    {
+                        if (index % 2 != 0)
+                        {
+                            toDo.GeoLoc = "[200,200]";
+                            errorAddCount++;
+                        }
+                        else
+                        {
+                            toDosAdded.Add(toDo);
+                            successCount++;
+                        }
+                    }
+
+                    toDosToAdd.Add(toDo);
+                }
+
+                errorCount = errorAddCount + errorUpdateCount;
+
+                // Act
+                var savedToDosToAdd = await todoAutoStore.SaveAsync(toDosToAdd);
+
+                var existingToDosNetwork = await todoNetworkStore.FindAsync();
+                var existingToDosSync = await todoSyncStore.FindAsync();
+
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+
+                // Teardown
+                await todoAutoStore.RemoveAsync(todoAutoStore.Where(e => e.Name.StartsWith("Name")));
+
+                // Assert
+                Assert.AreEqual(toDosToAdd.Count, savedToDosToAdd.Entities.Count);
+                Assert.AreEqual(errorCount, savedToDosToAdd.Errors.Count);
+
+                for (var index = 0; index < toDosToAdd.Count; index++)
+                {
+                    if (savedToDosToAdd.Entities[index] != null)
+                    {
+                        Assert.AreEqual(toDosToAdd[index].Name, savedToDosToAdd.Entities[index].Name);
+                        Assert.AreEqual(toDosToAdd[index].Details, savedToDosToAdd.Entities[index].Details);
+                        Assert.AreEqual(toDosToAdd[index].Value, savedToDosToAdd.Entities[index].Value);
+                    }
+                    else
+                    {
+                        Assert.IsNotNull(savedToDosToAdd.Errors.Find(e => e.Index == index));
+                    }
+                }
+
+                Assert.AreEqual(successCount, existingToDosNetwork.Count);
+
+                foreach (var toDo in toDosAdded)
+                {
+                    Assert.IsNotNull(existingToDosNetwork.Find(e => e.Name.Equals(toDo.Name) && e.Details.Equals(toDo.Details) &&
+                    e.Value.Equals(toDo.Value)));
+                }
+
+                Assert.AreEqual(toDosToAdd.Count, existingToDosSync.Count);
+                Assert.AreEqual(errorAddCount, existingToDosSync.Count(e => e.Acl == null && e.Kmd == null));
+                Assert.AreEqual(toDosToAdd.Count - errorAddCount, existingToDosSync.Count(e => !e.ID.StartsWith("temp")));
+
+                Assert.AreEqual(errorCount, pendingWriteActions.Count);
+            }
+        }
+
+
         #endregion Save
 
         #region Get count
