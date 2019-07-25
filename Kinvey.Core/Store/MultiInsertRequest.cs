@@ -350,16 +350,16 @@ namespace Kinvey
                 var multiInsertRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entities.ToList());
                 response = await multiInsertRequest.ExecuteAsync();
             }
-            catch (KinveyException exeption)
+            catch (KinveyException exception)
             {
-                if (exeption.StatusCode == 500)
+                if (exception.StatusCode == 500)
                 {
                     response.Entities = new List<T>();
                     response.Errors = new List<Error>();
                     for (var index = 0; index < entities.Count(); index++)
                     {
                         response.Entities.Add(default(T));
-                        response.Errors.Add(new Error { Code = 0, Errmsg = exeption.Message, Index = index });
+                        response.Errors.Add(new Error { Code = 0, Errmsg = exception.Message, Index = index });
                     }
                 }
                 else
