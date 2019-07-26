@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -5816,10 +5817,9 @@ namespace Kinvey.Tests
             // Act
             var savedItem = await autoStore.SaveAsync(newItem);
 
-            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
-            var existingItemNetwork = await networkStore.FindByIDAsync(savedItem.ID);
+            var existingItemsCache = await syncStore.FindAsync();
+            var existingItemsNetwork = await networkStore.FindAsync();
             
-
             //Teardown
             await networkStore.RemoveAsync(savedItem.ID);
 
@@ -5828,18 +5828,20 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem.Name, savedItem.Name);
             Assert.AreEqual(newItem.Details, savedItem.Details);
             Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
-            Assert.IsNotNull(existingItemCache);
-            Assert.AreEqual(newItem.Name, existingItemCache.Name);
-            Assert.AreEqual(newItem.Details, existingItemCache.Details);
-            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
-            Assert.IsNotNull(existingItemCache.Acl);
-            Assert.IsNotNull(existingItemCache.Kmd);
-            Assert.AreNotEqual(string.Empty, existingItemCache.Kmd.entityCreationTime);
-            Assert.AreNotEqual(string.Empty, existingItemCache.Kmd.lastModifiedTime);
-            Assert.IsNotNull(existingItemNetwork);
-            Assert.AreEqual(newItem.Name, existingItemNetwork.Name);
-            Assert.AreEqual(newItem.Details, existingItemNetwork.Details);
-            Assert.AreEqual(newItem.DueDate, existingItemNetwork.DueDate);          
+            Assert.IsNotNull(existingItemsCache);
+            Assert.AreEqual(1, existingItemsCache.Count);
+            Assert.AreEqual(newItem.Name, existingItemsCache[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsCache[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsCache[0].DueDate);
+            Assert.IsNotNull(existingItemsCache[0].Acl);
+            Assert.IsNotNull(existingItemsCache[0].Kmd);
+            Assert.IsFalse(string.IsNullOrEmpty(existingItemsCache[0].Kmd.entityCreationTime));
+            Assert.IsFalse(string.IsNullOrEmpty(existingItemsCache[0].Kmd.lastModifiedTime));
+            Assert.IsNotNull(existingItemsNetwork);
+            Assert.AreEqual(1, existingItemsNetwork.Count);
+            Assert.AreEqual(newItem.Name, existingItemsNetwork[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsNetwork[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsNetwork[0].DueDate);          
         }
 
         [TestMethod]
@@ -5873,7 +5875,7 @@ namespace Kinvey.Tests
             var savedItem = await autoStore.SaveAsync(newItem);
             SetRootUrlToKinveyClient(kinveyUrl);
 
-            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
+            var existingItemsCache = await syncStore.FindAsync();
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
             //Teardown
@@ -5884,12 +5886,13 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem.Name, savedItem.Name);
             Assert.AreEqual(newItem.Details, savedItem.Details);
             Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
-            Assert.IsNotNull(existingItemCache);
-            Assert.AreEqual(newItem.Name, existingItemCache.Name);
-            Assert.AreEqual(newItem.Details, existingItemCache.Details);
-            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
-            Assert.IsNull(existingItemCache.Acl);
-            Assert.IsNull(existingItemCache.Kmd);
+            Assert.IsNotNull(existingItemsCache);
+            Assert.AreEqual(1, existingItemsCache.Count);
+            Assert.AreEqual(newItem.Name, existingItemsCache[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsCache[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsCache[0].DueDate);
+            Assert.IsNull(existingItemsCache[0].Acl);
+            Assert.IsNull(existingItemsCache[0].Kmd);
             Assert.AreEqual(1, pendingWriteActions.Count);
             var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedItem.ID);
             Assert.IsNotNull(pendingWriteAction1);
@@ -5925,8 +5928,8 @@ namespace Kinvey.Tests
             // Act
             var savedItem = await autoStore.SaveAsync(newItem);
 
-            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
-            var existingItemNetwork = await networkStore.FindByIDAsync(savedItem.ID);
+            var existingItemsCache = await syncStore.FindAsync();
+            var existingItemsNetwork = await networkStore.FindAsync();
 
 
             //Teardown
@@ -5938,17 +5941,20 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem.Name, savedItem.Name);
             Assert.AreEqual(newItem.Details, savedItem.Details);
             Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
-            Assert.IsNotNull(existingItemCache);
-            Assert.AreEqual(newItem.Name, existingItemCache.Name);
-            Assert.AreEqual(newItem.Details, existingItemCache.Details);
-            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
-            Assert.IsNull(existingItemCache.Acl);
-            Assert.IsNull(existingItemCache.Kmd);
-            Assert.IsNotNull(existingItemNetwork);
-            Assert.AreEqual(newItem.ID, existingItemNetwork.ID);
-            Assert.AreEqual(newItem.Name, existingItemNetwork.Name);
-            Assert.AreEqual(newItem.Details, existingItemNetwork.Details);
-            Assert.AreEqual(newItem.DueDate, existingItemNetwork.DueDate);
+            Assert.IsNotNull(existingItemsCache);
+            Assert.AreEqual(1, existingItemsCache.Count);
+            Assert.AreEqual(newItem.ID, existingItemsCache[0].ID);
+            Assert.AreEqual(newItem.Name, existingItemsCache[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsCache[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsCache[0].DueDate);
+            Assert.IsNull(existingItemsCache[0].Acl);
+            Assert.IsNull(existingItemsCache[0].Kmd);
+            Assert.IsNotNull(existingItemsNetwork);
+            Assert.AreEqual(1, existingItemsNetwork.Count);
+            Assert.AreEqual(newItem.ID, existingItemsNetwork[0].ID);
+            Assert.AreEqual(newItem.Name, existingItemsNetwork[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsNetwork[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsNetwork[0].DueDate);
         }
 
         [TestMethod]
@@ -5982,7 +5988,7 @@ namespace Kinvey.Tests
             var savedItem = await autoStore.SaveAsync(newItem);
             SetRootUrlToKinveyClient(kinveyUrl);
 
-            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
+            var existingItemsCache = await syncStore.FindAsync();
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
             //Teardown
@@ -5994,13 +6000,14 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem.Name, savedItem.Name);
             Assert.AreEqual(newItem.Details, savedItem.Details);
             Assert.AreEqual(newItem.DueDate, savedItem.DueDate);
-            Assert.IsNotNull(existingItemCache);
-            Assert.AreEqual(newItem.ID, existingItemCache.ID);
-            Assert.AreEqual(newItem.Name, existingItemCache.Name);
-            Assert.AreEqual(newItem.Details, existingItemCache.Details);
-            Assert.AreEqual(newItem.DueDate, existingItemCache.DueDate);
-            Assert.IsNull(existingItemCache.Acl);
-            Assert.IsNull(existingItemCache.Kmd);
+            Assert.IsNotNull(existingItemsCache);
+            Assert.AreEqual(1, existingItemsCache.Count);
+            Assert.AreEqual(newItem.ID, existingItemsCache[0].ID);
+            Assert.AreEqual(newItem.Name, existingItemsCache[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsCache[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsCache[0].DueDate);
+            Assert.IsNull(existingItemsCache[0].Acl);
+            Assert.IsNull(existingItemsCache[0].Kmd);
             Assert.AreEqual(1, pendingWriteActions.Count);
             var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == newItem.ID);
             Assert.IsNotNull(pendingWriteAction1);
@@ -6160,21 +6167,24 @@ namespace Kinvey.Tests
             // Assert
             Assert.AreEqual(2, savedToDos.Entities.Count);
             Assert.AreEqual(0, savedToDos.Errors.Count);
+            Assert.AreEqual(toDos[0].ID, savedToDos.Entities[0].ID);
             Assert.AreEqual(toDos[0].Name, savedToDos.Entities[0].Name);
             Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
             Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
             Assert.AreEqual(user.Id, savedToDos.Entities[0].Acl.Creator);
+            Assert.AreEqual(toDos[1].ID, savedToDos.Entities[1].ID);
             Assert.AreEqual(toDos[1].Name, savedToDos.Entities[1].Name);
             Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
             Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
             Assert.AreEqual(user.Id, savedToDos.Entities[1].Acl.Creator);
             Assert.AreEqual(0, pendingWriteActions.Count);
             Assert.AreEqual(2, existingToDosCache.Count);
-            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID && savedToDos.Entities[1].Kmd != null && savedToDos.Entities[1].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == toDos[0].ID && e.Name == toDos[0].Name && e.Details == toDos[0].Details && e.Value == toDos[0].Value && e.Kmd != null && e.Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == toDos[1].ID && e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value && e.Kmd != null && e.Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
             Assert.AreEqual(2, existingToDosNetwork.Count);
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == toDos[0].ID && e.Name == toDos[0].Name && e.Details == toDos[0].Details && e.Value == toDos[0].Value));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == toDos[1].ID && e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value));
+            Assert.AreEqual(2, existingToDosNetwork.Count);
         }
 
         [TestMethod]
@@ -6249,15 +6259,16 @@ namespace Kinvey.Tests
             Assert.AreEqual(user.Id, savedToDos.Entities[3].Acl.Creator);
             Assert.AreEqual(0, pendingWriteActions.Count);
             Assert.AreEqual(4, existingToDosLocal.Count);
-            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID && savedToDos.Entities[1].Kmd != null && savedToDos.Entities[1].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[2].ID && savedToDos.Entities[2].Kmd != null && savedToDos.Entities[2].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == savedToDos.Entities[3].ID && savedToDos.Entities[3].Kmd != null && savedToDos.Entities[3].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name == toDos[0].Name && e.Details == toDos[0].Details && e.Value == toDos[0].Value && e.Kmd != null && e.Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == toDos[1].ID && e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value && e.Kmd != null && e.Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name == toDos[2].Name && e.Details == toDos[2].Details && e.Value == toDos[2].Value && e.Kmd != null && e.Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.ID == toDos[3].ID && e.Name == toDos[3].Name && e.Details == toDos[3].Details && e.Value == toDos[3].Value && e.Kmd != null && e.Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+
             Assert.AreEqual(4, existingToDosNetwork.Count);
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[2].ID));
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[3].ID));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name == toDos[0].Name && e.Details == toDos[0].Details && e.Value == toDos[0].Value));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == toDos[1].ID && e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name == toDos[2].Name && e.Details == toDos[2].Details && e.Value == toDos[2].Value ));
+            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == toDos[3].ID && e.Name == toDos[3].Name && e.Details == toDos[3].Details && e.Value == toDos[3].Value));
         }
 
         [TestMethod]
@@ -6631,60 +6642,60 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestSaveMultiInsertNewItemsWithErrorsConnectionAvailableAsync()
         {
-            // Setup
-            kinveyClient = BuildClient("5");
-
             if (MockData)
             {
+                // Setup
+                kinveyClient = BuildClient("5");
+
                 MockResponses(4);
+
+                // Arrange
+                var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+                var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+                var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+                var toDos = new List<ToDo>
+                {
+                    new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                    new ToDo { Name = "Name2", Details = "Details2", Value = 2,  GeoLoc = "[200,200]" }
+                };
+
+                // Act
+                var savedToDos = await autoToDoStore.SaveAsync(toDos);
+
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+                var existingToDosCache = await syncToDoStore.FindAsync();
+                var existingToDosNetwork = await networkToDoStore.FindAsync();
+
+                // Teardown
+                await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
+
+                // Assert
+                Assert.AreEqual(2, savedToDos.Entities.Count);
+                Assert.AreEqual(1, savedToDos.Errors.Count);
+                Assert.AreEqual(toDos[0].Name, savedToDos.Entities[0].Name);
+                Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
+                Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
+                Assert.AreEqual(user.Id, savedToDos.Entities[0].Acl.Creator);
+                Assert.IsNull(savedToDos.Entities[1]);
+                Assert.AreEqual(1, savedToDos.Errors[0].Index);
+
+                var existingToDo1 = existingToDosCache.FirstOrDefault(e => e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value);
+
+                Assert.AreEqual(1, pendingWriteActions.Count);
+                var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDo1.ID);
+                Assert.IsNotNull(pendingWriteAction1);
+                Assert.AreEqual("POST", pendingWriteAction1.action);
+
+                Assert.AreEqual(2, existingToDosCache.Count);
+                Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+                Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == existingToDo1.ID && existingToDo1.Kmd == null && existingToDo1.Acl == null));
+
+                Assert.AreEqual(1, existingToDosNetwork.Count);
+                Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
             }
-
-            // Arrange
-            var user = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            var autoToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
-            var syncToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
-            var networkToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
-
-            var toDos = new List<ToDo>
-            {
-                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
-                new ToDo { Name = "Name2", Details = "Details2", Value = 2,  GeoLoc = "[200,200]" }
-            };
-
-            // Act
-            var savedToDos = await autoToDoStore.SaveAsync(toDos);
-
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDosCache = await syncToDoStore.FindAsync();
-            var existingToDosNetwork = await networkToDoStore.FindAsync();
-
-            // Teardown
-            await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
-
-            // Assert
-            Assert.AreEqual(2, savedToDos.Entities.Count);
-            Assert.AreEqual(1, savedToDos.Errors.Count);
-            Assert.AreEqual(toDos[0].Name, savedToDos.Entities[0].Name);
-            Assert.AreEqual(toDos[0].Details, savedToDos.Entities[0].Details);
-            Assert.AreEqual(toDos[0].Value, savedToDos.Entities[0].Value);
-            Assert.AreEqual(user.Id, savedToDos.Entities[0].Acl.Creator);
-            Assert.IsNull(savedToDos.Entities[1]);
-            Assert.AreEqual(1, savedToDos.Errors[0].Index);
-
-            var existingToDo1 = existingToDosCache.FirstOrDefault(e => e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value);
-
-            Assert.AreEqual(1, pendingWriteActions.Count);
-            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDo1.ID);
-            Assert.IsNotNull(pendingWriteAction1);
-            Assert.AreEqual("POST", pendingWriteAction1.action);
-
-            Assert.AreEqual(2, existingToDosCache.Count);
-            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID && savedToDos.Entities[0].Kmd != null && savedToDos.Entities[0].Acl != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDosCache.FirstOrDefault(e => e.ID == existingToDo1.ID && existingToDo1.Kmd == null && existingToDo1.Acl == null));
-
-            Assert.AreEqual(1, existingToDosNetwork.Count);
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
         }
 
         [TestMethod]
@@ -7658,7 +7669,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(6);
+                MockResponses(5);
             }
 
             // Arrange
@@ -7708,7 +7719,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(11);
+                MockResponses(10);
             }
 
             // Arrange
@@ -7758,9 +7769,9 @@ namespace Kinvey.Tests
             // Assert
             Assert.AreEqual(4, pushResponse.PushCount);
             Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
-            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.ID.Equals(toDos[1].ID) && e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
             Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
-            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[3].Name) && e.Details.Equals(toDos[3].Details) && e.Value == toDos[3].Value));
+            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.ID.Equals(toDos[3].ID) && e.Name.Equals(toDos[3].Name) && e.Details.Equals(toDos[3].Details) && e.Value == toDos[3].Value));
 
             Assert.AreEqual(0, pendingWriteActions.Count);
 
@@ -7837,7 +7848,7 @@ namespace Kinvey.Tests
                 // Setup
                 kinveyClient = BuildClient("5");
 
-                MockResponses(6);
+                MockResponses(4);
 
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
@@ -7869,12 +7880,13 @@ namespace Kinvey.Tests
 
                 // Assert
                 Assert.AreEqual(3, pushResponse.PushCount);
-                Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
-                Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+                Assert.IsNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+                Assert.IsNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
                 Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
 
                 Assert.AreEqual(2, pushResponse.KinveyExceptions.Count);
-                Assert.IsTrue(!pushResponse.KinveyExceptions.Any(e => e.StatusCode != 400));
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, pushResponse.KinveyExceptions[0].ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_GENERAL, pushResponse.KinveyExceptions[0].ErrorCode);
 
                 Assert.AreEqual(2, pendingWriteActions.Count);
                 var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
@@ -7896,13 +7908,13 @@ namespace Kinvey.Tests
 
         [TestMethod]
         public async Task TestPushNewSeparateItemsAsync()
-        {
+        {           
             // Setup
             kinveyClient = BuildClient("5");
 
             if (MockData)
             {
-                MockResponses(6);
+                MockResponses(5);
             }
 
             // Arrange
@@ -9672,80 +9684,70 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestSyncNewItemsWithErrorsAsync()
         {
-            // Setup
-            kinveyClient = BuildClient();
-
-            var builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
-
             if (MockData)
             {
-                builder.setBaseURL("http://localhost:8080");
+                // Setup
+                kinveyClient = BuildClient("5");
+
+                MockResponses(5);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+                var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+                var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+
+                var toDos = new List<ToDo>
+                {
+                    new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
+                    new ToDo { Name = "Name2", Details = "Details2", Value = 2, GeoLoc = "[200,200]" },
+                    new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
+                };
+
+                // Act
+                SetRootUrlToKinveyClient(unreachableUrl);
+                var savedToDos = await todoAutoStore.SaveAsync(toDos);
+                SetRootUrlToKinveyClient(kinveyUrl);
+
+                var syncResponse = await todoAutoStore.SyncAsync();
+
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+                var existingToDosNetwork = await todoNetworkStore.FindAsync();
+                var existingToDosLocal = await todoSyncStore.FindAsync();
+
+                // Teardown
+                await todoNetworkStore.RemoveAsync(existingToDosNetwork[0].ID);
+                await todoNetworkStore.RemoveAsync(existingToDosNetwork[1].ID);
+
+                // Assert
+                Assert.AreEqual(3, syncResponse.PushResponse.PushCount);
+                Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+                Assert.IsNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+                Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+
+                Assert.AreEqual(1, syncResponse.PullResponse.KinveyExceptions.Count);
+                Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE, syncResponse.PullResponse.KinveyExceptions[0].ErrorCode);
+                Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, syncResponse.PullResponse.KinveyExceptions[0].ErrorCategory);
+
+                Assert.AreEqual(1, syncResponse.PushResponse.KinveyExceptions.Count);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, syncResponse.PushResponse.KinveyExceptions[0].ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_GENERAL, syncResponse.PushResponse.KinveyExceptions[0].ErrorCode);
+
+                Assert.AreEqual(1, pendingWriteActions.Count);
+                var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
+                Assert.IsNotNull(pendingWriteAction1);
+                Assert.AreEqual("POST", pendingWriteAction1.action);
+
+                Assert.AreEqual(2, existingToDosNetwork.Count);
+                Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
+                Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
+
+                Assert.AreEqual(3, existingToDosLocal.Count);
+                Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
+                Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
+                Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
             }
-
-            builder.SetApiVersion("5");
-
-            kinveyClient = builder.Build();
-
-            if (MockData)
-            {
-                MockResponses(7);
-            }
-
-            // Arrange
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
-            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
-            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
-
-            var toDos = new List<ToDo>
-            {
-                new ToDo { Name = "Name1", Details = "Details1", Value = 1 },
-                new ToDo { Name = "Name2", Details = "Details2", Value = 2, GeoLoc = "[200,200]" },
-                new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
-            };
-
-            // Act
-            SetRootUrlToKinveyClient(unreachableUrl);
-            var savedToDos = await todoAutoStore.SaveAsync(toDos);
-            SetRootUrlToKinveyClient(kinveyUrl);
-
-            var syncResponse = await todoAutoStore.SyncAsync();
-
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDosNetwork = await todoNetworkStore.FindAsync();
-            var existingToDosLocal = await todoSyncStore.FindAsync();
-
-            // Teardown
-            await todoNetworkStore.RemoveAsync(existingToDosNetwork[0].ID);
-            await todoNetworkStore.RemoveAsync(existingToDosNetwork[1].ID);
-
-            // Assert
-            Assert.AreEqual(3, syncResponse.PushResponse.PushCount);
-            Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
-            Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
-            Assert.IsNotNull(syncResponse.PushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
-
-            Assert.AreEqual(1, syncResponse.PullResponse.KinveyExceptions.Count);
-            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE, syncResponse.PullResponse.KinveyExceptions[0].ErrorCode);
-            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, syncResponse.PullResponse.KinveyExceptions[0].ErrorCategory);
-
-            Assert.AreEqual(1, syncResponse.PushResponse.KinveyExceptions.Count);
-            Assert.AreEqual(400, syncResponse.PushResponse.KinveyExceptions[0].StatusCode);
-
-            Assert.AreEqual(1, pendingWriteActions.Count);
-            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
-            Assert.IsNotNull(pendingWriteAction1);
-            Assert.AreEqual("POST", pendingWriteAction1.action);
-
-            Assert.AreEqual(2, existingToDosNetwork.Count);
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
-            Assert.IsNotNull(existingToDosNetwork.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value));
-
-            Assert.AreEqual(3, existingToDosLocal.Count);
-            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
-            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
-            Assert.IsNotNull(existingToDosLocal.FirstOrDefault(e => e.Name.Equals(toDos[2].Name) && e.Details.Equals(toDos[2].Details) && e.Value == toDos[2].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
         }
 
         #endregion Sync

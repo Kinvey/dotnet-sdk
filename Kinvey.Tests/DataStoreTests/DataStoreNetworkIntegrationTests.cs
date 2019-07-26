@@ -5293,16 +5293,17 @@ namespace Kinvey.Tests
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+            var existingToDos = await todoStore.FindAsync();
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
 
             // Assert
-            Assert.IsNotNull(existingToDo);
-            Assert.AreEqual(newItem.Name, existingToDo.Name);
-            Assert.AreEqual(newItem.Details, existingToDo.Details);
-            Assert.AreEqual(newItem.DueDate, existingToDo.DueDate);
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(1, existingToDos.Count);
+            Assert.AreEqual(newItem.Name, existingToDos[0].Name);
+            Assert.AreEqual(newItem.Details, existingToDos[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingToDos[0].DueDate);
         }
 
         [TestMethod]
@@ -5331,17 +5332,18 @@ namespace Kinvey.Tests
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+            var existingToDos = await todoStore.FindAsync();
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
 
             // Assert
-            Assert.IsNotNull(existingToDo);
-            Assert.AreEqual(newItem.ID, existingToDo.ID);
-            Assert.AreEqual(newItem.Name, existingToDo.Name);
-            Assert.AreEqual(newItem.Details, existingToDo.Details);
-            Assert.AreEqual(newItem.DueDate, existingToDo.DueDate);
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(1, existingToDos.Count);
+            Assert.AreEqual(newItem.ID, existingToDos[0].ID);
+            Assert.AreEqual(newItem.Name, existingToDos[0].Name);
+            Assert.AreEqual(newItem.Details, existingToDos[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingToDos[0].DueDate);
         }
 
         [TestMethod]
@@ -5407,17 +5409,18 @@ namespace Kinvey.Tests
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+            var existingToDos = await todoStore.FindAsync();
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
 
             // Assert
-            Assert.IsNotNull(existingToDo);
-            Assert.AreEqual(newItem.ID, existingToDo.ID);
-            Assert.AreEqual(newItem.Name, existingToDo.Name);
-            Assert.AreEqual(newItem.Details, existingToDo.Details);
-            Assert.AreEqual(newItem.DueDate, existingToDo.DueDate);
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(1, existingToDos.Count);
+            Assert.AreEqual(newItem.ID, existingToDos[0].ID);
+            Assert.AreEqual(newItem.Name, existingToDos[0].Name);
+            Assert.AreEqual(newItem.Details, existingToDos[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingToDos[0].DueDate);
         }
 
         [TestMethod]
@@ -5508,8 +5511,8 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
             Assert.IsNotNull(existingToDos);
             Assert.AreEqual(2, existingToDos.Count);
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name == toDos[0].Name && e.Details == toDos[0].Details && e.Value == toDos[0].Value));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == toDos[0].ID &&  e.Name == toDos[0].Name && e.Details == toDos[0].Details && e.Value == toDos[0].Value));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == toDos[1].ID && e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value));
         }
 
         [TestMethod]
@@ -5577,9 +5580,9 @@ namespace Kinvey.Tests
             Assert.IsNotNull(existingToDos);
             Assert.AreEqual(4, existingToDos.Count);
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name == toDos[0].Name && e.Details == toDos[0].Details && e.Value == toDos[0].Value));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == toDos[1].ID && e.Name == toDos[1].Name && e.Details == toDos[1].Details && e.Value == toDos[1].Value));
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name == toDos[2].Name && e.Details == toDos[2].Details && e.Value == toDos[2].Value));
-            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name == toDos[3].Name && e.Details == toDos[3].Details && e.Value == toDos[3].Value));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == toDos[3].ID && e.Name == toDos[3].Name && e.Details == toDos[3].Details && e.Value == toDos[3].Value));
         }
 
         [TestMethod]
