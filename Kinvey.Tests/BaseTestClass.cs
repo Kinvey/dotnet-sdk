@@ -243,7 +243,14 @@ namespace Kinvey.Tests
                     {
                         user["_kmd"] = new JObject
                         {
-                            ["authtoken"] = TestSetup.auth_token_for_401_response_fake
+                            ["authtoken"] = TestSetup.auth_token_insufficient_credentials_for_401_response_fake
+                        };
+                    }
+                    else if (user["username"].ToString().Equals(TestSetup.user_with_corrupted_auth_token) && user["password"].ToString().Equals(TestSetup.pass_for_user_with_corrupted_auth_token))
+                    {
+                        user["_kmd"] = new JObject
+                        {
+                            ["authtoken"] = TestSetup.auth_token_corrupted_for_401_response_fake
                         };
                     }
                     else
@@ -945,6 +952,19 @@ namespace Kinvey.Tests
                         },
                     };
 
+                    var userWithCorruptedAuthTokenId = Guid.NewGuid().ToString();
+                    users[userWithCorruptedAuthTokenId] = new JObject
+                    {
+                        ["_id"] = userWithCorruptedAuthTokenId,
+                        ["username"] = TestSetup.user_with_corrupted_auth_token,
+                        ["password"] = TestSetup.pass_for_user_with_corrupted_auth_token,
+                        ["email"] = $"{Guid.NewGuid().ToString()}@kinvey.com",
+                        ["_acl"] = new JObject()
+                        {
+                            ["creator"] = userWithCorruptedAuthTokenId,
+                        },
+                    };
+
                     #endregion Existing users
 
                     #region Social networks users
@@ -1114,6 +1134,33 @@ namespace Kinvey.Tests
                         {
                             Assert.IsNotNull(authorization);
                             Assert.IsFalse(string.IsNullOrEmpty(authorization));
+                           
+                            if (authorization.Contains(TestSetup.auth_token_insufficient_credentials_for_401_response_fake, StringComparison.Ordinal))
+                            {
+                                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                                var error = new JObject
+                                {
+                                    ["error"] = "InsufficientCredentials",
+                                    ["description"] = "The credentials used to authenticate this request are not authorized to run this operation. Please retry your request with appropriate credentials.",
+                                    ["debug"] = "You do not have access to create entities in this collection",
+                                };
+                                Write(context, error);
+                                continue;
+                            }
+
+                            if (authorization.Contains(TestSetup.auth_token_corrupted_for_401_response_fake, StringComparison.Ordinal))
+                            {
+                                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                                var error = new JObject
+                                {
+                                    ["error"] = "InvalidCredentials",
+                                    ["description"] = "Invalid credentials. Please retry your request with correct credentials.",
+                                    ["debug"] = "Unable to validate the authorization token included in the request",
+                                };
+                                Write(context, error);
+                                continue;
+                            }
+                            
                             if (authorization.Contains(TestSetup.auth_token_for_401_response_fake, StringComparison.Ordinal))
                             {
                                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;

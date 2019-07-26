@@ -693,6 +693,43 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestActionWithCorruptedAuthTokenAsync()
+        {
+            // Setup
+            if (MockData)
+            {
+                MockResponses(2);
+
+                await User.LoginAsync(TestSetup.user_with_corrupted_auth_token, TestSetup.pass_for_user_with_corrupted_auth_token, kinveyClient);
+
+                // Arrange
+                var newItem = new ToDo
+                {
+                    Name = "Next Task",
+                    Details = "A test",
+                    DueDate = "2016-04-19T20:02:17.635Z"
+                };
+                ToDo savedToDo = null;
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+                // Act              
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    savedToDo = await todoStore.SaveAsync(newItem);
+                });
+
+                // Assert
+                Assert.IsNotNull(exception);
+                Assert.AreEqual(exception.GetType(), typeof(KinveyException));
+                var ke = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+                Assert.IsNull(savedToDo);
+                Assert.IsNull(kinveyClient.ActiveUser);
+            }
+        }
+
+        [TestMethod]
         public async Task TestLogout()
         {
             // Arrange

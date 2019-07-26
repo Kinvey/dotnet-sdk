@@ -6327,7 +6327,7 @@ namespace Kinvey.Tests
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[3].Name) && e.Details.Equals(toDos[3].Details) && e.Value == toDos[3].Value && e.Acl != null && e.Kmd != null && !string.IsNullOrEmpty(e.Kmd.entityCreationTime) && !string.IsNullOrEmpty(e.Kmd.lastModifiedTime)));
         }
 
-        //[TestMethod]
+        [TestMethod]
         public async Task TestSyncStorePushNewItemsInvalidPermissionsAsync()
         {
             // Setup
@@ -6335,7 +6335,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(3);
+                MockResponses(2);
             }
 
             // Arrange
@@ -6353,35 +6353,36 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoSyncStore.SaveAsync(toDos);
 
-            var pushResponse = await todoSyncStore.PushAsync();
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoSyncStore.PushAsync();
+            });
 
-            //var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
-            //var existingToDos = await todoSyncStore.FindAsync();
 
-            // Teardown
-            //await todoSyncStore.RemoveAsync(savedToDos.Entities[0].ID);
-            //await todoSyncStore.RemoveAsync(savedToDos.Entities[1].ID);
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var existingToDos = await todoSyncStore.FindAsync();
+
+            //Teardown
+            await todoSyncStore.RemoveAsync(todoNetworkStore.Where(e=>e.Name.StartsWith("Name")));
 
             // Assert
-            Assert.AreEqual(2, pushResponse.PushCount);
-            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value));
-            Assert.IsNotNull(pushResponse.PushEntities.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value));
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(exception.GetType(), typeof(KinveyException));
+            var ke = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
 
-            Assert.AreEqual(2, pushResponse.KinveyExceptions.Count);
-            Assert.IsTrue(!pushResponse.KinveyExceptions.Any(e=> e.StatusCode != 401));
+            Assert.AreEqual(2, existingToDos.Count);
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));
+            Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
 
-
-            //Assert.AreEqual(2, pendingWriteActions.Count);
-            //var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
-            //Assert.IsNotNull(pendingWriteAction1);
-            //Assert.AreEqual("POST", pendingWriteAction1.action);
-            //var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
-            //Assert.IsNotNull(pendingWriteAction2);
-            //Assert.AreEqual("POST", pendingWriteAction2.action);
-
-            //Assert.AreEqual(2, existingToDos.Count);
-            //Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));
-            //Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
+            Assert.AreEqual(2, pendingWriteActions.Count);
+            var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDos[0].ID);
+            Assert.IsNotNull(pendingWriteAction1);
+            Assert.AreEqual("POST", pendingWriteAction1.action);
+            var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDos[1].ID);
+            Assert.IsNotNull(pendingWriteAction2);
+            Assert.AreEqual("POST", pendingWriteAction2.action);     
         }
 
         [TestMethod]
