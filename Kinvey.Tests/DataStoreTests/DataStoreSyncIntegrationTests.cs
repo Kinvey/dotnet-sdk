@@ -6349,7 +6349,6 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
 
             var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-            var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6360,24 +6359,20 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoSyncStore.SaveAsync(toDos);
 
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-            {
-                await todoSyncStore.PushAsync();
-            });
-
+            var pushResponse = await todoSyncStore.PushAsync();
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
             var existingToDos = await todoSyncStore.FindAsync();
 
             //Teardown
-            await todoSyncStore.RemoveAsync(todoNetworkStore.Where(e=>e.Name.StartsWith("Name")));
+            await todoSyncStore.RemoveAsync(todoSyncStore.Where(e=>e.Name.StartsWith("Name")));
 
             // Assert
-            Assert.IsNotNull(exception);
-            Assert.AreEqual(exception.GetType(), typeof(KinveyException));
-            var ke = exception as KinveyException;
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+            Assert.AreEqual( 1, pushResponse.KinveyExceptions.Count);
+            Assert.AreEqual(2, pushResponse.PushCount);
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, pushResponse.KinveyExceptions[0].ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, pushResponse.KinveyExceptions[0].ErrorCode);
+            Assert.AreEqual(401, pushResponse.KinveyExceptions[0].StatusCode);
 
             Assert.AreEqual(2, existingToDos.Count);
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));

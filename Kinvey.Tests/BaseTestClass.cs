@@ -1141,7 +1141,7 @@ namespace Kinvey.Tests
                                 var error = new JObject
                                 {
                                     ["error"] = "InsufficientCredentials",
-                                    ["description"] = "The credentials used to authenticate this request are not authorized to run this operation. Please retry your request with appropriate credentials.",
+                                    ["description"] = "The credentials used to authenticate this request are not authorized to run this   operation. Please retry your request with appropriate credentials.",
                                     ["debug"] = "You do not have access to create entities in this collection",
                                 };
                                 Write(context, error);
@@ -1164,7 +1164,13 @@ namespace Kinvey.Tests
                             if (authorization.Contains(TestSetup.auth_token_for_401_response_fake, StringComparison.Ordinal))
                             {
                                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                                Write(context, "Unauthorized");
+                                var error = new JObject
+                                {
+                                    ["error"] = "InvalidCredentials",
+                                    ["description"] = "Invalid credentials. Please retry your request with correct credentials.",
+                                    ["debug"] = "Error encountered authenticating against kinveyAuth: {\"error\":\"server_error\",\"error_description\":\"An unknown server error occurred.\",\"debug\":\"Access Token not found\"}",
+                                };
+                                Write(context, error);
                                 continue;
                             }
                         }

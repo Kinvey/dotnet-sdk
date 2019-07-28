@@ -490,14 +490,21 @@ namespace Kinvey
 			{
                 lastResponseHeaders.Add(header);
 			}
-
-			//process refresh token needed
+			
 			if ((int)response.StatusCode == 401)
 			{
-                var json = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<ServerError>(json);
+                ServerError error = null;
+                try
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    error = JsonConvert.DeserializeObject<ServerError>(json);
+                }
+                catch(Exception)
+                {
 
-                if (!error.Error.Equals(Constants.STR_ERROR_BACKEND_INSUFFICIENT_CREDENTIALS))
+                }
+
+                if (error != null && !error.Error.Equals(Constants.STR_ERROR_BACKEND_INSUFFICIENT_CREDENTIALS))
                 {
                     if (!hasRetried)
                     {
@@ -516,6 +523,7 @@ namespace Kinvey
                             redirectUri = cred.RedirectUri;
                             micClientId = cred.MICClientID;
 
+                            //process refresh token needed
                             if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
                             {
                                 //use the refresh token for a new access token
