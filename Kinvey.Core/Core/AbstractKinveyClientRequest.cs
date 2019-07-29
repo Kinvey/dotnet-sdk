@@ -464,6 +464,7 @@ namespace Kinvey
             RequestAuth.Authenticate(request);
             Logger.Log(request);
             var response = await httClient.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
             Logger.Log(response);
             var contentType = response.Headers
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
@@ -490,42 +491,41 @@ namespace Kinvey
 			{
                 lastResponseHeaders.Add(header);
 			}
-			
-			if ((int)response.StatusCode == 401)
-			{
+
+            if ((int)response.StatusCode == 401)
+            {
                 ServerError error = null;
                 try
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     error = JsonConvert.DeserializeObject<ServerError>(json);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
 
                 }
 
                 if (error != null && !error.Error.Equals(Constants.STR_ERROR_BACKEND_INSUFFICIENT_CREDENTIALS))
-                {
-                    if (!hasRetried)
+                {                    
+                    // Attempt to get the refresh token
+                    Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
+                    string refreshToken = null;
+                    string redirectUri = null;
+                    string micClientId = null;
+
+                    if (cred != null)
                     {
-                        // Attempting retry - set flag to prevent additional attempts
-                        hasRetried = true;
+                        refreshToken = cred.RefreshToken;
+                        redirectUri = cred.RedirectUri;
+                        micClientId = cred.MICClientID;
 
-                        // Attempt to get the refresh token
-                        Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
-                        string refreshToken = null;
-                        string redirectUri = null;
-                        string micClientId = null;
-
-                        if (cred != null)
+                        if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
                         {
-                            refreshToken = cred.RefreshToken;
-                            redirectUri = cred.RedirectUri;
-                            micClientId = cred.MICClientID;
-
-                            //process refresh token needed
-                            if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
+                            if (!hasRetried)
                             {
+                                // Attempting retry - set flag to prevent additional attempts
+                                hasRetried = true;
+
                                 //use the refresh token for a new access token
                                 JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, micClientId).ExecuteAsync();
 
@@ -551,13 +551,13 @@ namespace Kinvey
                             }
                             else
                             {
-                                //logout the current user
-                                Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
+                                Client.ActiveUser.Logout();
                             }
                         }
                         else
                         {
-                            Client.ActiveUser.Logout();
+                            //logout the current user
+                            Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
                         }
                     }
                     else
@@ -565,7 +565,7 @@ namespace Kinvey
                         Client.ActiveUser.Logout();
                     }
                 }
-			}
+            }
 
             try
             {
