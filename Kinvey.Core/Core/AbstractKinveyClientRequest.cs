@@ -464,7 +464,6 @@ namespace Kinvey
             RequestAuth.Authenticate(request);
             Logger.Log(request);
             var response = await httClient.SendAsync(request);
-            var content = await response.Content.ReadAsStringAsync();
             Logger.Log(response);
             var contentType = response.Headers
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
