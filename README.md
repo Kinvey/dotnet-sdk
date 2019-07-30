@@ -55,6 +55,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details on reporting bugs and making 
 
 The Kinvey .NET SDK repository represents the package that can be used to develop .NET and Xamarin applications on the Kinvey platform. The Kinvey SDK is developed as a .NET Standard library for various supported .NET runtimes, including Xamarin, with platform-specific features for iOS and Android.
 
+### Version Management
+Versioning of the Kinvey SDK follows the guidelines stated in [Semantic Version 2.0.0](http://semver.org/).
+
+* Major (x.0.0): when making an incompatible API changes.
+* Minor (3.x.0): when adding functionality in a backwards-compatible manner.
+* Patch (3.0.x): when making backwards-compatible bug fixes or enhancements.
+
 # Contents
 
 The following is a high-level overview of the most important projects in the solution:
