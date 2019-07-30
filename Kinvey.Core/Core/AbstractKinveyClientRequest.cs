@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -556,7 +556,7 @@ namespace Kinvey
                         else
                         {
                             //logout the current user
-                            Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
+                            Client.ActiveUser.Logout(); 
                         }
                     }
                     else
