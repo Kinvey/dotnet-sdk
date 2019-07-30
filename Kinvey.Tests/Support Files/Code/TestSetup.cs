@@ -38,5 +38,7 @@ namespace Kinvey.Tests
         public static string SQLiteOfflineStoreFilePath = Path.Combine(db_dir, "kinveyOffline.sqlite");
         public static string SQLiteCredentialStoreFilePath = Path.Combine(db_dir, "kinvey_tokens.sqlite");
 
-	}
+        public const string id_for_400_error_response_fake = "612d66fc-c975-4729-afe1-e8f7750782a5";
+        public const string id_for_500_error_response_fake = "9a547181-63f9-4f7e-b789-d8c4f07889b8";
+    }
 }
