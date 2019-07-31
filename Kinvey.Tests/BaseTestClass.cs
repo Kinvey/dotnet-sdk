@@ -1279,11 +1279,13 @@ namespace Kinvey.Tests
                                                     if (id.Equals(TestSetup.id_for_400_error_response_fake))
                                                     {
                                                         MockBadRequest(context);
+                                                        break;
                                                     }
 
                                                     if (id.Equals(TestSetup.id_for_500_error_response_fake))
                                                     {
                                                         MockInternal(context);
+                                                        break;
                                                     }
 
                                                     var item = items.Find((obj) => id.Equals(obj["_id"].Value<string>()));
@@ -1291,6 +1293,7 @@ namespace Kinvey.Tests
                                                     if(item == null)
                                                     {
                                                         MockNotFound(context);
+                                                        break;
                                                     }
 
                                                     Write(context, item);
