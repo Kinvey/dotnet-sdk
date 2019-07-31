@@ -115,7 +115,7 @@ namespace Kinvey
                         savedEntity = Cache.Update(entity);
 					}
 
-                    HttpRequestException exception = null;
+                    Exception exception = null;
                     try
                     {
                         // network save
@@ -125,7 +125,11 @@ namespace Kinvey
                     {
                         exception = httpRequestException;
                     }
-                    
+                    catch (KinveyException kinveyException)
+                    {
+                        exception = kinveyException;
+                    }
+
                     if (exception != null)
                     {
                         // if the network request fails, save data to sync queue
@@ -136,6 +140,13 @@ namespace Kinvey
                         }
 
                         SyncQueue.Enqueue(localPendingAction);
+
+                        var kinveyException = exception as KinveyException;
+
+                        if (kinveyException != null)
+                        {
+                            throw kinveyException;
+                        }
                     }
                     else if (tempIdLocalThenNetwork != null)
 					{

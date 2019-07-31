@@ -5589,6 +5589,7 @@ namespace Kinvey.Tests
 
             // Arrange
             var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
             var newItem = new ToDo
             {
@@ -5605,11 +5606,22 @@ namespace Kinvey.Tests
                 await autoStore.SaveAsync(newItem);
             });
 
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingItemsCache = await syncStore.FindAsync();
+
             // Assert
-            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
-            KinveyException ke = exception as KinveyException;
-            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
-            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var ke = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+            Assert.AreEqual(401, ke.StatusCode);
+
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            Assert.IsNotNull(existingItemsCache);
+            Assert.AreEqual(1, existingItemsCache.Count);
+            Assert.AreEqual(existingItemsCache[0].ID, pendingWriteActions[0].entityId);
+            Assert.AreEqual("POST", pendingWriteActions[0].action);
         }
 
         [TestMethod]
