@@ -5574,6 +5574,7 @@ namespace Kinvey.Tests
             Assert.AreEqual(1, pendingWriteActions.Count);
             Assert.AreEqual(fc1.ID, pendingWriteActions[0].entityId);
             Assert.AreEqual("POST", pendingWriteActions[0].action);
+            Assert.AreEqual(flashCardCollection, pendingWriteActions[0].collection);
         }
 
         [TestMethod]
@@ -5622,6 +5623,7 @@ namespace Kinvey.Tests
             Assert.AreEqual(1, existingItemsCache.Count);
             Assert.AreEqual(existingItemsCache[0].ID, pendingWriteActions[0].entityId);
             Assert.AreEqual("POST", pendingWriteActions[0].action);
+            Assert.AreEqual(toDosCollection, pendingWriteActions[0].collection);
         }
 
         [TestMethod]
