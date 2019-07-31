@@ -12,7 +12,6 @@
             public const string ContractsCollection = "contracts";
         }
 
-
         public static class Exceptions
         {
             public const string GeneralExceptionTitle = "General exception";
