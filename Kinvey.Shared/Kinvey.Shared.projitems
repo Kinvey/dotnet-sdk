@@ -140,6 +140,9 @@
 	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\Error.cs">
       <Link>Model\Error.cs</Link>
     </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\ServerError.cs">
+      <Link>Model\ServerError.cs</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\Kinvey.Core\Model\GroupAggregationResults.cs">
       <Link>Model\GroupAggregationResults.cs</Link>
     </Compile>
