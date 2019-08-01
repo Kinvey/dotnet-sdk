@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,6 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -106,7 +107,8 @@ namespace Kinvey
                         kdr = Cache.DeleteByID(entityID);
 
                         var deleteRequest = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
-                        HttpRequestException exception = null;
+
+                        Exception exception = null;
                         try
                         { 
                             // network
@@ -116,12 +118,23 @@ namespace Kinvey
                         {
                             exception = httpRequestException;
                         }
+                        catch (KinveyException kinveyException)
+                        {
+                            exception = kinveyException;
+                        }
 
-                        if(exception != null)
+                        if (exception != null)
                         {
                             var pendingAction = PendingWriteAction.buildFromRequest(deleteRequest);
                             SyncQueue.Enqueue(pendingAction);
-                        }
+
+                            var kinveyException = exception as KinveyException;
+
+                            if (kinveyException != null)
+                            {
+                                throw kinveyException;
+                            }
+                        }                       
                     }
                     else
                     {
@@ -129,7 +142,7 @@ namespace Kinvey
                         kdr = Cache.DeleteByQuery(_query);
 
                         // network
-                        HttpRequestException exception = null;
+                        Exception exception = null;
                         try
                         { 
                             var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
@@ -138,6 +151,10 @@ namespace Kinvey
                         catch (HttpRequestException httpRequestException)
                         {
                             exception = httpRequestException;
+                        }
+                        catch (KinveyException kinveyException)
+                        {
+                            exception = kinveyException;
                         }
 
                         if (exception != null)
@@ -148,6 +165,13 @@ namespace Kinvey
                                 var request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, id);
                                 var pendingAction = PendingWriteAction.buildFromRequest(request);
                                 SyncQueue.Enqueue(pendingAction);
+                            }
+
+                            var kinveyException = exception as KinveyException;
+
+                            if (kinveyException != null)
+                            {
+                                throw kinveyException;
                             }
                         }
                     }
