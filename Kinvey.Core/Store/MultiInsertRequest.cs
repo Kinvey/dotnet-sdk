@@ -115,7 +115,7 @@ namespace Kinvey
                         throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE, string.Empty);
                     }
 
-                    HttpRequestException exception = null;
+                    Exception exception = null;
                     try
                     {
                         // network
@@ -125,13 +125,24 @@ namespace Kinvey
                     {
                         exception = httpRequestException;
                     }
+                    catch (KinveyException kinveyException)
+                    {
+                        exception = kinveyException;
+                    }
 
                     if (exception != null)
                     {
                         foreach (var pendingAction in pendingWriteActions)
                         {
                             SyncQueue.Enqueue(pendingAction);
-                        }                       
+                        }
+
+                        var kinveyException = exception as KinveyException;
+
+                        if (kinveyException != null)
+                        {
+                            throw kinveyException;
+                        }
                     }
                     else 
                     {
