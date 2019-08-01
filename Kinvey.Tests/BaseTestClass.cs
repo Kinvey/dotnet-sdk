@@ -315,18 +315,25 @@ namespace Kinvey.Tests
             }
         }
 
-        protected static void MockNotFound(HttpListenerContext context)
+        protected static void MockBadRequest(HttpListenerContext context, string message = "Bad request")
+        {
+            var response = context.Response;
+            response.StatusCode = 400;
+            Write(context, message);
+        }
+
+        protected static void MockNotFound(HttpListenerContext context, string message = "Not Found")
         {
             var response = context.Response;
             response.StatusCode = 404;
-            Write(context, "Not Found");
+            Write(context, message);
         }
 
-        protected static void MockInternal(HttpListenerContext context)
+        protected static void MockInternal(HttpListenerContext context, string message = "The Kinvey server encountered an unexpected error. Please retry your request.")
         {
             var response = context.Response;
             response.StatusCode = 500;
-            Write(context, "The Kinvey server encountered an unexpected error. Please retry your request.");
+            Write(context, message);
         }
 
         private static bool Filter(JObject item, string key, JToken jToken)
@@ -426,17 +433,13 @@ namespace Kinvey.Tests
         {
             if (obj["_geoloc"] != null && !IsValidGeolocation(obj["_geoloc"].ToString()))
             {
-                var response = context.Response;
-                response.StatusCode = 400;
-                Write(context, "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90");
+                MockBadRequest(context, "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90");
                 return;
             }
 
             if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
             {
-                var response = context.Response;
-                response.StatusCode = 400;
-                Write(context, "Error.");
+                MockBadRequest(context);
                 return;
             }
 
@@ -453,9 +456,7 @@ namespace Kinvey.Tests
 
             if (jObjects.Count == 0)
             {
-                var response = context.Response;
-                response.StatusCode = 400;
-                Write(context, "Request body cannot be an empty array");
+                MockBadRequest(context, "Request body cannot be an empty array");
                 return;
             }
 
@@ -660,10 +661,8 @@ namespace Kinvey.Tests
 
             if (obj["_geoloc"] != null && !IsValidGeolocation(obj["_geoloc"].ToString()))
             {                   
-                    var response = context.Response;
-                    response.StatusCode = 400;
-                    Write(context, "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90");
-                    return;                
+                MockBadRequest(context, "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90");
+                return;                
             }
 
             var item = items[index];
@@ -1277,7 +1276,26 @@ namespace Kinvey.Tests
                                                 break;
                                             case "GET":
                                                 {
+                                                    if (id.Equals(TestSetup.id_for_400_error_response_fake))
+                                                    {
+                                                        MockBadRequest(context);
+                                                        break;
+                                                    }
+
+                                                    if (id.Equals(TestSetup.id_for_500_error_response_fake))
+                                                    {
+                                                        MockInternal(context);
+                                                        break;
+                                                    }
+
                                                     var item = items.Find((obj) => id.Equals(obj["_id"].Value<string>()));
+
+                                                    if(item == null)
+                                                    {
+                                                        MockNotFound(context);
+                                                        break;
+                                                    }
+
                                                     Write(context, item);
                                                 }
                                                 break;
