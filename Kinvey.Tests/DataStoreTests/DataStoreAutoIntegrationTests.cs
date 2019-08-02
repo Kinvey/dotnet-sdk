@@ -406,7 +406,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(2, kinveyClient);
+                MockResponses(1, kinveyClient);
             }
 
             // Arrange
@@ -3178,7 +3178,6 @@ namespace Kinvey.Tests
             var ke = exception as KinveyException;
             Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
-            Assert.AreEqual(404, ke.StatusCode);
 
             Assert.IsNotNull(pendingWriteActions);
             Assert.AreEqual(0, pendingWriteActions.Count);
@@ -3248,7 +3247,7 @@ namespace Kinvey.Tests
 
             if (MockData)
             {
-                MockResponses(2, kinveyClient);
+                MockResponses(1, kinveyClient);
             }
 
             // Arrange
@@ -5751,6 +5750,7 @@ namespace Kinvey.Tests
             Assert.IsNotNull(localEntities);
             Assert.IsNotNull(pendingWriteActions);
             Assert.AreEqual(1, localEntities.Count);
+            Assert.AreEqual(fc1.ID, localEntities[0].ID);
             Assert.AreEqual(fc1.Question, localEntities[0].Question);
             Assert.AreEqual(fc1.Answer, localEntities[0].Answer);
             Assert.AreEqual(1, pendingWriteActions.Count);
@@ -5803,6 +5803,10 @@ namespace Kinvey.Tests
             Assert.AreEqual(1, pendingWriteActions.Count);
             Assert.IsNotNull(existingItemsCache);
             Assert.AreEqual(1, existingItemsCache.Count);
+            Assert.AreEqual(newItem.Name, existingItemsCache[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsCache[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsCache[0].DueDate);
+
             Assert.AreEqual(existingItemsCache[0].ID, pendingWriteActions[0].entityId);
             Assert.AreEqual("POST", pendingWriteActions[0].action);
             Assert.AreEqual(toDosCollection, pendingWriteActions[0].collection);
@@ -6644,8 +6648,8 @@ namespace Kinvey.Tests
 
             Assert.IsNotNull(pendingWriteActions);
             Assert.AreEqual(2, pendingWriteActions.Count);
-            Assert.IsNotNull(pendingWriteActions.Where(e=> e.entityId == existingToDos[0].ID && e.collection.Equals(toDosCollection) && e.action.Equals("DELETE")));
-            Assert.IsNotNull(pendingWriteActions.Where(e => e.entityId == existingToDos[1].ID && e.collection.Equals(toDosCollection) && e.action.Equals("DELETE")));
+            Assert.IsNotNull(pendingWriteActions.FirstOrDefault(e=> e.entityId == existingToDos[0].ID && e.collection.Equals(toDosCollection) && e.action.Equals("POST")));
+            Assert.IsNotNull(pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDos[1].ID && e.collection.Equals(toDosCollection) && e.action.Equals("POST")));
         }
 
         [TestMethod]
