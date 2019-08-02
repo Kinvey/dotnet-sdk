@@ -6313,13 +6313,17 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
             Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
             Assert.IsNull(savedToDos.Entities[1].Acl);
+
             Assert.AreEqual(2, pendingWriteActions.Count);
             var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
             Assert.IsNotNull(pendingWriteAction1);
             Assert.AreEqual("POST", pendingWriteAction1.action);
+            Assert.AreEqual(toDosCollection, pendingWriteAction1.collection);
             var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
             Assert.IsNotNull(pendingWriteAction2);
             Assert.AreEqual("POST", pendingWriteAction2.action);
+            Assert.AreEqual(toDosCollection, pendingWriteAction2.collection);
+
             Assert.AreEqual(2, existingToDos.Count);
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
@@ -6638,11 +6642,10 @@ namespace Kinvey.Tests
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
 
-            //Assert.IsNotNull(pendingWriteActions);
-            //Assert.AreEqual(2, pendingWriteActions.Count);
-            //Assert.AreEqual(existingItemsCache[0].ID, pendingWriteActions[0].entityId);
-            //Assert.AreEqual("POST", pendingWriteActions[0].action);
-            //Assert.AreEqual(toDosCollection, pendingWriteActions[0].collection);
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(2, pendingWriteActions.Count);
+            Assert.IsNotNull(pendingWriteActions.Where(e=> e.entityId == existingToDos[0].ID && e.collection.Equals(toDosCollection) && e.action.Equals("DELETE")));
+            Assert.IsNotNull(pendingWriteActions.Where(e => e.entityId == existingToDos[1].ID && e.collection.Equals(toDosCollection) && e.action.Equals("DELETE")));
         }
 
         [TestMethod]
