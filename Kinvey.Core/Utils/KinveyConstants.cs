@@ -111,6 +111,8 @@ namespace Kinvey
         internal const string STR_ERROR_BACKEND_RESULT_SET_SIZE_EXCEEDED = "ResultSetSizeExceeded";
         internal const string STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE = "ParameterValueOutOfRange";
 
+        internal const string STR_ERROR_BACKEND_INSUFFICIENT_CREDENTIALS = "InsufficientCredentials";
+
         #endregion
 
         //Limits

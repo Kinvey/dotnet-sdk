@@ -15,6 +15,9 @@ namespace Kinvey.Tests
         public const string user_without_permissions = "testuserwithoutpermissions";
         public const string pass_for_user_without_permissions = "testuserwithoutpermissions";
 
+        public const string user_with_corrupted_auth_token = "userwithcorruptedauthtoken";
+        public const string pass_for_user_with_corrupted_auth_token = "userwithcorruptedauthtoken";
+
         public const string app_key = "kid_Zy0JOYPKkZ";
 		public const string app_secret = "d83de70e64d540e49acd6cfce31415df";
 
@@ -28,6 +31,8 @@ namespace Kinvey.Tests
         public const string salesforce_access_token_fake = "8cd71dc8-846a-49f2-8cf1-c0598bbce5ec";
         public const string access_token_for_401_response_fake = "0065cb37-a1ed-4c8b-98fc-91c312683275";
         public const string auth_token_for_401_response_fake = "eda5d4bc-6a47-46d2-9637-07dec479bf9c";
+        public const string auth_token_insufficient_credentials_for_401_response_fake = "acc16614-35e0-4a98-b84a-c03dadfa8463";
+        public const string auth_token_corrupted_for_401_response_fake = "f7991119-f9e6-4c6e-9b38-9659c2b06cea";
         public const string refresh_token_for_401_response_fake = "0f550503-f033-44ee-8c2d-ae8f9773b70a";
 
         public const string entity_with_error = "Entity with error";
