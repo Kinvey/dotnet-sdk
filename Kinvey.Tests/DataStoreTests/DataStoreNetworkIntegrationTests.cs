@@ -3026,6 +3026,10 @@ namespace Kinvey.Tests
             Assert.AreEqual(1u, count);
         }
 
+        #region Find
+
+        #region Positive tests
+
         [TestMethod]
         public async Task TestNetworkStoreFindAsync()
         {
@@ -5006,6 +5010,135 @@ namespace Kinvey.Tests
 			Assert.AreEqual(2, listToDo.Count);
 			Assert.IsTrue(String.Compare(newItem1.Name, listToDo.First().Name) == 0);
 		}
+
+        #endregion Positive tests
+
+        #region Negative tests
+
+        [TestMethod]
+        public async Task TestNetworkStoreFindByID400ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await todoStore.FindByIDAsync(TestSetup.id_for_400_error_response_fake);
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(400, kinveyException.StatusCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreFindByID401ErrorResponseAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStore.FindByIDAsync(Guid.NewGuid().ToString());
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(401, kinveyException.StatusCode);
+
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreFindByID404ErrorResponseAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStore.FindByIDAsync(Guid.NewGuid().ToString());
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(404, kinveyException.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreFindByID500ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await todoStore.FindByIDAsync(TestSetup.id_for_500_error_response_fake);
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(500, kinveyException.StatusCode);
+            }
+        }
+
+        #endregion Negative tests
+
+        #endregion Find
 
         [TestMethod]
         public async Task TestNetworkStoreGetAverageAsync()
