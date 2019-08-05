@@ -136,6 +136,56 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestDeleteByQueryInvalidPermissionsConnectionAvailableAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2, kinveyClient);
+            }
+
+            // Arrange
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var query = autoStore.Where(x => x.Details.StartsWith("Delete d"));
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var newItem = new ToDo
+            {
+                Name = "Task1 to delete",
+                Details = "Delete details1"
+            };
+
+            var savedItem = await syncStore.SaveAsync(newItem);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.RemoveAsync(query);
+            });
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDos = await syncStore.FindAsync();
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var ke = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+            Assert.AreEqual(401, ke.StatusCode);
+
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(0, pendingWriteActions.Count);
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(0, existingToDos.Count);
+        }
+
+        [TestMethod]
         public async Task TestDeleteByQueryDeleteItemsFromBackendAfterLocalDeletionConnectionAvailableAsync()
         {
             // Setup
@@ -346,6 +396,49 @@ namespace Kinvey.Tests
             Assert.AreEqual(savedItem3.ID, networkEntities[0].ID);
             Assert.AreEqual(savedItem3.Name, networkEntities[0].Name);
             Assert.AreEqual(savedItem3.Details, networkEntities[0].Details);
+        }
+
+        [TestMethod]
+        public async Task TestDeleteByQueryInvalidPermissionsNetworkConnectionIssueAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(1, kinveyClient);
+            }
+
+            // Arrange
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            var query = autoStore.Where(x => x.Details.StartsWith("Delete d"));
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var newItem = new ToDo
+            {
+                Name = "Task1 to delete",
+                Details = "Delete details1"
+            };
+
+            var savedItem = await syncStore.SaveAsync(newItem);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            await autoStore.RemoveAsync(query);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDos = await syncStore.FindAsync();
+
+            // Assert
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(0, pendingWriteActions.Count);
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(0, existingToDos.Count);
         }
 
         [TestMethod]
@@ -3044,7 +3137,54 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);        
         }
-       
+
+        [TestMethod]
+        public async Task TestDeleteByIdNotFoundConnectionAvailableAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2, kinveyClient);
+            }
+
+            // Arrange
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var newItem = new ToDo
+            {
+                Name = "Task1 to delete",
+                Details = "Delete details1"
+            };
+
+            var savedItem = await syncStore.SaveAsync(newItem);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await autoStore.RemoveAsync(savedItem.ID);
+            });
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDos = await syncStore.FindAsync();
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var ke = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(0, pendingWriteActions.Count);
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(0, existingToDos.Count);
+        }
+
         [TestMethod]
         public async Task TestDeleteByIdNetworkConnectionIssueAsync()
         {
@@ -3097,6 +3237,47 @@ namespace Kinvey.Tests
             Assert.AreEqual("DELETE", pendingWriteActions1[0].action);
             Assert.IsNotNull(pendingWriteActions1.FirstOrDefault(e => e.entityId == savedItem1.ID));
             Assert.AreEqual(0, networkEntities.Count);
+        }
+
+        [TestMethod]
+        public async Task TestDeleteByIdNotFoundConnectionIssueAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(1, kinveyClient);
+            }
+
+            // Arrange
+            var networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var newItem = new ToDo
+            {
+                Name = "Task1 to delete",
+                Details = "Delete details1"
+            };
+
+            var savedItem = await syncStore.SaveAsync(newItem);
+
+            // Act
+            SetRootUrlToKinveyClient(unreachableUrl);
+            await autoStore.RemoveAsync(savedItem.ID);
+            SetRootUrlToKinveyClient(kinveyUrl);
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingToDos = await syncStore.FindAsync();
+
+            // Assert
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(0, pendingWriteActions.Count);
+            Assert.IsNotNull(existingToDos);
+            Assert.AreEqual(0, existingToDos.Count);
         }
 
         [TestMethod]
@@ -5569,11 +5750,13 @@ namespace Kinvey.Tests
             Assert.IsNotNull(localEntities);
             Assert.IsNotNull(pendingWriteActions);
             Assert.AreEqual(1, localEntities.Count);
+            Assert.AreEqual(fc1.ID, localEntities[0].ID);
             Assert.AreEqual(fc1.Question, localEntities[0].Question);
             Assert.AreEqual(fc1.Answer, localEntities[0].Answer);
             Assert.AreEqual(1, pendingWriteActions.Count);
             Assert.AreEqual(fc1.ID, pendingWriteActions[0].entityId);
             Assert.AreEqual("POST", pendingWriteActions[0].action);
+            Assert.AreEqual(flashCardCollection, pendingWriteActions[0].collection);
         }
 
         [TestMethod]
@@ -5589,6 +5772,7 @@ namespace Kinvey.Tests
 
             // Arrange
             var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+            var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
             var newItem = new ToDo
             {
@@ -5605,11 +5789,27 @@ namespace Kinvey.Tests
                 await autoStore.SaveAsync(newItem);
             });
 
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+            var existingItemsCache = await syncStore.FindAsync();
+
             // Assert
-            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
-            KinveyException ke = exception as KinveyException;
-            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_BACKEND);
-            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_JSON_RESPONSE);
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var ke = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+            Assert.AreEqual(401, ke.StatusCode);
+
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(1, pendingWriteActions.Count);
+            Assert.IsNotNull(existingItemsCache);
+            Assert.AreEqual(1, existingItemsCache.Count);
+            Assert.AreEqual(newItem.Name, existingItemsCache[0].Name);
+            Assert.AreEqual(newItem.Details, existingItemsCache[0].Details);
+            Assert.AreEqual(newItem.DueDate, existingItemsCache[0].DueDate);
+
+            Assert.AreEqual(existingItemsCache[0].ID, pendingWriteActions[0].entityId);
+            Assert.AreEqual("POST", pendingWriteActions[0].action);
+            Assert.AreEqual(toDosCollection, pendingWriteActions[0].collection);
         }
 
         [TestMethod]
@@ -6117,13 +6317,17 @@ namespace Kinvey.Tests
             Assert.AreEqual(toDos[1].Details, savedToDos.Entities[1].Details);
             Assert.AreEqual(toDos[1].Value, savedToDos.Entities[1].Value);
             Assert.IsNull(savedToDos.Entities[1].Acl);
+
             Assert.AreEqual(2, pendingWriteActions.Count);
             var pendingWriteAction1 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[0].ID);
             Assert.IsNotNull(pendingWriteAction1);
             Assert.AreEqual("POST", pendingWriteAction1.action);
+            Assert.AreEqual(toDosCollection, pendingWriteAction1.collection);
             var pendingWriteAction2 = pendingWriteActions.FirstOrDefault(e => e.entityId == savedToDos.Entities[1].ID);
             Assert.IsNotNull(pendingWriteAction2);
             Assert.AreEqual("POST", pendingWriteAction2.action);
+            Assert.AreEqual(toDosCollection, pendingWriteAction2.collection);
+
             Assert.AreEqual(2, existingToDos.Count);
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[0].ID));
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.ID == savedToDos.Entities[1].ID));
@@ -6394,7 +6598,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveInvalidPermissionsAsync()
+        public async Task TestSaveMultiInsertInvalidPermissionsAsync()
         {
             // Setup
             kinveyClient = BuildClient("5");
@@ -6435,12 +6639,17 @@ namespace Kinvey.Tests
             var ke = exception as KinveyException;
             Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, ke.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, ke.ErrorCode);
+            Assert.AreEqual(401, ke.StatusCode);
 
+            Assert.IsNotNull(existingToDos);
             Assert.AreEqual(2, existingToDos.Count);
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[0].Name) && e.Details.Equals(toDos[0].Details) && e.Value == toDos[0].Value && e.Acl == null && e.Kmd == null));
             Assert.IsNotNull(existingToDos.FirstOrDefault(e => e.Name.Equals(toDos[1].Name) && e.Details.Equals(toDos[1].Details) && e.Value == toDos[1].Value && e.Acl == null && e.Kmd == null));
 
-            Assert.AreEqual(0, pendingWriteActions.Count);
+            Assert.IsNotNull(pendingWriteActions);
+            Assert.AreEqual(2, pendingWriteActions.Count);
+            Assert.IsNotNull(pendingWriteActions.FirstOrDefault(e=> e.entityId == existingToDos[0].ID && e.collection.Equals(toDosCollection) && e.action.Equals("POST")));
+            Assert.IsNotNull(pendingWriteActions.FirstOrDefault(e => e.entityId == existingToDos[1].ID && e.collection.Equals(toDosCollection) && e.action.Equals("POST")));
         }
 
         [TestMethod]
