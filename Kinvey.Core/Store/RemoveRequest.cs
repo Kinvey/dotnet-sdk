@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,6 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -106,22 +107,33 @@ namespace Kinvey
                         kdr = Cache.DeleteByID(entityID);
 
                         var deleteRequest = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
-                        HttpRequestException exception = null;
+
+                        HttpRequestException httpRequestException = null;
+                        KinveyException kinveyException = null;
                         try
                         { 
                             // network
                             kdr = await deleteRequest.ExecuteAsync();
                         }
-                        catch (HttpRequestException httpRequestException)
+                        catch (HttpRequestException httpRequestEx)
                         {
-                            exception = httpRequestException;
+                            httpRequestException = httpRequestEx;
+                        }
+                        catch (KinveyException kinveyEx)
+                        {
+                            kinveyException = kinveyEx;
                         }
 
-                        if(exception != null)
+                        if (httpRequestException != null || kinveyException != null)
                         {
                             var pendingAction = PendingWriteAction.buildFromRequest(deleteRequest);
                             SyncQueue.Enqueue(pendingAction);
-                        }
+
+                            if (kinveyException != null)
+                            {
+                                throw kinveyException;
+                            }
+                        }                       
                     }
                     else
                     {
@@ -129,18 +141,23 @@ namespace Kinvey
                         kdr = Cache.DeleteByQuery(_query);
 
                         // network
-                        HttpRequestException exception = null;
+                        HttpRequestException httpRequestException = null;
+                        KinveyException kinveyException = null;
                         try
                         { 
                             var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
                             kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
                         }
-                        catch (HttpRequestException httpRequestException)
+                        catch (HttpRequestException httpRequestEx)
                         {
-                            exception = httpRequestException;
+                            httpRequestException = httpRequestEx;
+                        }
+                        catch (KinveyException kinveyEx)
+                        {
+                            kinveyException = kinveyEx;
                         }
 
-                        if (exception != null)
+                        if (httpRequestException != null || kinveyException != null)
                         {
                             foreach (var id in kdr.IDs)
                             {
@@ -148,6 +165,11 @@ namespace Kinvey
                                 var request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, id);
                                 var pendingAction = PendingWriteAction.buildFromRequest(request);
                                 SyncQueue.Enqueue(pendingAction);
+                            }
+
+                            if (kinveyException != null)
+                            {
+                                throw kinveyException;
                             }
                         }
                     }

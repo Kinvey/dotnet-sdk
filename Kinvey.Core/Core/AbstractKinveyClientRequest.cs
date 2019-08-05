@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -491,67 +491,80 @@ namespace Kinvey
                 lastResponseHeaders.Add(header);
 			}
 
-			//process refresh token needed
-			if ((int)response.StatusCode == 401)
-			{
-				if (!hasRetried)
-				{
-					// Attempting retry - set flag to prevent additional attempts
-					hasRetried = true;
+            if ((int)response.StatusCode == 401)
+            {
+                ServerError error = null;
+                try
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    error = JsonConvert.DeserializeObject<ServerError>(json);
+                }
+                catch (Exception)
+                {
 
-					// Attempt to get the refresh token
-					Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
-					string refreshToken = null;
-					string redirectUri = null;
+                }
+
+                if (error != null && !error.Error.Equals(Constants.STR_ERROR_BACKEND_INSUFFICIENT_CREDENTIALS))
+                {                    
+                    // Attempt to get the refresh token
+                    Credential cred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
+                    string refreshToken = null;
+                    string redirectUri = null;
                     string micClientId = null;
 
-					if (cred != null)
-					{
-						refreshToken = cred.RefreshToken;
-						redirectUri = cred.RedirectUri;
+                    if (cred != null)
+                    {
+                        refreshToken = cred.RefreshToken;
+                        redirectUri = cred.RedirectUri;
                         micClientId = cred.MICClientID;
 
-						if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
-						{
-							//use the refresh token for a new access token
-                            JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, micClientId).ExecuteAsync();
+                        if (!string.IsNullOrEmpty(refreshToken) && !refreshToken.ToLower().Equals("null"))
+                        {
+                            if (!hasRetried)
+                            {
+                                // Attempting retry - set flag to prevent additional attempts
+                                hasRetried = true;
 
-							// log out the current user without removing the user record from the credential store
-							Client.ActiveUser.LogoutSoft();
+                                //use the refresh token for a new access token
+                                JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, micClientId).ExecuteAsync();
 
-							//login with the access token
-							Provider provider = new Provider();
-							provider.kinveyAuth = new MICCredential(result["access_token"].ToString());
-							User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
+                                // log out the current user without removing the user record from the credential store
+                                Client.ActiveUser.LogoutSoft();
 
-							//store the new refresh token
-							Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
-							currentCred.AccessToken = result["access_token"].ToString();
-                            currentCred.RefreshToken = result.GetValidValue("refresh_token");
-                            currentCred.RedirectUri = redirectUri;
-							Client.Store.Store(Client.ActiveUser.Id, Client.SSOGroupKey, currentCred);
+                                //login with the access token
+                                Provider provider = new Provider();
+                                provider.kinveyAuth = new MICCredential(result["access_token"].ToString());
+                                User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
 
-							// Retry the original request
-							RequestAuth = new KinveyAuthenticator(currentCred.AuthToken);
-							var retryResponse = await ExecuteUnparsedAsync();
-							return retryResponse;
-						}
-						else
-						{
-							//logout the current user
-							Client.ActiveUser.Logout(); // TODO is this a potential deadlock?
-						}
-					}
-					else
-					{
-						Client.ActiveUser.Logout();
-					}
-				}
-				else
-				{
-					Client.ActiveUser.Logout();
-				}
-			}
+                                //store the new refresh token
+                                Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
+                                currentCred.AccessToken = result["access_token"].ToString();
+                                currentCred.RefreshToken = result.GetValidValue("refresh_token");
+                                currentCred.RedirectUri = redirectUri;
+                                Client.Store.Store(Client.ActiveUser.Id, Client.SSOGroupKey, currentCred);
+
+                                // Retry the original request
+                                RequestAuth = new KinveyAuthenticator(currentCred.AuthToken);
+                                var retryResponse = await ExecuteUnparsedAsync();
+                                return retryResponse;
+                            }
+                            else
+                            {
+                                Client.ActiveUser.Logout();
+                            }
+                        }
+                        else
+                        {
+                            //logout the current user
+                            Client.ActiveUser.Logout(); 
+                        }
+                    }
+                    else
+                    {
+                        Client.ActiveUser.Logout();
+                    }
+                }
+            }
 
             try
             {

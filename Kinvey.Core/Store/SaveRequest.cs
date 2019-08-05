@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -115,18 +115,23 @@ namespace Kinvey
                         savedEntity = Cache.Update(entity);
 					}
 
-                    HttpRequestException exception = null;
+                    HttpRequestException httpRequestException = null;
+                    KinveyException kinveyException = null;
                     try
                     {
                         // network save
                         savedEntity = await request.ExecuteAsync();
                     }
-                    catch (HttpRequestException httpRequestException)
+                    catch (HttpRequestException httpRequestEx)
                     {
-                        exception = httpRequestException;
+                        httpRequestException = httpRequestEx;
                     }
-                    
-                    if (exception != null)
+                    catch (KinveyException kinveyEx)
+                    {
+                        kinveyException = kinveyEx;
+                    }
+
+                    if (httpRequestException != null || kinveyException != null)
                     {
                         // if the network request fails, save data to sync queue
                         var localPendingAction = PendingWriteAction.buildFromRequest(request);
@@ -136,6 +141,11 @@ namespace Kinvey
                         }
 
                         SyncQueue.Enqueue(localPendingAction);
+
+                        if (kinveyException != null)
+                        {
+                            throw kinveyException;
+                        }
                     }
                     else if (tempIdLocalThenNetwork != null)
 					{

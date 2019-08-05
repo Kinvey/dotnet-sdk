@@ -363,11 +363,6 @@ namespace Kinvey
                 throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_EMPTY_ARRAY_OF_ENTITIES, string.Empty);
             }
 
-            if(entities.Count > Constants.NUMBER_LIMIT_OF_ENTITIES)
-            {
-                throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_DATASTORE_LIMIT_OF_ENTITIES_TO_BE_SAVED, string.Empty);
-            }
-
             var request = new MultiInsertRequest<T>(entities, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
             ct.ThrowIfCancellationRequested();
             return await request.ExecuteAsync();
