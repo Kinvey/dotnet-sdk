@@ -115,22 +115,23 @@ namespace Kinvey
                         savedEntity = Cache.Update(entity);
 					}
 
-                    Exception exception = null;
+                    HttpRequestException httpRequestException = null;
+                    KinveyException kinveyException = null;
                     try
                     {
                         // network save
                         savedEntity = await request.ExecuteAsync();
                     }
-                    catch (HttpRequestException httpRequestException)
+                    catch (HttpRequestException httpRequestEx)
                     {
-                        exception = httpRequestException;
+                        httpRequestException = httpRequestEx;
                     }
-                    catch (KinveyException kinveyException)
+                    catch (KinveyException kinveyEx)
                     {
-                        exception = kinveyException;
+                        kinveyException = kinveyEx;
                     }
 
-                    if (exception != null)
+                    if (httpRequestException != null || kinveyException != null)
                     {
                         // if the network request fails, save data to sync queue
                         var localPendingAction = PendingWriteAction.buildFromRequest(request);
@@ -140,8 +141,6 @@ namespace Kinvey
                         }
 
                         SyncQueue.Enqueue(localPendingAction);
-
-                        var kinveyException = exception as KinveyException;
 
                         if (kinveyException != null)
                         {

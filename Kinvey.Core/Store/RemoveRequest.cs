@@ -108,27 +108,26 @@ namespace Kinvey
 
                         var deleteRequest = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
 
-                        Exception exception = null;
+                        HttpRequestException httpRequestException = null;
+                        KinveyException kinveyException = null;
                         try
                         { 
                             // network
                             kdr = await deleteRequest.ExecuteAsync();
                         }
-                        catch (HttpRequestException httpRequestException)
+                        catch (HttpRequestException httpRequestEx)
                         {
-                            exception = httpRequestException;
+                            httpRequestException = httpRequestEx;
                         }
-                        catch (KinveyException kinveyException)
+                        catch (KinveyException kinveyEx)
                         {
-                            exception = kinveyException;
+                            kinveyException = kinveyEx;
                         }
 
-                        if (exception != null)
+                        if (httpRequestException != null || kinveyException != null)
                         {
                             var pendingAction = PendingWriteAction.buildFromRequest(deleteRequest);
                             SyncQueue.Enqueue(pendingAction);
-
-                            var kinveyException = exception as KinveyException;
 
                             if (kinveyException != null)
                             {
@@ -142,22 +141,23 @@ namespace Kinvey
                         kdr = Cache.DeleteByQuery(_query);
 
                         // network
-                        Exception exception = null;
+                        HttpRequestException httpRequestException = null;
+                        KinveyException kinveyException = null;
                         try
                         { 
                             var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
                             kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
                         }
-                        catch (HttpRequestException httpRequestException)
+                        catch (HttpRequestException httpRequestEx)
                         {
-                            exception = httpRequestException;
+                            httpRequestException = httpRequestEx;
                         }
-                        catch (KinveyException kinveyException)
+                        catch (KinveyException kinveyEx)
                         {
-                            exception = kinveyException;
+                            kinveyException = kinveyEx;
                         }
 
-                        if (exception != null)
+                        if (httpRequestException != null || kinveyException != null)
                         {
                             foreach (var id in kdr.IDs)
                             {
@@ -166,8 +166,6 @@ namespace Kinvey
                                 var pendingAction = PendingWriteAction.buildFromRequest(request);
                                 SyncQueue.Enqueue(pendingAction);
                             }
-
-                            var kinveyException = exception as KinveyException;
 
                             if (kinveyException != null)
                             {
