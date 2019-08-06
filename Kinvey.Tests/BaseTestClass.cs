@@ -450,6 +450,12 @@ namespace Kinvey.Tests
                 return;
             }
 
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_500_error_response_fake))
+            {
+                MockInternal(context);
+                return;
+            }
+
             PopulateEntity(obj, client);
             items.Add(obj);
             Write(context, obj);
