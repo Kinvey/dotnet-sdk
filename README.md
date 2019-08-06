@@ -58,5 +58,5 @@ We would also love to have your contributions! You may also reference our [contr
 See [LICENSE](LICENSE.txt) for details.
 
 [badge-nuget]: https://img.shields.io/nuget/vpre/Kinvey.svg
-[badge-status]: https://travis-ci.org/Kinvey/dotnet-sdk.svg?branch=master
+[badge-status]: https://api.cirrus-ci.com/github/Kinvey/dotnet-sdk.svg?branch=master
 [badge-coverage]: https://codecov.io/gh/Kinvey/dotnet-sdk/graph/badge.svg
