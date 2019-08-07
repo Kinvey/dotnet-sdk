@@ -35,7 +35,8 @@ namespace Kinvey.Tests
         public const string auth_token_corrupted_for_401_response_fake = "f7991119-f9e6-4c6e-9b38-9659c2b06cea";
         public const string refresh_token_for_401_response_fake = "0f550503-f033-44ee-8c2d-ae8f9773b70a";
 
-        public const string entity_with_error = "Entity with error";
+        public const string entity_name_for_400_response_error = "Entity name for 400 response error";
+        public const string entity_name_for_500_response_error = "Entity name for 500 response error";
 
         public const string mic_id_fake = "ade8db71f61c46a69c91910d8fbf3994";
 
