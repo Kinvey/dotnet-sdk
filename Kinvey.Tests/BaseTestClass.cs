@@ -450,6 +450,12 @@ namespace Kinvey.Tests
                 return;
             }
 
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_400_error_response_fake))
+            {
+                MockBadRequest(context);
+                return;
+            }
+
             if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_500_error_response_fake))
             {
                 MockInternal(context);
@@ -495,6 +501,21 @@ namespace Kinvey.Tests
                     };
 
                     jObjectErrors.Add(jObjectError);
+                }
+                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
+                {
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
+                    {
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Error"
+                    };
+
+                    jObjectErrors.Add(jObjectError);
+
+                    continue;
                 }
                 else if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
                 {
