@@ -824,6 +824,18 @@ namespace Kinvey.Tests
 
         protected static void MockAppDataDelete(HttpListenerContext context, List<JObject> items, List<JObject> deletedItems, string id)
         {
+            if (id.Equals(TestSetup.id_for_400_error_response_fake))
+            {
+                MockBadRequest(context);
+                return;
+            }
+
+            if (id.Equals(TestSetup.id_for_500_error_response_fake))
+            {
+                MockInternal(context);
+                return;
+            }
+
             var todoIndex = items.FindIndex((obj) => id.Equals(obj["_id"].Value<string>()));
             var jsonObject = new JObject();
             if (todoIndex != -1)
@@ -836,7 +848,8 @@ namespace Kinvey.Tests
             }
             else
             {
-                jsonObject["count"] = 0;
+                MockNotFound(context);
+                return;
             }
             Write(context, jsonObject);
         }

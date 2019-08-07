@@ -366,6 +366,12 @@ namespace Kinvey.Tests
 
 		}
 
+        #region Delete
+
+        #region Single delete
+
+        #region Positive
+
         [TestMethod]
         public async Task TestDeleteAsync()
         {
@@ -380,9 +386,11 @@ namespace Kinvey.Tests
 
             // Arrange
             DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
-            ToDo newItem = new ToDo();
-            newItem.Name = "Task to Delete";
-            newItem.Details = "A delete test";
+            ToDo newItem = new ToDo
+            {
+                Name = "Task to Delete",
+                Details = "A delete test"
+            };
             ToDo deleteToDo = await todoStore.SaveAsync(newItem);
 
             // Act
@@ -391,10 +399,156 @@ namespace Kinvey.Tests
             // Assert
             Assert.IsNotNull(kdr);
             Assert.AreEqual(1, kdr.count);
-
-            // Teardown
-            kinveyClient.ActiveUser.Logout();
         }
+
+        #endregion
+
+        #region Negative
+
+        [TestMethod]
+        public async Task TestDelete400ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await todoStore.RemoveAsync(TestSetup.id_for_400_error_response_fake);
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(400, kinveyException.StatusCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestDelete401ErrorResponseAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var newItem = new ToDo
+            {
+                Name = "Task to Delete",
+                Details = "A delete test"
+            };
+            var savedToDo = await todoStore.SaveAsync(newItem);
+
+            kinveyClient.ActiveUser.Logout();
+
+
+             await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStore.RemoveAsync(savedToDo.ID);
+            });
+
+            kinveyClient.ActiveUser.Logout();
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            await todoStore.RemoveAsync(savedToDo.ID);
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(401, kinveyException.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task TestDelete404ErrorResponseAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStore.RemoveAsync(Guid.NewGuid().ToString());
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(404, kinveyException.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task TestDelete500ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await todoStore.RemoveAsync(TestSetup.id_for_500_error_response_fake);
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(500, kinveyException.StatusCode);
+            }
+        }
+
+        #endregion Negative
+
+        #endregion Single delete
+
+        #region Delete by query
+
+        #region Positive      
 
         [TestMethod]
         public async Task TestDeleteByQueryStringValueStartsWithExpressionAsync()
@@ -2527,6 +2681,10 @@ namespace Kinvey.Tests
             Assert.IsNotNull(existingItem2);
             Assert.IsNull(existingItem3);          
         }
+     
+        #endregion Positive   
+
+        #region Negative
 
         [TestMethod]
         public async Task TestDeleteByQueryWhereClauseIsAbsentInQueryUsingSelectClauseAsync()
@@ -2925,6 +3083,44 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestDeleteByQuery401ErrorResponseAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+            var query = todoStore.Where(x => x.Details.Equals("Test"));
+        
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStore.RemoveAsync(query);
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(401, kinveyException.StatusCode);
+        }
+
+        #endregion Negative
+
+        #endregion Delete by query
+
+        #endregion Delete
+
+        [TestMethod]
 		public void TestDeltaSetFetchEnable()
 		{
             // Arrange
@@ -3025,7 +3221,7 @@ namespace Kinvey.Tests
             // Assert
             Assert.AreEqual(1u, count);
         }
-
+        
         #region Find
 
         #region Positive tests
@@ -5073,7 +5269,6 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
             Assert.AreEqual(401, kinveyException.StatusCode);
-
         }
 
         [TestMethod]

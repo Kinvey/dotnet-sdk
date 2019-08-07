@@ -3309,18 +3309,11 @@ namespace Kinvey.Tests
             }
 
             // Assert                      
-            if (MockData)
-            {
-                Assert.IsNotNull(kinveyDeleteResponse);
-                Assert.AreEqual(0, kinveyDeleteResponse.count);
-            }
-            else
-            {
-                Assert.IsNull(kinveyDeleteResponse);
-                Assert.IsNotNull(exception);
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            }
+            Assert.IsNull(kinveyDeleteResponse);
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+            Assert.AreEqual(404, exception.StatusCode);
         }
 
         [TestMethod]
@@ -3389,17 +3382,10 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);
 
-            if (MockData)
-            {
-                Assert.IsNotNull(kinveyDeleteResponse2);
-                Assert.AreEqual(0, kinveyDeleteResponse2.count);
-            }
-            else
-            {
-                Assert.IsNotNull(exception);
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            }           
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+            Assert.AreEqual(404, exception.StatusCode);
         }
 
         [TestMethod]
@@ -8232,7 +8218,7 @@ namespace Kinvey.Tests
                 var existingToDosNetwork = await todoNetworkStore.FindAsync();
 
                 // Teardown
-                await todoNetworkStore.RemoveAsync(savedToDos.Entities[2].ID);
+                await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
 
                 // Assert
                 Assert.AreEqual(3, pushResponse.PushCount);
