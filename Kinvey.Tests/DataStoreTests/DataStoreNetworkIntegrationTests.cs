@@ -88,6 +88,8 @@ namespace Kinvey.Tests
 			System.IO.File.Delete(TestSetup.SQLiteCredentialStoreFilePath);
 		}
 
+        #region ACL settings
+
         [TestMethod]
         public async Task TestACLGloballyReadableSave()
         {
@@ -336,6 +338,10 @@ namespace Kinvey.Tests
             kinveyClient.ActiveUser.Logout();
         }
 
+        #endregion ACL settings
+
+        #region Client settings
+
         [TestMethod]
         public async Task TestCollectionSharedClient()
         {
@@ -349,7 +355,7 @@ namespace Kinvey.Tests
             Assert.IsNotNull(todoStore);
             Assert.IsTrue(string.Equals(todoStore.CollectionName, collectionName));
         }
-
+        
         [TestMethod]
 		public async Task TestCollectionStoreType()
 		{
@@ -365,6 +371,61 @@ namespace Kinvey.Tests
 			Assert.AreEqual(todoStore.StoreType, DataStoreType.NETWORK);
 
 		}
+
+        #endregion Client settings
+
+        #region DeltaSetFetching
+
+        [TestMethod]
+        public void TestDeltaSetFetchEnable()
+        {
+            // Arrange
+            kinveyClient = BuildClient();
+
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+
+            // Act
+            todoStore.DeltaSetFetchingEnabled = true;
+
+            // Assert
+            Assert.IsTrue(todoStore.DeltaSetFetchingEnabled);
+        }
+
+        #endregion DeltaSetFetching
+
+        #region Pull, Push, Sync
+
+        [TestMethod]
+        public async Task TestStoreInvalidOperation()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+            {
+                await todoStore.PullAsync();
+            });
+
+            await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+            {
+                await todoStore.PushAsync();
+            });
+
+            await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+            {
+                await todoStore.SyncAsync();
+            });
+        }
+
+        #endregion Pull, Push, Sync
 
         #region Delete
 
@@ -3120,20 +3181,7 @@ namespace Kinvey.Tests
 
         #endregion Delete
 
-        [TestMethod]
-		public void TestDeltaSetFetchEnable()
-		{
-            // Arrange
-            kinveyClient = BuildClient();
-
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
-
-			// Act
-			todoStore.DeltaSetFetchingEnabled = true;
-
-			// Assert
-			Assert.IsTrue(todoStore.DeltaSetFetchingEnabled);
-		}
+        #region GetCount
 
         [TestMethod]
         public async Task TestGetCountAsync()
@@ -3221,7 +3269,9 @@ namespace Kinvey.Tests
             // Assert
             Assert.AreEqual(1u, count);
         }
-        
+
+        #endregion GetCount
+
         #region Find
 
         #region Positive tests
@@ -5335,6 +5385,8 @@ namespace Kinvey.Tests
 
         #endregion Find
 
+        #region GroupAndAggregate
+
         [TestMethod]
         public async Task TestNetworkStoreGetAverageAsync()
         {
@@ -5562,6 +5614,8 @@ namespace Kinvey.Tests
             Assert.AreEqual(55, sum);
             Assert.AreEqual(1, arrGAR.Count());
         }
+
+        #endregion GroupAndAggregate
 
         #region Save
 
@@ -6371,35 +6425,7 @@ namespace Kinvey.Tests
 
         #endregion Save
 
-        [TestMethod]
-		public async Task TestStoreInvalidOperation()
-		{
-            // Setup
-            kinveyClient = BuildClient();
-
-            if (MockData)
-            {
-                MockResponses(1);
-            }
-			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-
-            await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-			{
-				await todoStore.PullAsync();
-			});
-
-            await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-			{
-				await todoStore.PushAsync();
-			});
-
-            await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-			{
-				await todoStore.SyncAsync();
-			});
-		}
+        #region Subscribe Unsubscribe
 
         [TestMethod]
         public async Task TestSubscribeUnsubscribeAsync()
@@ -6446,6 +6472,10 @@ namespace Kinvey.Tests
             }
         }
 
+        #endregion Subscribe Unsubscribe
+
+        #region GetSyncCount
+
         [TestMethod]
         public async Task TestGetSyncCount()
         {
@@ -6474,6 +6504,10 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_INVALID_SYNC_COUNT_OPERATION, kinveyException.ErrorCode);
         }
+
+        #endregion GetSyncCount
+
+        #region ClearCache
 
         [TestMethod]
         public async Task TestClearCacheAsync()
@@ -6504,6 +6538,10 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_INVALID_CLEAR_CACHE_OPERATION, kinveyException.ErrorCode);
         }
 
+        #endregion ClearCache
+
+        #region Purge
+
         [TestMethod]
         public async Task TestPurge()
         {
@@ -6531,6 +6569,8 @@ namespace Kinvey.Tests
             var kinveyException = exception as KinveyException;
             Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_INVALID_PURGE_OPERATION, kinveyException.ErrorCode);
-        }        
+        }
+
+        #endregion Purge
     }
 }
