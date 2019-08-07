@@ -6369,7 +6369,7 @@ namespace Kinvey.Tests
                 var toDos = new List<ToDo>
                 {
                     new ToDo { Name = "Name1", Details = "Details1", Value = 1, GeoLoc = "[200,200]" },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details2", Value = 2 },
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details2", Value = 2 },
                     new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
                 };
 

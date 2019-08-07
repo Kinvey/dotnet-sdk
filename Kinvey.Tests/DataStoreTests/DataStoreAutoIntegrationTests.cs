@@ -6774,8 +6774,8 @@ namespace Kinvey.Tests
 
                 var toDos = new List<ToDo>
                 {
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 }
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details1", Value = 1 },
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details3", Value = 3 }
                 };
 
                 // Act
@@ -6940,16 +6940,16 @@ namespace Kinvey.Tests
 
                 var toDo1 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
                 toDo1 = await toDoAutoStore.SaveAsync(toDo1);
-                toDo1.Name = TestSetup.entity_with_error;
+                toDo1.Name = TestSetup.entity_name_for_400_response_error;
                 toDo1.Details = "Details33";
                 toDo1.Value = 33;
 
                 toDos.Add(toDo1);
-                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 });
+                toDos.Add(new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details1", Value = 1 });
                 toDos.Add(toDo1);
                 toDos.Add(new ToDo { Name = "Name2", Details = "Details2", Value = 2 });
                 toDos.Add(toDo1);
-                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 });
+                toDos.Add(new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details3", Value = 3 });
                 toDos.Add(toDo1);
 
                 // Act
@@ -8202,7 +8202,7 @@ namespace Kinvey.Tests
                 var toDos = new List<ToDo>
                 {
                     new ToDo { Name = "Name1", Details = "Details1", Value = 1, GeoLoc = "[200,200]" },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details2", Value = 2 },
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details2", Value = 2 },
                     new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
                 };
 

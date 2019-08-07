@@ -6206,16 +6206,16 @@ namespace Kinvey.Tests
 
                 var toDo1 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
                 toDo1 = await todoStoreNetwork.SaveAsync(toDo1);
-                toDo1.Name = TestSetup.entity_with_error;
+                toDo1.Name = TestSetup.entity_name_for_400_response_error;
                 toDo1.Details = "Details33";
                 toDo1.Value = 33;
 
                 toDos.Add(toDo1);
-                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 });
+                toDos.Add(new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details1", Value = 1 });
                 toDos.Add(toDo1);
                 toDos.Add(new ToDo { Name = "Name2", Details = "Details2", Value = 2 });
                 toDos.Add(toDo1);
-                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 });
+                toDos.Add(new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details3", Value = 3 });
                 toDos.Add(toDo1);
 
                 // Act
@@ -6280,7 +6280,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertInvalidPermissionsAsync()
+        public async Task TestSaveMultiInsertInvalidPermissionsForMultiInsertAsync()
         {
             // Setup
             kinveyClient = BuildClient("5");
@@ -6312,7 +6312,42 @@ namespace Kinvey.Tests
             var kinveyException = exception as KinveyException;
             Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
-            Assert.IsTrue(401 == kinveyException.StatusCode);
+            Assert.AreEqual(401, kinveyException.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertInvalidPermissionsForUpdateAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+
+            if (MockData)
+            {
+                MockResponses(3);
+            }
+
+            // Arrange
+            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var toDos = new List<ToDo>
+            {
+                new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name1", Details = "Details1", Value = 1 },
+                new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name2", Details = "Details2", Value = 2 }
+            };
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStoreNetwork.SaveAsync(toDos);
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
         }
 
         [TestMethod]
@@ -6367,8 +6402,8 @@ namespace Kinvey.Tests
 
                 var toDos = new List<ToDo>
                 {
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 }
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details1", Value = 1 },
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details3", Value = 3 }
                 };
 
                 // Act
@@ -6386,7 +6421,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsert500ErrorResponseAsync()
+        public async Task TestSaveMultiInsertThrowing500ErrorResponseInUpdateAsync()
         {
             if (MockData)
             {
@@ -6416,6 +6451,36 @@ namespace Kinvey.Tests
                 var kinveyException = exception as KinveyException;
                 Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
                 Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestSaveMultiInsertExisting500ErrorResponseInUpdateAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient("5");
+
+                MockResponses(3);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+
+                var toDos = new List<ToDo>
+                {
+                    new ToDo { ID = TestSetup.id_for_500_error_response_fake, Name = "Name1", Details = "Details1", Value = 1 },
+                    new ToDo { ID = Guid.NewGuid().ToString(), Name = "Name2", Details = "Details2", Value = 2 }
+                };
+
+                // Act
+                var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
+
+                // Assert
+                Assert.AreEqual(1, savedToDos.Errors.Count);
+                Assert.AreEqual(0, savedToDos.Errors[0].Index);
             }
         }
 

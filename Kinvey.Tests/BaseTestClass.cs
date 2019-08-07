@@ -444,7 +444,7 @@ namespace Kinvey.Tests
                 return;
             }
 
-            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_400_response_error))
             {
                 MockBadRequest(context);
                 return;
@@ -483,7 +483,7 @@ namespace Kinvey.Tests
 
             for(var index = 0; index < jObjects.Count; index ++)
             {
-                if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_with_error))
+                if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_400_response_error))
                 {
                     jObjectsToSave.Add(null);
 
@@ -496,24 +496,23 @@ namespace Kinvey.Tests
 
                     jObjectErrors.Add(jObjectError);
                 }
-                else
+                else if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
                 {
-                    if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
                     {
-                        jObjectsToSave.Add(null);
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90"
+                    };
 
-                        var jObjectError = new JObject
-                        {
-                            ["index"] = index,
-                            ["code"] = 1,
-                            ["errmsg"] = "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90"
-                        };
+                    jObjectErrors.Add(jObjectError);
 
-                        jObjectErrors.Add(jObjectError);
-
-                        continue;
-                    }
-
+                    continue;
+                }
+                else
+                {                    
                     PopulateEntity(jObjects[index], client);
                     items.Add(jObjects[index]);
                     jObjectsToSave.Add(jObjects[index]);
@@ -666,7 +665,7 @@ namespace Kinvey.Tests
                 return;
             }
 
-            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_400_response_error))
             {
                 MockInternal(context);
                 return;
