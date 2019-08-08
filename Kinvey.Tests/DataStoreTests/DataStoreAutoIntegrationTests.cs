@@ -6147,8 +6147,10 @@ namespace Kinvey.Tests
             Assert.AreEqual(newItem.Name, existingItemsCache[0].Name);
             Assert.AreEqual(newItem.Details, existingItemsCache[0].Details);
             Assert.AreEqual(newItem.DueDate, existingItemsCache[0].DueDate);
-            Assert.IsNull(existingItemsCache[0].Acl);
-            Assert.IsNull(existingItemsCache[0].Kmd);
+            Assert.IsNotNull(existingItemsCache[0].Acl);
+            Assert.IsNotNull(existingItemsCache[0].Kmd);
+            Assert.IsFalse(string.IsNullOrEmpty(existingItemsCache[0].Acl.Creator));
+            Assert.IsFalse(string.IsNullOrEmpty(existingItemsCache[0].Kmd.entityCreationTime));
             Assert.IsNotNull(existingItemsNetwork);
             Assert.AreEqual(1, existingItemsNetwork.Count);
             Assert.AreEqual(newItem.ID, existingItemsNetwork[0].ID);
