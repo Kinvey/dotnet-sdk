@@ -33,12 +33,13 @@ namespace Kinvey
 		{
 			T savedEntity = default(T);
 			NetworkRequest<T> request = null;
+            string entityID = null; ;
 
-			JToken idToken = JObject.FromObject (entity) ["_id"];
+            JToken idToken = JObject.FromObject (entity) ["_id"];
 			if (idToken != null &&
 			    !String.IsNullOrEmpty(idToken.ToString()))
 			{
-				string entityID = idToken.ToString();
+				entityID = idToken.ToString();
 				request = Client.NetworkFactory.buildUpdateRequest(Collection, entity, entityID);
 			}
 			else
@@ -102,12 +103,11 @@ namespace Kinvey
 
                 case WritePolicy.LOCAL_THEN_NETWORK:                    
                     string saveModeLocalThenNetwork = request.RequestMethod;
-                    string tempIdLocalThenNetwork = null;
 
                     // cache
                     if (String.Equals("POST", saveModeLocalThenNetwork))
 					{
-                        tempIdLocalThenNetwork = PrepareCacheSave(ref entity);
+                        entityID = PrepareCacheSave(ref entity);
                         savedEntity = Cache.Save(entity);
 					}
 					else
@@ -135,10 +135,7 @@ namespace Kinvey
                     {
                         // if the network request fails, save data to sync queue
                         var localPendingAction = PendingWriteAction.buildFromRequest(request);
-                        if (string.Equals("POST", saveModeLocalThenNetwork))
-                        {
-                            localPendingAction.entityId = tempIdLocalThenNetwork;
-                        }
+                        localPendingAction.entityId = entityID;
 
                         SyncQueue.Enqueue(localPendingAction);
 
@@ -147,9 +144,9 @@ namespace Kinvey
                             throw kinveyException;
                         }
                     }
-                    else if (tempIdLocalThenNetwork != null)
+                    else 
 					{
-						Cache.UpdateCacheSave(savedEntity, tempIdLocalThenNetwork);
+						Cache.UpdateCacheSave(savedEntity, entityID);
 					}
 
 					break;
