@@ -6359,18 +6359,17 @@ namespace Kinvey.Tests
                 // Setup
                 kinveyClient = BuildClient("5");
 
-                MockResponses(3);
+                MockResponses(2);
 
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
                 var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-                var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
                     new ToDo { Name = "Name1", Details = "Details1", Value = 1, GeoLoc = "[200,200]" },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details2", Value = 2 },
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details2", Value = 2 },
                     new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
                 };
 
@@ -6383,7 +6382,7 @@ namespace Kinvey.Tests
                 var existingToDos = await todoSyncStore.FindAsync();
 
                 // Teardown
-                await todoNetworkStore.RemoveAsync(savedToDos.Entities[2].ID);
+                await todoSyncStore.RemoveAsync(savedToDos.Entities[2].ID);
 
                 // Assert
                 Assert.AreEqual(3, pushResponse.PushCount);

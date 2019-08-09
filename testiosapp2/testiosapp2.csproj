@@ -131,6 +131,8 @@
     <ProjectReference Include="..\Kinvey.iOS\Kinvey.iOS.csproj">
       <Project>{54C9E523-785C-48CF-B77C-B28842DC0ABF}</Project>
       <Name>Kinvey.iOS</Name>
+      <IsAppExtension>false</IsAppExtension>
+      <IsWatchApp>false</IsWatchApp>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -444,9 +444,21 @@ namespace Kinvey.Tests
                 return;
             }
 
-            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_400_response_error))
             {
                 MockBadRequest(context);
+                return;
+            }
+
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_400_error_response_fake))
+            {
+                MockBadRequest(context);
+                return;
+            }
+
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_500_error_response_fake))
+            {
+                MockInternal(context);
                 return;
             }
 
@@ -477,7 +489,7 @@ namespace Kinvey.Tests
 
             for(var index = 0; index < jObjects.Count; index ++)
             {
-                if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_with_error))
+                if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_400_response_error))
                 {
                     jObjectsToSave.Add(null);
 
@@ -490,24 +502,38 @@ namespace Kinvey.Tests
 
                     jObjectErrors.Add(jObjectError);
                 }
-                else
+                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
                 {
-                    if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
                     {
-                        jObjectsToSave.Add(null);
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Error"
+                    };
 
-                        var jObjectError = new JObject
-                        {
-                            ["index"] = index,
-                            ["code"] = 1,
-                            ["errmsg"] = "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90"
-                        };
+                    jObjectErrors.Add(jObjectError);
 
-                        jObjectErrors.Add(jObjectError);
+                    continue;
+                }
+                else if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
+                {
+                    jObjectsToSave.Add(null);
 
-                        continue;
-                    }
+                    var jObjectError = new JObject
+                    {
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90"
+                    };
 
+                    jObjectErrors.Add(jObjectError);
+
+                    continue;
+                }
+                else
+                {                    
                     PopulateEntity(jObjects[index], client);
                     items.Add(jObjects[index]);
                     jObjectsToSave.Add(jObjects[index]);
@@ -660,7 +686,7 @@ namespace Kinvey.Tests
                 return;
             }
 
-            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_with_error))
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_400_response_error))
             {
                 MockInternal(context);
                 return;
@@ -818,6 +844,18 @@ namespace Kinvey.Tests
 
         protected static void MockAppDataDelete(HttpListenerContext context, List<JObject> items, List<JObject> deletedItems, string id)
         {
+            if (id.Equals(TestSetup.id_for_400_error_response_fake))
+            {
+                MockBadRequest(context);
+                return;
+            }
+
+            if (id.Equals(TestSetup.id_for_500_error_response_fake))
+            {
+                MockInternal(context);
+                return;
+            }
+
             var todoIndex = items.FindIndex((obj) => id.Equals(obj["_id"].Value<string>()));
             var jsonObject = new JObject();
             if (todoIndex != -1)
@@ -830,7 +868,8 @@ namespace Kinvey.Tests
             }
             else
             {
-                jsonObject["count"] = 0;
+                MockNotFound(context);
+                return;
             }
             Write(context, jsonObject);
         }

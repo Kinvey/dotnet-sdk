@@ -3309,18 +3309,11 @@ namespace Kinvey.Tests
             }
 
             // Assert                      
-            if (MockData)
-            {
-                Assert.IsNotNull(kinveyDeleteResponse);
-                Assert.AreEqual(0, kinveyDeleteResponse.count);
-            }
-            else
-            {
-                Assert.IsNull(kinveyDeleteResponse);
-                Assert.IsNotNull(exception);
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            }
+            Assert.IsNull(kinveyDeleteResponse);
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+            Assert.AreEqual(404, exception.StatusCode);
         }
 
         [TestMethod]
@@ -3389,17 +3382,10 @@ namespace Kinvey.Tests
             Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, syncStoreException.ErrorCategory);
             Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_FIND_BY_ID_NOT_FOUND, syncStoreException.ErrorCode);
 
-            if (MockData)
-            {
-                Assert.IsNotNull(kinveyDeleteResponse2);
-                Assert.AreEqual(0, kinveyDeleteResponse2.count);
-            }
-            else
-            {
-                Assert.IsNotNull(exception);
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            }           
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+            Assert.AreEqual(404, exception.StatusCode);
         }
 
         [TestMethod]
@@ -6790,8 +6776,8 @@ namespace Kinvey.Tests
 
                 var toDos = new List<ToDo>
                 {
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 }
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details1", Value = 1 },
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details3", Value = 3 }
                 };
 
                 // Act
@@ -6956,16 +6942,16 @@ namespace Kinvey.Tests
 
                 var toDo1 = new ToDo { Name = "Name3", Details = "Details3", Value = 3 };
                 toDo1 = await toDoAutoStore.SaveAsync(toDo1);
-                toDo1.Name = TestSetup.entity_with_error;
+                toDo1.Name = TestSetup.entity_name_for_400_response_error;
                 toDo1.Details = "Details33";
                 toDo1.Value = 33;
 
                 toDos.Add(toDo1);
-                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details1", Value = 1 });
+                toDos.Add(new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details1", Value = 1 });
                 toDos.Add(toDo1);
                 toDos.Add(new ToDo { Name = "Name2", Details = "Details2", Value = 2 });
                 toDos.Add(toDo1);
-                toDos.Add(new ToDo { Name = TestSetup.entity_with_error, Details = "Details3", Value = 3 });
+                toDos.Add(new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details3", Value = 3 });
                 toDos.Add(toDo1);
 
                 // Act
@@ -8218,7 +8204,7 @@ namespace Kinvey.Tests
                 var toDos = new List<ToDo>
                 {
                     new ToDo { Name = "Name1", Details = "Details1", Value = 1, GeoLoc = "[200,200]" },
-                    new ToDo { Name = TestSetup.entity_with_error, Details = "Details2", Value = 2 },
+                    new ToDo { Name = TestSetup.entity_name_for_400_response_error, Details = "Details2", Value = 2 },
                     new ToDo { Name = "Name3", Details = "Details3", Value = 3 }
                 };
 
@@ -8234,7 +8220,7 @@ namespace Kinvey.Tests
                 var existingToDosNetwork = await todoNetworkStore.FindAsync();
 
                 // Teardown
-                await todoNetworkStore.RemoveAsync(savedToDos.Entities[2].ID);
+                await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
 
                 // Assert
                 Assert.AreEqual(3, pushResponse.PushCount);
