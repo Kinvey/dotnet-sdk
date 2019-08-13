@@ -450,6 +450,12 @@ namespace Kinvey.Tests
                 return;
             }
 
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
+            {
+                MockInternal(context);
+                return;
+            }
+
             if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_400_error_response_fake))
             {
                 MockBadRequest(context);
@@ -1306,6 +1312,12 @@ namespace Kinvey.Tests
                                     Write(context, jsonObject);
                                     break;
                                 }
+                            case "/appdata/_kid_/BadRequestErrorEntity":
+                                MockBadRequest(context);
+                                break;
+                            case "/appdata/_kid_/InternalServerErrorEntity":
+                                MockInternal(context);
+                                break;                                
                             case "/blob/_kid_/":
                                 MockBlob(context, blobs);
                                 break;
