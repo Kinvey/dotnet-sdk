@@ -25,7 +25,7 @@ namespace Kinvey.TestApp.Shared.Pages
 
 	            // Getting an instance of  DataStore.
                 var dataStore = DataStore<Contract>.Collection(Kinvey.TestApp.Shared.Constants.Settings.ContractsCollection,
-                    DataStoreType.CACHE);
+                    DataStoreType.AUTO);
 
 	            var contract = new Contract { Number = NumberEntryCell.Text, Title = TitleEntryCell.Text };
                 // Save an entity. The entity will be saved to the device and your backend. 
