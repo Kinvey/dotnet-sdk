@@ -8401,10 +8401,10 @@ namespace Kinvey.Tests
             await networkStore.RemoveAsync(fc2.ID);
 
             // Assert
-            Assert.IsTrue(exception.GetType() == typeof(KinveyException));
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
             KinveyException ke = exception as KinveyException;
-            Assert.IsTrue(ke.ErrorCategory == EnumErrorCategory.ERROR_DATASTORE_NETWORK);
-            Assert.IsTrue(ke.ErrorCode == EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED);
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_GENERAL, ke.ErrorCode);
         }
 
         [TestMethod]

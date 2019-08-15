@@ -97,7 +97,7 @@ namespace Kinvey
                     }
                     catch (KinveyException exception)
                     {
-                        if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+                        if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_GENERAL)
                         {
                             throw;
                         }

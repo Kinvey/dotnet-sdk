@@ -102,7 +102,7 @@ namespace Kinvey
                     }
                     catch (KinveyException exception)
                     {
-                        if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED)
+                        if (exception.ErrorCategory != EnumErrorCategory.ERROR_DATASTORE_NETWORK || exception.ErrorCode != EnumErrorCode.ERROR_GENERAL)
                         {
                             throw;
                         }
@@ -177,13 +177,6 @@ namespace Kinvey
 			{
 				throw;
 			}
-            catch (HttpRequestException e)
-            {
-                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
-                                            EnumErrorCode.ERROR_NETWORK_CONNECTION_FAILED,
-                                            "Error in FindAggregateAsync() for network results.",
-                                            e);
-            }
             catch (Exception e)
 			{
 				throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK,
