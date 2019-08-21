@@ -111,23 +111,23 @@ namespace Kinvey
 
                     ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE);
 
-                    HttpRequestException httpRequestException = null;
                     KinveyException kinveyException = null;
+                    Exception exception = null;
                     try
                     {
                         // network
                         kinveyDataStoreNetworkResponse = await HandleNetworkRequestAsync(entities);
                     }
-                    catch (HttpRequestException httpRequestEx)
-                    {
-                        httpRequestException = httpRequestEx;
-                    }
                     catch (KinveyException kinveyEx)
                     {
                         kinveyException = kinveyEx;
                     }
+                    catch (Exception ex)
+                    {
+                        exception = ex;
+                    }
 
-                    if (httpRequestException != null || kinveyException != null)
+                    if (kinveyException != null || exception != null)
                     {
                         foreach (var pendingAction in pendingWriteActions)
                         {
