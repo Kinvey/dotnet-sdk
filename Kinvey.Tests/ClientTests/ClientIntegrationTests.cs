@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -73,6 +73,39 @@ namespace Kinvey.Tests
             Assert.IsFalse(string.IsNullOrEmpty(client.BaseUrl));
             Assert.IsTrue(string.Equals(client.BaseUrl, url));
 		}
+
+        [TestMethod]
+        public void TestClientBuilderWithInvalidRequirements()
+        {
+            // Arrange
+            var builder = new Client.Builder(TestSetup.app_key, TestSetup.app_secret);
+
+            DynamicBuilder.CreateAssemblyWithType();
+
+            // Act
+            var exception = Assert.ThrowsException<KinveyException>(delegate
+            {
+                builder.Build();
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var ke = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_REQUIREMENT, ke.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_REQUIREMENT_MISSING_GET_SET_ACCESSORS, ke.ErrorCode);
+            Assert.AreEqual("There is the incorrect field TestField in the type TestType", ke.Info);
+
+            //Teardown
+
+            /* The type `TestType` was created dynamically and added to the primary domain above.
+            This type must be unloaded from the domain to avoid exceptions in other tests as they use the `Client.Builder` class too.
+            There is not any explicit possibility to do it in .Net Core like it was in .Net Framework. 
+            For example, unloading an assembly from a domain or a whole domain.  
+            There is only some implicit possibility.This is the using of GC. In this case the assembly with the `TestType` type will be unloaded from the domain by means of GC as no longer accessible.
+            After this all subsequent tests will run correctly. */
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
 
         [TestMethod]
 		public void TestClientBuilderBasicBad()
