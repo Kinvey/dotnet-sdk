@@ -6,7 +6,7 @@ task:
     DOTNET_ROOT: /usr/local/share/dotnet
     PATH: $PATH:$DOTNET_ROOT
   git_submodule_update_init_script: git submodule update --init --recursive
-  install_dotnet_sdk_script: brew cask install dotnet-sdk
+  install_dotnet_sdk_script: brew cask install dotnet-preview
   check_version_script: dotnet --version
   test_script: cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
