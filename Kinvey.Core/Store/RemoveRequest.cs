@@ -108,23 +108,23 @@ namespace Kinvey
 
                         var deleteRequest = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID);
 
-                        HttpRequestException httpRequestException = null;
                         KinveyException kinveyException = null;
+                        Exception exception = null;
                         try
                         { 
                             // network
                             kdr = await deleteRequest.ExecuteAsync();
                         }
-                        catch (HttpRequestException httpRequestEx)
-                        {
-                            httpRequestException = httpRequestEx;
-                        }
                         catch (KinveyException kinveyEx)
                         {
                             kinveyException = kinveyEx;
                         }
+                        catch (Exception ex)
+                        {
+                            exception = ex;
+                        }
 
-                        if (httpRequestException != null || kinveyException != null)
+                        if (kinveyException != null || exception != null)
                         {
                             var pendingAction = PendingWriteAction.buildFromRequest(deleteRequest);
                             SyncQueue.Enqueue(pendingAction);
@@ -141,23 +141,23 @@ namespace Kinvey
                         kdr = Cache.DeleteByQuery(_query);
 
                         // network
-                        HttpRequestException httpRequestException = null;
                         KinveyException kinveyException = null;
+                        Exception exception = null;
                         try
                         { 
                             var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
                             kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
                         }
-                        catch (HttpRequestException httpRequestEx)
-                        {
-                            httpRequestException = httpRequestEx;
-                        }
                         catch (KinveyException kinveyEx)
                         {
                             kinveyException = kinveyEx;
                         }
+                        catch (Exception ex)
+                        {
+                            exception = ex;
+                        }
 
-                        if (httpRequestException != null || kinveyException != null)
+                        if (kinveyException != null || exception != null)
                         {
                             foreach (var id in kdr.IDs)
                             {

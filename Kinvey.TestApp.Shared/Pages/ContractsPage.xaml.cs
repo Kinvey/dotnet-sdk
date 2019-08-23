@@ -39,18 +39,10 @@ namespace Kinvey.TestApp.Shared.Pages
 
                 // Getting an instance of  DataStore.
                 var dataStore = DataStore<Contract>.Collection(Kinvey.TestApp.Shared.Constants.Settings.ContractsCollection,
-                    DataStoreType.CACHE);
+                    DataStoreType.AUTO);
 
-                var contracts = new List<Contract>();
-
-                // The KinveyDelegate onSuccess() method will be called with cache results.                
-                var cacheDelegate = new KinveyDelegate<List<Contract>>
-                {
-                    onSuccess = results => contracts.AddRange(results),
-                    onError = async ex => await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.GeneralExceptionTitle, ex.Message)
-                };
-                // The method will return the network results.
-                await dataStore.FindAsync(cacheResults: cacheDelegate);
+                // The method will return the network results if internet connection is available.
+                var contracts = await dataStore.FindAsync();
 
                 //Binding ListView with data.
                 ContractsList.ItemsSource = contracts;
@@ -97,7 +89,8 @@ namespace Kinvey.TestApp.Shared.Pages
                 {
                     // Then register fresh.
                     await Client.SharedClient.ActiveUser.RegisterRealtimeAsync();
-                    var contracts = DataStore<Contract>.Collection("Contracts");
+                    var contracts = DataStore<Contract>.Collection(Kinvey.TestApp.Shared.Constants.Settings.ContractsCollection,
+                    DataStoreType.AUTO);
                     // Subscribe to a collection.
                     await contracts.Subscribe(new KinveyDataStoreDelegate<Contract>
                     {
