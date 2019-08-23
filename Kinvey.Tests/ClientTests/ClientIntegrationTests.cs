@@ -101,8 +101,8 @@ namespace Kinvey.Tests
             This type must be unloaded from the domain to avoid exceptions in other tests as they use the `Client.Builder` class too.
             There is not any explicit possibility to do it in .Net Core like it was in .Net Framework. 
             For example, unloading an assembly from a domain or a whole domain.  
-            There is only some implicit possibility.This is the using of GC. In this case the assembly with the `TestType` type will be unloaded from the domain by means of GC as no longer accessible.
-            After this all subsequent tests will run correctly. */
+            There is only some implicit possibility.This is the using of GC. In this case the assembly with the `TestType` type will be unloaded from the domain by means of GC like it is no longer accessible.
+            After this, all subsequent tests will run correctly. */
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }

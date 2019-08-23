@@ -268,7 +268,7 @@ namespace Kinvey
         ERROR_REQUIREMENT_MISSING_PUSH_CONFIGURATION_CLASS_OVERRIDE,
 
         /// <summary>
-        /// Requirement Error - Missing the get and set accessors for the field with the JsonProperty attribute.
+        /// Requirement Error - Missing the get and set accessors for fields with the JsonProperty attribute.
         /// </summary>
         ERROR_REQUIREMENT_MISSING_GET_SET_ACCESSORS,
 

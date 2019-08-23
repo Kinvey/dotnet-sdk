@@ -261,7 +261,7 @@ namespace Kinvey
                 case EnumErrorCode.ERROR_REQUIREMENT_MISSING_GET_SET_ACCESSORS:
                     error = "Missing the get and set accessors.";
                     debug = "";
-                    description = "Kinvey requires the usage of the get and set accessors for the field with the JsonProperty attribute.";
+                    description = "Kinvey requires the usage of the get and set accessors for fields with the JsonProperty attribute.";
                     break;
 
                 case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
