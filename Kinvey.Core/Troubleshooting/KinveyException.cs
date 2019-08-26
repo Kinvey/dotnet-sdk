@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -256,6 +256,12 @@ namespace Kinvey
                     error = "KinveyFCMService class override is absent for push configuration.";
                     debug = "";
                     description = "To use FCM for push notifications, add KinveyFCMService class override to your project.";
+                    break;
+
+                case EnumErrorCode.ERROR_REQUIREMENT_MISSING_GET_SET_ACCESSORS:
+                    error = "Missing the get and set accessors.";
+                    debug = "";
+                    description = "Kinvey requires the usage of the get and set accessors for fields with the JsonProperty attribute.";
                     break;
 
                 case EnumErrorCode.ERROR_USER_ALREADY_LOGGED_IN:
