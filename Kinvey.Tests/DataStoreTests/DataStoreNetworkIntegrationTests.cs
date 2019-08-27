@@ -30,8 +30,6 @@ namespace Kinvey.Tests
 	{
 		private Client kinveyClient;
 
-		private const string collectionName = "ToDos";
-
         [TestInitialize]
         public override void Setup()
 		{
@@ -105,7 +103,7 @@ namespace Kinvey.Tests
             // Arrange
             AccessControlList acl = new AccessControlList();
             acl.GloballyReadable = true;
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
             ToDo todo = new ToDo();
             todo.Acl = acl;
 
@@ -140,7 +138,7 @@ namespace Kinvey.Tests
             // Arrange
             AccessControlList acl = new AccessControlList();
             acl.GloballyWriteable = true;
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
             ToDo todo = new ToDo();
             todo.Acl = acl;
 
@@ -177,7 +175,7 @@ namespace Kinvey.Tests
             acl.Groups.Readers.Add("groupread1");
             acl.Groups.Readers.Add("groupread2");
             acl.Groups.Readers.Add("groupread3");
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
             ToDo todo = new ToDo();
             todo.Acl = acl;
 
@@ -223,7 +221,7 @@ namespace Kinvey.Tests
             AccessControlList acl = new AccessControlList();
             acl.Groups.Writers.Add("groupwrite1");
             acl.Groups.Writers.Add("groupwrite2");
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
             ToDo todo = new ToDo();
             todo.Acl = acl;
 
@@ -268,7 +266,7 @@ namespace Kinvey.Tests
             AccessControlList acl = new AccessControlList();
             acl.Readers.Add("reader1");
             acl.Readers.Add("reader2");
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
             ToDo todo = new ToDo();
             todo.Acl = acl;
 
@@ -311,7 +309,7 @@ namespace Kinvey.Tests
             acl.Writers.Add("writer1");
             acl.Writers.Add("writer2");
             acl.Writers.Add("writer3");
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
             ToDo todo = new ToDo();
             todo.Acl = acl;
 
@@ -349,11 +347,11 @@ namespace Kinvey.Tests
             kinveyClient = BuildClient();
 
             // Act
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Assert
             Assert.IsNotNull(todoStore);
-            Assert.IsTrue(string.Equals(todoStore.CollectionName, collectionName));
+            Assert.IsTrue(string.Equals(todoStore.CollectionName, toDosCollection));
         }
         
         [TestMethod]
@@ -363,11 +361,11 @@ namespace Kinvey.Tests
             kinveyClient = BuildClient();
 
             // Act
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(todoStore);
-			Assert.AreEqual(todoStore.CollectionName, collectionName);
+			Assert.AreEqual(todoStore.CollectionName, toDosCollection);
 			Assert.AreEqual(todoStore.StoreType, DataStoreType.NETWORK);
 
 		}
@@ -382,7 +380,7 @@ namespace Kinvey.Tests
             // Arrange
             kinveyClient = BuildClient();
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             todoStore.DeltaSetFetchingEnabled = true;
@@ -407,7 +405,7 @@ namespace Kinvey.Tests
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
             {
@@ -446,7 +444,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             ToDo newItem = new ToDo
             {
                 Name = "Task to Delete",
@@ -479,7 +477,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+                var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -510,7 +508,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem = new ToDo
             {
                 Name = "Task to Delete",
@@ -557,7 +555,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -586,7 +584,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+                var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -625,7 +623,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 to delete",
@@ -707,7 +705,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 to delete",
@@ -788,7 +786,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -870,7 +868,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -953,7 +951,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1036,7 +1034,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1126,7 +1124,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1216,7 +1214,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1306,7 +1304,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1396,7 +1394,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1485,7 +1483,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1576,7 +1574,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1667,7 +1665,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1756,7 +1754,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1845,7 +1843,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1934,7 +1932,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2025,7 +2023,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2115,7 +2113,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2205,7 +2203,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -2296,7 +2294,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -2387,7 +2385,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -2479,7 +2477,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -2572,7 +2570,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task Delete",
@@ -2664,7 +2662,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task Del1",
@@ -2760,7 +2758,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2826,7 +2824,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2892,7 +2890,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2958,7 +2956,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -3023,7 +3021,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -3089,7 +3087,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -3157,7 +3155,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             var query = todoStore.Where(x => x.Details.Equals("Test"));
         
@@ -3183,6 +3181,8 @@ namespace Kinvey.Tests
 
         #region GetCount
 
+        #region Positive tests
+
         [TestMethod]
         public async Task TestGetCountAsync()
         {
@@ -3207,7 +3207,7 @@ namespace Kinvey.Tests
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             ToDo t1 = await todoStore.SaveAsync(newItem);
             ToDo t2 = await todoStore.SaveAsync(newItem2);
 
@@ -3216,13 +3216,11 @@ namespace Kinvey.Tests
             count = await todoStore.GetCountAsync();
 
             // Assert
-            //Assert.GreaterOrEqual(count, 0);
             Assert.AreEqual(2u, count);
 
             // Teardown
             await todoStore.RemoveAsync(t1.ID);
             await todoStore.RemoveAsync(t2.ID);
-            kinveyClient.ActiveUser.Logout();
         }
 
         [TestMethod]
@@ -3253,7 +3251,7 @@ namespace Kinvey.Tests
             };
 
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             var t1 = await todoStore.SaveAsync(newItem);
             var t2 = await todoStore.SaveAsync(newItem2);
 
@@ -3270,6 +3268,105 @@ namespace Kinvey.Tests
             Assert.AreEqual(1u, count);
         }
 
+        #endregion Positive tests
+
+        #region Negative tests
+
+        [TestMethod]
+        public async Task TestGetCount400ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                if (MockData)
+                {
+                    MockResponses(2);
+                }
+
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                // Arrange
+                var todoStore = DataStore<BadRequestErrorEntity>.Collection(BadRequestErrorEntityCollection, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await todoStore.GetCountAsync();
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(400, kinveyException.StatusCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestGetCount401ErrorResponseAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStore.GetCountAsync();
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(401, kinveyException.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task TestGetCount500ErrorResponseAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var todoStore = DataStore<InternalServerErrorEntity>.Collection(InternalServerErrorEntityCollection, DataStoreType.NETWORK);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await todoStore.GetCountAsync();
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(500, kinveyException.StatusCode);
+        }
+
+        #endregion Negative tests
+       
         #endregion GetCount
 
         #region Find
@@ -3293,7 +3390,7 @@ namespace Kinvey.Tests
             newItem.Name = "Next Task";
             newItem.Details = "A test";
             newItem.DueDate = "2016-04-19T20:02:17.635Z";
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             ToDo t = await todoStore.SaveAsync(newItem);
 
             ToDo anotherNewItem = new ToDo();
@@ -3389,7 +3486,7 @@ namespace Kinvey.Tests
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			// Act
@@ -3433,7 +3530,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -3482,7 +3579,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2+";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -3538,7 +3635,7 @@ namespace Kinvey.Tests
                 DueDate = "2016-04-22T19:56:00.963Z"
             };
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4260,7 +4357,7 @@ namespace Kinvey.Tests
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
             newItem2.Value = 1;
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4310,7 +4407,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4364,7 +4461,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4418,7 +4515,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4472,7 +4569,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4531,7 +4628,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4583,7 +4680,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4635,7 +4732,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4687,7 +4784,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4739,7 +4836,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4791,7 +4888,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4843,7 +4940,7 @@ namespace Kinvey.Tests
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4898,7 +4995,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4951,7 +5048,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
             foreach (var item in await todoStore.FindAsync())
             {
                 await todoStore.RemoveAsync(item.ID);
@@ -5012,7 +5109,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -5071,7 +5168,7 @@ namespace Kinvey.Tests
             newItem2.Details = "details for 2";
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             newItem1 = await todoStore.SaveAsync(newItem1);
             newItem2 = await todoStore.SaveAsync(newItem2);
@@ -5130,7 +5227,7 @@ namespace Kinvey.Tests
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -5181,7 +5278,7 @@ namespace Kinvey.Tests
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -5233,7 +5330,7 @@ namespace Kinvey.Tests
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -5274,7 +5371,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+                var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -5305,7 +5402,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -5335,7 +5432,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -5364,7 +5461,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+                var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -5387,6 +5484,8 @@ namespace Kinvey.Tests
 
         #region GroupAndAggregate
 
+        #region Positive tests
+
         [TestMethod]
         public async Task TestNetworkStoreGetAverageAsync()
         {
@@ -5401,7 +5500,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+            DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.NETWORK);
 
             Person p1 = new Person();
             p1.FirstName = "Michael";
@@ -5462,7 +5561,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+            DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.NETWORK);
 
             Person p1 = new Person();
             p1.FirstName = "Michael";
@@ -5516,7 +5615,7 @@ namespace Kinvey.Tests
 			// Arrange
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+			DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.NETWORK);
 
 			Person p1 = new Person();
 			p1.FirstName = "Michael";
@@ -5570,7 +5669,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.NETWORK);
+            DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.NETWORK);
 
             Person p1 = new Person();
             p1.FirstName = "Michael";
@@ -5615,6 +5714,102 @@ namespace Kinvey.Tests
             Assert.AreEqual(1, arrGAR.Count());
         }
 
+        #endregion Positive tests
+
+        #region Negative tests 
+
+        [TestMethod]
+        public async Task TestNetworkStoreGetAverage400ErrorResponseAsync()
+        {
+            //Setup
+            if (MockData)
+            {
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var personStore = DataStore<BadRequestErrorEntity>.Collection(BadRequestErrorEntityCollection, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Name");
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(400, kinveyException.StatusCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreGetAverage401ErrorResponseAsync()
+        {
+            //Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(2);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.pass_for_user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
+
+            var personStore = DataStore<Person>.Collection(personCollection, DataStoreType.NETWORK);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "FirstName");
+            });
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(401, kinveyException.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreGetAverage500ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                //Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                var personStore = DataStore<InternalServerErrorEntity>.Collection(InternalServerErrorEntityCollection, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "FirstName");
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(500, kinveyException.StatusCode);
+            }
+        }
+
+        #endregion Negative tests
+
         #endregion GroupAndAggregate
 
         #region Save
@@ -5642,7 +5837,7 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
@@ -5675,7 +5870,7 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
@@ -5714,7 +5909,7 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
@@ -5753,7 +5948,7 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
@@ -5791,7 +5986,7 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
@@ -5829,7 +6024,7 @@ namespace Kinvey.Tests
             // Arrange
             var newItem = new ToDo { Name = "Name1", Details = "Details1", Value = 1, GeoLoc = "[200,200]" };
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -5865,7 +6060,7 @@ namespace Kinvey.Tests
             // Arrange
             var newItem = new ToDo { Name = "Name1", Details = "Details1", Value = 1 };
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -5894,7 +6089,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
+                var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
                 var newItem = new ToDo
                 {
@@ -5941,7 +6136,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -5987,7 +6182,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6033,7 +6228,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>();
 
@@ -6102,7 +6297,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6145,7 +6340,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>();
 
@@ -6200,7 +6395,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>();
 
@@ -6259,7 +6454,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6289,7 +6484,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6319,7 +6514,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6354,7 +6549,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -6381,7 +6576,7 @@ namespace Kinvey.Tests
             }
 
             // Arrange
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
 
@@ -6417,7 +6612,7 @@ namespace Kinvey.Tests
             }
 
             // Arrange
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
 
@@ -6454,7 +6649,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6488,7 +6683,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6523,7 +6718,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6558,7 +6753,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6593,7 +6788,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoStoreNetwork = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStoreNetwork = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6634,7 +6829,7 @@ namespace Kinvey.Tests
 
 
                 //Arrange
-                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -6685,7 +6880,7 @@ namespace Kinvey.Tests
             //Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             // Act
             var exception = Assert.ThrowsException<KinveyException>(delegate
@@ -6718,7 +6913,7 @@ namespace Kinvey.Tests
             //Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             // Act
             var exception = Assert.ThrowsException<KinveyException>(delegate
@@ -6751,7 +6946,7 @@ namespace Kinvey.Tests
             //Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             // Act
             var exception = Assert.ThrowsException<KinveyException>(delegate

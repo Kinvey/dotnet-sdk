@@ -88,6 +88,11 @@ namespace Kinvey.Tests
         private static readonly int MaxApiVersion = 5;
 
         protected static HttpListener httpListener;
+        protected const string BadRequestErrorEntityCollection = "BadRequestErrorEntity";
+        protected const string InternalServerErrorEntityCollection = "InternalServerErrorEntity";
+        protected const string toDosCollection = "ToDos";
+        protected const string personCollection = "person";
+        protected const string flashCardCollection = "FlashCard";
 
         public void Delete(string fileName)
         {
@@ -1313,11 +1318,15 @@ namespace Kinvey.Tests
                                     break;
                                 }
                             case "/appdata/_kid_/BadRequestErrorEntity":
+                            case "/appdata/_kid_/BadRequestErrorEntity/_count":
+                            case "/appdata/_kid_/BadRequestErrorEntity/_group":
                                 MockBadRequest(context);
                                 break;
                             case "/appdata/_kid_/InternalServerErrorEntity":
+                            case "/appdata/_kid_/InternalServerErrorEntity/_count":
+                            case "/appdata/_kid_/InternalServerErrorEntity/_group":
                                 MockInternal(context);
-                                break;                                
+                                break;
                             case "/blob/_kid_/":
                                 MockBlob(context, blobs);
                                 break;

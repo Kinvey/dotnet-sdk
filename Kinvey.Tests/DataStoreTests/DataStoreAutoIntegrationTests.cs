@@ -12,13 +12,8 @@ namespace Kinvey.Tests
     [TestClass]
     public class DataStoreAutoIntegrationTests : BaseTestClass
     {
-        private Client kinveyClient;
-        private const string toDosCollection = "ToDos";
-        private const string personCollection = "person";
-        private const string flashCardCollection = "FlashCard";
-        private const string BadRequestErrorEntityCollection = "BadRequestErrorEntity";
-        private const string InternalServerErrorEntityCollection = "InternalServerErrorEntity";
-       
+        private Client kinveyClient;             
+                             
         private const string unreachableUrl = "http://localhost:12345/";
         private string kinveyUrl
         {
