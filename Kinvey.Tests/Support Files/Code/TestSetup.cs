@@ -36,6 +36,7 @@ namespace Kinvey.Tests
         public const string refresh_token_for_401_response_fake = "0f550503-f033-44ee-8c2d-ae8f9773b70a";
 
         public const string entity_name_for_400_response_error = "Entity name for 400 response error";
+        public const string entity_name_for_403_response_error = "Entity name for 403 response error";
         public const string entity_name_for_500_response_error = "Entity name for 500 response error";
 
         public const string mic_id_fake = "ade8db71f61c46a69c91910d8fbf3994";
@@ -45,6 +46,7 @@ namespace Kinvey.Tests
         public static string SQLiteCredentialStoreFilePath = Path.Combine(db_dir, "kinvey_tokens.sqlite");
 
         public const string id_for_400_error_response_fake = "612d66fc-c975-4729-afe1-e8f7750782a5";
+        public const string id_for_403_error_response_fake = "2bf79cc2-b289-4699-af10-a0868ce733c4";
         public const string id_for_500_error_response_fake = "9a547181-63f9-4f7e-b789-d8c4f07889b8";
     }
 }

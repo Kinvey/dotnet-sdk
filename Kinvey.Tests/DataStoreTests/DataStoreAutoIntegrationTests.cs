@@ -8376,6 +8376,41 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestPush403ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+                var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+                var newItem1 = new ToDo
+                {
+                    Name = TestSetup.entity_name_for_403_response_error
+                };
+
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                await syncStore.SaveAsync(newItem1);
+
+                // Act
+                var pushResult = await autoStore.PushAsync();
+
+                // Assert
+                Assert.AreEqual(0, pushResult.PushEntities.Count);
+                Assert.AreEqual(1, pushResult.KinveyExceptions.Count);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, pushResult.KinveyExceptions[0].ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, pushResult.KinveyExceptions[0].ErrorCode);
+                Assert.AreEqual(403, pushResult.KinveyExceptions[0].StatusCode);
+            }
+        }
+
+        [TestMethod]
         public async Task TestPush500ErrorResponseAsync()
         {
             if (MockData)
@@ -9441,7 +9476,7 @@ namespace Kinvey.Tests
                 MockResponses(2);
               
                 // Arrange
-                var autoStore = DataStore<BadRequestErrorEntity>.Collection(BadRequestErrorEntityCollection, DataStoreType.AUTO);
+                var autoStore = DataStore<BadRequestErrorEntity>.Collection(badRequestErrorEntityCollection, DataStoreType.AUTO);
 
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -9491,6 +9526,36 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestPullDataNetwork403ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                var autoStore = DataStore<ForbiddenErrorEntity>.Collection(forbiddenErrorEntityCollection, DataStoreType.AUTO);
+
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await autoStore.PullAsync();
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(403, kinveyException.StatusCode);
+            }
+        }
+
+        [TestMethod]
         public async Task TestPullDataNetwork500ErrorResponseAsync()
         {
             if (MockData)
@@ -9501,7 +9566,7 @@ namespace Kinvey.Tests
                 MockResponses(2);
 
                 // Arrange
-                var autoStore = DataStore<InternalServerErrorEntity>.Collection(InternalServerErrorEntityCollection, DataStoreType.AUTO);
+                var autoStore = DataStore<InternalServerErrorEntity>.Collection(internalServerErrorEntityCollection, DataStoreType.AUTO);
 
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -10359,7 +10424,7 @@ namespace Kinvey.Tests
                 MockResponses(2);
 
                 // Arrange
-                var autoStore = DataStore<BadRequestErrorEntity>.Collection(BadRequestErrorEntityCollection, DataStoreType.AUTO);
+                var autoStore = DataStore<BadRequestErrorEntity>.Collection(badRequestErrorEntityCollection, DataStoreType.AUTO);
 
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
@@ -10445,6 +10510,74 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestSyncPush403ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                var syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
+                var autoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
+
+                var newItem1 = new ToDo
+                {
+                    Name = TestSetup.entity_name_for_403_response_error
+                };
+
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                await syncStore.SaveAsync(newItem1);
+
+                // Act
+                var syncResult = await autoStore.SyncAsync();
+
+                // Assert
+                Assert.AreEqual(0, syncResult.PushResponse.PushEntities.Count);
+                Assert.AreEqual(1, syncResult.PushResponse.KinveyExceptions.Count);
+                Assert.AreEqual(0, syncResult.PullResponse.PullEntities.Count);
+                Assert.AreEqual(1, syncResult.PullResponse.KinveyExceptions.Count);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, syncResult.PushResponse.KinveyExceptions[0].ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, syncResult.PushResponse.KinveyExceptions[0].ErrorCode);
+                Assert.AreEqual(403, syncResult.PushResponse.KinveyExceptions[0].StatusCode);
+                Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, syncResult.PullResponse.KinveyExceptions[0].ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_PULL_ONLY_ON_CLEAN_SYNC_QUEUE, syncResult.PullResponse.KinveyExceptions[0].ErrorCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestSyncPull403ErrorResponseAsync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                var autoStore = DataStore<ForbiddenErrorEntity>.Collection(forbiddenErrorEntityCollection, DataStoreType.AUTO);
+
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                // Act
+                var syncResult = await autoStore.SyncAsync();
+
+                // Assert
+                Assert.AreEqual(0, syncResult.PushResponse.PushEntities.Count);
+                Assert.AreEqual(0, syncResult.PushResponse.KinveyExceptions.Count);
+                Assert.AreEqual(0, syncResult.PullResponse.PullEntities.Count);
+                Assert.AreEqual(1, syncResult.PullResponse.KinveyExceptions.Count);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, syncResult.PullResponse.KinveyExceptions[0].ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, syncResult.PullResponse.KinveyExceptions[0].ErrorCode);
+                Assert.AreEqual(403, syncResult.PullResponse.KinveyExceptions[0].StatusCode);
+            }
+        }
+
+        [TestMethod]
         public async Task TestSyncPush500ErrorResponseAsync()
         {
             if (MockData)
@@ -10494,7 +10627,7 @@ namespace Kinvey.Tests
                 MockResponses(2);
 
                 // Arrange
-                var autoStore = DataStore<InternalServerErrorEntity>.Collection(InternalServerErrorEntityCollection, DataStoreType.AUTO);
+                var autoStore = DataStore<InternalServerErrorEntity>.Collection(internalServerErrorEntityCollection, DataStoreType.AUTO);
 
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 

@@ -3,7 +3,7 @@
 namespace Kinvey.Tests
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class InternalServerErrorEntity : Entity
+    public class ForbiddenErrorEntity : Entity
     {
         [JsonProperty("name")]
         public string Name { get; set; }

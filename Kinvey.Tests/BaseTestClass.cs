@@ -88,8 +88,9 @@ namespace Kinvey.Tests
         private static readonly int MaxApiVersion = 5;
 
         protected static HttpListener httpListener;
-        protected const string BadRequestErrorEntityCollection = "BadRequestErrorEntity";
-        protected const string InternalServerErrorEntityCollection = "InternalServerErrorEntity";
+        protected const string badRequestErrorEntityCollection = "BadRequestErrorEntity";
+        protected const string internalServerErrorEntityCollection = "InternalServerErrorEntity";
+        protected const string forbiddenErrorEntityCollection = "ForbiddenErrorEntity";        
         protected const string toDosCollection = "ToDos";
         protected const string personCollection = "person";
         protected const string flashCardCollection = "FlashCard";
@@ -334,6 +335,13 @@ namespace Kinvey.Tests
             Write(context, message);
         }
 
+        protected static void MockForbiddenRequest(HttpListenerContext context, string message = "Forbidden request")
+        {
+            var response = context.Response;
+            response.StatusCode = 403;
+            Write(context, message);
+        }
+        
         protected static void MockNotFound(HttpListenerContext context, string message = "Not Found")
         {
             var response = context.Response;
@@ -455,6 +463,12 @@ namespace Kinvey.Tests
                 return;
             }
 
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_403_response_error))
+            {
+                MockForbiddenRequest(context);
+                return;
+            }
+
             if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
             {
                 MockInternal(context);
@@ -464,6 +478,12 @@ namespace Kinvey.Tests
             if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_400_error_response_fake))
             {
                 MockBadRequest(context);
+                return;
+            }
+
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_403_error_response_fake))
+            {
+                MockForbiddenRequest(context);
                 return;
             }
 
@@ -512,6 +532,23 @@ namespace Kinvey.Tests
                     };
 
                     jObjectErrors.Add(jObjectError);
+
+                    continue;
+
+                } else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_403_response_error))
+                {
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
+                    {
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Error"
+                    };
+
+                    jObjectErrors.Add(jObjectError);
+
+                    continue;
                 }
                 else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
                 {
@@ -858,6 +895,12 @@ namespace Kinvey.Tests
             if (id.Equals(TestSetup.id_for_400_error_response_fake))
             {
                 MockBadRequest(context);
+                return;
+            }
+
+            if (id.Equals(TestSetup.id_for_403_error_response_fake))
+            {
+                MockForbiddenRequest(context);
                 return;
             }
 
@@ -1322,6 +1365,11 @@ namespace Kinvey.Tests
                             case "/appdata/_kid_/BadRequestErrorEntity/_group":
                                 MockBadRequest(context);
                                 break;
+                            case "/appdata/_kid_/ForbiddenErrorEntity":
+                            case "/appdata/_kid_/ForbiddenErrorEntity/_count":
+                            case "/appdata/_kid_/ForbiddenErrorEntity/_group":
+                                MockForbiddenRequest(context);
+                                break;
                             case "/appdata/_kid_/InternalServerErrorEntity":
                             case "/appdata/_kid_/InternalServerErrorEntity/_count":
                             case "/appdata/_kid_/InternalServerErrorEntity/_group":
@@ -1392,6 +1440,12 @@ namespace Kinvey.Tests
                                                     if (id.Equals(TestSetup.id_for_400_error_response_fake))
                                                     {
                                                         MockBadRequest(context);
+                                                        break;
+                                                    }
+
+                                                    if (id.Equals(TestSetup.id_for_403_error_response_fake))
+                                                    {
+                                                        MockForbiddenRequest(context);
                                                         break;
                                                     }
 
