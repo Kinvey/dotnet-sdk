@@ -3488,31 +3488,31 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestGetCount500ErrorResponseAsync()
         {
-            // Setup
-            kinveyClient = BuildClient();
-
             if (MockData)
             {
+                // Setup
+                kinveyClient = BuildClient();
+
                 MockResponses(2);
+
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                // Arrange
+                var todoStore = DataStore<InternalServerErrorEntity>.Collection(internalServerErrorEntityCollection, DataStoreType.NETWORK);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await todoStore.GetCountAsync();
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(500, kinveyException.StatusCode);
             }
-
-            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
-
-            // Arrange
-            var todoStore = DataStore<InternalServerErrorEntity>.Collection(internalServerErrorEntityCollection, DataStoreType.NETWORK);
-
-            // Act
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-            {
-                await todoStore.GetCountAsync();
-            });
-
-            // Assert
-            Assert.AreEqual(typeof(KinveyException), exception.GetType());
-            var kinveyException = exception as KinveyException;
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
-            Assert.AreEqual(500, kinveyException.StatusCode);
         }
 
         #endregion Negative tests
@@ -5972,12 +5972,12 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.pass_for_user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
 
-            var personStore = DataStore<Person>.Collection(personCollection, DataStoreType.NETWORK);
+            var store = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "FirstName");
+                await store.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Name");
             });
 
             // Assert
