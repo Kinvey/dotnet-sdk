@@ -54,10 +54,7 @@ namespace Kinvey.Tests
         {
             get
             {
-                //return string.IsNullOrEmpty(EnvironmentVariable.AppKey) && string.IsNullOrEmpty(EnvironmentVariable.AppSecret);
-                //return true;
-                return false;
-                //return true;
+                return string.IsNullOrEmpty(EnvironmentVariable.AppKey) && string.IsNullOrEmpty(EnvironmentVariable.AppSecret);
             }
         }
 
