@@ -27,8 +27,6 @@ namespace Kinvey.Tests
 	{
 		private Client kinveyClient;
 
-		private const string collectionName = "ToDos";
-
         [TestInitialize]
         public override void Setup()
 		{
@@ -89,11 +87,11 @@ namespace Kinvey.Tests
             kinveyClient = BuildClient();
 
             // Act
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
 			// Assert
 			Assert.IsNotNull(todoStore);
-			Assert.IsTrue(string.Equals(todoStore.CollectionName, collectionName));
+			Assert.IsTrue(string.Equals(todoStore.CollectionName, toDosCollection));
 		}
 
 		[TestMethod]
@@ -103,11 +101,11 @@ namespace Kinvey.Tests
             kinveyClient = BuildClient();
 
             // Act
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			// Assert
 			Assert.IsNotNull(todoStore);
-			Assert.IsTrue(string.Equals(todoStore.CollectionName, collectionName));
+			Assert.IsTrue(string.Equals(todoStore.CollectionName, toDosCollection));
 		}
 
 		[TestMethod]
@@ -116,7 +114,7 @@ namespace Kinvey.Tests
             // Arrange
             kinveyClient = BuildClient();
 
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			// Act
 			todoStore.DeltaSetFetchingEnabled = true;
@@ -142,7 +140,7 @@ namespace Kinvey.Tests
 			newItem.Name = "Next Task";
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 			ToDo t = await todoStore.SaveAsync(newItem);
 
 			ToDo anotherNewItem = new ToDo();
@@ -185,7 +183,7 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 			var savedEntity = await todoStore.SaveAsync(newItem);
 
 			// Act
@@ -215,7 +213,7 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var savedEntity = await todoStore.SaveAsync(newItem);
             await todoStore.RemoveAsync(savedEntity.ID);
 
@@ -258,7 +256,7 @@ namespace Kinvey.Tests
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
          
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var savedEntity = await todoStore.SaveAsync(newItem);
             await todoStore.RemoveAsync(savedEntity.ID);
 
@@ -317,7 +315,7 @@ namespace Kinvey.Tests
 			newItem2.Details = "details for 2";
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -358,7 +356,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 to delete",
@@ -439,7 +437,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -521,7 +519,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -604,7 +602,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -687,7 +685,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -778,7 +776,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -868,7 +866,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -958,7 +956,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1049,7 +1047,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1138,7 +1136,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1229,7 +1227,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1320,7 +1318,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1409,7 +1407,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1498,7 +1496,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1587,7 +1585,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1678,7 +1676,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1768,7 +1766,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -1858,7 +1856,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -1948,7 +1946,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -2038,7 +2036,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -2129,7 +2127,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1",
@@ -2220,7 +2218,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task Delete",
@@ -2312,7 +2310,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task Del1",
@@ -2403,7 +2401,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2469,7 +2467,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2535,7 +2533,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2601,7 +2599,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2666,7 +2664,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -2733,7 +2731,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             var newItem1 = new ToDo
             {
                 Name = "Task1 not to delete",
@@ -3305,7 +3303,7 @@ namespace Kinvey.Tests
 			newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 			ToDo t1 = await todoStore.SaveAsync(newItem);
 			ToDo t2 = await todoStore.SaveAsync(newItem2);
 
@@ -3335,7 +3333,7 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+			DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 
 			Person p1 = new Person();
 			p1.FirstName = "Michael";
@@ -3389,7 +3387,7 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+			DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 
 			Person p1 = new Person();
 			p1.FirstName = "Michael";
@@ -3442,7 +3440,7 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+			DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 
 			Person p1 = new Person();
 			p1.FirstName = "Michael";
@@ -3496,7 +3494,7 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<Person> personStore = DataStore<Person>.Collection("person", DataStoreType.SYNC);
+			DataStore<Person> personStore = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 
 			Person p1 = new Person();
 			p1.FirstName = "Michael";
@@ -3555,7 +3553,7 @@ namespace Kinvey.Tests
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to Delete";
 			newItem.Details = "A delete test";
@@ -3590,15 +3588,15 @@ namespace Kinvey.Tests
 			newItem.Details = "A test";
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
 			newItem.ID = "12345";
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			// Act
 			ToDo savedToDo = await todoStore.SaveAsync(newItem);
-			PendingWriteAction pwaBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
-			int countBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+			PendingWriteAction pwaBefore = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Peek();
+			int countBefore = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(true);
 			var kdr = await todoStore.RemoveAsync("12345");
-			PendingWriteAction pwaAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
-			int countAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+			PendingWriteAction pwaAfter = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Peek();
+			int countAfter = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(true);
 
 			// Assert
 			Assert.IsNotNull(pwaBefore);
@@ -3627,20 +3625,20 @@ namespace Kinvey.Tests
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to save to SyncQ";
 			newItem.Details = "A sync add test";
 			newItem = await todoStore.SaveAsync(newItem);
 
 			// Act
-			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Peek();
 
 			// Assert
 			Assert.IsNotNull(pwa);
 			Assert.IsNotNull(pwa.entityId);
             Assert.IsFalse(string.IsNullOrEmpty(pwa.entityId));
-			Assert.IsTrue(String.Equals(collectionName, pwa.collection));
+			Assert.IsTrue(String.Equals(toDosCollection, pwa.collection));
 			Assert.IsTrue(String.Equals("POST", pwa.action));
 
 			// Teardown
@@ -3661,7 +3659,7 @@ namespace Kinvey.Tests
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to save to SyncQ";
 			newItem.Details = "A sync add test";
@@ -3669,14 +3667,14 @@ namespace Kinvey.Tests
 			newItem = await todoStore.SaveAsync(newItem);
 
 			// Act
-			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Peek();
 			List<ToDo> t = await todoStore.FindAsync();
 
 			// Assert
 			Assert.IsNotNull(pwa);
 			Assert.IsNotNull(pwa.entityId);
             Assert.IsFalse(string.IsNullOrEmpty(pwa.entityId));
-			Assert.IsTrue(String.Equals(collectionName, pwa.collection));
+			Assert.IsTrue(String.Equals(toDosCollection, pwa.collection));
 			Assert.IsTrue(String.Equals("PUT", pwa.action));
 			Assert.IsNotNull(t);
 			Assert.AreEqual(1, t.Count);
@@ -3701,7 +3699,7 @@ namespace Kinvey.Tests
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to save to SyncQ";
 			newItem.Details = "A sync add test";
@@ -3709,9 +3707,9 @@ namespace Kinvey.Tests
 			var responseDelete = await todoStore.RemoveAsync(newItem.ID);
 
 			// Act
-			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
+			PendingWriteAction pwa = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Peek();
 			var pushresp = await todoStore.PushAsync();
-			int syncQueueCount = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+			int syncQueueCount = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(true);
 
 			// Assert
 			Assert.IsNull(pwa);
@@ -3743,7 +3741,7 @@ namespace Kinvey.Tests
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to update to SyncQ";
 			newItem.Details = "A sync add test";
@@ -3797,7 +3795,7 @@ namespace Kinvey.Tests
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 			ToDo newItem = new ToDo();
 			newItem.Name = "Task to update to SyncQ";
 			newItem.Details = "A sync add test";
@@ -3806,7 +3804,7 @@ namespace Kinvey.Tests
 			newItem.DueDate = "2016-04-19T20:02:17.635Z";
 			ToDo updatedItem = await todoStore.SaveAsync(newItem);
 
-			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC, kinveyClient);
+			DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC, kinveyClient);
 			FlashCard firstFlashCard = new FlashCard();
 			firstFlashCard.Question = "What is capital of Djibouti?";
 			firstFlashCard.Answer = "Djibouti";
@@ -3841,7 +3839,7 @@ namespace Kinvey.Tests
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
             ToDo newItem = new ToDo();
             newItem.Name = "Task to update to SyncQ";
             newItem.Details = "A sync add test";
@@ -3852,7 +3850,7 @@ namespace Kinvey.Tests
             newItem2.Details = "Another sync add test";
             newItem2 = await todoStore.SaveAsync(newItem2);
 
-            DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC, kinveyClient);
+            DataStore<FlashCard> flashCardStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC, kinveyClient);
             FlashCard firstFlashCard = new FlashCard();
             firstFlashCard.Question = "What is capital of Djibouti?";
             firstFlashCard.Answer = "Djibouti";
@@ -3906,7 +3904,7 @@ namespace Kinvey.Tests
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
 			// Arrange
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
 			for (int i = 0; i < 10; i++)
 			{
@@ -3953,7 +3951,7 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			PullDataStoreResponse<ToDo> todosBeforeSave = await todoStore.PullAsync();
 
@@ -4005,8 +4003,8 @@ namespace Kinvey.Tests
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
-            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             syncStore.AutoPagination = true;
 
             // Arrange
@@ -4056,8 +4054,8 @@ namespace Kinvey.Tests
             }
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
-            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
             syncStore.AutoPagination = true;
 
             // Arrange
@@ -4114,8 +4112,8 @@ namespace Kinvey.Tests
 
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK);
-                DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+                DataStore<ToDo> networkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+                DataStore<ToDo> syncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
                 syncStore.AutoPagination = true;
               
                 var tasks = new List<Task>();
@@ -4165,7 +4163,7 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			PullDataStoreResponse<ToDo> todosBeforeSave = await todoStore.PullAsync();
 
@@ -4220,7 +4218,7 @@ namespace Kinvey.Tests
             }
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			PullDataStoreResponse<ToDo> todosBeforeSave = await todoStore.PullAsync();
 
@@ -4302,7 +4300,7 @@ namespace Kinvey.Tests
 			newItem4.DueDate = "2016-04-22T19:56:00.963Z";
 			newItem4.NewDate = new DateTime(2016, 4, 21, 19, 56, 00);
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4372,7 +4370,7 @@ namespace Kinvey.Tests
 			newItem4.DueDate = "2016-04-22T19:56:00.963Z";
 			newItem4.NewDate = new DateTime(2016, 4, 21, 19, 56, 00);
 
-			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+			DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
 			newItem1 = await todoStore.SaveAsync(newItem1);
 			newItem2 = await todoStore.SaveAsync(newItem2);
@@ -4525,7 +4523,7 @@ namespace Kinvey.Tests
 
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			var store = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 			await store.SaveAsync(new Person());
 			Assert.AreEqual(store.GetSyncCount(), 1);
 
@@ -4553,7 +4551,7 @@ namespace Kinvey.Tests
 
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			var store = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 			var person1 = new Person();
 			person1.FirstName = "james";
 			await store.SaveAsync(person1);
@@ -4592,7 +4590,7 @@ namespace Kinvey.Tests
 
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			var store = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 			await store.SaveAsync(new Person());
 
 			ICache<Person> cache = kinveyClient.CacheManager.GetCache<Person>("Person");
@@ -4624,7 +4622,7 @@ namespace Kinvey.Tests
 
 			await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-			var store = DataStore<Person>.Collection("Person", DataStoreType.SYNC);
+			var store = DataStore<Person>.Collection(personCollection, DataStoreType.SYNC);
 			var person1 = new Person();
 			person1.FirstName = "james";
 			await store.SaveAsync(person1);
@@ -4670,7 +4668,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
             foreach (var item in (await store.PullAsync()).PullEntities)
             {
                 await store.RemoveAsync(item.ID);
@@ -4718,7 +4716,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -4781,8 +4779,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -4846,8 +4844,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -4922,7 +4920,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -4981,8 +4979,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5054,8 +5052,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5123,8 +5121,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5201,7 +5199,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5242,7 +5240,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5302,8 +5300,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5366,8 +5364,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5442,7 +5440,7 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5499,8 +5497,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5572,8 +5570,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5639,8 +5637,8 @@ namespace Kinvey.Tests
 
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var store = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.SYNC);
-            var networkStore = DataStore<FlashCard>.Collection("FlashCard", DataStoreType.NETWORK);
+            var store = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.SYNC);
+            var networkStore = DataStore<FlashCard>.Collection(flashCardCollection, DataStoreType.NETWORK);
             store.DeltaSetFetchingEnabled = true;
 
             var fc1 = new FlashCard();
@@ -5719,12 +5717,12 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoStore.FindAsync();
 
             // Teardown
@@ -5766,16 +5764,16 @@ namespace Kinvey.Tests
                 DueDate = "2016-04-19T20:02:17.635Z",
                 ID = "12345"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
-            var pwaBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
-            int countBefore = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+            var pwaBefore = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Peek();
+            int countBefore = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(true);
             savedToDo.BoolVal = true;
             savedToDo = await todoStore.SaveAsync(savedToDo);
-            var pwaAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Peek();
-            var countAfter = kinveyClient.CacheManager.GetSyncQueue(collectionName).Count(true);
+            var pwaAfter = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Peek();
+            var countAfter = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(true);
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
@@ -5812,12 +5810,12 @@ namespace Kinvey.Tests
                 Details = "A test",
                 DueDate = "2016-04-19T20:02:17.635Z"
             };
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC);
 
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoStore.FindAsync();
 
             // Teardown
@@ -5854,7 +5852,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -5865,7 +5863,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStore.SaveAsync(toDos);
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoStore.FindAsync();
 
             // Teardown
@@ -5911,7 +5909,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -5922,7 +5920,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStore.SaveAsync(toDos);
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoStore.FindAsync();
 
             // Teardown
@@ -5970,7 +5968,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -5991,7 +5989,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStore.SaveAsync(toDos);
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoStore.FindAsync();
 
             // Teardown
@@ -6050,7 +6048,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
@@ -6079,7 +6077,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6114,7 +6112,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6126,7 +6124,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStore.SaveAsync(toDos);
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoStore.FindAsync();
 
             // Teardown
@@ -6164,7 +6162,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6203,8 +6201,8 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-            var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6217,7 +6215,7 @@ namespace Kinvey.Tests
 
             var pushResponse = await todoSyncStore.PushAsync();
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoSyncStore.FindAsync();
 
             // Teardown
@@ -6250,8 +6248,8 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-            var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6266,7 +6264,7 @@ namespace Kinvey.Tests
 
             var pushResponse = await todoSyncStore.PushAsync();
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDosSync = await todoSyncStore.FindAsync();
             var existingToDosNetwork = await todoNetworkStore.FindAsync();
 
@@ -6312,7 +6310,7 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user_without_permissions, TestSetup.pass_for_user_without_permissions, kinveyClient);
 
-            var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
             var toDos = new List<ToDo>
             {
@@ -6325,7 +6323,7 @@ namespace Kinvey.Tests
 
             var pushResponse = await todoSyncStore.PushAsync();
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoSyncStore.FindAsync();
 
             //Teardown
@@ -6364,7 +6362,7 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
+                var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6378,7 +6376,7 @@ namespace Kinvey.Tests
 
                 var pushResponse = await todoSyncStore.PushAsync();
 
-                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
                 var existingToDos = await todoSyncStore.FindAsync();
 
                 // Teardown
@@ -6422,8 +6420,8 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-            var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
             var toDo1 = new ToDo { Name = "Name1", Details = "Details1", Value = 1 };
             var toDo2 = new ToDo { Name = "Name2", Details = "Details2", Value = 2 };
@@ -6434,7 +6432,7 @@ namespace Kinvey.Tests
 
             var pushResponse = await todoSyncStore.PushAsync();
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDos = await todoSyncStore.FindAsync();
 
             // Teardown
@@ -6467,8 +6465,8 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-                var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+                var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
 
                 var toDos = new List<ToDo>
                 {
@@ -6482,7 +6480,7 @@ namespace Kinvey.Tests
 
                 var syncResponse = await todoSyncStore.SyncAsync();
 
-                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
                 var existingToDosNetwork = await todoNetworkStore.FindAsync();
                 var existingToDosLocal = await todoSyncStore.FindAsync();
 
@@ -6539,9 +6537,9 @@ namespace Kinvey.Tests
             // Arrange
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-            var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-            var todoAutoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.AUTO, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
 
             var toDosToAdd = new List<ToDo>();
             for (var index = 0; index < countToAdd; index++)
@@ -6580,7 +6578,7 @@ namespace Kinvey.Tests
 
             var pushResponse = await todoSyncStore.PushAsync();
 
-            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
             var existingToDosSync = await todoSyncStore.FindAsync();
             var existingToDosNetwork = await todoNetworkStore.FindAsync();
 
@@ -6619,9 +6617,9 @@ namespace Kinvey.Tests
                 // Arrange
                 await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-                var todoSyncStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-                var todoNetworkStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-                var todoAutoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.AUTO, kinveyClient);
+                var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+                var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+                var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
 
                 var toDosToAdd = new List<ToDo>();
 
@@ -6688,7 +6686,7 @@ namespace Kinvey.Tests
 
                 var pushResponse = await todoSyncStore.PushAsync();
 
-                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(collectionName).GetAll();
+                var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
                 var existingToDosSync = await todoSyncStore.FindAsync();
                 var existingToDosNetwork = await todoNetworkStore.FindAsync();
 

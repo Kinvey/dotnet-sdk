@@ -88,6 +88,14 @@ namespace Kinvey.Tests
         private static readonly int MaxApiVersion = 5;
 
         protected static HttpListener httpListener;
+        protected const string badRequestErrorEntityCollection = "BadRequestErrorEntity";
+        protected const string internalServerErrorEntityCollection = "InternalServerErrorEntity";
+        protected const string forbiddenErrorEntityCollection = "ForbiddenErrorEntity";
+        protected const string notFoundErrorEntityCollection = "NotFoundErrorEntity";
+        protected const string conflictErrorEntityCollection = "ConflictErrorEntity";
+        protected const string toDosCollection = "ToDos";
+        protected const string personCollection = "person";
+        protected const string flashCardCollection = "FlashCard";
 
         public void Delete(string fileName)
         {
@@ -329,10 +337,24 @@ namespace Kinvey.Tests
             Write(context, message);
         }
 
-        protected static void MockNotFound(HttpListenerContext context, string message = "Not Found")
+        protected static void MockForbiddenRequest(HttpListenerContext context, string message = "Forbidden request")
+        {
+            var response = context.Response;
+            response.StatusCode = 403;
+            Write(context, message);
+        }
+        
+        protected static void MockNotFoundRequest(HttpListenerContext context, string message = "Not Found")
         {
             var response = context.Response;
             response.StatusCode = 404;
+            Write(context, message);
+        }
+
+        protected static void MockConflictRequest(HttpListenerContext context, string message = "Conflict")
+        {
+            var response = context.Response;
+            response.StatusCode = 409;
             Write(context, message);
         }
 
@@ -450,6 +472,24 @@ namespace Kinvey.Tests
                 return;
             }
 
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_403_response_error))
+            {
+                MockForbiddenRequest(context);
+                return;
+            }
+
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_404_response_error))
+            {
+                MockNotFoundRequest(context);
+                return;
+            }
+
+            if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_409_response_error))
+            {
+                MockConflictRequest(context);
+                return;
+            }
+
             if (obj["name"] != null && obj["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
             {
                 MockInternal(context);
@@ -459,6 +499,24 @@ namespace Kinvey.Tests
             if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_400_error_response_fake))
             {
                 MockBadRequest(context);
+                return;
+            }
+
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_403_error_response_fake))
+            {
+                MockForbiddenRequest(context);
+                return;
+            }
+
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_404_error_response_fake))
+            {
+                MockNotFoundRequest(context);
+                return;
+            }
+
+            if (obj["_id"] != null && obj["_id"].ToString().Equals(TestSetup.id_for_409_error_response_fake))
+            {
+                MockConflictRequest(context);
                 return;
             }
 
@@ -507,6 +565,54 @@ namespace Kinvey.Tests
                     };
 
                     jObjectErrors.Add(jObjectError);
+
+                    continue;
+
+                }
+                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_403_response_error))
+                {
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
+                    {
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Error"
+                    };
+
+                    jObjectErrors.Add(jObjectError);
+
+                    continue;
+                }
+                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_404_response_error))
+                {
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
+                    {
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Error"
+                    };
+
+                    jObjectErrors.Add(jObjectError);
+
+                    continue;
+                }
+                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_409_response_error))
+                {
+                    jObjectsToSave.Add(null);
+
+                    var jObjectError = new JObject
+                    {
+                        ["index"] = index,
+                        ["code"] = 1,
+                        ["errmsg"] = "Error"
+                    };
+
+                    jObjectErrors.Add(jObjectError);
+
+                    continue;
                 }
                 else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
                 {
@@ -735,7 +841,7 @@ namespace Kinvey.Tests
                     break;
                 default:
                     Assert.Fail(context.Request.RawUrl);
-                    MockNotFound(context);
+                    MockNotFoundRequest(context);
                     break;
             }
         }
@@ -845,7 +951,7 @@ namespace Kinvey.Tests
                 return;
             }
 
-            MockNotFound(context);
+            MockNotFoundRequest(context);
         }
 
         protected static void MockAppDataDelete(HttpListenerContext context, List<JObject> items, List<JObject> deletedItems, string id)
@@ -853,6 +959,24 @@ namespace Kinvey.Tests
             if (id.Equals(TestSetup.id_for_400_error_response_fake))
             {
                 MockBadRequest(context);
+                return;
+            }
+
+            if (id.Equals(TestSetup.id_for_403_error_response_fake))
+            {
+                MockForbiddenRequest(context);
+                return;
+            }
+
+            if (id.Equals(TestSetup.id_for_404_error_response_fake))
+            {
+                MockNotFoundRequest(context);
+                return;
+            }
+
+            if (id.Equals(TestSetup.id_for_409_error_response_fake))
+            {
+                MockConflictRequest(context);
                 return;
             }
 
@@ -874,7 +998,7 @@ namespace Kinvey.Tests
             }
             else
             {
-                MockNotFound(context);
+                MockNotFoundRequest(context);
                 return;
             }
             Write(context, jsonObject);
@@ -1222,7 +1346,7 @@ namespace Kinvey.Tests
                         {
                             case "/rpc/_kid_/custom/test_bad":
                                 Assert.AreEqual("POST", context.Request.HttpMethod);
-                                MockNotFound(context);
+                                MockNotFoundRequest(context);
                                 break;
                             case "/rpc/_kid_/check-username-exists":
                                 MockCheckUsernameExists(context, users.Values);
@@ -1313,11 +1437,30 @@ namespace Kinvey.Tests
                                     break;
                                 }
                             case "/appdata/_kid_/BadRequestErrorEntity":
+                            case "/appdata/_kid_/BadRequestErrorEntity/_count":
+                            case "/appdata/_kid_/BadRequestErrorEntity/_group":
                                 MockBadRequest(context);
                                 break;
+                            case "/appdata/_kid_/ForbiddenErrorEntity":
+                            case "/appdata/_kid_/ForbiddenErrorEntity/_count":
+                            case "/appdata/_kid_/ForbiddenErrorEntity/_group":
+                                MockForbiddenRequest(context);
+                                break;
+                            case "/appdata/_kid_/NotFoundErrorEntity":
+                            case "/appdata/_kid_/NotFoundErrorEntity/_count":
+                            case "/appdata/_kid_/NotFoundErrorEntity/_group":
+                                MockNotFoundRequest(context);
+                                break;
+                            case "/appdata/_kid_/ConflictErrorEntity":
+                            case "/appdata/_kid_/ConflictErrorEntity/_count":
+                            case "/appdata/_kid_/ConflictErrorEntity/_group":
+                                MockConflictRequest(context);
+                                break;
                             case "/appdata/_kid_/InternalServerErrorEntity":
+                            case "/appdata/_kid_/InternalServerErrorEntity/_count":
+                            case "/appdata/_kid_/InternalServerErrorEntity/_group":
                                 MockInternal(context);
-                                break;                                
+                                break;
                             case "/blob/_kid_/":
                                 MockBlob(context, blobs);
                                 break;
@@ -1386,6 +1529,24 @@ namespace Kinvey.Tests
                                                         break;
                                                     }
 
+                                                    if (id.Equals(TestSetup.id_for_403_error_response_fake))
+                                                    {
+                                                        MockForbiddenRequest(context);
+                                                        break;
+                                                    }
+
+                                                    if (id.Equals(TestSetup.id_for_404_error_response_fake))
+                                                    {
+                                                        MockNotFoundRequest(context);
+                                                        break;
+                                                    }
+
+                                                    if (id.Equals(TestSetup.id_for_409_error_response_fake))
+                                                    {
+                                                        MockConflictRequest(context);
+                                                        break;
+                                                    }
+
                                                     if (id.Equals(TestSetup.id_for_500_error_response_fake))
                                                     {
                                                         MockInternal(context);
@@ -1396,7 +1557,7 @@ namespace Kinvey.Tests
 
                                                     if(item == null)
                                                     {
-                                                        MockNotFound(context);
+                                                        MockNotFoundRequest(context);
                                                         break;
                                                     }
 
@@ -1408,7 +1569,7 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1424,7 +1585,7 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1438,7 +1599,7 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1458,7 +1619,7 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1477,7 +1638,7 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1491,7 +1652,7 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1507,7 +1668,7 @@ namespace Kinvey.Tests
                                                 }
                                                 else
                                                 {
-                                                    MockNotFound(context);
+                                                    MockNotFoundRequest(context);
                                                 }
                                                 
                                                 break;
@@ -1519,7 +1680,7 @@ namespace Kinvey.Tests
                                                 break;                                                
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1534,7 +1695,7 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
@@ -1548,14 +1709,14 @@ namespace Kinvey.Tests
                                                 break;
                                             default:
                                                 Assert.Fail(context.Request.RawUrl);
-                                                MockNotFound(context);
+                                                MockNotFoundRequest(context);
                                                 break;
                                         }
                                     }
                                     else
                                     {
                                         Assert.Fail(context.Request.RawUrl);
-                                        MockNotFound(context);
+                                        MockNotFoundRequest(context);
                                     }
                                     break;
                                 }
@@ -1720,7 +1881,7 @@ namespace Kinvey.Tests
                     break;
                 default:
                     Assert.Fail(context.Request.HttpMethod);
-                    MockNotFound(context);
+                    MockNotFoundRequest(context);
                     break;
             }
         }
@@ -1773,7 +1934,7 @@ namespace Kinvey.Tests
             }
             else
             {
-                MockNotFound(context);
+                MockNotFoundRequest(context);
             }                    
         }
     }
