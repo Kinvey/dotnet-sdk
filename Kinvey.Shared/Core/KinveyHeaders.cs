@@ -26,7 +26,7 @@ namespace Kinvey
 		/// <summary>
 		/// The version of the SDK.
 		/// </summary>
-		public static string VERSION = "4.3.1";
+		public static string VERSION = "4.3.2";
 
 		// The kinvey API version.
         internal static readonly string kinveyApiVersion = "4";
