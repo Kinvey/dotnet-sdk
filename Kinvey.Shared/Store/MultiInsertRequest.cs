@@ -362,19 +362,17 @@ namespace Kinvey
             }
             catch (KinveyException exception)
             {
-                if (exception.StatusCode == 500)
-                {
-                    response.Entities = new List<T>();
-                    response.Errors = new List<Error>();
-                    for (var index = 0; index < entities.Count(); index++)
-                    {
-                        response.Entities.Add(default(T));
-                        response.Errors.Add(new Error { Code = 0, Errmsg = exception.Message, Index = index });
-                    }
-                }
-                else
+                if (exception.StatusCode == 401)
                 {
                     throw;
+                }
+
+                response.Entities = new List<T>();
+                response.Errors = new List<Error>();
+                for (var index = 0; index < entities.Count(); index++)
+                {
+                    response.Entities.Add(default(T));
+                    response.Errors.Add(new Error { Code = 0, Errmsg = exception.Message, Index = index });
                 }
             }
 
