@@ -13,6 +13,7 @@
         }
 
 
+
         public static class Exceptions
         {
             public const string GeneralExceptionTitle = "General exception";
