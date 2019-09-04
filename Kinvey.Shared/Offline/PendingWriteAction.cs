@@ -34,7 +34,6 @@ namespace Kinvey
 
 		public static PendingWriteAction buildFromRequest <T> (NetworkRequest<T> request) {
 			PendingWriteAction newAction = new PendingWriteAction ();
-			//newAction.collection = request.CollectionName;
 			newAction.action = request.RequestMethod;
 
 			if (request.uriResourceParameters.ContainsKey("entityID"))
@@ -53,8 +52,6 @@ namespace Kinvey
 		}
 
 		public NetworkRequest<T> toNetworkRequest <T>(AbstractClient client){
-			//T entity = cache.GetByIdAsync (entityId);
-			//NetworkRequest<T> request = new NetworkRequest<T>(client, this.action) 
 			return null;
 		}
 	}

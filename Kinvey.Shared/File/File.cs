@@ -34,22 +34,7 @@ namespace Kinvey
 		/// <value>The client.</value>
 		private AbstractClient client { get; set; }
 
-		//private string clientAppVersion = null;
-
 		private JObject customRequestProperties = new JObject();
-
-		//		public void SetClientAppVersion(string appVersion){
-		//			this.clientAppVersion = appVersion;
-		//		}
-		//
-		//		public void SetClientAppVersion(int major, int minor, int revision){
-		//			SetClientAppVersion(major + "." + minor + "." + revision);
-		//		}
-		//
-		//		public string GetClientAppVersion(){
-		//			return this.clientAppVersion;
-		//		}
-
 
 		/// <summary>
 		/// Sets a specific custom request property from a Json object.
@@ -267,7 +252,6 @@ namespace Kinvey
 			UploadFileWithMetaDataRequest uploadRequest = new UploadFileWithMetaDataRequest (metadata, mode, urlParameters, this.client);
 
 			client.InitializeRequest(uploadRequest);
-			//upload.clientAppVersion = this.GetClientAppVersion ();
 			uploadRequest.customRequestHeaders = this.GetCustomRequestProperties ();
 
 			return uploadRequest;
@@ -289,7 +273,6 @@ namespace Kinvey
 			UploadMetaDataRequest uploadMetaDataRequest = new UploadMetaDataRequest(metadata, urlParameters, this.client);
 
 			client.InitializeRequest(uploadMetaDataRequest);
-			//upload.clientAppVersion = this.GetClientAppVersion ();
 			uploadMetaDataRequest.customRequestHeaders = this.GetCustomRequestProperties();
 
 			return uploadMetaDataRequest;
@@ -338,7 +321,6 @@ namespace Kinvey
 			DownloadMetaDataRequest downloadMetaDataRequest = new DownloadMetaDataRequest(urlParameters, this.client);
 
 			client.InitializeRequest(downloadMetaDataRequest);
-			//download.clientAppVersion = this.GetClientAppVersion ();
 			downloadMetaDataRequest.customRequestHeaders = this.GetCustomRequestProperties ();
 
 			return downloadMetaDataRequest;
@@ -359,7 +341,6 @@ namespace Kinvey
 			DeleteFileAndMetaDataRequest deleteRequest = new DeleteFileAndMetaDataRequest (urlParameters, this.client);
 
 			client.InitializeRequest(deleteRequest);
-			//delete.clientAppVersion = this.GetClientAppVersion ();
 			deleteRequest.customRequestHeaders = this.GetCustomRequestProperties();
 
 			return deleteRequest;

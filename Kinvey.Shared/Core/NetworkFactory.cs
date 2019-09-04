@@ -76,9 +76,6 @@ namespace Kinvey
 
 			NetworkRequest<T> getEntity = new NetworkRequest<T> (client, "GET", REST_PATH, null, urlParameters);
 			client.InitializeRequest (getEntity);
-			//getEntity.Cache = this.cache;
-			//getEntity.clientAppVersion = this.GetClientAppVersion ();
-			//getEntity.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getEntity;
 		}
 
@@ -99,9 +96,6 @@ namespace Kinvey
 
 			NetworkRequest<List<T>> getQuery = new NetworkRequest<List<T>> (client, "GET", REST_PATH, null, urlParameters);
 			client.InitializeRequest(getQuery);
-			//getQuery.SetCache(this.store, storeType.ReadPolicy);
-			//getQuery.clientAppVersion = this.GetClientAppVersion();
-			//getQuery.customRequestHeaders = this.GetCustomRequestProperties();
 			return getQuery;
 		}
 
@@ -121,7 +115,6 @@ namespace Kinvey
 
 			NetworkRequest<T> getCountQuery = new NetworkRequest<T>(client, "GET", REST_PATH, null, urlParameters);
 			client.InitializeRequest(getCountQuery);
-			//getCountQuery.customRequestHeaders = this.GetCustomRequestProperties ();
 			return getCountQuery;
 		}
 
@@ -168,11 +161,6 @@ namespace Kinvey
 					initialval.Add("count", 0);
 					reduce = $"function(doc,out){{ out.result = (((out.result * out.count) + doc.{aggregateField}) / (out.count += 1)); }}";
 					break;
-
-				//case EnumReduceFunction.REDUCE_FUNCTION_COUNT:
-				//	initialval.Add("result", 0);
-				//	reduce = "";
-				//	break;
 
 				default:
 					// TODO throw new KinveyException()
@@ -262,11 +250,7 @@ namespace Kinvey
 			urlParameters.Add ("entityID", entityID);
 
 			NetworkRequest<T> delete = new NetworkRequest<T> (client, "DELETE", REST_PATH, null, urlParameters);
-			//delete.SetCache (this.cache, storeType.ReadPolicy);
-			//delete.Cache = this.cache;
 			client.InitializeRequest (delete);
-			//delete.clientAppVersion = this.GetClientAppVersion ();
-			//delete.customRequestHeaders = this.GetCustomRequestProperties ();
 			return delete;
 		}
 

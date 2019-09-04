@@ -54,27 +54,6 @@ namespace Kinvey
 		public KinveyQueryable(IQueryProvider provider, Expression expression)
 			: base(provider, expression)
 		{
-		}
-
-		///// <summary>
-		///// Executes the query.
-		///// </summary>
-		///// <returns>The query.</returns>
-		///// <param name="query">Mongo-style query to be executed on backend.</param>
-		//public virtual object executeQuery(string query)
-		//{
-		//	Logger.Log ("can't execute a query without overriding this method!");
-		//	return default(object);
-		//}
-
-		///// <summary>
-		///// Executes the query on cache.
-		///// </summary>
-		///// <returns>The query on cache.</returns>
-		//public virtual object executeQueryOnCache()
-		//{
-		//	Logger.Log ("can't execute a query on cache without overriding this method!");
-		//	return default(object);
-		//}
+		}		
 	}
 }

@@ -156,9 +156,6 @@ namespace Kinvey
 			}
 
 			return savedEntity;
-			//T saved = await this.Cache.SaveAsync (entity);
-			//int result = await this.SyncQueue.Enqueue (PendingWriteAction.buildFromRequest <T> (request);
-			//PendingWriteAction action = await this.SyncQueue.Pop ();
 		}
 
 		public override Task<bool> Cancel()

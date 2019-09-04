@@ -134,7 +134,6 @@ namespace Kinvey
             this.uriResourceParameters = uriParameters;
             this.RequireAppCredentials = false;
 			this.customRequestHeaders = client.GetCustomRequestProperties();
-			//this.clientAppVersion = client.GetClientAppVersion ();
 			this.baseURL = baseURL;
 			this.PayloadType = new JSONPayload();
 			this.OverrideRedirect = false;
@@ -397,45 +396,6 @@ namespace Kinvey
             {
                 lastResponseHeaders.Add(header);
             }
-
-//			//process refresh token needed
-//			if ((int)response.StatusCode == 401 && !hasRetryed){
-//
-//				//get the refresh token
-//				Credential cred = Client.Store.Load(Client.User().Id);
-//				String refreshToken = null;
-//				string redirectUri = null;
-//				if (cred != null){
-//					refreshToken = cred.RefreshToken;
-//					redirectUri = cred.RedirectUri;
-//				}
-//
-//				if (refreshToken != null )
-//				{
-//					//logout the current user
-//					Client.User().Logout(); // TODO is this a potential deadlock?
-//
-//					//use the refresh token for a new access token
-//					// TODO this method must be deleted once everything is async
-//					JObject result = Client.User().UseRefreshToken(refreshToken, redirectUri).Execute();
-//
-//					//login with the access token
-//					Provider provider = new Provider ();
-//					provider.kinveyAuth = new MICCredential (result["access_token"].ToString());
-//					User u = Client.User().LoginBlocking(new ThirdPartyIdentity(provider)).Execute();
-//
-//
-//					//store the new refresh token
-//					Credential currentCred = Client.Store.Load(Client.User().Id);
-//					currentCred.RefreshToken = result["refresh_token"].ToString();
-//					currentCred.RedirectUri = redirectUri;
-//					Client.Store.Store(Client.User().Id, currentCred);
-//					hasRetryed = true;
-//					RequestAuth = new KinveyAuthenticator (currentCred.AuthToken);
-//					return ExecuteUnparsed();
-//				}
-//			}
-
 
 			try
             {
@@ -782,13 +742,8 @@ namespace Kinvey
 				return "application/x-www-form-urlencoded";
 			}
 			public override string getHttpContent(object HttpContent){
-//				return new object();
 				var dict = HttpContent as Dictionary<string, string>;
 
-//				var array = (from key in dict.AllKeys
-//					from value in dict.GetValues(key)
-//					select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(value)))
-//					.ToArray();
 				return String.Join("&", dict.Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), "=", Uri.EscapeDataString(kvp.Value.ToString()))));
 
 			}
