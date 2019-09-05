@@ -77,7 +77,6 @@ namespace Kinvey
 		{
 			this.client = client;
 			customRequestProperties = client.GetCustomRequestProperties();
-			//this.clientAppVersion = client.GetClientAppVersion ();
 		}
 
 		/// <summary>

@@ -367,27 +367,5 @@ namespace Kinvey
                 }
             }
 		}
-
-		//	Methods available for override from Remotion:
-		//
-		//	public virtual void VisitAdditionalFromClause (AdditionalFromClause fromClause, QueryModel queryModel, int index);
-		//
-		//	public virtual void VisitGroupJoinClause (GroupJoinClause groupJoinClause, QueryModel queryModel, int index);
-		//
-		//	public virtual void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, GroupJoinClause groupJoinClause);
-		//
-		//	public virtual void VisitJoinClause (JoinClause joinClause, QueryModel queryModel, int index);
-		//
-		//	public virtual void VisitMainFromClause (MainFromClause fromClause, QueryModel queryModel);
-		//
-		//	protected virtual void VisitOrderings (ObservableCollection<Ordering> orderings, QueryModel queryModel, OrderByClause orderByClause);
-		//
-		//	public virtual void VisitOrderByClause (OrderByClause orderByClause, QueryModel queryModel, int index);
-		//
-		//	public virtual void VisitResultOperator (ResultOperatorBase resultOperator, QueryModel queryModel, int index);
-		//
-		//	protected virtual void VisitResultOperators (ObservableCollection<ResultOperatorBase> resultOperators, QueryModel queryModel);
-		//
-		//	public virtual void VisitSelectClause (SelectClause selectClause, QueryModel queryModel);
 	}
 }

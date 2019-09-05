@@ -24,7 +24,6 @@ namespace Kinvey
 	public class PagedPullRequest<T> : ReadRequest<T, PullDataStoreResponse<T>>
 	{
 		BlockingCollection<List<T>> workQueue = new BlockingCollection<List<T>>(10);
-		//ConcurrentBag<Task<List<T>>> pageQueue = new ConcurrentBag<Task<List<T>>>(20);
 
 		int count;
 		bool isInitial;
@@ -46,16 +45,13 @@ namespace Kinvey
 			}
 
 			Task consumer = null;
-			//Semaphore maxThread = new Semaphore(20, 20);
 			var pageQueue = new List<Task<List<T>>>();
             IQueryable<object> query = Query ?? Enumerable.Empty<object>().AsQueryable();
 
             do
 			{
 				var skipTakeQuery = query.Skip(skipCount).Take(pageSize);
-				//maxThread.WaitOne();
 				pageQueue.Add(new FindRequest<T>(Client, Collection, Cache, ReadPolicy.FORCE_NETWORK, false, null, skipTakeQuery, null).ExecuteAsync());
-				//maxThread.Release();
 				skipCount += pageSize;
 			} while (skipCount < count);
 

@@ -35,32 +35,7 @@ namespace Kinvey
         static string userAgentKey = "user-agent";
 		string userAgent = "xamarin-kinvey-http/" + VERSION;
 
-		//// The device info, which includes the OS and OS version, as well as the device model.
-        //static string kinveyDeviceInfoKey = "X-Kinvey-Device-Info";
         static string KinveyDeviceInfo { get; set; }
-
-		//static string _kinveyDeviceInfo = null;
-		//static string KinveyDeviceInfo
-		//{
-		//	get
-		//	{
-		//		if (_kinveyDeviceInfo == null)
-		//		{
-		//			try
-		//			{
-		//				_kinveyDeviceInfo = Plugin.DeviceInfo.CrossDeviceInfo.Current?.Platform + " " +
-		//									Plugin.DeviceInfo.CrossDeviceInfo.Current?.Version + " " +
-		//									Plugin.DeviceInfo.CrossDeviceInfo.Current?.Model;
-		//			}
-		//			catch (Exception e)
-		//			{
-		//				_kinveyDeviceInfo = String.Empty;
-		//			}
-		//		}
-
-		//		return _kinveyDeviceInfo;
-		//	}
-		//}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KinveyHeaders"/> class.

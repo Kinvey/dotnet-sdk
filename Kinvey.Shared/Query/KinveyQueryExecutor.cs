@@ -29,43 +29,11 @@ namespace Kinvey
 		public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "ExecuteCollection<T> method on KinveyQueryExecutor not implemented.");
-//			writer.Reset ();
-//
-//			KinveyQueryVisitor visitor = new KinveyQueryVisitor(writer, typeof(K));
-//
-//			writer.Write ("{");
-//			queryModel.Accept (visitor);
-//			writer.Write ("}");
-//
-//			//Logger.Log (writer.GetFullString ());
-//
-//			T[] cacheResults = (T[])queryable.executeQueryOnCache();
-//			//T[] cacheResults = (T[])queryable.executeQueryOnCache(visitor.cacheExpr);
-//			if (cacheResults != null)
-//			{
-//				foreach (T result in cacheResults)
-//				{
-//					yield return result;
-//				}
-//			}
-//			else
-//			{
-//				T[] results = (T[]) queryable.executeQuery (writer.GetFullString ());
-//				if (results != null)
-//				{
-//					foreach (T res in results)
-//					{
-//						yield return res;
-//					}
-//				}
-//			}
 		}
 
 		public T ExecuteSingle<T>(QueryModel queryModel, bool returnDefaultWhenEmpty)
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "ExecuteSingle<T> method on KinveyQueryExecutor not implemented.");
-//			var sequence = ExecuteCollection<T>(queryModel);
-//			return returnDefaultWhenEmpty ? sequence.SingleOrDefault() : sequence.Single();
 		}
 
 		public T ExecuteScalar<T>(QueryModel queryModel)

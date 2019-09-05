@@ -248,15 +248,6 @@ namespace Kinvey
 			return u;
 		}
 
-		///// <summary>
-		///// Removes the user from the store..
-		///// </summary>
-		///// <param name="userID">User _id.</param>
-  //      private void removeFromStore(string userID)
-  //      {
-  //          CredentialManager credentialManager = new CredentialManager(KinveyClient.Store);
-  //          credentialManager.RemoveCredential(userID);
-  //      }
 		#endregion
 
 		#region User class Public APIs

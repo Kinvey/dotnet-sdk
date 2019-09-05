@@ -69,23 +69,6 @@ namespace Kinvey
             }
         }
 
-		///// <summary>
-		///// Saves the credential associated with the user._id.
-		///// </summary>
-		///// <param name="userId">User _id.</param>
-		///// <param name="credential">Credential.</param>
-		//      public void MakePersistant(string userId, Credential credential)
-		//      {
-		//          if (credentialStore == null)
-		//          {
-		//              return;
-		//          }
-		//          else
-		//          {
-		//              credentialStore.Store(userId, credential);
-		//          }
-		//      }
-
 		/// <summary>
 		/// Creates a new Credential object from a Kinvey user login/create request, and saves the it in the Credential Store.
 		/// </summary>

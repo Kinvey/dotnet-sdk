@@ -209,8 +209,6 @@ namespace Kinvey
 				}
 
 				Client c =  new Client(this.HttpClient, this.BaseUrl, this.ServicePath, this.RequestInitializer, this.Store);
-//				c.offline_platform = this.offlinePlatform;
-//				c.filePath = this.filePath;
                 c.CacheManager = this.CacheManager;
 				c.logger = this.log;
 				c.senderID = this.senderID;

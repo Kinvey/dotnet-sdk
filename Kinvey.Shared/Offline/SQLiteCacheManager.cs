@@ -51,11 +51,8 @@ namespace Kinvey
             {
                 lock (this)
                 {
-                    //ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
                     if (_dbConnectionSync == null)
                     {
-                        //var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
-                        //dbConnection = new SQLiteAsyncConnection (connectionFactory);
                         lock (SQLiteFiles)
                         {
                             _dbConnectionSync = new SQLiteConnection(
@@ -75,7 +72,6 @@ namespace Kinvey
                             }
                             connections.Add(_dbConnectionSync);
                         }
-                        //_dbConnectionSync.TraceListener = new DebugTraceListener();
                     }
 
                     return _dbConnectionSync;
@@ -98,37 +94,6 @@ namespace Kinvey
 		}
 
 		private Dictionary<string, object> mapCollectionToCache = new Dictionary<string, object>();
-
-//		private async Task<int> kickOffUpgradeAsync(){
-//			//get stored version number, if it's null set it to the current dbscheme version and save it it
-//			//call onupgrade with current version number and dbsv.
-//			//DatabaseHelper<JObject> handler = getDatabaseHelper<JObject> ();
-//			SQLTemplates.OfflineVersion ver = await getConnectionAsync ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
-//			if (ver == null) {
-//				ver = new SQLTemplates.OfflineVersion ();
-//				ver.currentVersion = databaseSchemaVersion;
-//				await updateDBSchemaVersion (ver.currentVersion);
-//			}
-//			int newVersion = onUpgrade (ver.currentVersion, databaseSchemaVersion);
-//			return newVersion;
-//		}
-
-//		private SQLiteAsyncConnection getConnectionAsync(){
-//			//ContractResolver myResolver = new ContractResolver (t => true, Deserialize);
-//			if (dbConnectionAsync == null) {
-//				//var connectionFactory = new Func<SQLiteConnectionWithLock>(()=>new SQLiteConnectionWithLock(platform, new SQLiteConnectionString(this.dbpath, false, null, new KinveyContractResolver())));
-//				//dbConnection = new SQLiteAsyncConnection (connectionFactory);			
-//				dbConnectionSync = new SQLiteConnection(platform, dbpath, false, null, null, null, new KinveyContractResolver());
-//
-//			}
-//			return dbConnectionAsync;
-//		}
-
-//		// Gets the DB schema version asynchronously.
-//		private async Task<SQLTemplates.OfflineVersion> getDBSchemaVersionAsync (){
-//			SQLTemplates.OfflineVersion ver =  await getConnection ().Table<SQLTemplates.OfflineVersion> ().FirstOrDefaultAsync ();
-//			return ver;
-//		}
 
 		/// <summary>
 		/// Clears the storage.
@@ -161,15 +126,6 @@ namespace Kinvey
                 }
             }
 		}
-
-		/// <summary>
-		/// Gets the database helper.
-		/// </summary>
-		/// <returns>The database helper.</returns>
-		/// <typeparam name="T">The type of entities stored in this collection.</typeparam>
-//		public static DatabaseHelper<T> getDatabaseHelper<T>(){
-//			return SQLiteHelper<T>.getInstance (platform, dbpath);
-//		}
 
 		public ICache<T> GetCache<T>(string collectionName) where T : class, new()
 		{

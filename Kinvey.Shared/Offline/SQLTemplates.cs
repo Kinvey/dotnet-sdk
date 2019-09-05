@@ -70,14 +70,10 @@ namespace Kinvey
 		public class OfflineMetaData{
 			public string id;
 			public JObject customHeaders;
-			//public string clientVersion;
-
-			//public OfflineMetaData(string id, JObject customHeaders, string clientVersion){
 			public OfflineMetaData(string id, JObject customHeaders)
 			{
 				this.id = id;
 				this.customHeaders = customHeaders;
-				//this.clientVersion = clientVersion;
 			}
 
 			public OfflineMetaData(){}

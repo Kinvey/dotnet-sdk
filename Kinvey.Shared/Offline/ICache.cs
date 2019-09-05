@@ -139,15 +139,6 @@ namespace Kinvey
 
         List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query);
 
-		//Task<int> InsertEntityAsync (T entity);
-
-		//Task<T> UpsertEntityAsync(string id, string json);
-
-		//Task<int> CreateTableAsync(string collectionName);
-
-		//Task<int> DeleteContentsOfTableAsync (string str);
-
-
 		//TODO typed methods
 
 		//Task<List<T>> getAllAsync (string collection);

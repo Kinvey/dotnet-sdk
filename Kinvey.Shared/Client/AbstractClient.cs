@@ -268,28 +268,6 @@ namespace Kinvey
                 get { return this.store; }
                 set { this.store = value; }
             }
-
-			///// <summary>
-			///// Gets the credential for a specified user ID
-			///// </summary>
-			///// <returns><c>true</c>, if credential was loaded, <c>false</c> otherwise.</returns>
-			///// <param name="userId">User identifier @see cref="KinveyXamarin.User.id"/>.</param>
-			//protected bool GetCredential(String userId) 
-			//{
-			//	CredentialManager credentialManager = new CredentialManager(store);
-			//	Credential storedCredential = credentialManager.LoadCredential(userId);
-
-			//	if (storedCredential != null) 
-			//	{
-			//		var kinveyRequestInitializer = ((KinveyClientRequestInitializer) this.RequestInitializer);
-			//		kinveyRequestInitializer.KinveyCredential = new Credential(userId, storedCredential.AccessToken, storedCredential.AuthToken, storedCredential.UserName, storedCredential.Attributes, storedCredential.UserKMD, null, null);
-			//		return true;
-			//	}
-			//	else
-			//	{
-			//		return false;
-			//	}
-			//}
 		}
 
         #region IDisposable Support
