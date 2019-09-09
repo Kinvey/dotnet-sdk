@@ -18,6 +18,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <BuildDocFx Condition=" '$(Configuration)'=='Debug' ">false</BuildDocFx>
+	<BuildDocFx Condition=" '$(Configuration)'=='Release' ">false</BuildDocFx>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
