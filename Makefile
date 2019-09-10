@@ -113,3 +113,11 @@ doc:
 	find ./api/reference/html/ -name "*.html" | xargs sed -i -e 's/Documentation for this section has not yet been entered.//g'
 	find ./api/reference/html/ -name "*.html" | xargs sed -i -e 's/To be added.//g'
 	find ./api/reference/html/ -name "*-e" | xargs rm
+
+docfx-documentation:
+	rm -rf  Kinvey/_site; \
+	rm -rf  Kinvey.Android/_site; \
+	rm -rf  Kinvey.iOS/_site; \
+	mono "packages/docfx.console.2.40.10/build/../tools/docfx.exe" Kinvey/docfx.json
+	mono "packages/docfx.console.2.40.10/build/../tools/docfx.exe" Kinvey.Android/docfx.json
+	mono "packages/docfx.console.2.40.10/build/../tools/docfx.exe" Kinvey.iOS/docfx.json
