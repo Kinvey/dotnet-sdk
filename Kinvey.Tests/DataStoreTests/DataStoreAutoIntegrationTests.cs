@@ -7212,6 +7212,91 @@ namespace Kinvey.Tests
             }
         }
 
+        [TestMethod]
+        public async Task TestSaveMultiInsert201CountWithErrorsAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient("5");
+        
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+
+            // Arrange
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            var todoNetworkStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK, kinveyClient);
+            var todoAutoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO, kinveyClient);
+            var todoSyncStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.SYNC, kinveyClient);
+
+            var toDosToAdd = new List<ToDo>();
+            var toDosAdded = new List<ToDo>();
+            var successCount = 0;
+            var errorAddCount = 0;
+
+            for (var index = 0; index < 201; index++)
+            {
+                ToDo toDo = null;
+
+                if (index > 99 && index < 200)
+                {
+                    toDo = new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index, GeoLoc = "[200,200]" };
+                    errorAddCount++;
+                }
+                else
+                {
+                    toDo = new ToDo { Name = "Name" + index.ToString(), Details = "Details" + index.ToString(), Value = index };
+                    successCount++;
+                    toDosAdded.Add(toDo);
+                }
+
+                toDosToAdd.Add(toDo);
+            }
+
+            // Act
+            var savedToDosToAdd = await todoAutoStore.SaveAsync(toDosToAdd);
+
+            var existingToDosNetwork = await todoNetworkStore.FindAsync();
+            var existingToDosSync = await todoSyncStore.FindAsync();
+
+            var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
+
+            // Teardown
+            await todoAutoStore.RemoveAsync(todoAutoStore.Where(e => e.Name.StartsWith("Name")));
+
+            // Assert
+            Assert.AreEqual(toDosToAdd.Count, savedToDosToAdd.Entities.Count);
+            Assert.AreEqual(errorAddCount, savedToDosToAdd.Errors.Count);
+
+            for (var index = 0; index < toDosToAdd.Count; index++)
+            {
+                if (savedToDosToAdd.Entities[index] != null)
+                {
+                    Assert.AreEqual(toDosToAdd[index].Name, savedToDosToAdd.Entities[index].Name);
+                    Assert.AreEqual(toDosToAdd[index].Details, savedToDosToAdd.Entities[index].Details);
+                    Assert.AreEqual(toDosToAdd[index].Value, savedToDosToAdd.Entities[index].Value);
+                }
+                else
+                {
+                    Assert.IsNotNull(savedToDosToAdd.Errors.Find(e => e.Index == index));
+                }
+            }
+
+            Assert.AreEqual(toDosAdded.Count, existingToDosNetwork.Count);
+
+            foreach (var toDo in toDosAdded)
+            {
+                Assert.IsNotNull(existingToDosNetwork.Find(e => e.Name.Equals(toDo.Name) && e.Details.Equals(toDo.Details) &&
+                e.Value.Equals(toDo.Value)));
+            }
+
+            Assert.AreEqual(toDosToAdd.Count, existingToDosSync.Count);
+            Assert.AreEqual(errorAddCount, existingToDosSync.Count(e => e.Acl == null && e.Kmd == null));
+            Assert.AreEqual(toDosToAdd.Count - errorAddCount, existingToDosSync.Count(e => !e.ID.StartsWith("temp")));
+            Assert.AreEqual(errorAddCount, pendingWriteActions.Count);
+        }
+
 
         #endregion Save
 
