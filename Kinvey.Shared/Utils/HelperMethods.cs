@@ -114,7 +114,7 @@ namespace Kinvey
 
         internal static string GetCustomParsingJsonErrorMessage(string json, string requestUri, string typeName)
         {
-            string jTokenType = string.Empty;
+            var jTokenType = "unknown json format";
 
             try
             {
@@ -123,11 +123,6 @@ namespace Kinvey
             catch (JsonReaderException)
             {
 
-            }
-
-            if (string.IsNullOrEmpty(jTokenType))
-            {
-                jTokenType = "unknown json format";
             }
 
             return $"Received {jTokenType} for API call {requestUri}, but expected {typeName}.";
