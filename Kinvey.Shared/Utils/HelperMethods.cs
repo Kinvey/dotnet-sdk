@@ -11,6 +11,8 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,6 +110,27 @@ namespace Kinvey
         internal static bool IsLessThan(string checkingValue, int comparingValue)
         {
             return !int.TryParse(checkingValue, out int checkingValueNumber) || checkingValueNumber < comparingValue;
+        }
+
+        internal static string GetCustomParsingJsonErrorMessage(string json, string requestUri, string typeName)
+        {
+            string jTokenType = string.Empty;
+
+            try
+            {
+                jTokenType = JToken.Parse(json).Type.ToString();
+            }
+            catch (JsonReaderException)
+            {
+
+            }
+
+            if (string.IsNullOrEmpty(jTokenType))
+            {
+                jTokenType = "unknown json format";
+            }
+
+            return $"Received {jTokenType} for API call {requestUri}, but expected {typeName}.";
         }
     }
 }

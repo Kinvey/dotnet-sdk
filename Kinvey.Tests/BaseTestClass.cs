@@ -261,6 +261,11 @@ namespace Kinvey.Tests
                             ["authtoken"] = TestSetup.auth_token_corrupted_for_401_response_fake
                         };
                     }
+                    else if (user["username"].ToString().Equals(TestSetup.user_with_invalid_json_response) && user["password"].ToString().Equals(TestSetup.pass_for_user_with_invalid_json_response))
+                    {
+                        Write(context, "Unknown json format");
+                        return;
+                    }
                     else
                     {
                         user["_kmd"] = new JObject
@@ -1133,6 +1138,19 @@ namespace Kinvey.Tests
                         },
                     };
 
+                    var userWithInvalidJsonResponseId = Guid.NewGuid().ToString();
+                    users[userWithInvalidJsonResponseId] = new JObject
+                    {
+                        ["_id"] = userWithInvalidJsonResponseId,
+                        ["username"] = TestSetup.user_with_invalid_json_response,
+                        ["password"] = TestSetup.pass_for_user_with_invalid_json_response,
+                        ["email"] = $"{Guid.NewGuid().ToString()}@kinvey.com",
+                        ["_acl"] = new JObject()
+                        {
+                            ["creator"] = userWithInvalidJsonResponseId,
+                        },
+                    };
+
                     #endregion Existing users
 
                     #region Social networks users
@@ -1394,6 +1412,9 @@ namespace Kinvey.Tests
                                 break;
                             case "/user/_kid_/_lookup":
                                 MockUserLookup(context, users.Values);
+                                break;
+                            case "/fake_request":
+                                Write(context, "[]");
                                 break;
                             case "/user/_kid_/login":
                                 MockUserLogin(context, users.Values, signedUsers);

@@ -18,6 +18,9 @@ namespace Kinvey.Tests
         public const string user_with_corrupted_auth_token = "userwithcorruptedauthtoken";
         public const string pass_for_user_with_corrupted_auth_token = "userwithcorruptedauthtoken";
 
+        public const string user_with_invalid_json_response = "userwithinvalidjsonresponse";
+        public const string pass_for_user_with_invalid_json_response = "userwithinvalidjsonresponse";
+
         public const string app_key = "kid_Zy0JOYPKkZ";
 		public const string app_secret = "d83de70e64d540e49acd6cfce31415df";
 

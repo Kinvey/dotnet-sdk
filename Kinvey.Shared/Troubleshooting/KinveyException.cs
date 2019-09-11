@@ -114,18 +114,39 @@ namespace Kinvey
 		/// <value>The status code.</value>
 		public int StatusCode { get; set; }
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyException"/> class.
-		/// </summary>
-		/// <param name="errorCategory">The <see cref="KinveyXamarin.EnumErrorCategory"/>  of the exception.</param>
-		/// <param name="errorCode">The <see cref="KinveyXamarin.EnumErrorCode"/>  of the exception.</param>
-		/// <param name="info">Additional information about the exception, if available.</param>
-		/// <param name="innerException">[optional] Inner exception thrown, if available.</param>
-		public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, string info, Exception innerException = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyException"/> class.
+        /// </summary>
+        /// <param name="errorCategory">The <see cref="EnumErrorCategory"/>  of the exception.</param>
+        /// <param name="errorCode">The <see cref="EnumErrorCode"/>  of the exception.</param>
+        /// <param name="message">The message of the exception.</param>
+        /// <param name="info">Additional information about the exception.</param>
+        /// <param name="innerException">[optional] Inner exception thrown, if available.</param>
+        public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, string message, string info, Exception innerException = null)
+            : base(message, innerException)
+        {
+            this.errorCategory = errorCategory;
+            this.errorCode = errorCode;
+            this.info = info;
+
+            Tuple<string, string, string> errorInfo = InfoFromErrorCode(errorCategory, errorCode);
+            this.error = errorInfo.Item1;
+            this.debug = errorInfo.Item2;
+            this.description = errorInfo.Item3;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyException"/> class.
+        /// </summary>
+        /// <param name="errorCategory">The <see cref="EnumErrorCategory"/>  of the exception.</param>
+        /// <param name="errorCode">The <see cref="EnumErrorCode"/>  of the exception.</param>
+        /// <param name="info">Additional information about the exception.</param>
+        /// <param name="innerException">[optional] Inner exception thrown, if available.</param>
+        public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, string info, Exception innerException = null)
 			: base(MessageFromErrorCode(errorCategory, errorCode), innerException)
 		{
 			this.errorCategory = errorCategory;

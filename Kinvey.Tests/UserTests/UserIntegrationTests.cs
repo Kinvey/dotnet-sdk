@@ -161,6 +161,29 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestLoginUserPassParsingJsonErrorAsync()
+        {            
+            if (MockData)
+            {
+                // Arrange
+                MockResponses(1);
+
+                // Act
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+                {
+                    await User.LoginAsync(TestSetup.user_with_invalid_json_response, TestSetup.pass_for_user_with_invalid_json_response, kinveyClient);
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, kinveyException.ErrorCode);
+                Assert.AreEqual("Received unknown json format for API call http://localhost:8080/user/_kid_/login, but expected Kinvey.KinveyAuthResponse.", kinveyException.Message);
+            }
+        }
+
+        [TestMethod]
         public async Task TestLoginFacebookAsync()
         {
             // Arrange

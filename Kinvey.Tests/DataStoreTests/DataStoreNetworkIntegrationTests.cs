@@ -7763,5 +7763,85 @@ namespace Kinvey.Tests
         }
 
         #endregion Purge
+
+        #region Parsing json error
+
+        [TestMethod]
+        public async Task TestNetworkStoreParsingJsonErrorAsync()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(4);
+            }
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            var newItem = new ToDo
+            {
+                Name = "Next Task",
+                Details = "A test",
+                DueDate = "2016-04-19T20:02:17.635Z"
+            };
+
+            var validToDoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var invalidToDoStore = DataStore<List<int>>.Collection(toDosCollection, DataStoreType.NETWORK);
+            var savedToDo = await validToDoStore.SaveAsync(newItem);
+
+            // Act
+            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
+            {
+                await invalidToDoStore.FindByIDAsync(savedToDo.ID);
+            });
+                    
+            // Teardown
+            await validToDoStore.RemoveAsync(savedToDo.ID);
+
+            // Assert
+            Assert.AreEqual(typeof(KinveyException), exception.GetType());
+            var kinveyException = exception as KinveyException;
+            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
+            Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, kinveyException.ErrorCode);
+            Assert.AreEqual($"Received Object for API call {kinveyClient.BaseUrl}appdata/{kinveyClient.SSOGroupKey}/ToDos/{savedToDo.ID}, but expected {typeof(List<int>).FullName}.", kinveyException.Message);
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreParsingJsonErrorSync()
+        {
+            if (MockData)
+            {
+                // Setup
+                kinveyClient = BuildClient();
+
+                MockResponses(2);
+
+                // Arrange
+                await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+                // Act
+                var exception = Assert.ThrowsException<KinveyException>(delegate
+                {
+                    var urlParameters = new Dictionary<string, string>
+                    {
+                    { "appKey", ((KinveyClientRequestInitializer)kinveyClient.RequestInitializer).AppKey }
+                    };
+
+                    var fakeRequest = new FakeRequest(kinveyClient, urlParameters);
+                    kinveyClient.InitializeRequest(fakeRequest);
+                    fakeRequest.Execute();
+                });
+
+                // Assert
+                Assert.AreEqual(typeof(KinveyException), exception.GetType());
+                var kinveyException = exception as KinveyException;
+                Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_NETWORK, kinveyException.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_PARSE, kinveyException.ErrorCode);
+                Assert.AreEqual("Received Array for API call http://localhost:8080/fake_request, but expected Kinvey.Tests.ToDo.", kinveyException.Message);
+            }
+        }
+
+        #endregion Parsing json error
     }
 }
