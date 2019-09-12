@@ -563,26 +563,33 @@ namespace Kinvey
             {
                 return default(T);
             }
+
+            string json = null;
             try
             {
                 var task = response.Content.ReadAsStringAsync();
                 task.Wait();
-                return JsonConvert.DeserializeObject<T>(task.Result);
+                json = task.Result;
+                return JsonConvert.DeserializeObject<T>(json);
             }
-			catch(JsonException ex){
-                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE, ex.Message)
+            catch (JsonException ex)
+            {
+                throw new KinveyException(EnumErrorCategory.ERROR_DATASTORE_NETWORK, EnumErrorCode.ERROR_JSON_PARSE,
+                    HelperMethods.GetCustomParsingJsonErrorMessage(json, response.RequestMessage.RequestUri.ToString(), typeof(T).FullName),
+                    null,
+                    ex)
                 {
                     RequestID = HelperMethods.getRequestID(response)
                 };
-			}
-            catch(ArgumentException ex)
+            }
+            catch (ArgumentException ex)
             {
-				Logger.Log (ex.Message);  
+                Logger.Log(ex.Message);
                 return default(T);
             }
             catch (NullReferenceException ex)
             {
-				Logger.Log (ex.Message);
+                Logger.Log(ex.Message);
                 return default(T);
             }
 
@@ -679,9 +686,10 @@ namespace Kinvey
                 }
 			}
 
+            string json = null;
 			try
 			{
-                var json = await response.Content.ReadAsStringAsync();
+                json = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<T>(json);
 
                 RequestStartTime = HelperMethods.GetRequestStartTime(response);
@@ -693,7 +701,8 @@ namespace Kinvey
                 KinveyException kinveyException = new KinveyException(
                     EnumErrorCategory.ERROR_DATASTORE_NETWORK,
                     EnumErrorCode.ERROR_JSON_PARSE,
-                    ex.Message,
+                    HelperMethods.GetCustomParsingJsonErrorMessage(json, response.RequestMessage.RequestUri.ToString(), typeof(T).FullName),
+                    null,
                     ex
                 ) {
                     RequestID = HelperMethods.getRequestID(response)

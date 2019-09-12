@@ -253,17 +253,33 @@ namespace Kinvey
 		/// <returns>The async request.</returns>
 		public async Task<KinveyAuthResponse> ExecuteAsync()
 		{
+            string json = null;
+            HttpResponseMessage response = null;
 			try
 			{
-                var response = await ExecuteUnparsedAsync();
-                var responseBody = await response.Content.ReadAsStringAsync();
-				return JsonConvert.DeserializeObject<KinveyAuthResponse>(responseBody);
+                response = await ExecuteUnparsedAsync();
+                json = await response.Content.ReadAsStringAsync();
+				return JsonConvert.DeserializeObject<KinveyAuthResponse>(json);
 			}
-			catch (KinveyException)
+            catch (JsonException ex)
+            {
+                KinveyException kinveyException = new KinveyException(
+                    EnumErrorCategory.ERROR_DATASTORE_NETWORK,
+                    EnumErrorCode.ERROR_JSON_PARSE,
+                    HelperMethods.GetCustomParsingJsonErrorMessage(json, response?.RequestMessage.RequestUri.ToString(), typeof(KinveyAuthResponse).FullName),
+                    null,
+                    ex
+                )
+                {
+                    RequestID = HelperMethods.getRequestID(response)
+                };
+                throw kinveyException;
+            }
+            catch (KinveyException)
 			{
 				throw;
-			}
-			catch (Exception ex)
+			}           
+            catch (Exception ex)
 			{
 				throw new KinveyException(
                     EnumErrorCategory.ERROR_USER,
