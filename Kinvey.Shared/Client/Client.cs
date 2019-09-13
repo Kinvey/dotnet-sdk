@@ -105,7 +105,7 @@ namespace Kinvey
             };
             InitializeRequest(ping);
 
-			return await ping.ExecuteAsync();
+			return await ping.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		[JsonObject(MemberSerialization.OptIn)]

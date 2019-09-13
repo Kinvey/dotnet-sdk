@@ -423,7 +423,7 @@ namespace Kinvey
 
             RequestAuth.Authenticate(request);
             Logger.Log(request);
-            var response = await httClient.SendAsync(request);
+            var response = await httClient.SendAsync(request).ConfigureAwait(false);
             Logger.Log(response);
             var contentType = response.Headers
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
@@ -596,7 +596,7 @@ namespace Kinvey
         }
 
 		public virtual async Task<T> ExecuteAsync(){
-			var response = await ExecuteUnparsedAsync();
+			var response = await ExecuteUnparsedAsync().ConfigureAwait(false);
 
 			if (OverrideRedirect)
 			{
