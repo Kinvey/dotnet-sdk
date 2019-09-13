@@ -182,5 +182,12 @@ namespace Kinvey.TestApp.Shared.Pages
                     throw new Exception("Wrong index.");
             }
         }
+
+        private async void ReproducingDeadlockIssue_OnClickedAsync(object sender, EventArgs e)
+        {
+            //Calling the method synchronously.
+            var response = Client.SharedClient.PingAsync().Result;
+            await DisplayMessage(Kinvey.TestApp.Shared.Constants.Exceptions.KinveyAlertTitle, response.version);
+        }    
     }
 }

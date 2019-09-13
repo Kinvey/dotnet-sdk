@@ -14,6 +14,7 @@
 
         public static class Exceptions
         {
+            public const string KinveyAlertTitle = "Kinvey alert";
             public const string GeneralExceptionTitle = "General exception";
             public const string KinveyExceptionTitle = "Kinvey exception";
             public const string RequiredFieldsTitle = "Required fields!";

@@ -32,6 +32,7 @@
             <Button Text="Unsubscribe Live Service" Clicked="UnsubscribeLiveService_OnClicked"/>
             <Button Text="Register push" Clicked="RegisterPush_OnClickedAsync"/>
             <Button Text="Unregister push" Clicked="UnregisterPush_OnClickedAsync"/>
+            <Button Text="Reproducing deadlock issue" Clicked="ReproducingDeadlockIssue_OnClickedAsync"/>
         </StackLayout>
     </pages:BasePage.Content>
 </pages:BasePage>
