@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -42,34 +42,39 @@ namespace Kinvey
 		[DataMember]
 		private string userName;
 
-		/// <summary>
-		/// The _socialIdentity object.
-		/// </summary>
-		[DataMember]
+        /// <summary>
+        /// The _socialIdentity object.
+        /// </summary>
+        /// <value>The AuthSocialID  property gets/sets the value of the KinveyAuthSocialID field, _authSocialID .</value>
+        [DataMember]
 		public KinveyAuthSocialID AuthSocialID { get; set; }
 
-		/// <summary>
-		/// The access token.
-		/// </summary>
-		[DataMember]
+        /// <summary>
+        /// The access token.
+        /// </summary>
+        /// <value>The SecAuthToken property gets/sets the value of the byte[] field, _secAuthToken. </value>
+        [DataMember]
 		public byte[] SecAuthToken { get; set; }
 
-		/// <summary>
-		/// The access token.
-		/// </summary>
-		[DataMember]
+        /// <summary>
+        /// The access token.
+        /// </summary>
+        /// <value>The AccessToken property gets/sets the value of the string field, _accessToken.</value>
+        [DataMember]
 		public string AccessToken { get; set; }
 
-		/// <summary>
-		/// The refresh token.
-		/// </summary>
-		[DataMember]
+        /// <summary>
+        /// The refresh token.
+        /// </summary>
+        /// <value>The RefreshToken property gets/sets the value of the string field, _refreshToken.</value>
+        [DataMember]
 		public string RefreshToken { get; set; }
 
-		/// <summary>
-		/// The redirect uri.
-		/// </summary>
-		[DataMember]
+        /// <summary>
+        /// The redirect uri.
+        /// </summary>
+        /// <value>The RedirectUri property gets/sets the value of the string field, _redirectUri.</value>
+        [DataMember]
 		public string RedirectUri { get; set; }
 
 		/// <summary>
@@ -81,39 +86,43 @@ namespace Kinvey
 		[DataMember]
 		private KinveyUserMetaData userKMD;
 
-		/// <summary>
-		/// The device ID associated with this user.
-		/// </summary>
-		[DataMember]
+        /// <summary>
+        /// The device ID associated with this user.
+        /// </summary>
+        /// <value>The DeviceID property gets/sets the value of the string field, _deviceID.</value>
+        [DataMember]
 		public string DeviceID { get; set; }
 
 		/// <summary>
 		/// Gets or sets the MIC Client identifier.
 		/// </summary>
-		/// <value>The MICC lient identifier.</value>
+		/// <value>The MIC lient identifier.</value>
 		[DataMember]
 		public string MICClientID { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
+		/// Initializes a new instance of the <see cref="Credential"/> class.
 		/// </summary>
 		[Preserve]
 		public Credential()
 		{
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
-		/// </summary>
-		/// <param name="userId">User ID</param>
-		/// <param name="accessToken">Access token</param>
-		/// <param name="authToken">Auth token</param>
-		/// <param name="userName">User name</param>
-		/// <param name="attributes">User attributes</param>
-		/// <param name="kmd">Kinvey metadata</param>
-		/// <param name="refreshToken">Refresh token</param>
-		/// <param name="redirectURI">Redirect URI</param>
-		public Credential(string userId,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
+        /// </summary>
+        /// <param name="userId">User ID</param>
+        /// <param name="accessToken">Access token</param>
+        /// <param name="socialIdentity">Kinvey user metadata</param>
+        /// <param name="authToken">Auth token</param>
+        /// <param name="userName">User name</param>
+        /// <param name="attributes">User attributes</param>
+        /// <param name="kmd">Kinvey metadata</param>
+        /// <param name="refreshToken">Refresh token</param>
+        /// <param name="redirectURI">Redirect URI</param>
+        /// <param name="deviceID">Device ID</param>
+        /// <param name="micClientID">MIC Client ID</param>
+        public Credential(string userId,
 		                  string accessToken,
 		                  KinveyAuthSocialID socialIdentity,
 		                  string authToken,
@@ -138,7 +147,7 @@ namespace Kinvey
 			this.MICClientID = micClientID;
 		}
 		/// <summary>
-		/// Gets or sets the user _id.
+		/// Gets the user _id.
 		/// </summary>
 		/// <value>The user identifier.</value>
 		public string UserId
@@ -149,7 +158,7 @@ namespace Kinvey
 		}
 
 		/// <summary>
-		/// Gets or sets the auth token.
+		/// Gets the auth token.
 		/// </summary>
 		/// <value>The auth token.</value>
 		public string AuthToken
@@ -159,17 +168,21 @@ namespace Kinvey
 			internal set { this.authToken = value; }
 		}
 
-		/// <summary>
-		/// Gets or sets the auth token.
-		/// </summary>
-		/// <value>The auth token.</value>
-		public string UserName
+        /// <summary>
+        /// The UserName property represents the user name.
+        /// </summary>
+        /// <value>The UserName property gets the value of the string field, userName.</value>
+        public string UserName
 		{
 			get { return this.userName; }
 			[Preserve]
 			internal set { this.userName = value; }
 		}
 
+        /// <summary>
+		/// Gets the attributes.
+		/// </summary>
+		/// <value>The Attributes property gets the value of the Dictionary field, attributes.</value>
 		public Dictionary<string, JToken> Attributes
 		{
 			get { return this.attributes; }
@@ -177,19 +190,22 @@ namespace Kinvey
 			internal set { this.attributes = value; }
 		}
 
-		public KinveyUserMetaData UserKMD
+        /// <summary>The UserKMD property represents Kinvey user metadata.</summary>
+        /// <value>The UserKMD property gets the value of the KinveyUserMetaData field, userKMD.</value>
+        public KinveyUserMetaData UserKMD
 		{
 			get { return this.userKMD; }
 			[Preserve]
 			internal set { this.userKMD = value; }
 		}
 
-		/// <summary>
-		/// Initialize the specified clientRequest with this credential.
-		/// </summary>
-		/// <param name="clientRequest">Client Request.</param>
-		/// <typeparam name="T">The type of the Client Request</typeparam>
-		public void Initialize<T>(AbstractKinveyClientRequest<T> clientRequest, string clientId = null)
+        /// <summary>
+        /// Initialize the specified clientRequest with this credential.
+        /// </summary>
+        /// <param name="clientRequest">Client Request.</param>
+        /// <param name="clientId">[optional] Client Id.</param>
+        /// <typeparam name="T">The type of the Client Request</typeparam>
+        public void Initialize<T>(AbstractKinveyClientRequest<T> clientRequest, string clientId = null)
 		{
 			if (authToken != null)
 			{
@@ -197,24 +213,31 @@ namespace Kinvey
 			}
 		}
 
-		/// <summary>
-		/// Create a new Credential from a KinveyAuthResponse.
-		/// </summary>
-		/// <param name="response">The response of a Kinvey login/create request.</param>
-		public static Credential From(KinveyAuthResponse response)
+        /// <summary>
+        /// Create a new Credential from a KinveyAuthResponse.
+        /// </summary>
+        /// <param name="response">The response of a Kinvey login/create request.</param>
+        /// <returns>Credential object, storing authentication information.</returns>
+        public static Credential From(KinveyAuthResponse response)
 		{
 			return new Credential(response.UserId, response.AccessToken, response.AuthSocialIdentity, response.AuthToken, response.username, response.Attributes, response.UserMetaData, null, null, null, null);
 		}
 
-		/// <summary>
-		/// Create a new Credential from a Kinvey User object.
-		/// </summary>
-		/// <param name="user">User.</param>
-		public static Credential From(User user)
+        /// <summary>
+        /// Create a new Credential from a Kinvey User object.
+        /// </summary>
+        /// <param name="user">User.</param>
+        /// <returns>Credential object, storing authentication information.</returns>
+        public static Credential From(User user)
 		{
 			return new Credential(user.Id, user.AccessToken, user.AuthSocialID, user.AuthToken, user.UserName, user.Attributes, user.Metadata, null, null, user.KinveyClient.DeviceID, null);
 		}
 
+        /// <summary>
+        /// Creates new Credential from NativeCredential object.
+        /// </summary>
+        /// <param name="nc">Native credential.</param>
+        /// <returns>Credential object, storing authentication information.</returns>
 		public static Credential From(NativeCredential nc)
 		{
 			return new Credential(nc.UserID,
@@ -243,6 +266,12 @@ namespace Kinvey
 			return credential;
 		}
 
+        /// <summary>
+		/// Creates new Credential from Credential object and encrypted auth token.
+		/// </summary>
+		/// <param name="cred">Credential object, storing authentication information.</param>
+        /// <param name="encryptedAuthToken">Encrypted auth token.</param>
+        /// <returns>Credential object, storing authentication information</returns>
         public static Credential From(Credential cred, byte[] encryptedAuthToken)
 		{
             var secCredential = new Credential(cred.userId, cred.AccessToken, cred.AuthSocialID, null, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID, cred.MICClientID);
@@ -250,6 +279,12 @@ namespace Kinvey
 			return secCredential;
 		}
 
+        /// <summary>
+		/// Creates new Credential from Credential object and original auth token.
+		/// </summary>
+		/// <param name="cred">Credential object, storing authentication information.</param>
+        /// <param name="originalAuthToken">Original auth token.</param>
+        /// <returns>Credential object, storing authentication information</returns>
         public static Credential From(Credential cred, string originalAuthToken)
 		{
             return new Credential(cred.userId, cred.AccessToken, cred.AuthSocialID, originalAuthToken, cred.userName, cred.attributes, cred.userKMD, cred.RefreshToken, cred.RedirectUri, cred.DeviceID, cred.MICClientID);
