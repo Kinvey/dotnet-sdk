@@ -96,7 +96,7 @@ namespace Kinvey
 		/// <summary>
 		/// Gets or sets the MIC Client identifier.
 		/// </summary>
-		/// <value>The MIC lient identifier.</value>
+		/// <value>The MIC client identifier.</value>
 		[DataMember]
 		public string MICClientID { get; set; }
 
