@@ -23,10 +23,11 @@ namespace Kinvey
 	/// </summary>
     public class KinveyHeaders : List<KeyValuePair<string, IEnumerable<string>>>
     {
-		/// <summary>
-		/// The version of the SDK.
-		/// </summary>
-		public static string VERSION = "4.3.3";
+        /// <summary>
+        /// The version of the SDK.
+        /// </summary>
+        /// <value>The string value containing the current version of SDK.</value>
+        public static string VERSION = "4.3.3";
 
 		// The kinvey API version.
         internal static readonly string kinveyApiVersion = "4";
@@ -37,9 +38,10 @@ namespace Kinvey
 
         static string KinveyDeviceInfo { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyHeaders"/> class.
-		/// </summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyHeaders"/> class.
+        /// </summary>
+        /// <param name="devicePlatform">Device platform.</param>
         public KinveyHeaders(Constants.DevicePlatform devicePlatform)
         {
             Add(new KeyValuePair<string, IEnumerable<string>>(

@@ -11,12 +11,22 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-
 namespace Kinvey
 {
+    /// <summary>	
+    /// Instructs a linker to preserve the decorated code
+    /// </summary>
 	public sealed class PreserveAttribute : System.Attribute {
-		public bool AllMembers;
+        /// <summary>	
+        /// Ensures that all members of this type are preserved.
+        /// </summary>
+        /// <value> If the value is set <c>true</c> all members of this type, including fields, properties, methods, subclasses are preserved during linking. </value>
+        public bool AllMembers;
+
+        /// <summary>	
+        /// Flags the method as a method to preserve during linking if the container class is pulled in.
+        /// </summary>
+        /// <value> If the value is set <c>true</c> a <see cref="PreserveAttribute"/> attribute on a method, then the method will be preserved. </value>
 		public bool Conditional;
 	}
 }

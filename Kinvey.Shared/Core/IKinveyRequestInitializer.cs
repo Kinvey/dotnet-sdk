@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,12 +11,6 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Kinvey
 {
 	/// <summary>
@@ -24,11 +18,12 @@ namespace Kinvey
 	/// </summary>
     public interface IKinveyRequestInitializer
     {
-		/// <summary>
-		/// Initialize the specified request.
-		/// </summary>
-		/// <param name="request">Request.</param>
-		/// <typeparam name="T">The response type of the request.</typeparam>
+        /// <summary>
+        /// Initialize the specified request.
+        /// </summary>
+        /// <param name="request">Request.</param>
+        /// <param name="clientId">[optional] Client ID.</param>
+        /// <typeparam name="T">The response type of the request.</typeparam>
         void Initialize<T>(AbstractKinveyClientRequest<T> request, string clientId = null);
     }
 }

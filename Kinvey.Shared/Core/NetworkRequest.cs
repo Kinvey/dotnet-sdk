@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -15,21 +15,34 @@ using System;
 using System.Collections.Generic;
 namespace Kinvey
 {
-	public class NetworkRequest <T> : AbstractKinveyClientRequest <T>
+    /// <summary>
+    /// The class for creating network requests.
+    /// </summary>
+    /// <typeparam name="T">The object type for the network request and response.</typeparam>
+    public class NetworkRequest <T> : AbstractKinveyClientRequest <T>
 	{
+        /// <summary>
+        /// Initializes a new instance of the class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="requestMethod">Request method.</param>
+        /// <param name="uriTemplate">URI template.</param>
+        /// <param name="httpContent">Http content.</param>
+        /// <param name="uriParameters">URI parameters.</param>
 		public NetworkRequest (AbstractClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters) :
 		base (client, client.BaseUrl, requestMethod, uriTemplate, httpContent, uriParameters)
 		{}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="requestMethod">Request method.</param>
-		/// <param name="uriTemplate">URI template.</param>
-		/// <param name="httpContent">Http content.</param>
-		/// <param name="uriParameters">URI parameters.</param>
-		public NetworkRequest(AbstractClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters):
+        /// <summary>
+        /// Initializes a new instance of the class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="baseURL">Base URL.</param>
+        /// <param name="requestMethod">Request method.</param>
+        /// <param name="uriTemplate">URI template.</param>
+        /// <param name="httpContent">Http content.</param>
+        /// <param name="uriParameters">URI parameters.</param>
+        public NetworkRequest(AbstractClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters):
 		base (client, baseURL, requestMethod, uriTemplate, httpContent, uriParameters)
 		{}
 

@@ -17,38 +17,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.IO;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
 using System.Net;
 
 namespace Kinvey
 {
 
-	/// <summary>
-	/// This is a client request to be sent to Kinvey
-	/// </summary>
+    /// <summary>
+    /// This is a client request to be sent to Kinvey
+    /// </summary>
+    /// <typeparam name="T">The type of Kinvey client request.</typeparam>
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class AbstractKinveyClientRequest<T>
     {
-		#region Properties and constructors
-		/// <summary>
-		/// the Kinvey Client which created this request.
-		/// </summary>
-		protected readonly AbstractClient client;
-		/// <summary>
-		/// The request method.
-		/// </summary>
-		protected readonly string requestMethod;
+        #region Properties and constructors
+        /// <summary>
+        /// The Kinvey Client which created this request.
+        /// </summary>
+        /// <value> The object of the class inherited from AbstractClient. </value>.
+        protected readonly AbstractClient client;
+        /// <summary>
+        /// The request method.
+        /// </summary>
+        /// <value> The string value containing a request method. </value>.
+        protected readonly string requestMethod;
 		/// <summary>
 		/// The request headers.
 		/// </summary>
         private List<KeyValuePair<string, IEnumerable<string>>> requestHeaders = new List<KeyValuePair<string, IEnumerable<string>>>();
-		/// <summary>
-		/// The URI template.
-		/// </summary>
-		public string uriTemplate;
+        /// <summary>
+        /// The URI template.
+        /// </summary>
+        /// <value> The string value containing uri template. </value>.
+        public string uriTemplate;
 		/// <summary>
 		/// The content of the request.
 		/// </summary>
@@ -69,24 +71,29 @@ namespace Kinvey
 		/// The app key.
 		/// </summary>
         private string appKey;
-		/// <summary>
-		/// The URI resource parameters.
-		/// </summary>
-		public Dictionary<string, string> uriResourceParameters;
+        /// <summary>
+        /// The URI resource parameters.
+        /// </summary>
+        /// <value> The dictionary type value containing resource parameters for uri. </value>.
+        public Dictionary<string, string> uriResourceParameters;
 		/// <summary>
 		/// the authenticator.
 		/// </summary>
         private IAuthenticator auth;
 
-		//TODO: this needs to be removed and instead the client should be passed around
-		//public String clientAppVersion { get; set;}
+        //TODO: this needs to be removed and instead the client should be passed around
+        //public String clientAppVersion { get; set;}
 
+        /// <summary>
+        /// Custom headers for the request.	        
+        /// </summary>
+        /// <value>The customRequestHeaders property gets/sets the value of the JObject field, _customRequestHeaders. </value>	        
 		public JObject customRequestHeaders {get; set;}
 
 		/// <summary>
 		/// The base URL for this request
 		/// </summary>
-		/// <value>The base UR.</value>
+		/// <value>The base URL.</value>
 		private string baseURL {get; set;}
 
 		/// <summary>
@@ -94,10 +101,11 @@ namespace Kinvey
 		/// </summary>
 		private bool hasRetried = false;
 
-		/// <summary>
-		/// Should the request intercept redirects and route them to an override
-		/// </summary>
-		public bool OverrideRedirect {get; set; }
+        /// <summary>
+        /// Should the request intercept redirects and route them to an override
+        /// </summary>
+        /// <value>The OverrideRedirect property gets/sets the value of the bool type. If the value is <c>true</c> then the request overrides redirects.</value>
+        public bool OverrideRedirect {get; set; }
 	
 		/// <summary>
 		/// The type of payload
@@ -117,15 +125,16 @@ namespace Kinvey
 		this (client, client.BaseUrl, requestMethod, uriTemplate, httpContent, uriParameters)
 		{}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="requestMethod">Request method.</param>
-		/// <param name="uriTemplate">URI template.</param>
-		/// <param name="httpContent">Http content.</param>
-		/// <param name="uriParameters">URI parameters.</param>
-		protected AbstractKinveyClientRequest(AbstractClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="baseURL">Base URL.</param>
+        /// <param name="requestMethod">Request method.</param>
+        /// <param name="uriTemplate">URI template.</param>
+        /// <param name="httpContent">Http content.</param>
+        /// <param name="uriParameters">URI parameters.</param>
+        protected AbstractKinveyClientRequest(AbstractClient client, string baseURL, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters)
         {
             this.client = client;
             this.requestMethod = requestMethod;
@@ -206,6 +215,10 @@ namespace Kinvey
     
         }
 
+        /// <summary>
+		/// Start time of the request.
+		/// </summary>
+		/// <value>The string value containing the start time of the request.</value>
         public string RequestStartTime { get; set; }
 
         /// <summary>
@@ -415,8 +428,11 @@ namespace Kinvey
             return response;
         }
 
-
-		public async Task<HttpResponseMessage> ExecuteUnparsedAsync()
+        /// <summary>
+        /// Executes the request asynchronously without any parsing.
+        /// </summary>
+        /// <returns> The async task with Http response. </returns>
+        public async Task<HttpResponseMessage> ExecuteUnparsedAsync()
 		{
 			var httClient = InitializeRestClient();
 			var request = BuildRestRequest();
@@ -545,9 +561,10 @@ namespace Kinvey
 		}
 
 
-		/// <summary>
-		/// Execute this request.
-		/// </summary>
+        /// <summary>
+        /// Execute this request.
+        /// </summary>
+        /// <returns> The type of Kinvey client request. </returns>
         public virtual T Execute()
         {
             var response = ExecuteUnparsed();
@@ -595,6 +612,10 @@ namespace Kinvey
 
         }
 
+        /// <summary>
+        /// Executes this request asynchronously .
+        /// </summary>
+        /// <returns> The async task with the type of the request. </returns>
 		public virtual async Task<T> ExecuteAsync(){
 			var response = await ExecuteUnparsedAsync();
 
@@ -721,40 +742,81 @@ namespace Kinvey
 			}
 		}
 
-		public virtual async Task<T> onRedirectAsync(String newLocation)
+        /// <summary>
+        /// Redirects the request to a new location.
+        /// </summary>
+        /// <param name="newLocation">New location</param>
+        /// <returns> The async task with the type of the request. </returns>
+        public virtual async Task<T> onRedirectAsync(String newLocation)
 		{
 			Logger.Log ("Override Redirect in response is expected, but not implemented!");  
 			return default(T);
 		}
 
-		#endregion
+        #endregion
 
+        /// <summary>
+        /// Base class of a request payload type.
+        /// </summary>
+        public abstract class RequestPayloadType{
+            /// <summary>
+            /// Gets the content type of the request payload type.
+            /// </summary>
+            /// <returns> The string value of the content type. </returns>
+            public abstract string getContentType ();
 
-		public abstract class RequestPayloadType{
-
-			public abstract string getContentType ();
-			public abstract string getHttpContent(object HttpContent);
+            /// <summary>
+            /// Gets the Http content as string.
+            /// </summary>
+            /// <param name="HttpContent">Http content.</param>
+            /// <returns> The string value of the Http content. </returns>
+            public abstract string getHttpContent(object HttpContent);
 		}
 
-		public class JSONPayload : RequestPayloadType{
+        /// <summary>
+        /// The class for the JSON payload.
+        /// </summary>
+        public class JSONPayload : RequestPayloadType{
+            /// <summary>
+            /// Gets the content type of the JSON payload.
+            /// </summary>
+            /// <returns> The string value of the content type for the current payload. </returns>
 			public override string getContentType (){
 				return "application/json";
 
 			}
+
+            /// <summary>
+            /// Gets the Http content as string.
+            /// </summary>
+            /// <param name="HttpContent">Http content.</param>
+            /// <returns> The string value of the Http content for the current payload. </returns>
 			public override string getHttpContent(object HttpContent){
 				return JsonConvert.SerializeObject(HttpContent);
 			}
 		}
 
-		public class URLEncodedPayload : RequestPayloadType{
-			public override string getContentType (){
+        /// <summary>
+        /// The class for the URL encoded payload.
+        /// </summary>
+        public class URLEncodedPayload : RequestPayloadType{
+            /// <summary>
+            /// Gets the content type of the URL encoded payload.
+            /// </summary>
+            /// <returns> The string value of the content type for the current payload. </returns>
+            public override string getContentType (){
 				return "application/x-www-form-urlencoded";
 			}
-			public override string getHttpContent(object HttpContent){
+
+            /// <summary>
+            /// Gets the Http content as string.
+            /// </summary>
+            /// <param name="HttpContent">Http content.</param>
+            /// <returns> The string value of the Http content for the current payload. </returns>
+            public override string getHttpContent(object HttpContent){
 				var dict = HttpContent as Dictionary<string, string>;
 
 				return String.Join("&", dict.Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), "=", Uri.EscapeDataString(kvp.Value.ToString()))));
-
 			}
 		}
     }
