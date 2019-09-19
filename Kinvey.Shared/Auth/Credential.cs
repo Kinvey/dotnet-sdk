@@ -109,7 +109,7 @@ namespace Kinvey
 		}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KinveyXamarin.Credential"/> class.
+        /// Initializes a new instance of the <see cref="Credential"/> class.
         /// </summary>
         /// <param name="userId">User ID</param>
         /// <param name="accessToken">Access token</param>
