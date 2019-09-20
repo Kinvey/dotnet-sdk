@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -20,12 +20,13 @@ namespace Kinvey
 	/// </summary>
     public interface ICredentialStore : IDisposable
     {
-		/// <summary>
-		/// Load the specified userId.
-		/// </summary>
-		/// <param name="userId">User identifier.</param>
-		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		Credential Load(string userId, string ssoGroupKey);
+        /// <summary>
+        /// Load the specified userId.
+        /// </summary>
+        /// <param name="userId">User identifier.</param>
+        /// <param name="ssoGroupKey">SSO Group Key.</param>
+        /// <returns>Credential object storing authentication information</returns>
+        Credential Load(string userId, string ssoGroupKey);
 
 		/// <summary>
 		/// Store the specified userId and credential.

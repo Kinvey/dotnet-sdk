@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -37,7 +37,7 @@ namespace Kinvey
 		public virtual Dictionary<string, string> Properties { get; private set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:NativeCredential"/> class.
+		/// Initializes a new instance of the <see cref="NativeCredential"/> class.
 		/// </summary>
 		public NativeCredential()
 			: this(string.Empty, null)
@@ -45,7 +45,7 @@ namespace Kinvey
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:NativeCredential"/> class.
+		/// Initializes a new instance of the <see cref="NativeCredential"/> class.
 		/// </summary>
 		/// <param name="username">Username.</param>
 		/// <param name="properties">Properties.</param>
@@ -55,10 +55,11 @@ namespace Kinvey
 			Properties = (properties == null) ? new Dictionary<string, string>() : new Dictionary<string, string>(properties);
 		}
 
-		/// <summary>
-		/// Serialize this instance.
-		/// </summary>
-		public string Serialize()
+        /// <summary>
+        /// Serializes this instance.
+        /// </summary>
+        /// <returns>A <see cref="string"/> that represents the current <see cref="NativeCredential"/>.</returns>
+        public string Serialize()
 		{
 			var sb = new StringBuilder();
 
@@ -77,11 +78,12 @@ namespace Kinvey
 			return sb.ToString();
 		}
 
-		/// <summary>
-		/// Deserialize the specified serializedNativeCredential.
-		/// </summary>
-		/// <param name="serializedNativeCredential">Serialized native credential.</param>
-		static public NativeCredential Deserialize(string serializedNativeCredential)
+        /// <summary>
+        /// Deserialize the specified serializedNativeCredential.
+        /// </summary>
+        /// <param name="serializedNativeCredential">Serialized native credential.</param>
+        /// <returns> Native credential </returns>
+        static public NativeCredential Deserialize(string serializedNativeCredential)
 		{
 			var nativeCredential = new NativeCredential();
 
@@ -111,9 +113,9 @@ namespace Kinvey
 		}
 
 		/// <summary>
-		/// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:NativeCredential"/>.
+		/// Returns a <see cref="string"/> that represents the current <see cref="NativeCredential"/>.
 		/// </summary>
-		/// <returns>A <see cref="T:System.String"/> that represents the current <see cref="T:NativeCredential"/>.</returns>
+		/// <returns>A <see cref="string"/> that represents the current <see cref="NativeCredential"/>.</returns>
 		public override string ToString()
 		{
 			return Serialize();

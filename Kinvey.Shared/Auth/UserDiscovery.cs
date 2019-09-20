@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -20,35 +20,41 @@ namespace Kinvey
 	/// </summary>
 	public class UserDiscovery
 	{
-		/// <summary>
-		/// The _id parameter used for a UserDiscovery lookup
-		/// </summary>
-		public string ID { get; set; }
+        /// <summary>
+        /// The _id parameter used for a UserDiscovery lookup
+        /// </summary>
+        /// <value>The ID property gets/sets the value of the string field, _iD.</value>
+        public string ID { get; set; }
 
-		/// <summary>
-		/// The username parameter used for a UserDiscovery lookup
-		/// </summary>
-		public string Username { get; set; }
+        /// <summary>
+        /// The username parameter used for a UserDiscovery lookup
+        /// </summary>
+        /// <value>The Username property gets/sets the value of the string field, _username.</value>
+        public string Username { get; set; }
 
-		/// <summary>
-		/// The first_name parameter used for a UserDiscovery lookup
-		/// </summary>
-		public string FirstName { get; set; }
+        /// <summary>
+        /// The first_name parameter used for a UserDiscovery lookup
+        /// </summary>
+        /// <value>The FirstName property gets/sets the value of the string field, _firstName.</value>
+        public string FirstName { get; set; }
 
-		/// <summary>
-		/// The last_name parameter used for a UserDiscovery lookup
-		/// </summary>
-		public string LastName { get; set; }
+        /// <summary>
+        /// The last_name parameter used for a UserDiscovery lookup
+        /// </summary>
+        /// <value>The LastName property gets/sets the value of the string field, _lastName.</value>
+        public string LastName { get; set; }
 
-		/// <summary>
-		/// The email parameter used for a UserDiscovery lookup
-		/// </summary>
-		public string Email { get; set; }
+        /// <summary>
+        /// The email parameter used for a UserDiscovery lookup
+        /// </summary>
+        /// <value>The Email property gets/sets the value of the string field, _email.</value>
+        public string Email { get; set; }
 
-		/// <summary>
-		/// The _socialidentity.facebook.id parameter used for a UserDiscovery lookup
-		/// </summary>
-		public string FacebookID { get; set; }
+        /// <summary>
+        /// The _socialidentity.facebook.id parameter used for a UserDiscovery lookup
+        /// </summary>
+        /// <value>The FacebookID property gets/sets the value of the string field, _facebookID.</value>
+        public string FacebookID { get; set; }
 
 		/// <summary>
 		/// Used to see the criteria set for a UserDiscovery lookup

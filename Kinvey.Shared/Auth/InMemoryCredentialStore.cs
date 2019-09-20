@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -14,8 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kinvey
 {
@@ -29,12 +27,13 @@ namespace Kinvey
 		/// </summary>
         private Dictionary<string, Credential> store = new Dictionary<string, Credential>();
 
-		/// <summary>
-		/// Load the specified userId.
-		/// </summary>
-		/// <param name="userId">User._id.</param>
-		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		public Credential Load(string userId, string ssoGroupKey)
+        /// <summary>
+        /// Load the specified userId.
+        /// </summary>
+        /// <param name="userId">User._id.</param>
+        /// <param name="ssoGroupKey">SSO Group Key.</param>
+        /// <returns> Credential object storing authentication information </returns>
+        public Credential Load(string userId, string ssoGroupKey)
         {
             return store.ContainsKey(userId) ? store[userId] : null;
         }
@@ -67,6 +66,11 @@ namespace Kinvey
             }
         }
 
+        /// <summary>
+        /// Gets stored credential.
+        /// </summary>
+        /// <param name="ssoGroupKey">SSO Group Key.</param>
+        /// <returns> Credential object storing authentication information </returns>
 		public Credential GetStoredCredential (string ssoGroupKey){
 			return store.FirstOrDefault ().Value;
 		}
@@ -74,6 +78,10 @@ namespace Kinvey
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
 
+        /// <summary>
+        /// Performs all object cleanup.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -100,12 +108,17 @@ namespace Kinvey
             }
         }
 
+        /// <summary>
+        /// Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
+        /// </summary>
         ~InMemoryCredentialStore() {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs all object cleanup, so the garbage collector no longer needs to call the objects Object.Finalize override.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
