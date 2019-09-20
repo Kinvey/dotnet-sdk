@@ -43,7 +43,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for subscribing on Kinvey Live services.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="deviceID">Id of the device.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -68,7 +68,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for unsubscribing from Kinvey Live services.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
         public NetworkRequest<T> BuildUnsubscribeRequest<T>(string collectionName)
@@ -87,7 +87,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for getting an entity.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="entityID">Id of the entity.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -108,7 +108,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for getting entities.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="queryString">Query string.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -135,7 +135,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for getting a count of entities.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="queryString">Query string.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -161,7 +161,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for getting entities using aggregate functions.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="reduceFunction">Aggregate function type.</param>
         /// <param name="query">Query string.</param>
         /// <param name="groupField">The field for grouping.</param>
@@ -247,7 +247,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for creating an entity.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="entity">The entity.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -267,7 +267,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for multi creating of entities.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="entities">The list of entities.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -288,7 +288,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for updating an entity.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="entity">The entity.</param>
         /// <param name="entityID">Id of the entity.</param>
         /// <returns>All data of the built network request.</returns>
@@ -310,7 +310,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for deleting an entity.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="entityID">Id of the entity.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -331,7 +331,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for deleting entities.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="queryString">Query string.</param>
         /// <returns>All data of the built network request.</returns>
         /// <typeparam name="T">The type of the entity.</typeparam>
@@ -353,7 +353,7 @@ namespace Kinvey
         /// <summary>
         /// Builds a network request for getting deltaset.
         /// </summary>
-        /// <param name="collectionName">Name of the collection.</param>
+        /// <param name="collectionName">The name of the collection.</param>
         /// <param name="lastRequestTime">The last time of the request.</param>
         /// <param name="query">String query.</param>
         /// <returns>All data of the built network request.</returns>

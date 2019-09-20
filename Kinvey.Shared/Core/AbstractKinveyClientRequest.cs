@@ -27,7 +27,7 @@ namespace Kinvey
     /// <summary>
     /// This is a client request to be sent to Kinvey
     /// </summary>
-    /// <typeparam name="T">The type of Kinvey client request.</typeparam>
+    /// <typeparam name="T">The type of Kinvey client request and response.</typeparam>
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class AbstractKinveyClientRequest<T>
     {
@@ -111,22 +111,22 @@ namespace Kinvey
 		/// The type of payload
 		/// </summary>
 		/// <value>The type of the payload.</value>
-		public RequestPayloadType PayloadType { get; set;} 
+		public RequestPayloadType PayloadType { get; set;}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="requestMethod">Request method.</param>
-		/// <param name="uriTemplate">URI template.</param>
-		/// <param name="httpContent">Http content.</param>
-		/// <param name="uriParameters">URI parameters.</param>
-		protected AbstractKinveyClientRequest (AbstractClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters) :
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractKinveyClientRequest<T>"/> class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="requestMethod">Request method.</param>
+        /// <param name="uriTemplate">URI template.</param>
+        /// <param name="httpContent">Http content.</param>
+        /// <param name="uriParameters">URI parameters.</param>
+        protected AbstractKinveyClientRequest (AbstractClient client, string requestMethod, string uriTemplate, Object httpContent, Dictionary<string, string> uriParameters) :
 		this (client, client.BaseUrl, requestMethod, uriTemplate, httpContent, uriParameters)
 		{}
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClientRequest`1"/> class.
+        /// Initializes a new instance of the <see cref="AbstractKinveyClientRequest<T>"/> class.
         /// </summary>
         /// <param name="client">Client.</param>
         /// <param name="baseURL">Base URL.</param>
@@ -146,7 +146,6 @@ namespace Kinvey
 			this.baseURL = baseURL;
 			this.PayloadType = new JSONPayload();
 			this.OverrideRedirect = false;
-
         }
 
 		/// <summary>
@@ -562,9 +561,9 @@ namespace Kinvey
 
 
         /// <summary>
-        /// Execute this request.
+        /// Executes this request.
         /// </summary>
-        /// <returns> The type of Kinvey client request. </returns>
+        /// <returns> The type of response. </returns>
         public virtual T Execute()
         {
             var response = ExecuteUnparsed();
@@ -613,9 +612,9 @@ namespace Kinvey
         }
 
         /// <summary>
-        /// Executes this request asynchronously .
+        /// Executes this request asynchronously.
         /// </summary>
-        /// <returns> The async task with the type of the request. </returns>
+        /// <returns> The async task with the type of the response. </returns>
 		public virtual async Task<T> ExecuteAsync(){
 			var response = await ExecuteUnparsedAsync();
 
@@ -746,7 +745,7 @@ namespace Kinvey
         /// Redirects the request to a new location.
         /// </summary>
         /// <param name="newLocation">New location</param>
-        /// <returns> The async task with the type of the request. </returns>
+        /// <returns> The async task with the type of the response. </returns>
         public virtual async Task<T> onRedirectAsync(String newLocation)
 		{
 			Logger.Log ("Override Redirect in response is expected, but not implemented!");  

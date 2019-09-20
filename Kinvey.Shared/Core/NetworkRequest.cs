@@ -18,7 +18,7 @@ namespace Kinvey
     /// <summary>
     /// The class for creating network requests.
     /// </summary>
-    /// <typeparam name="T">The object type for the network request and response.</typeparam>
+    /// <typeparam name="T">The object type of the network request and response.</typeparam>
     public class NetworkRequest <T> : AbstractKinveyClientRequest <T>
 	{
         /// <summary>
