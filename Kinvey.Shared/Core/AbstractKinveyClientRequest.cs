@@ -561,7 +561,7 @@ namespace Kinvey
 
 
         /// <summary>
-        /// Executes this request.
+        /// Executes this request synchronously.
         /// </summary>
         /// <returns> The type of response. </returns>
         public virtual T Execute()
