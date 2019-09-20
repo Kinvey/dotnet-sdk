@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,9 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Kinvey
@@ -36,7 +34,7 @@ namespace Kinvey
 		public KinveyAuthRequest.Builder AuthRequestBuilder { get; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:KinveyXamarin.UserRequestFactory"/> class.
+		/// Initializes a new instance of the <see cref="UserRequestFactory"/> class.
 		/// </summary>
 		/// <param name="client">The Kinvey client object associated with this user request factory.</param>
 		public UserRequestFactory(AbstractClient client)

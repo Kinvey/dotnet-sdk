@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
 using System.Net;
 
 namespace Kinvey
@@ -75,18 +74,22 @@ namespace Kinvey
 		/// </summary>
         private static KinveyHeaders kinveyHeaders = new KinveyHeaders(Client.SharedClient.DevicePlatform);
 
-		public KinveyAuthRequest(){}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyAuthRequest"/> class.
+        /// </summary>
+        public KinveyAuthRequest(){}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="auth">authenticator to use.</param>
-		/// <param name="appKey">App key.</param>
-		/// <param name="username">Username.</param>
-		/// <param name="password">Password.</param>
-		/// <param name="user">User.</param>
-		/// <param name="create">If set to <c>true</c> create.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyAuthRequest"/> class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="auth">authenticator to use.</param>
+        /// <param name="appKey">App key.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="customFieldsAndValues">Custom fields and values.</param>
+        /// <param name="user">User.</param>
+        /// <param name="create">If set to <c>true</c> create.</param>
         public KinveyAuthRequest(AbstractKinveyClient client, IAuthenticator auth, string appKey, string username, string password, Dictionary<string, JToken> customFieldsAndValues, User user, bool create)
 			
 		{
@@ -127,7 +130,7 @@ namespace Kinvey
         }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest"/> class.
+		/// Initializes a new instance of the <see cref="KinveyAuthRequest"/> class.
 		/// </summary>
 		/// <param name="client">Client.</param>
 		/// <param name="baseUrl">Base URL.</param>
@@ -147,6 +150,9 @@ namespace Kinvey
 			this.uriTemplateParameters.Add("appKey", appKey);
 		}
 
+        /// <summary>
+		/// Builds payload for request.
+		/// </summary>
 		public void buildRequestPayload()
 		{
 			if (identity.provider.kinveyAuth.accessToken != null) {
@@ -314,15 +320,15 @@ namespace Kinvey
 
 			private ThirdPartyIdentity identity;
 
-			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest+Builder"/> class.
-			/// </summary>
-			/// <param name="transport">Transport.</param>
-			/// <param name="baseUrl">Base URL.</param>
-			/// <param name="appKey">App key.</param>
-			/// <param name="appSecret">App secret.</param>
-			/// <param name="user">User.</param>
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, User user = null)
+            /// <summary>
+            /// Initializes a new instance of the class.
+            /// </summary>
+            /// <param name="transport">Transport.</param>
+            /// <param name="baseUrl">Base URL.</param>
+            /// <param name="appKey">App key.</param>
+            /// <param name="appSecret">App secret.</param>
+            /// <param name="user">[optional] User.</param>
+            public Builder(AbstractKinveyClient transport, string appKey, string appSecret, User user = null)
             {
                 this.client = transport;
                 this.appKeyAuthentication = new HttpBasicAuthenticator(appKey, appSecret);
@@ -330,17 +336,17 @@ namespace Kinvey
                 this.user = user;
             }
 
-			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthRequest+Builder"/> class.
-			/// </summary>
-			/// <param name="transport">Transport.</param>
-			/// <param name="baseUrl">Base URL.</param>
-			/// <param name="appKey">App key.</param>
-			/// <param name="appSecret">App secret.</param>
-			/// <param name="username">Username.</param>
-			/// <param name="password">Password.</param>
-			/// <param name="user">User.</param>
-			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, User user = null)
+            /// <summary>
+            /// Initializes a new instance of the class.
+            /// </summary>
+            /// <param name="transport">Transport.</param>
+            /// <param name="appKey">App key.</param>
+            /// <param name="appSecret">App secret.</param>
+            /// <param name="username">Username.</param>
+            /// <param name="password">Password.</param>
+            /// <param name="customFieldsAndValues">[optional] Custom fields and values.</param>
+            /// <param name="user">[optional] User.</param>
+            public Builder(AbstractKinveyClient transport, string appKey, string appSecret, string username, string password, Dictionary<string, JToken> customFieldsAndValues = null, User user = null)
                 : this(transport, appKey, appSecret, user)
             {
 				this.client = transport;
@@ -352,18 +358,24 @@ namespace Kinvey
 				this.user = user;
             }
 
-
+            /// <summary>
+            /// Initializes a new instance of the class.
+            /// </summary>
+            /// <param name="transport">Transport.</param>
+            /// <param name="appKey">App key.</param>
+            /// <param name="appSecret">App secret.</param>
+            /// <param name="identity">Third party identity.</param>
+            /// <param name="user">[optional] Kinvey user.</param>
 			public Builder(AbstractKinveyClient transport, string appKey, string appSecret, ThirdPartyIdentity identity, User user = null)
 				: this(transport, appKey, appSecret, user)
 			{
 				this.identity = identity;
-
 			}
 
-
-			/// <summary>
-			/// Build the Auth Request.
-			/// </summary>
+            /// <summary>
+            /// Build the Auth Request.
+            /// </summary>
+            /// <returns>Built Kinvey auth request.</returns>
             public KinveyAuthRequest build()
             {
 				if (identity == null)
@@ -415,6 +427,10 @@ namespace Kinvey
                 set { this.create = value; }
             }
 
+            /// <summary>
+			/// The CustomFieldsAndValues property represents custom fields and values for Kinvey auth request.
+			/// </summary>
+			/// <value>The CustomFieldsAndValues property gets/sets the value of the Dictionary field, customFieldsAndValues.</value>
 			public Dictionary<string, JToken> CustomFieldsAndValues
 			{
 				get { return customFieldsAndValues; }
@@ -440,7 +456,11 @@ namespace Kinvey
                 get { return this.client; }
             }
 
-			public ThirdPartyIdentity Identity
+            /// <summary>
+            /// The Identity property represents the third party identity.
+            /// </summary>
+            /// <value>The Identity property gets/sets the value of the ThirdPartyIdentity field, identity.</value>
+            public ThirdPartyIdentity Identity
 			{
 				get { return this.identity; }
 				set { this.identity = value;}

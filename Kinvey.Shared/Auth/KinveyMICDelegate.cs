@@ -15,11 +15,16 @@ using System;
 
 namespace Kinvey
 {
-	public class KinveyMICDelegate<T> : KinveyDelegate<T>
+    /// <summary>
+    /// The class is used for the callback pattern when MIC request has been executed.
+    /// </summary>
+    /// <typeparam name="T">The type of Kinvey MIC delegate.</typeparam>
+    public class KinveyMICDelegate<T> : KinveyDelegate<T>
 	{
-		/// <summary>
-		/// This Action is executed when the MIC login page is ready to be rendered.
-		/// </summary>
-		public Action<string> onReadyToRender;
+        /// <summary>
+        /// This Action is executed when the MIC login page is ready to be rendered.
+        /// </summary>
+        /// <value>The parameter of the action.</value>
+        public Action<string> onReadyToRender;
 	}
 }

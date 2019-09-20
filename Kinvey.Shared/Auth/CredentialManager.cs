@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -10,12 +10,6 @@
 // KINVEY, INC and is subject to applicable licensing agreements.
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kinvey
 {
@@ -35,7 +29,7 @@ namespace Kinvey
         private CredentialManager() { }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.CredentialManager"/> class with a CredentialStore implementation
+		/// Initializes a new instance of the <see cref="CredentialManager"/> class with a CredentialStore implementation
 		/// </summary>
 		/// <param name="store">Store.</param>
         public CredentialManager(ICredentialStore store)
@@ -69,14 +63,15 @@ namespace Kinvey
             }
         }
 
-		/// <summary>
-		/// Creates a new Credential object from a Kinvey user login/create request, and saves the it in the Credential Store.
-		/// </summary>
-		/// <returns>The and store credential.</returns>
-		/// <param name="response">Response.</param>
-		/// <param name="userId">User _id.</param>
-		/// <param name="ssoGroupKey">SSO Group Key.</param>
-		public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId, string ssoGroupKey, string deviceID)
+        /// <summary>
+        /// Creates a new Credential object from a Kinvey user login/create request, and saves the it in the Credential Store.
+        /// </summary>
+        /// <returns>The store credential.</returns>
+        /// <param name="response">Response.</param>
+        /// <param name="userId">User _id.</param>
+        /// <param name="ssoGroupKey">SSO Group Key.</param>
+        /// <param name="deviceID">Device Id.</param>
+        public Credential CreateAndStoreCredential(KinveyAuthResponse response, string userId, string ssoGroupKey, string deviceID)
         {
             Credential newCredential = Credential.From(response);
 			newCredential.DeviceID = deviceID;
