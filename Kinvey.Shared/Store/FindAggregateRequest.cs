@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -14,36 +14,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Find request built in order to apply grouping/aggregation functions to entities within a <see cref="KinveyXamarin.DataStore{T}"/>
-	/// </summary>
-	public class FindAggregateRequest<T> : ReadRequest<T, List<GroupAggregationResults>>
+    /// <summary>
+    /// Find request built in order to apply grouping/aggregation functions to entities within a <see cref="DataStore{T}"/>
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
+    public class FindAggregateRequest<T> : ReadRequest<T, List<GroupAggregationResults>>
 	{
 		KinveyDelegate<List<GroupAggregationResults>> cacheDelegate;
 		EnumReduceFunction reduceFunction;
 		string groupField;
 		string aggregateField;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:KinveyXamarin.FindAggregateRequest`1"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="collection">Collection.</param>
-		/// <param name="reduceFunction">Reduce function.</param>
-		/// <param name="cache">Cache.</param>
-		/// <param name="policy"> The <see cref="ReadPolicy"/> to be used for this request.</param>
-		/// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
-		/// <param name="cacheDelegate">Cache delegate.</param>
-		/// <param name="query">[optional] Query used to filter the results that are to be aggregated.</param>
-		/// <param name="groupField">Property name to be used for grouping.</param>
-		/// <param name="aggregateField">Property name to be used for aggregation.</param>
-		public FindAggregateRequest(AbstractClient client,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindAggregateRequest{T}"/> class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="collection">Collection.</param>
+        /// <param name="reduceFunction">Reduce function.</param>
+        /// <param name="cache">Cache.</param>
+        /// <param name="policy"> The <see cref="ReadPolicy"/> to be used for this request.</param>
+        /// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
+        /// <param name="cacheDelegate">Cache delegate.</param>
+        /// <param name="query">Query used to filter the results that are to be aggregated.</param>
+        /// <param name="groupField">Property name to be used for grouping.</param>
+        /// <param name="aggregateField">Property name to be used for aggregation.</param>
+        public FindAggregateRequest(AbstractClient client,
 		                            string collection,
 		                            EnumReduceFunction reduceFunction,
 		                            ICache<T> cache,
@@ -61,11 +61,11 @@ namespace Kinvey
 			this.aggregateField = aggregateField;
 		}
 
-		/// <summary>
-		/// Executes the request asynchronously.
-		/// </summary>
-		/// <returns>The async.</returns>
-		public override async Task<List<GroupAggregationResults>> ExecuteAsync()
+        /// <summary>
+        /// Executes the request asynchronously.
+        /// </summary>
+        /// <returns> The async task with the request result.</returns>
+        public override async Task<List<GroupAggregationResults>> ExecuteAsync()
 		{
 			List<GroupAggregationResults> aggregateResult = new List<GroupAggregationResults>();
 
@@ -123,7 +123,11 @@ namespace Kinvey
 			return aggregateResult;
 		}
 
-		public override async Task<bool> Cancel()
+        /// <summary>
+        /// Communicates the request for cancellation.
+        /// </summary>
+        /// <returns>The async task with the boolean result.</returns>
+        public override async Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
 		}

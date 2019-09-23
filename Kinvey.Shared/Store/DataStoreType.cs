@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -32,25 +32,29 @@ namespace Kinvey
 		/// <value>The write policy.</value>
 		public WritePolicy WritePolicy { get; }
 
-		/// <summary>
-		/// The SYNC store.
-		/// </summary>
-		public static readonly DataStoreType SYNC = new DataStoreType(ReadPolicy.FORCE_LOCAL, WritePolicy.FORCE_LOCAL);
+        /// <summary>
+        /// The SYNC store.
+        /// </summary>
+        /// <value>The value of <see cref="DataStoreType"/>.</value>
+        public static readonly DataStoreType SYNC = new DataStoreType(ReadPolicy.FORCE_LOCAL, WritePolicy.FORCE_LOCAL);
 
         /// <summary>
         /// The CACHE store.
         /// </summary>
+        /// <value>The value of <see cref="DataStoreType"/>.</value>
         [Obsolete("This field has been deprecated.  Please use AUTO instead.")]
         public static readonly DataStoreType CACHE = new DataStoreType (ReadPolicy.BOTH, WritePolicy.NETWORK_THEN_LOCAL);
 
-		/// <summary>
-		/// The NETWORK store.
-		/// </summary>
-		public static readonly DataStoreType NETWORK = new DataStoreType (ReadPolicy.FORCE_NETWORK, WritePolicy.FORCE_NETWORK);
+        /// <summary>
+        /// The NETWORK store.
+        /// </summary>
+        /// <value>The value of <see cref="DataStoreType"/>.</value>
+        public static readonly DataStoreType NETWORK = new DataStoreType (ReadPolicy.FORCE_NETWORK, WritePolicy.FORCE_NETWORK);
 
         /// <summary>
 		/// The AUTO store.
 		/// </summary>
+        /// <value>The value of <see cref="DataStoreType"/>.</value>
 		public static readonly DataStoreType AUTO = new DataStoreType(ReadPolicy.NETWORK_OTHERWISE_LOCAL, WritePolicy.LOCAL_THEN_NETWORK);
 
         DataStoreType (ReadPolicy readPolicy, WritePolicy writePolicy){

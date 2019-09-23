@@ -1,4 +1,4 @@
-// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -21,11 +21,12 @@ using Remotion.Linq.Parsing.Structure;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Each DataStore in your application represents a collection on your backend. The DataStore class manages the access of data between the Kinvey backend and the app.
-	/// The DataStore provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
-	/// </summary>
-	public class DataStore<T> : KinveyQueryable<T>  where T : class, new()
+    /// <summary>
+    /// Each DataStore in your application represents a collection on your backend. The DataStore class manages the access of data between the Kinvey backend and the app.
+    /// The DataStore provides simple CRUD operations on data, as well as powerful querying and synchronization APIs.
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
+    public class DataStore<T> : KinveyQueryable<T>  where T : class, new()
 	{
 		#region Member variables
 
@@ -49,6 +50,10 @@ namespace Kinvey
 		/// <value><c>true</c> if delta set fetching enabled; otherwise, <c>false</c>.</value>
 		public bool DeltaSetFetchingEnabled { get; set; }
 
+        /// <summary>
+		/// Indicates whether auto pagination is enabled on this datastore, defaulted to false.
+		/// </summary>
+		/// <value><c>true</c> if  auto pagination enabled; otherwise, <c>false</c>.</value>
 		public bool AutoPagination { get; set; }
 		/// <summary>
 		/// Represents the name of the collection.
@@ -92,7 +97,7 @@ namespace Kinvey
 		/// <summary>
 		/// Sets the custom request properties.
 		/// </summary>
-		/// <param name="customheaders">Customheaders.</param>
+		/// <param name="customheaders">Custom headers.</param>
 		public void SetCustomRequestProperties (JObject customheaders)
 		{
 			this.customRequestProperties = customheaders;
@@ -144,37 +149,38 @@ namespace Kinvey
 
         #region Public interface
         /// <summary>
-        /// Gets an instance of the <see cref="KinveyXamarin.DataStore{T}"/>.
+        /// Gets an instance of the <see cref="DataStore{T}"/>.
         /// </summary>
         /// <returns>The DataStore instance.</returns>
         /// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
-        /// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <see cref="KinveyXamarin.Client.SharedClient"/> is used.</param>
+        /// <param name="client">[optional] Kinvey Client used by this DataStore. If the client is not specified, the <see cref="Client.SharedClient"/> is used.</param>
         [Obsolete("This method has been deprecated.  Please use Collection( collectionName:, type:, client: ) instead.")]
         public static DataStore<T> Collection(string collectionName, AbstractClient client = null)
 		{
 			return new DataStore<T>(DataStoreType.CACHE, collectionName, client);
 		}
 
-		/// <summary>
-		/// Gets an instance of the <see cref="KinveyXamarin.DataStore{T}"/>.
-		/// </summary>
-		/// <returns>The DataStore instance.</returns>
-		/// <param name="type">The <see cref="KinveyXamarin.DataStoreType"/> of this DataStore instance</param>
-		/// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
-		/// <param name="client">Kinvey Client used by this DataStore (optional). If the client is not specified, the <see cref="KinveyXamarin.Client.SharedClient"/> is used.</param>
-		public static DataStore<T> Collection(string collectionName, DataStoreType type, AbstractClient client = null)
+        /// <summary>
+        /// Gets an instance of the <see cref="DataStore{T}"/>.
+        /// </summary>
+        /// <returns>The DataStore instance.</returns>
+        /// <param name="type">The <see cref="DataStoreType"/> of this DataStore instance</param>
+        /// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
+        /// <param name="client">[optional] Kinvey Client used by this DataStore. If the client is not specified, the <see cref="Client.SharedClient"/> is used.</param>
+        public static DataStore<T> Collection(string collectionName, DataStoreType type, AbstractClient client = null)
 		{
 			// TODO do we need to make this a singleton based on collection, store type and store ID?
 			return new DataStore<T> (type, collectionName, client);
 		}
 
-		#region Realtime
+        #region Realtime
 
-		/// <summary>
-		/// Subscribe the specified callback.
-		/// </summary>
-		/// <param name="realtimeHandler">Delegate used to forward realtime messages.</param>
-		public async Task<bool> Subscribe(KinveyDataStoreDelegate<T> realtimeHandler)
+        /// <summary>
+        /// Subscribe the specified callback.
+        /// </summary>
+        /// <param name="realtimeHandler">Delegate used to forward realtime messages.</param>
+        /// <returns> The async task with the boolean result.If <c>true</c> then subscribing is correct, otherwise <c>false</c>. </returns>
+        public async Task<bool> Subscribe(KinveyDataStoreDelegate<T> realtimeHandler)
 		{
 			bool success = false;
 
@@ -203,10 +209,11 @@ namespace Kinvey
 			return success;
 		}
 
-		/// <summary>
-		/// Unsubscribe this instance.
-		/// </summary>
-		public async Task Unsubscribe()
+        /// <summary>
+        /// Unsubscribe this instance.
+        /// </summary>
+        /// <returns> The async task. </returns>
+        public async Task Unsubscribe()
 		{
 			RealtimeRouter.Instance.UnsubscribeCollection(CollectionName);
 			RealtimeDelegate = null;
@@ -217,7 +224,7 @@ namespace Kinvey
 		/// <summary>
 		/// Performs a find operation on the network the with mongo query async.
 		/// </summary>
-		/// <returns>The list of entities that match the query.> </returns>
+		/// <returns>The list of entities that match the query. </returns>
 		/// <param name="queryString">Query string in MongoDB syntax.</param>
 		public async Task<List<T>> FindWithMongoQueryAsync(string queryString)
 		{
@@ -225,30 +232,32 @@ namespace Kinvey
 			return await networkFactory.buildGetRequest<T>(this.CollectionName, queryString).ExecuteAsync();
 		}
 
-		/// <summary>
-		/// Perfoms a find operation, with an optional query filter.
-		/// </summary>
-		/// <param name="query">[optional] LINQ-style query that can be used to filter the search results</param>
-		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
-		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
-		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<T>> FindAsync(IQueryable<object> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Perfoms a find operation, with an optional query filter.
+        /// </summary>
+        /// <param name="query">[optional] LINQ-style query that can be used to filter the search results</param>
+        /// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
+        /// network results being returned.  This is only valid if the <see cref="DataStoreType"/> is 
+        /// <see cref="DataStoreType.CACHE"/></param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        /// <returns> The async task with the list of entities. </returns>
+        public async Task<List<T>> FindAsync(IQueryable<object> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
 			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync();
 		}
 
-		/// <summary>
-		/// Perfoms a find operation, based on a given Kinvey ID.
-		/// </summary>
-		/// <param name="entityID">The ID of the entity to be retrieved</param>
-		/// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
-		/// network results being returned.  This is only valid if the <see cref="KinveyXamarin.DataStoreType"/> is 
-		/// <see cref="KinveyXamarin.DataStoreType.CACHE"/></param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<T> FindByIDAsync(string entityID, KinveyDelegate<T> cacheResult = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Perfoms a find operation, based on a given Kinvey ID.
+        /// </summary>
+        /// <param name="entityID">The ID of the entity to be retrieved.</param>
+        /// <param name="cacheResult">[optional] The intermediate cache results, returned via delegate prior to the 
+        /// network results being returned.  This is only valid if the <see cref="DataStoreType"/> is 
+        /// <see cref="DataStoreType.CACHE"/>.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        /// <returns> The async task with an entity. </returns>
+        public async Task<T> FindByIDAsync(string entityID, KinveyDelegate<T> cacheResult = null, CancellationToken ct = default(CancellationToken))
 		{
 			List<string> listIDs = new List<string>();
 
@@ -273,30 +282,35 @@ namespace Kinvey
 			return results.FirstOrDefault();
 		}
 
-		#region Grouping/Aggregate Functions
+        #region Grouping/Aggregate Functions
 
-		/// <summary>
-		/// Gets a count of all the entities in a collection
-		/// </summary>
-		/// <returns>The async task which returns the count.</returns>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<uint> GetCountAsync(IQueryable<object> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Gets a count of all the entities in a collection
+        /// </summary>
+        /// <returns>The async task which returns the count.</returns>
+        /// <param name="query">[optional] LINQ-style query that can be used to filter the search results.</param>
+        /// <param name="cacheCount">[optional] The intermediate cache results, returned via delegate prior to the 
+		/// network results being returned.  This is only valid if the <see cref="DataStoreType"/> is 
+		/// <see cref="DataStoreType.CACHE"/></param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<uint> GetCountAsync(IQueryable<object> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
 		{
 			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
 			ct.ThrowIfCancellationRequested();
 			return await getCountRequest.ExecuteAsync();
 		}
 
-		/// <summary>
-		/// Gets the aggregate value, by grouping, of the values in the given entity field.
-		/// </summary>
-		/// <returns>The sum of the values of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
-		/// <param name="groupField">Property name of field to be used in grouping.</param>
-		/// <param name="aggregateField">Property name of field to be used in aggregation.  This is not necessary when using the <see cref="KinveyXamarin.EnumReduceFunction.REDUCE_FUNCTION_COUNT"/> method.</param>
-		/// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
-		/// <param name="cacheDelegate">Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<object> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Gets the aggregate value, by grouping, of the values in the given entity field.
+        /// </summary>
+        /// <returns>The sum of the values of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
+        /// <param name="reduceFunction">The value from <see cref="EnumReduceFunction"/>.</param>
+        /// <param name="groupField">[optional] Property name of field to be used in grouping.</param>
+        /// <param name="aggregateField">[optional] Property name of field to be used in aggregation.  This is not necessary when using the <see cref="EnumReduceFunction.REDUCE_FUNCTION_COUNT"/> method.</param>
+        /// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
+        /// <param name="cacheDelegate">[optional] Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<object> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
 		{
 			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
 			ct.ThrowIfCancellationRequested();
@@ -321,7 +335,7 @@ namespace Kinvey
         /// <summary>
 		/// Saves specified entities to a Kinvey collection.
 		/// </summary>
-		/// <returns>An async task with the <see cref="Kinvey.KinveyMultiInsertResponse{T}"/> result.</returns>
+		/// <returns>An async task with the <see cref="KinveyMultiInsertResponse{T}"/> result.</returns>
 		/// <param name="entities">Entities to save.</param>
 		/// <param name="ct">[optional] CancellationToken used to cancel a request.</param>
         public async Task<KinveyMultiInsertResponse<T>> SaveAsync(IList<T> entities, CancellationToken ct = default(CancellationToken))
@@ -375,10 +389,12 @@ namespace Kinvey
         /// <summary>
         /// Pulls data from the backend to local storage
         ///
-        /// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
+        /// This API is not supported on a DataStore of type <see cref="DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
         /// </summary>
         /// <returns>Entities that were pulled from the backend.</returns>
-        /// <param name="query">Optional Query parameter.</param>
+        /// <param name="query">[optional] Query parameter.</param>
+        /// <param name="count">[optional] The needed count of entities.</param>
+        /// <param name="isInitial">[optional] If <c>true</c> then entities received from backend are expected to be not existing in Cache, otherwise <c>false</c>.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
         public async Task<PullDataStoreResponse<T>> PullAsync(IQueryable<object> query = null, int count = -1, bool isInitial = false, CancellationToken ct = default(CancellationToken))
 		{
@@ -407,7 +423,7 @@ namespace Kinvey
 
 		/// <summary>
 		/// Push local data in the datastore to the backend.
-		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
+		/// This API is not supported on a DataStore of type <see cref="DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
 		/// </summary>
 		/// <returns>PushDataStoreResponse indicating errors, if any.</returns>
 		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
@@ -423,17 +439,17 @@ namespace Kinvey
 			return await pushRequest.ExecuteAsync();
 		}
 
-		/// <summary>
-		/// Kicks off a bi-directional synchronization of data between the library and the backend. 
-		/// First, the library calls push to send local changes to the backend. Subsequently, the library calls pull to fetch data in the collection from the backend and stores it on the device.
-		/// You can provide a query as a parameter to the sync API, to restrict the data that is pulled from the backend. The query does not affect what data gets pushed to the backend.
-		///
-		/// This API is not supported on a DataStore of type <see cref="KinveyXamarin.DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
-		/// </summary>
-		/// <returns>DataStoreResponse indicating errors, if any.</returns>
-		/// <param name="query">An optional query parameter that controls what gets pulled from the backend during a sync operation.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<SyncDataStoreResponse<T>> SyncAsync(IQueryable<object> query = null, CancellationToken ct = default(CancellationToken))
+        /// <summary>
+        /// Kicks off a bi-directional synchronization of data between the library and the backend. 
+        /// First, the library calls push to send local changes to the backend. Subsequently, the library calls pull to fetch data in the collection from the backend and stores it on the device.
+        /// You can provide a query as a parameter to the sync API, to restrict the data that is pulled from the backend. The query does not affect what data gets pushed to the backend.
+        ///
+        /// This API is not supported on a DataStore of type <see cref="DataStoreType.NETWORK"/>. Calling this method on a network data store will throw an exception.
+        /// </summary>
+        /// <returns>DataStoreResponse indicating errors, if any.</returns>
+        /// <param name="query">[optional] A query parameter that controls what gets pulled from the backend during a sync operation.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<SyncDataStoreResponse<T>> SyncAsync(IQueryable<object> query = null, CancellationToken ct = default(CancellationToken))
 		{
 			if (this.storeType == DataStoreType.NETWORK)
 			{
@@ -484,7 +500,7 @@ namespace Kinvey
 		/// Removes data from local storage. This does not affect the backend.
 		/// </summary>
 		/// <returns>Details of the clear operation, including the number of entities that were cleared.</returns>
-		/// <param name="query">Optional Query parameter.</param>
+		/// <param name="query">[optional] Query parameter.</param>
 		public KinveyDeleteResponse ClearCache(IQueryable<T> query = null)
 		{
             if (this.storeType == DataStoreType.NETWORK)
@@ -531,7 +547,7 @@ namespace Kinvey
 		/// Removes pending write operations from local storage. This prevents changes made on the client from being persisted on the backend.
 		/// </summary>
 		/// <returns>The number of pending operations that were purged.</returns>
-		/// <param name="query">Optional Query parameter.</param>
+		/// <param name="query">[optional] Query parameter.</param>
 		public int Purge(IQueryable<T> query = null)
 		{
             if (this.storeType == DataStoreType.NETWORK)

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -13,23 +13,40 @@
 
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq; 
 
 namespace Kinvey
 {
+    /// <summary>
+    /// Request built for use by a <see cref="DataStore{T}"/> to get count of entities.
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
 	public class GetCountRequest<T> : ReadRequest<T, uint>
 	{
 		private KinveyDelegate<uint> cacheDelegate;
 
+        /// <summary>
+		/// Initializes a new instance of the <see cref="GetCountRequest{T}"/> class.
+		/// </summary>
+		/// <param name="client">Client that the user is logged in.</param>
+		/// <param name="collection">Collection name.</param>
+		/// <param name="cache">Cache.</param>
+		/// <param name="policy">Policy.</param>
+		/// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
+		/// <param name="cacheDelegate">Cache delegate.</param>
+		/// <param name="query">Query.</param>
 		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<uint> cacheDelegate, IQueryable<object> query)
 			: base (client, collection, cache, query, policy, deltaSetFetchingEnabled)
 		{
 			this.cacheDelegate = cacheDelegate;
 		}
 
-		public override async Task<uint> ExecuteAsync()
+        /// <summary>
+        /// Executes the request asynchronously.
+        /// </summary>
+        /// <returns> The async task with the request result.</returns>
+        public override async Task<uint> ExecuteAsync()
 		{
 			uint countResult = default(uint);
 
@@ -87,6 +104,10 @@ namespace Kinvey
 			return countResult;
 		}
 
+        /// <summary>
+        /// Communicates the request for cancellation.
+        /// </summary>
+        /// <returns>The async task with the boolean result.</returns>
 		public override async Task<bool> Cancel ()
 		{
 			throw new KinveyException (EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");
