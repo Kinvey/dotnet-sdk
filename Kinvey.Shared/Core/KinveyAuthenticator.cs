@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,24 +11,25 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Kinvey
 {
+    /// <summary>
+    /// This interface defines the ability to authenticate.
+    /// </summary>
     public interface IAuthenticator
     {
+        /// <summary>
+        /// Authenticates a request.
+        /// </summary>
+        /// <param name="request">Http request message to be authenticated.</param>
         void Authenticate(HttpRequestMessage request);
     }
 
     /// <summary>
-    /// Authenticator for kinvey style authentication.
+    /// Authenticator for Kinvey style authentication.
     /// </summary>
     public class KinveyAuthenticator : IAuthenticator
     {
@@ -42,7 +43,7 @@ namespace Kinvey
         private readonly string authToken;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyAuthenticator"/> class.
+		/// Initializes a new instance of the <see cref="KinveyAuthenticator"/> class.
 		/// </summary>
 		/// <param name="authToken">Auth token.</param>
 		public KinveyAuthenticator(string authToken) {
@@ -50,14 +51,12 @@ namespace Kinvey
 		}
 
 		/// <summary>
-		/// Authenticate the specified request.
+		/// Authenticates the specified request.
 		/// </summary>
 		/// <param name="request">Request.</param>
 		public void Authenticate(HttpRequestMessage request)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue(AuthHeaderScheme, authToken);
         }
-
-
     }
 }

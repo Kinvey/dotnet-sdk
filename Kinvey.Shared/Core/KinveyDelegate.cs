@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -16,19 +16,22 @@ using System;
 namespace Kinvey
 {
 
-	/// <summary>
-	/// The Kinvey Delegate class is used for the callback pattern when executing requests asynchronously.  All Async* methods will take one as a parameter.
-	/// </summary>
-	public class KinveyDelegate<T>
+    /// <summary>
+    /// The Kinvey Delegate class is used for the callback pattern when executing requests asynchronously.  All Async* methods will take one as a parameter.
+    /// </summary>
+    /// <typeparam name="T">The type of Kinvey delegate.</typeparam>
+    public class KinveyDelegate<T>
 	{
-		/// <summary>
-		/// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
-		/// </summary>
-		public Action<T> onSuccess;
-		/// <summary>
-		/// This Action is executed when an error occurs, either on the device itself, or returned from the service.
-		/// </summary>
-		public Action<Exception> onError;
+        /// <summary>
+        /// This Action is executed when an asynchronously operation completes successfully.  T represents the expected response type.
+        /// </summary>
+        /// <value>The action having the type of Kinvey delegate as the parameter.</value>
+        public Action<T> onSuccess;
+        /// <summary>
+        /// This Action is executed when an error occurs, either on the device itself, or returned from the service.
+        /// </summary>
+        /// <value>The action having the Exception type as the parameter.</value>
+        public Action<Exception> onError;
 
 	}
 }
