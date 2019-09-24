@@ -17,7 +17,8 @@ using Newtonsoft.Json;
 
 namespace Kinvey
 {
-	public abstract class AbstractDataRequest<T> : AbstractKinveyClientRequest<T>{
+    [Obsolete("This class has been deprecated. Please use AbstractKinveyClientRequest<T> instead.")]
+    public abstract class AbstractDataRequest<T> : AbstractKinveyClientRequest<T>{
 		[JsonProperty]
 		public string CollectionName { get; set; }
 
