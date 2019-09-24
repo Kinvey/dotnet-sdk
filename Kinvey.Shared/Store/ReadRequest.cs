@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -15,20 +15,62 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 
 namespace Kinvey
 {
+    /// <summary>
+    /// Base class for creating requests to read data.
+    /// </summary>
+    /// <typeparam name="T">The type of the network request.</typeparam>
+    /// <typeparam name="U">The type of the network response.</typeparam>
 	public abstract class ReadRequest <T, U> : Request <T, U>
 	{
+        /// <summary>
+		/// Gets the interface for operating with data store cache.
+		/// </summary>
+		/// <value>The instance implementing <see cref="ICache{T}" /> interface.</value>
 		public ICache<T> Cache { get; }
+
+        /// <summary>
+		/// Gets collection name for the request.
+		/// </summary>
+		/// <value>String value with collection name.</value>
 		public string Collection { get; }
-		public ReadPolicy Policy { get; }
+
+        /// <summary>
+        /// Gets read policy for the request.
+        /// </summary>
+        /// <value> <see cref="ReadPolicy" /> enum value containing read policy for the request.</value>
+        public ReadPolicy Policy { get; }
+
+        /// <summary>
+        /// Gets query for the request.
+        /// </summary>
+        /// <value>  <see cref="IQueryable{Object}" /> value containing query for the request.</value>
 		protected IQueryable<object> Query { get; }
-		protected bool DeltaSetFetchingEnabled { get; }
+
+        /// <summary>
+        /// Indicates whether delta set fetching is enabled on this request, defaulted to false.
+        /// </summary>
+        /// <value><c>true</c> if delta set fetching enabled; otherwise, <c>false</c>.</value>
+        protected bool DeltaSetFetchingEnabled { get; }
+
+        /// <summary>
+        /// Gets entity ids for the request.
+        /// </summary>
+        /// <value>The list of entity ids</value>
 		protected List<string> EntityIDs { get; }
 
-		public ReadRequest(AbstractClient client, string collection, ICache<T> cache, IQueryable<object> query, ReadPolicy policy, bool deltaSetFetchingEnabled)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadRequest{T,U}"/> class.
+        /// </summary>
+        /// <param name="client">Client that the user is logged in.</param>
+        /// <param name="collection">Collection name.</param>
+        /// <param name="cache">Cache.</param>
+        /// <param name="query">Query.</param>
+        /// <param name="policy">Read policy.</param>
+        /// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
+        public ReadRequest(AbstractClient client, string collection, ICache<T> cache, IQueryable<object> query, ReadPolicy policy, bool deltaSetFetchingEnabled)
 	: base(client)
 		{
 			this.Cache = cache;
@@ -38,7 +80,16 @@ namespace Kinvey
 			this.DeltaSetFetchingEnabled = deltaSetFetchingEnabled;
 		}
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadRequest{T,U}"/> class.
+        /// </summary>
+        /// <param name="client">Client that the user is logged in.</param>
+        /// <param name="collection">Collection name.</param>
+        /// <param name="cache">Cache.</param>
+        /// <param name="query">Query.</param>
+        /// <param name="policy">Read policy.</param>
+        /// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
+        /// <param name="entityIds">The list of entity ids.</param>
 		public ReadRequest (AbstractClient client, string collection, ICache<T> cache, IQueryable<object> query, ReadPolicy policy, bool deltaSetFetchingEnabled, List<String> entityIds)
 			: base(client)
 		{
@@ -59,7 +110,13 @@ namespace Kinvey
             return KinveyMongoQueryBuilder.GetQueryForFindOperation<T>(Query);
         }
 
-
+        /// <summary>
+		/// Operating with delta set data.
+		/// </summary>
+        /// <param name="cacheItems">Cache items.</param>
+        /// <param name="networkItems">Network items.</param>
+        /// <param name="mongoQuery">Mongo query.</param>
+		/// <returns>The async task with the list of entities.</returns>
 		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, List<DeltaSetFetchInfo> networkItems, string mongoQuery)
 		{
 			List<T> listDeltaSetResults = new List<T>();
@@ -152,6 +209,11 @@ namespace Kinvey
 			return listDeltaSetResults;
 		}
 
+        /// <summary>
+		/// Perfoms finding in a local storage.
+		/// </summary>
+        /// <param name="localDelegate">[optional] Delegate for returning results.</param>
+		/// <returns>The list of entities.</returns>
 		protected List<T> PerformLocalFind(KinveyDelegate<List<T>> localDelegate = null)
 		{
 			List<T> cacheHits = default(List<T>);
@@ -189,6 +251,10 @@ namespace Kinvey
 			return cacheHits;
 		}
 
+        /// <summary>
+		/// Perfoms finding in backend.
+		/// </summary>
+		/// <returns>The async task with the request results.</returns>
 		protected async Task<NetworkReadResponse<T>> PerformNetworkFind()
 		{
 			try
@@ -306,6 +372,11 @@ namespace Kinvey
 			}
 		}
 
+        /// <summary>
+		/// Retrieves entities from backend.
+		/// </summary>
+        /// <param name="mongoQuery">Mongo query.</param>
+		/// <returns>The async task with the list of entities.</returns>
         protected async Task<List<T>> RetrieveNetworkResults(string mongoQuery)
 		{
 			List<T> networkResults = default(List<T>);
@@ -389,19 +460,42 @@ namespace Kinvey
             return new NetworkReadResponse<T>(results, results.Count, false);
         }
 
+        /// <summary>
+        /// This class represents the response of a network read request.
+        /// </summary>
+        /// <typeparam name="T">The type of the result.</typeparam>
         protected class NetworkReadResponse<T>
 		{
-			public List<T> ResultSet;
-			public int TotalCount;
-			public bool IsDeltaFetched;
+            /// <summary>
+            /// Result set from the network request.
+            /// </summary>
+            /// <value>The list of entities.</value>
+            public List<T> ResultSet;
 
-			public NetworkReadResponse(List<T> result, int count, bool isDelta)
+            /// <summary>
+            /// Total count of entities.
+            /// </summary>
+            /// <value>The value with total count.</value>
+            public int TotalCount;
+
+            /// <summary>
+            /// Indicates whether delta set fetching is enabled, defaulted to false.
+            /// </summary>
+            /// <value><c>true</c> if delta set fetching enabled; otherwise, <c>false</c>.</value>
+            public bool IsDeltaFetched;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="NetworkReadResponse{T}"/> class.
+            /// </summary>
+            /// <param name="result">List of entities.</param>
+            /// <param name="count">Total count.</param>
+            /// <param name="isDelta"><c>true</c> if delta set fetching enabled; otherwise, <c>false</c>.</param>
+            public NetworkReadResponse(List<T> result, int count, bool isDelta)
 			{
 				this.ResultSet = result;
 				this.TotalCount = count;
 				this.IsDeltaFetched = isDelta;
 			}
 		}
-
 	}
 }

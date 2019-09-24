@@ -33,8 +33,8 @@ namespace Kinvey
         /// <summary>
         /// Initializes a new instance of the <see cref="FindAggregateRequest{T}"/> class.
         /// </summary>
-        /// <param name="client">Client.</param>
-        /// <param name="collection">Collection.</param>
+        /// <param name="client">Client that the user is logged in.</param>
+        /// <param name="collection">Collection name.</param>
         /// <param name="reduceFunction">Reduce function.</param>
         /// <param name="cache">Cache.</param>
         /// <param name="policy"> The <see cref="ReadPolicy"/> to be used for this request.</param>
@@ -126,7 +126,7 @@ namespace Kinvey
         /// <summary>
         /// Communicates the request for cancellation.
         /// </summary>
-        /// <returns>The async task with the boolean result.</returns>
+        /// <returns>The async task with the boolean result. If the result is <c>true</c> then the request was canceled, otherwise <c>false</c>.</returns>
         public override async Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on GetCountRequest not implemented.");

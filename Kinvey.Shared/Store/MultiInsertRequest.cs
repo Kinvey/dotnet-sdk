@@ -199,7 +199,7 @@ namespace Kinvey
         /// <summary>
         /// Cancels a multi insert request.
         /// </summary>
-        /// <returns>An async task with a boolean result.</returns>
+        /// <returns>The async task with the boolean result. If the result is <c>true</c> then the request was canceled, otherwise <c>false</c>.</returns>
         public override Task<bool> Cancel()
         {
             throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on MultiInsertRequest not implemented.");

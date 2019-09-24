@@ -19,15 +19,31 @@ using System.Linq;
 
 namespace Kinvey
 {
-	public class PushRequest <T> : WriteRequest<T, PushDataStoreResponse<T>>
+    /// <summary>
+    /// Request operation for pushing of data from the library to the backend.
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
+    public class PushRequest <T> : WriteRequest<T, PushDataStoreResponse<T>>
 	{
-		public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PushRequest{T}"/> class.
+        /// </summary>
+        /// <param name="client">Client that the user is logged in.</param>
+        /// <param name="collection">Collection name.</param>
+        /// <param name="cache">Cache.</param>
+        /// <param name="queue">Synchronization queue.</param>
+        /// <param name="policy">Policy.</param>
+        public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
 			: base (client, collection, cache, queue, policy)
 		{
 
 		}
 
-		public override async Task <PushDataStoreResponse<T>> ExecuteAsync()
+        /// <summary>
+        /// Executes the request asynchronously.
+        /// </summary>
+        /// <returns> The async task with the request result.</returns>
+        public override async Task <PushDataStoreResponse<T>> ExecuteAsync()
 		{
             var response = new PushDataStoreResponse<T>();
 
@@ -50,7 +66,11 @@ namespace Kinvey
             return response;
 		}
 
-		public override Task<bool> Cancel()
+        /// <summary>
+        /// Communicates the request for cancellation.
+        /// </summary>
+        /// <returns>The async task with the boolean result. If the result is <c>true</c> then the request was canceled, otherwise <c>false</c>.</returns>
+        public override Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PushRequest not implemented.");
 		}
