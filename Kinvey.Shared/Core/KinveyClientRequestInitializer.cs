@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -12,15 +12,15 @@
 // contents is a violation of applicable laws.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Kinvey
 {
+    /// <summary>
+    /// The class is for initializing of Kinvey client request.
+    /// </summary>
     public class KinveyClientRequestInitializer : IKinveyRequestInitializer
     {
         /// <summary>
@@ -83,6 +83,10 @@ namespace Kinvey
             get { return appSecret; }
         }
 
+        /// <summary>
+        /// Gets the auth service ID.
+        /// </summary>
+        /// <value>The AuthServiceID property gets the value of the string field, _authServiceID. </value>
         public string AuthServiceID
         {
             get; private set;
@@ -98,9 +102,9 @@ namespace Kinvey
         }
 
         /// <summary>
-        /// Sets the kinvey credential.
+        /// Sets the Kinvey credential.
         /// </summary>
-        /// <value>The kinvey credential.</value>
+        /// <value>The Kinvey credential.</value>
         public Credential KinveyCredential
         {
             set { this.credential = value; }
@@ -110,6 +114,7 @@ namespace Kinvey
         /// Initialize the specified request.
         /// </summary>
         /// <param name="request">Request.</param>
+        /// <param name="clientId">[optional] Client ID.</param>
         /// <typeparam name="T">The response type of the request.</typeparam>
 
         public void Initialize<T>(AbstractKinveyClientRequest<T> request, string clientId = null)
@@ -147,6 +152,9 @@ namespace Kinvey
 
     }
 
+    /// <summary>
+    /// Authenticator for Http basic authentication.
+    /// </summary>
     public class HttpBasicAuthenticator : IAuthenticator
     {
 
@@ -154,6 +162,11 @@ namespace Kinvey
         private readonly string password;
         private readonly string base64;
 
+        /// <summary>
+        /// Initializes a new instance of the class.
+        /// </summary>
+        /// <param name="username">User name.</param>
+        /// <param name="password">Password.</param>
         public HttpBasicAuthenticator(string username, string password)
         {
             this.username = username;
@@ -162,6 +175,10 @@ namespace Kinvey
             base64 = Convert.ToBase64String(bytes);
         }
 
+        /// <summary>
+		/// Authenticates the specified request.
+		/// </summary>
+		/// <param name="request">Request.</param>
         public void Authenticate(HttpRequestMessage request)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", base64);

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -14,27 +14,40 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
-	public class NetworkFactory
-	{
+    /// <summary>
+    /// The class creates network requests.
+    /// </summary>
+    public class NetworkFactory
+    {
+        ///<summary>
+        /// Client that the user is logged in
+        ///</summary>
+        ///<value>The instance of the class inherited from the <see cref="AbstractClient"/> class.</value>
 		public AbstractClient client  { get;}
 
-		#region Global request configs such as timeouts and hostname go here
-
-		#endregion
-
-		public NetworkFactory (AbstractClient client)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkFactory"/> class.
+        /// </summary>
+        /// <param name="client">Client that the user is logged in.</param>
+        public NetworkFactory (AbstractClient client)
 		{
 			this.client = client;
 		}
 
-		#region Request Builders
+        #region Request Builders
 
-		public NetworkRequest<T> BuildSubscribeRequest<T>(string collectionName, string deviceID)
+        /// <summary>
+        /// Builds a network request for subscribing on Kinvey Live services.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="deviceID">Id of the device.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
+        public NetworkRequest<T> BuildSubscribeRequest<T>(string collectionName, string deviceID)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}/_subscribe";
 
@@ -52,7 +65,13 @@ namespace Kinvey
 			return subscribeCollection;
 		}
 
-		public NetworkRequest<T> BuildUnsubscribeRequest<T>(string collectionName)
+        /// <summary>
+        /// Builds a network request for unsubscribing from Kinvey Live services.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
+        public NetworkRequest<T> BuildUnsubscribeRequest<T>(string collectionName)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}/_unsubscribe";
 
@@ -65,6 +84,13 @@ namespace Kinvey
 			return unsubscribeCollection;
 		}
 
+        /// <summary>
+        /// Builds a network request for getting an entity.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="entityID">Id of the entity.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
 		public NetworkRequest<T> buildGetByIDRequest <T> (string collectionName, string entityID)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";
@@ -79,6 +105,13 @@ namespace Kinvey
 			return getEntity;
 		}
 
+        /// <summary>
+        /// Builds a network request for getting entities.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="queryString">Query string.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
 		public NetworkRequest<List<T>> buildGetRequest <T> (string collectionName, string queryString = null)
 		{
 			var urlParameters = new Dictionary<string, string>();
@@ -99,6 +132,13 @@ namespace Kinvey
 			return getQuery;
 		}
 
+        /// <summary>
+        /// Builds a network request for getting a count of entities.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="queryString">Query string.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
 		public NetworkRequest<T> buildGetCountRequest <T> (string collectionName, string queryString = null)
 		{
 			string REST_PATH = "appdata/{appKey}/{collectionName}/_count";
@@ -118,6 +158,16 @@ namespace Kinvey
 			return getCountQuery;
 		}
 
+        /// <summary>
+        /// Builds a network request for getting entities using aggregate functions.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="reduceFunction">Aggregate function type.</param>
+        /// <param name="query">Query string.</param>
+        /// <param name="groupField">The field for grouping.</param>
+        /// <param name="aggregateField">The field for aggregating.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
 		public NetworkRequest<T> BuildGetAggregateRequest<T>(string collectionName, EnumReduceFunction reduceFunction, string query, string groupField, string aggregateField)
 		{
 			string REST_PATH = "appdata/{appKey}/{collectionName}/_group";
@@ -194,7 +244,14 @@ namespace Kinvey
 			return findAggregateQuery;
 		}
 
-		public NetworkRequest<T> buildCreateRequest <T> (string collectionName, T entity)
+        /// <summary>
+        /// Builds a network request for creating an entity.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="entity">The entity.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
+        public NetworkRequest<T> buildCreateRequest <T> (string collectionName, T entity)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}";
 
@@ -208,11 +265,13 @@ namespace Kinvey
 		}
 
         /// <summary>
-        /// Creates a network request for multi insert operation.
+        /// Builds a network request for multi creating of entities.
         /// </summary>
-        /// <returns>A created network request.</returns>
-        /// <param name="collectionName">A name of a collection.</param>
-        /// <param name="entities">Entities to insert.</param>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="entities">The list of entities.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
+        /// <typeparam name="U">The type of the network response.</typeparam>
         public NetworkRequest<U> BuildMultiInsertRequest<T, U>(string collectionName, List<T> entities)
         {
             const string REST_PATH = "appdata/{appKey}/{collectionName}";
@@ -226,6 +285,14 @@ namespace Kinvey
             return create;
         }
 
+        /// <summary>
+        /// Builds a network request for updating an entity.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="entity">The entity.</param>
+        /// <param name="entityID">Id of the entity.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         public NetworkRequest<T> buildUpdateRequest <T> (string collectionName, T entity, string entityID)
 		{
 			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";
@@ -240,7 +307,14 @@ namespace Kinvey
 			return update;
 		}
 
-		public NetworkRequest<T> buildDeleteRequest <T>(string collectionName, string entityID)
+        /// <summary>
+        /// Builds a network request for deleting an entity.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="entityID">Id of the entity.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
+        public NetworkRequest<T> buildDeleteRequest <T>(string collectionName, string entityID)
 		{	
 			const string REST_PATH = "appdata/{appKey}/{collectionName}/{entityID}";
 
@@ -254,6 +328,13 @@ namespace Kinvey
 			return delete;
 		}
 
+        /// <summary>
+        /// Builds a network request for deleting entities.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="queryString">Query string.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         public NetworkRequest<T> buildDeleteRequestWithQuery<T>(string collectionName, string queryString)
         {
             var REST_PATH = "appdata/{appKey}/{collectionName}?query={querystring}";
@@ -269,6 +350,14 @@ namespace Kinvey
             return delete;
         }
 
+        /// <summary>
+        /// Builds a network request for getting deltaset.
+        /// </summary>
+        /// <param name="collectionName">The name of the collection.</param>
+        /// <param name="lastRequestTime">The last time of the request.</param>
+        /// <param name="query">String query.</param>
+        /// <returns>All data of the built network request.</returns>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         public NetworkRequest<T> BuildDeltaSetRequest<T>(string collectionName, string lastRequestTime, string query = null)
         {
             string REST_PATH = "appdata/{appKey}/{collectionName}/_deltaset";
