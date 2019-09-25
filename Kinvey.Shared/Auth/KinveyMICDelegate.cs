@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -24,7 +24,7 @@ namespace Kinvey
         /// <summary>
         /// This Action is executed when the MIC login page is ready to be rendered.
         /// </summary>
-        /// <value>The parameter of the action.</value>
+        /// <value>The action having the string type as the parameter.</value>
         public Action<string> onReadyToRender;
 	}
 }
