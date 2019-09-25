@@ -55,7 +55,7 @@ task:
 task:
   name: Linux .Net
   container:
-    image: microsoft/dotnet/core/sdk
+    image: dotnet/core/sdk
   git_submodule_update_init_script: git submodule update --init --recursive
   check_version_script: dotnet --version
   apt_update_script: apt update
