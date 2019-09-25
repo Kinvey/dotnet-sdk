@@ -35,7 +35,7 @@ namespace Kinvey
 		/// <param name="collection">Collection name.</param>
 		/// <param name="cache">Cache.</param>
         /// <param name="sync">Sync queue.</param>
-		/// <param name="policy">Policy.</param>
+		/// <param name="policy">Write policy.</param>
         public MultiInsertRequest(IList<T> entities, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy)
             : base(client, collection, cache, sync, policy)
         {

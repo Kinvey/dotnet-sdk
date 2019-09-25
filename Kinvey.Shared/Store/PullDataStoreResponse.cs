@@ -16,7 +16,7 @@ using System.Collections.Generic;
 namespace Kinvey
 {
     /// <summary>
-    /// Class used to capture information about pull data store operations
+    /// Class used to capture information about pull data store operations.
     /// </summary>
     /// <typeparam name="T">The type of an entity.</typeparam>
     public class PullDataStoreResponse<T> : DataStoreResponse<T>

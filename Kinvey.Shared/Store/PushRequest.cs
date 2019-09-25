@@ -32,7 +32,7 @@ namespace Kinvey
         /// <param name="collection">Collection name.</param>
         /// <param name="cache">Cache.</param>
         /// <param name="queue">Synchronization queue.</param>
-        /// <param name="policy">Policy.</param>
+        /// <param name="policy">Write policy.</param>
         public PushRequest(AbstractClient client, string collection, ICache<T> cache, ISyncQueue queue, WritePolicy policy)
 			: base (client, collection, cache, queue, policy)
 		{
