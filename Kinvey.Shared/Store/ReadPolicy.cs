@@ -11,6 +11,8 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
+using System;
+
 namespace Kinvey
 {
     /// <summary>
@@ -26,10 +28,11 @@ namespace Kinvey
 		/// Executes the request from the cache every single time.
 		/// </summary>
 		FORCE_LOCAL,
-		/// <summary>
-		/// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
-		/// </summary>
-		BOTH,
+        /// <summary>
+        /// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
+        /// </summary>
+        [Obsolete("This enum value has been deprecated. Please use NETWORK_OTHERWISE_LOCAL instead.")]
+        BOTH,
         /// <summary>
 		/// Tries to get the most recent data from the backend first, if it fails it returns data from the local cache.
 		/// </summary>

@@ -117,6 +117,7 @@ namespace Kinvey
         /// <param name="networkItems">Network items.</param>
         /// <param name="mongoQuery">Mongo query.</param>
 		/// <returns>The async task with the list of entities.</returns>
+        [Obsolete("This method has been deprecated.")]
 		protected async Task<List<T>> RetrieveDeltaSet(List<T> cacheItems, List<DeltaSetFetchInfo> networkItems, string mongoQuery)
 		{
 			List<T> listDeltaSetResults = new List<T>();
