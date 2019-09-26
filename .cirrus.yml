@@ -50,7 +50,7 @@ task:
   # check_sqlite_version_script: sqlite3 -version
   install_git_script: choco install git -y
   git_submodule_update_init_script: git submodule update --init --recursive
-  test_script: set DOTNET_ROOT=C:\Users\ContainerAdministrator\AppData\Local\Microsoft\dotnet; cd Kinvey.Tests; dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover; exit $LastExitCode
+  test_script: echo %PATH%
 
 task:
   name: Linux .Net
