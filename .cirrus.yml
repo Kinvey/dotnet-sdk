@@ -41,7 +41,7 @@ task:
     # SQLITE_HOME: C:\ProgramData\chocolatey\lib\SQLite
     GIT_HOME: C:\Program Files\Git
     # PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;$CHOCOLATEY_HOME\bin;$SQLITE_HOME\tools;$GIT_HOME\cmd'
-    PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;$CHOCOLATEY_HOME\bin;$GIT_HOME\cmd'
+    PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;$CHOCOLATEY_HOME\bin;$GIT_HOME\cmd;$USERPROFILE\.dotnet\tools'
   install_dotnet_sdk_script: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Channel Current"
   check_dotnet_version_script: dotnet --info; 
   install_choco_script: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
