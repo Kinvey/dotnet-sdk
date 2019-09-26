@@ -34,7 +34,7 @@ task:
 task:
   name: Windows
   windows_container:
-    image: mcr.microsoft.com/windows/servercore/insider:10.0.17763
+    image: mcr.microsoft.com/windows/servercore:ltsc2019
   env:
     CIRRUS_SHELL: powershell
     CHOCOLATEY_HOME: C:\ProgramData\chocolatey
