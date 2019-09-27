@@ -10,4 +10,4 @@ task:
     # PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;$CHOCOLATEY_HOME\bin;$SQLITE_HOME\tools;$GIT_HOME\cmd'
     PATH: '$PATH;$USERPROFILE\AppData\Local\Microsoft\dotnet;$CHOCOLATEY_HOME\bin;$GIT_HOME\cmd;$USERPROFILE\.dotnet\tools'
   install_dotnet_sdk_script: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -useb 'https://dot.net/v1/dotnet-install.ps1'))) -Channel Current"
-  check_dotnet_version_script: dotnet --info; dir;
+  check_dotnet_version_script: dotnet --info;cd $env:USERPROFILE; dir;
