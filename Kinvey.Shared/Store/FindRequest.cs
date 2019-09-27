@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,38 +11,42 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Find request built for use by a <see cref="KinveyXamarin.DataStore{T}"/>
-	/// </summary>
-	public class FindRequest<T> : ReadRequest<T, List<T>>
+    /// <summary>
+    /// Find request built for use by a <see cref="DataStore{T}"/>
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
+    public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
 
 		private KinveyDelegate<List<T>> cacheDelegate;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:KinveyXamarin.FindRequest`1"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="collection">Collection.</param>
-		/// <param name="cache">Cache.</param>
-		/// <param name="policy">Policy.</param>
-		/// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
-		/// <param name="cacheDelegate">Cache delegate.</param>
-		/// <param name="query">Query.</param>
-		/// <param name="listIDs">List identifier.</param>
-		public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<List<T>> cacheDelegate, IQueryable<object> query, List<string> listIDs)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindRequest{T}"/> class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="collection">Collection name.</param>
+        /// <param name="cache">Cache.</param>
+        /// <param name="policy">Read policy.</param>
+        /// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
+        /// <param name="cacheDelegate">Cache delegate.</param>
+        /// <param name="query">Query.</param>
+        /// <param name="listIDs">List identifiers.</param>
+        public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<List<T>> cacheDelegate, IQueryable<object> query, List<string> listIDs)
 			: base(client, collection, cache, query, policy, deltaSetFetchingEnabled, listIDs)
 		{
 			this.cacheDelegate = cacheDelegate;
 		}
 
+        /// <summary>
+        /// Executes the request asynchronously.
+        /// </summary>
+        /// <returns> The async task with the request result.</returns>
 		public override async Task<List<T>> ExecuteAsync()
 		{
 			List<T> listResult = default(List<T>);
@@ -118,7 +122,11 @@ namespace Kinvey
 			return listResult;
 		}
 
-		public override async Task<bool> Cancel()
+        /// <summary>
+        /// Communicates the request for cancellation.
+        /// </summary>
+        /// <returns>The async task with the boolean result. If the result is <c>true</c> then the request was canceled, otherwise <c>false</c>.</returns>
+        public override async Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on FindRequest not implemented.");
 		}

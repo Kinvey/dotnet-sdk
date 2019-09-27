@@ -15,7 +15,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Kinvey
@@ -23,10 +22,20 @@ namespace Kinvey
     /// <summary>
     /// Represents a multi insert request. 
     /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
     public class MultiInsertRequest<T> : WriteRequest<T, KinveyMultiInsertResponse<T>>
     {
         private IList<T> entities;
 
+        /// <summary>
+		/// Initializes a new instance of the <see cref="MultiInsertRequest{T}"/> class.
+		/// </summary>
+        /// <param name="entities">The list of entities.</param>
+		/// <param name="client">Client that the user is logged in.</param>
+		/// <param name="collection">Collection name.</param>
+		/// <param name="cache">Cache.</param>
+        /// <param name="sync">Sync queue.</param>
+		/// <param name="policy">Write policy.</param>
         public MultiInsertRequest(IList<T> entities, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy)
             : base(client, collection, cache, sync, policy)
         {
@@ -190,7 +199,7 @@ namespace Kinvey
         /// <summary>
         /// Cancels a multi insert request.
         /// </summary>
-        /// <returns>An async task with a boolean result.</returns>
+        /// <returns>The async task with the boolean result. If the result is <c>true</c> then the request was canceled, otherwise <c>false</c>.</returns>
         public override Task<bool> Cancel()
         {
             throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on MultiInsertRequest not implemented.");

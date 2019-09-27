@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -15,10 +15,11 @@ using System.Collections.Generic;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Class used to capture information about push data store operations
-	/// </summary>
-	public class PullDataStoreResponse<T> : DataStoreResponse<T>
+    /// <summary>
+    /// Class used to capture information about pull data store operations.
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
+    public class PullDataStoreResponse<T> : DataStoreResponse<T>
 	{
 		internal PullDataStoreResponse() { }
 
@@ -27,16 +28,16 @@ namespace Kinvey
 			this.PullCount = pulled;
 			this.PullEntities = pullEntities;
 		}
-		/// <summary>
-		/// Gets or sets the total count of entities that match the request.
-		/// This number will be equal to the <see cref="KinveyXamarin.PullDataStoreResponse.PullCount"/>, unless delta set caching is in use.
-		/// When delta set caching is used, the number of entities retrieved from the backend (PullCount) is typically less than the total number of entities that match the request (TotalCount).
-		/// </summary>
-		/// <value>The total count of entities that match the request.</value>
-		public int TotalCount;
+        /// <summary>
+        /// Gets or sets the total count of entities that match the request.
+        /// This number will be equal to the PullCount, unless delta set caching is in use.
+        /// When delta set caching is used, the number of entities retrieved from the backend (PullCount) is typically less than the total number of entities that match the request (TotalCount).
+        /// </summary>
+        /// <value>The total count of entities that match the request.</value>
+        public int TotalCount;
 
 		/// <summary>
-		/// Gets or sets the count of datastore objects returned.
+		/// Gets the count of datastore objects returned.
 		/// </summary>
 		/// <value>The count of entities retrieved from the backend.</value>
 		public int PullCount

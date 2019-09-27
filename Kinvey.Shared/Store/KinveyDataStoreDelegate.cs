@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -15,24 +15,31 @@ using System;
 
 namespace Kinvey
 {
+    /// <summary>
+	/// Kinvey data store delegate class is used for the callback pattern when executing requests asynchronously.
+	/// </summary>
+    /// <typeparam name="T">The type of the delegate.</typeparam>
 	public class KinveyDataStoreDelegate<T>
 	{
-		/// <summary>
-		/// This action is executed when there is a new or updated
-		/// entity available from the realtime service.
-		/// </summary>
-		public Action<T> OnNext;
+        /// <summary>
+        /// This action is executed when there is a new or updated
+        /// entity available from the realtime service.
+        /// </summary>
+        /// <value>The action having the type of the delegate as the parameter.</value>
+        public Action<T> OnNext;
 
-		/// <summary>
-		/// This action is executed when an exception occurs.  This can be
-		/// either on the device, or returned from the realtime service.
-		/// </summary>
-		public Action<Exception> OnError;
+        /// <summary>
+        /// This action is executed when an exception occurs.  This can be
+        /// either on the device, or returned from the realtime service.
+        /// </summary>
+        /// <value>The action having the Exception type as the parameter.</value>
+        public Action<Exception> OnError;
 
-		/// <summary>
-		/// This action is executed when there is a connection
-		/// status message available from the realtime service.
-		/// </summary>
-		public Action<KinveyRealtimeStatus> OnStatus;
+        /// <summary>
+        /// This action is executed when there is a connection
+        /// status message available from the realtime service.
+        /// </summary>
+        /// <value>The action having the <see cref="KinveyRealtimeStatus"/> type as the parameter.</value>
+        public Action<KinveyRealtimeStatus> OnStatus;
 	}
 }

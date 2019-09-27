@@ -12,24 +12,39 @@
 // contents is a violation of applicable laws.
 
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
-	public class SaveRequest <T> : WriteRequest<T, T>
+    /// <summary>
+    /// Represents a request to save an entity. 
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
+    public class SaveRequest <T> : WriteRequest<T, T>
 	{
 		private T entity;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaveRequest{T}"/> class.
+        /// </summary>
+        /// <param name="entity">Entity.</param>
+        /// <param name="client">Client that the user is logged in.</param>
+        /// <param name="collection">Collection name.</param>
+        /// <param name="cache">Cache.</param>
+        /// <param name="sync">Synchronization queue.</param>
+        /// <param name="policy">Write policy.</param>
 		public SaveRequest (T entity, AbstractClient client, string collection, ICache<T> cache, ISyncQueue sync, WritePolicy policy)
 			: base (client, collection, cache, sync, policy)
 		{
 			this.entity = entity;
 		}
 
-		public override async Task<T> ExecuteAsync()
+        /// <summary>
+        /// Executes the request asynchronously.
+        /// </summary>
+        /// <returns> The async task with the request result.</returns>
+        public override async Task<T> ExecuteAsync()
 		{
 			T savedEntity = default(T);
 			NetworkRequest<T> request = null;
@@ -158,7 +173,11 @@ namespace Kinvey
 			return savedEntity;
 		}
 
-		public override Task<bool> Cancel()
+        /// <summary>
+        /// Communicates the request for cancellation.
+        /// </summary>
+        /// <returns>The async task with the boolean result. If the result is <c>true</c> then the request was canceled, otherwise <c>false</c>.</returns>
+        public override Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on SaveRequest not implemented.");
 		}	

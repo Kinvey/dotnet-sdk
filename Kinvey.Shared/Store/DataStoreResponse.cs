@@ -15,20 +15,23 @@ using System.Collections.Generic;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Class used to capture information about data store operations
-	/// </summary>
-	abstract public class DataStoreResponse<T>
+    /// <summary>
+    /// Class used to capture information about data store operations.
+    /// </summary>
+    /// <typeparam name="T">The type of the result.</typeparam>
+    abstract public class DataStoreResponse<T>
 	{
-		/// <summary>
-		/// The count of results from the data store operation
-		/// </summary>
-		protected int count;
+        /// <summary>
+        /// The count of results from the data store operation
+        /// </summary>
+        /// <value><see cref="System.Int32"/> value.</value>
+        protected int count;
 
-		/// <summary>
-		/// The entities resulting from a data store operation.
-		/// </summary>
-		protected List<T> entities;
+        /// <summary>
+        /// The entities resulting from a data store operation.
+        /// </summary>
+        /// <value><see cref="List{T}"/> of entities.</value>
+        protected List<T> entities;
 
 		List<KinveyException> kinveyExceptions;
 
@@ -49,10 +52,10 @@ namespace Kinvey
 			}
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:KinveyXamarin.DataStoreResponse"/> class.
-		/// </summary>
-		protected DataStoreResponse()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataStoreResponse{T}"/> class.
+        /// </summary>
+        protected DataStoreResponse()
 		{
 			count = 0;
 			entities = new List<T>();
