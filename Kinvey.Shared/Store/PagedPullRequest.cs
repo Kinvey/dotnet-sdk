@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -14,13 +14,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 
 namespace Kinvey
 {
+    /// <summary>
+    /// Request built for use by a <see cref="DataStore{T}"/> to get some count of entities from collection.
+    /// </summary>
+    /// <typeparam name="T">The type of an entity.</typeparam>
 	public class PagedPullRequest<T> : ReadRequest<T, PullDataStoreResponse<T>>
 	{
 		BlockingCollection<List<T>> workQueue = new BlockingCollection<List<T>>(10);
@@ -29,13 +32,27 @@ namespace Kinvey
 		bool isInitial;
 		bool isConsumerWorking = false;
 
-		public PagedPullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<object> query, int count, bool isInitial)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PagedPullRequest{T}"/> class.
+        /// </summary>
+        /// <param name="client">Client that the user is logged in.</param>
+        /// <param name="collection">Collection name.</param>
+        /// <param name="cache">Cache.</param>
+        /// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
+        /// <param name="query">Query.</param>
+        /// <param name="count">Limit of entities.</param>
+        /// <param name="isInitial">If <c>true</c> then entities received from backend are expected to be not existing in Cache, otherwise <c>false</c>.</param>
+        public PagedPullRequest(AbstractClient client, string collection, ICache<T> cache, bool deltaSetFetchingEnabled, IQueryable<object> query, int count, bool isInitial)
 			: base(client, collection, cache, query, ReadPolicy.FORCE_NETWORK, deltaSetFetchingEnabled)
 		{
 			this.count = count;
 			this.isInitial = isInitial;
 		}
 
+        /// <summary>
+        /// Executes the request asynchronously.
+        /// </summary>
+        /// <returns> The async task with the request result.</returns>
 		public override async Task<PullDataStoreResponse<T>> ExecuteAsync()
 		{
 			int skipCount = 0, pageSize = 10000;
@@ -98,7 +115,11 @@ namespace Kinvey
 			isConsumerWorking = false;
 		}
 
-		public override Task<bool> Cancel()
+        /// <summary>
+        /// Communicates the request for cancellation.
+        /// </summary>
+        /// <returns>The async task with the boolean result. If the result is <c>true</c> then the request was canceled, otherwise <c>false</c>.</returns>
+        public override Task<bool> Cancel()
 		{
 			throw new KinveyException(EnumErrorCategory.ERROR_GENERAL, EnumErrorCode.ERROR_METHOD_NOT_IMPLEMENTED, "Cancel method on PullRequest not implemented.");
 		}

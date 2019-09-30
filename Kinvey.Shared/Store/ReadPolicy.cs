@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,14 +11,12 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-
 namespace Kinvey
 {
-	/// <summary>
-	/// Cache policies, used for Caching.
-	/// </summary>
-	public enum ReadPolicy
+    /// <summary>
+    /// Controls how the library fetches data.
+    /// </summary>
+    public enum ReadPolicy
 	{
 		/// <summary>
 		/// Executes the request online every single time.
