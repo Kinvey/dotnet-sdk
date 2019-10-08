@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using Newtonsoft.Json;
+using System;
 
 namespace Kinvey
 {
@@ -19,6 +20,7 @@ namespace Kinvey
 	/// Represents JSON object with information about Kinvey reference. 
 	/// </summary>
     /// <typeparam name="T">The type of a response returned from the backend.</typeparam>
+    [Obsolete("This class has been deprecated.")]
 	[JsonObject]
 	public class KinveyReference<T>
 	{
