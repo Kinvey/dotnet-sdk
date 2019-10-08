@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -27,21 +27,29 @@ namespace Kinvey
 		/// <value>The identifier.</value>
 		string ID { get; set; }
 
-		/// <summary>
-		/// <see cref="AccessControlList"/>  field which maps back to Kinvey _acl
-		/// </summary>
-		/// <value>The acl.</value>
-		AccessControlList Acl { get; set; }
+        /// <summary>
+        /// <see cref="AccessControlList"/>  field which maps back to Kinvey _acl
+        /// </summary>
+        /// <value>The access control list.</value>
+        AccessControlList Acl { get; set; }
 
-		/// <summary>
-		/// <see cref="KinveyMetaData"/> field which maps back to Kinvey _kmd
-		/// </summary>
-		/// <value>The kmd.</value>
-		KinveyMetaData Kmd { get; set; }
+        /// <summary>
+        /// <see cref="KinveyMetaData"/> field which maps back to Kinvey _kmd
+        /// </summary>
+        /// <value>The Kinvey meta data.</value>
+        KinveyMetaData Kmd { get; set; }
 
+        /// <summary>
+        /// <see cref="AccessControlList"/>  field which maps back to Kinvey _acl
+        /// </summary>
+        /// <value>The access control list.</value>
         [Obsolete("This property has been deprecated. Please use Acl instead.")]
         AccessControlList ACL { get; set; }
 
+        /// <summary>
+        /// <see cref="KinveyMetaData"/> field which maps back to Kinvey _kmd
+        /// </summary>
+        /// <value>The Kinvey meta data.</value>
         [Obsolete("This property has been deprecated. Please use Kmd instead.")]
         KinveyMetaData KMD { get; set; }
     }
