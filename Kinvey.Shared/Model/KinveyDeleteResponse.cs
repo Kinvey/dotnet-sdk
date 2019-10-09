@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,7 +11,6 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -24,16 +23,16 @@ namespace Kinvey
 	public class KinveyDeleteResponse
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyDeleteResponse"/> class.
+		/// Initializes a new instance of the <see cref="KinveyDeleteResponse"/> class.
 		/// </summary>
 		public KinveyDeleteResponse ()
 		{
 		}
-		/// <summary>
-		/// Gets or sets the count of entities deleted.
-		/// </summary>
-		/// <value>The count.</value>
-		[JsonProperty]
+        /// <summary>
+        /// The count of deleted entities.
+        /// </summary>
+        /// <value>The count.</value>
+        [JsonProperty]
 		public int count{get; set;}
 
 		/// <summary>
