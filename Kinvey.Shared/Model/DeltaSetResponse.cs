@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -13,13 +13,13 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
     /// <summary>
     /// JSON representation of the response from server-side delta set fetch.
     /// </summary>
+    /// <typeparam name="T">The type of an entity returned from the backend.</typeparam>
     [JsonObject(MemberSerialization.OptIn)]
     public class DeltaSetResponse<T>
     {
@@ -34,6 +34,7 @@ namespace Kinvey
         /// The array of JSON objects that have changed since the last delta
         /// set fetch.
         /// </summary>
+        /// <value>The Changed property gets/sets the value of the <see cref="List{T} "/> field, _changed.</value>
         [JsonProperty("changed")]
         public List<T> Changed { get; set; }
 
@@ -41,6 +42,7 @@ namespace Kinvey
         /// The array of entity ID strings that have been deleted since the last
         /// delta set fetch.
         /// </summary>
+        /// <value>The Deleted property gets/sets the value of the <see cref="List{Entity} "/> field, _deleted.</value>
         [JsonProperty("deleted")]
         public List<Entity> Deleted { get; set; }
     }

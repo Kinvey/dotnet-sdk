@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -35,26 +35,30 @@ namespace Kinvey
 		[PrimaryKey, Column("_id")]
 		public string ID { get; set; }
 
-		/// <summary>
-		/// Gets or sets the <see cref="AccessControlList"/> for this Kinvey-backed object.
-		/// </summary>
-		/// <value>The acl.</value>
-		[JsonProperty("_acl")]
+        /// <summary>
+        /// Gets or sets the <see cref="AccessControlList"/> for this Kinvey-backed object.
+        /// </summary>
+        /// <value>The access control list.</value>
+        [JsonProperty("_acl")]
         [DataMember(Name = "_acl")]
         [Preserve]
 		[Column("_acl")]
 		public AccessControlList Acl { get; set; }
 
-		/// <summary>
-		/// Gets or sets the <see cref="KinveyMetaData"/> for this Kinvey-backed object.
-		/// </summary>
-		/// <value>The kmd.</value>
-		[JsonProperty("_kmd")]
+        /// <summary>
+        /// Gets or sets the <see cref="KinveyMetaData"/> for this Kinvey-backed object.
+        /// </summary>
+        /// <value>The Kinvey meta data.</value>
+        [JsonProperty("_kmd")]
         [DataMember(Name = "_kmd")]
         [Preserve]
 		[Column("_kmd")]
 		public KinveyMetaData Kmd { get; set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="AccessControlList"/> for this Kinvey-backed object.
+        /// </summary>
+        /// <value>The access control list.</value>
         [Obsolete("This property has been deprecated. Please use Acl instead.")]
         public AccessControlList ACL
         {
@@ -68,6 +72,10 @@ namespace Kinvey
             }
         }
 
+        /// <summary>
+		/// Gets or sets the <see cref="KinveyMetaData"/> for this Kinvey-backed object.
+		/// </summary>
+		/// <value>The Kinvey meta data.</value>
         [Obsolete("This property has been deprecated. Please use Kmd instead.")]
         public KinveyMetaData KMD
         {
