@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -292,39 +292,155 @@ namespace Kinvey
 		/// </summary>
 		ERROR_REALTIME_ERROR,
 
+        /// <summary>
+		/// Error code for realtime invalid cipher key issue.
+		/// </summary>
 		ERROR_REALTIME_CRITICAL_VERIFY_CIPHER_KEY,
-		ERROR_REALTIME_CRITICAL_INCORRECT_SUBSBRIBE_KEY,
-		ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL,
-		ERROR_REALTIME_CRITICAL_INTERNAL_SERVER_ERROR,
-		ERROR_REALTIME_CRITICAL_BAD_GATEWAY,
+
+        /// <summary>
+        /// Error code for realtime incorrect subscribe key issue.
+        /// </summary>
+        ERROR_REALTIME_CRITICAL_INCORRECT_SUBSBRIBE_KEY,
+
+        /// <summary>
+        /// Error code for realtime not authorized on channel issue.
+        /// </summary>
+        ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL,
+
+        /// <summary>
+        /// Error code for realtime internal server error issue.
+        /// </summary>
+        ERROR_REALTIME_CRITICAL_INTERNAL_SERVER_ERROR,
+
+        /// <summary>
+        /// Error code for realtime bad gateway issue.
+        /// </summary>
+        ERROR_REALTIME_CRITICAL_BAD_GATEWAY,
+
+        /// <summary>
+        /// Error code for realtime gateway timeout issue.
+        /// </summary>
 		ERROR_REALTIME_CRITICAL_GATEWAY_TIMEOUT,
-		ERROR_REALTIME_CRITICAL_UNKNOWN,
 
-		ERROR_REALTIME_WARNING_VERIFY_HOSTNAME,
-		ERROR_REALTIME_WARNING_CHECK_NETWORK_CONNECTION,
-		ERROR_REALTIME_WARNING_NO_NETWORK_CONNECTION,
-		ERROR_REALTIME_WARNING_VERIFY_CIPHER_KEY,
-		ERROR_REALTIME_WARNING_PROTOCOL_ERROR,
-		ERROR_REALTIME_WARNING_SERVER_PROTOCOL_VIOLATION,
-		ERROR_REALTIME_WARNING_MESSAGE_TOO_LARGE,
-		ERROR_REALTIME_WARNING_BAD_REQUEST,
+        /// <summary>
+        /// Error code for realtime unknown issue.
+        /// </summary>
+        ERROR_REALTIME_CRITICAL_UNKNOWN,
+
+        /// <summary>
+        /// Error code for realtime verifying hostname warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_VERIFY_HOSTNAME,
+
+        /// <summary>
+        /// Error code for realtime checking network connection warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_CHECK_NETWORK_CONNECTION,
+
+        /// <summary>
+        /// Error code for realtime no network connection warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_NO_NETWORK_CONNECTION,
+
+        /// <summary>
+        /// Error code for realtime verifying cipher key warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_VERIFY_CIPHER_KEY,
+
+        /// <summary>
+        /// Error code for realtime protocol warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_PROTOCOL_ERROR,
+
+        /// <summary>
+        /// Error code for realtime server protocol violation warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_SERVER_PROTOCOL_VIOLATION,
+
+        /// <summary>
+        /// Error code for realtime message too large warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_MESSAGE_TOO_LARGE,
+
+        /// <summary>
+        /// Error code for realtime bad request warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_BAD_REQUEST,
+
+        /// <summary>
+        /// Error code for realtime invalid publish key warning.
+        /// </summary>
 		ERROR_REALTIME_WARNING_INVALID_PUBLISH_KEY,
-		ERROR_REALTIME_WARNING_PAM_NOT_ENABLED,
-		ERROR_REALTIME_WARNING_INCORRECT_PUBLIC_OR_SECRET_KEY,
-		ERROR_REALTIME_WARNING_URL_LENGTH_TOO_LONG,
-		ERROR_REALTIME_WARNING_UNDOCUMENTED_ERROR,
-		ERROR_REALTIME_WARNING_UNKNOWN,
 
-		ERROR_REALTIME_INFORMATIONAL_NO_NETWORK_CONNECTION,
-		//ERROR_REALTIME_INFORMATIONAL_NETWORK_CONNECTION_BACK,
-		ERROR_REALTIME_INFORMATIONAL_DUPLICATE_CHANNEL_SUBSCRIPTION,
-		ERROR_REALTIME_INFORMATIONAL_INVALID_CHANNEL_NAME,
-		ERROR_REALTIME_INFORMATIONAL_CHANNEL_NOT_SUBSCRIBED,
-		ERROR_REALTIME_INFORMATIONAL_UNSUBSCRIBE_INCOMPLETE,
-		ERROR_REALTIME_INFORMATIONAL_NETWORK_NOT_AVAILABLE,
-		ERROR_REALTIME_INFORMATIONAL_NETWORK_MAX_RETRIES_REACHED,
-		ERROR_REALTIME_INFORMATIONAL_PUBLISH_OPERATION_TIMEOUT,
-		ERROR_REALTIME_INFORMATIONAL_UNKNOWN,
+        /// <summary>
+        /// Error code for realtime pam not enabled warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_PAM_NOT_ENABLED,
+
+        /// <summary>
+        /// Error code for realtime incorrect public or secret key warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_INCORRECT_PUBLIC_OR_SECRET_KEY,
+
+        /// <summary>
+        /// Error code for realtime url length too long warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_URL_LENGTH_TOO_LONG,
+
+        /// <summary>
+        /// Error code for realtime undocumented error warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_UNDOCUMENTED_ERROR,
+
+        /// <summary>
+        /// Error code for realtime unknown warning.
+        /// </summary>
+        ERROR_REALTIME_WARNING_UNKNOWN,
+
+        /// <summary>
+        /// Error code for realtime no network connection info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_NO_NETWORK_CONNECTION,
+
+        /// <summary>
+        /// Error code for realtime duplicate channel subscription info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_DUPLICATE_CHANNEL_SUBSCRIPTION,
+
+        /// <summary>
+        /// Error code for realtime invalid channel name info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_INVALID_CHANNEL_NAME,
+
+        /// <summary>
+        /// Error code for realtime channel not subscribed info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_CHANNEL_NOT_SUBSCRIBED,
+
+        /// <summary>
+        /// Error code for realtime unsubscribe incomplete info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_UNSUBSCRIBE_INCOMPLETE,
+
+        /// <summary>
+        /// Error code for realtime network not available info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_NETWORK_NOT_AVAILABLE,
+
+        /// <summary>
+        /// Error code for realtime network max retries reached info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_NETWORK_MAX_RETRIES_REACHED,
+
+        /// <summary>
+        /// Error code for realtime publish operation timeout info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_PUBLISH_OPERATION_TIMEOUT,
+
+        /// <summary>
+        /// Error code for realtime unknown info.
+        /// </summary>
+        ERROR_REALTIME_INFORMATIONAL_UNKNOWN,
 
 		/// <summary>
 		/// Error code for the realtime service attempting to be used without first registering for realtime access.
