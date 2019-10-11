@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -16,27 +16,30 @@ using Newtonsoft.Json;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Executes a custom endpoint expecting a single result
-	/// </summary>
-	public class CustomEndpointRequest<I, O> : AbstractKinveyClientRequest<O>
+    /// <summary>
+    /// Executes a custom endpoint expecting a single result.
+    /// </summary>
+    /// <typeparam name="I">The type of request.</typeparam>
+    /// <typeparam name="O">The type of response.</typeparam>
+    public class CustomEndpointRequest<I, O> : AbstractKinveyClientRequest<O>
 	{
 		private const string REST_PATH = "rpc/{appKey}/custom/{endpoint}";
 
-		/// <summary>
-		/// The endpoint.
-		/// </summary>
-		[JsonProperty]
+        /// <summary>
+        /// The endpoint.
+        /// </summary>
+        /// <value>The string value with endpoint.</value>
+        [JsonProperty]
 		public string endpoint;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:KinveyXamarin.CustomCommand`2"/> class.
-		/// </summary>
-		/// <param name="client">Client.</param>
-		/// <param name="endpoint">Endpoint.</param>
-		/// <param name="input">Input.</param>
-		/// <param name="urlProperties">URL properties.</param>
-		public CustomEndpointRequest(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomEndpointRequest{I, O}"/> class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="endpoint">Endpoint.</param>
+        /// <param name="input">Input.</param>
+        /// <param name="urlProperties">URL properties.</param>
+        public CustomEndpointRequest(AbstractClient client, string endpoint, I input, Dictionary<string, string> urlProperties) :
 			base(client, "POST", REST_PATH, input, urlProperties)
 		{
 			this.endpoint = endpoint;
