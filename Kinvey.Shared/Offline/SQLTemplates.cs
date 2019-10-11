@@ -17,15 +17,17 @@ using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// These are the structures stored in the database, one for each table
-	/// </summary>
-	public class SQLTemplates{
+    /// <summary>
+    /// These are the structures stored in the database, one for each table
+    /// </summary>
+    [Obsolete("This class has been deprecated.")]
+    public class SQLTemplates{
 
-		/// <summary>
-		/// This maintains the collection names
-		/// </summary>
-		public class TableItem{
+        /// <summary>
+        /// This maintains the collection names
+        /// </summary>
+        [Obsolete("This class has been deprecated.")]
+        public class TableItem{
             /// <summary>
             /// Name.
             /// </summary>
@@ -33,10 +35,11 @@ namespace Kinvey
             public string name { get; set;}
 		}
 
-		/// <summary>
-		/// This maintains the entities themselves.
-		/// </summary>
-		public class OfflineEntity{
+        /// <summary>
+        /// This maintains the entities themselves.
+        /// </summary>
+        [Obsolete("This class has been deprecated.")]
+        public class OfflineEntity{
             /// <summary>
             /// Identifier.
             /// </summary>
@@ -57,10 +60,11 @@ namespace Kinvey
 			public string collection { get; set; }
 		}
 
-		/// <summary>
-		/// This maintains a queue of pending requests.
-		/// </summary>
-		public class QueueItem{
+        /// <summary>
+        /// This maintains a queue of pending requests.
+        /// </summary>
+        [Obsolete("This class has been deprecated.")]
+        public class QueueItem{
             /// <summary>
             /// Key.
             /// </summary>
@@ -87,10 +91,11 @@ namespace Kinvey
             public string action { get; set; }
 		}
 
-		/// <summary>
-		/// This maintains a query and it's responses.
-		/// </summary>
-		public class QueryItem{
+        /// <summary>
+        /// This maintains a query and it's responses.
+        /// </summary>
+        [Obsolete("This class has been deprecated.")]
+        public class QueryItem{
             /// <summary>
             /// Key.
             /// </summary>
@@ -118,10 +123,11 @@ namespace Kinvey
 				
 		}
 
-		/// <summary>
-		/// This maintains the custom request parameters, client app verison, and _id of a queued request
-		/// </summary>
-		public class OfflineMetaData{
+        /// <summary>
+        /// This maintains the custom request parameters, client app verison, and _id of a queued request
+        /// </summary>
+        [Obsolete("This class has been deprecated.")]
+        public class OfflineMetaData{
             /// <summary>
             /// Identifier.
             /// </summary>

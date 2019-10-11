@@ -531,7 +531,8 @@ namespace Kinvey
 			return localAggregateResults;
 		}
 
-		public async Task<List<T>> GetAsync(string query)
+        [Obsolete("This method has been deprecated.")]
+        public async Task<List<T>> GetAsync(string query)
 		{
 			// TODO implement
 			return default(List<T>);

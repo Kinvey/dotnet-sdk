@@ -159,11 +159,12 @@ namespace Kinvey
             }
 		}
 
-		/// <summary>
-		/// Gets the collection tables.
-		/// </summary>
-		/// <returns>The collection tables.</returns>
-		public List<string> getCollectionTables()
+        /// <summary>
+        /// Gets the collection tables.
+        /// </summary>
+        /// <returns>The collection tables.</returns>
+        [Obsolete("This method has been deprecated.")]
+        public List<string> getCollectionTables()
 		{
             lock (DBConnectionSync)
             {
@@ -179,11 +180,12 @@ namespace Kinvey
             }
 		}
 
-		/// <summary>
-		/// Gets the collection tables asynchronously.
-		/// </summary>
-		/// <returns>The collection tables.</returns>
-		public async Task<List<string>> getCollectionTablesAsync ()
+        /// <summary>
+        /// Gets the collection tables asynchronously.
+        /// </summary>
+        /// <returns>The collection tables.</returns>
+        [Obsolete("This method has been deprecated.")]
+        public async Task<List<string>> getCollectionTablesAsync ()
 		{
 			List<SQLTemplates.TableItem> result = await dbConnectionAsync.Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToListAsync ();
 			List<string> collections = new List<string> ();

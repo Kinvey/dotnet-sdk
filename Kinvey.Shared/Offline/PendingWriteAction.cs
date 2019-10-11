@@ -13,6 +13,7 @@
 
 using SQLite;
 using Newtonsoft.Json;
+using System;
 
 namespace Kinvey
 {
@@ -82,7 +83,8 @@ namespace Kinvey
 			return newAction;
 		}
 
-		public NetworkRequest<T> toNetworkRequest <T>(AbstractClient client){
+        [Obsolete("This method has been deprecated.")]
+        public NetworkRequest<T> toNetworkRequest <T>(AbstractClient client){
 			return null;
 		}
 	}
