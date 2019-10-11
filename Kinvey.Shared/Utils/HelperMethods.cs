@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -20,10 +20,13 @@ using System.Net.Http;
 
 namespace Kinvey
 {
-	public class HelperMethods
+    /// <summary>
+    /// This class provides logic for different areas of SDK.
+    /// </summary>
+    public class HelperMethods
 	{
 		/// <summary>
-		/// Gets the Request ID associated with the given response.
+		/// Gets the request ID associated with the given response.
 		/// </summary>
 		/// <returns>The request ID.</returns>
 		/// <param name="response">Response object.</param>
@@ -49,6 +52,11 @@ namespace Kinvey
 			return string.Empty;
 		}
 
+        /// <summary>
+		/// Gets the request start time.
+		/// </summary>
+		/// <returns>String value containing the time.</returns>
+		/// <param name="response">Response object.</param>
         public static string GetRequestStartTime(HttpResponseMessage response)
         {
             string XKinveyRequestStart = string.Empty;
