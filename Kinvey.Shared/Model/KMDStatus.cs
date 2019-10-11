@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -25,14 +25,18 @@ namespace Kinvey
     [DataContract]
 	public class KMDStatus
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KMDPasswordReset"/> class.
-		/// </summary>
-		[Preserve]
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KMDStatus"/> class.
+        /// </summary>
+        [Preserve]
 		public KMDStatus()
 		{
 		}
 
+        /// <summary>
+		/// Gets user state.
+		/// </summary>
+        /// <value>The <see cref="EnumUserStatus"/> value containing the user state.</value>
 		public EnumUserStatus UserEnabledState
 		{
 			get
@@ -47,30 +51,41 @@ namespace Kinvey
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the status of the password reset request for the user.  This field is set 
-		/// to "InProgress" during the fulfillment of the request, and is empty when the request is complete.
-		/// </summary>
-		[Preserve]
+        /// <summary>
+        /// Gets or sets the status of the password reset request for the user.  This field is set 
+        /// to "InProgress" during the fulfillment of the request, and is empty when the request is complete.
+        /// </summary>
+        /// <value>The Value property gets/sets the value of the string field, _value.</value>
+        [Preserve]
 		[JsonProperty("val")]
         [DataMember(Name = "val")]
 		public String Value { get; set; }
 
-		/// <summary>
-		/// Gets or sets the last time when the state of the password reset request changed.  If the status field 
-		/// is set to "InProgress", this field reflects when the password reset request was issued.  If the status 
-		/// field is empty, this field reflects when the password reset request was fulfilled.
-		/// </summary>
-		[Preserve]
+        /// <summary>
+        /// Gets or sets the last time when the state of the password reset request changed.  If the status field 
+        /// is set to "InProgress", this field reflects when the password reset request was issued.  If the status 
+        /// field is empty, this field reflects when the password reset request was fulfilled.
+        /// </summary>
+        /// <value>The LastChange property gets/sets the value of the string field, _lastChange.</value>
+        [Preserve]
 		[JsonProperty("lastChange")]
         [DataMember(Name = "lastChange")]
         public String LastChange { get; set; }
 	}
 
-	public enum EnumUserStatus
+    /// <summary>
+    /// Enumeration for user status.
+    /// </summary>
+    public enum EnumUserStatus
 	{
+        /// <summary>
+		/// The status if a user is enabled.
+		/// </summary>
 		USER_STATUS_ENABLED,
 
+        /// <summary>
+		/// The status if a user is disabled.
+		/// </summary>
 		USER_STATUS_DISABLED
-	}
+    }
 }

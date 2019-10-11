@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -27,10 +27,11 @@ namespace Kinvey
     [DataContract]
 	public class AccessControlList
 	{
-		/// <summary>
-		/// the field name within every JSON object.
-		/// </summary>
-		public const string JSON_FIELD_NAME = "_acl";
+        /// <summary>
+        /// The field name within every JSON object.
+        /// </summary>
+        ///  <value>The string value with the field name.</value>
+        public const string JSON_FIELD_NAME = "_acl";
 
 		/// <summary>
 		/// Gets or sets the creator value.
@@ -107,7 +108,10 @@ namespace Kinvey
             [DataMember(Name = "w")]
             public List<string> Writers { get; set; }
 
-			public ACLGroups()
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ACLGroups"/> class.
+            /// </summary>
+            public ACLGroups()
 			{
 				Readers = new List<string>();
 
@@ -115,7 +119,10 @@ namespace Kinvey
 			}
 		}
 
-		public AccessControlList()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessControlList"/> class.
+        /// </summary>
+        public AccessControlList()
 		{
 			Readers = new List<string>();
 

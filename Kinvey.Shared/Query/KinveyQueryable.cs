@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -18,18 +18,20 @@ using Remotion.Linq;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Kinvey queryable base class.  Used to provide access to LINQ queries in order to process them.
-	/// </summary>
-	public class KinveyQueryable<T> : QueryableBase<T>
+    /// <summary>
+    /// Kinvey queryable base class.  Used to provide access to LINQ queries in order to process them.
+    /// </summary>
+    /// <typeparam name="T">The type of the result items yielded by this query.</typeparam>
+    public class KinveyQueryable<T> : QueryableBase<T>
 	{
-		/// <summary>
-		/// Builds the mongo query corresponding to the LINQ query.
-		/// </summary>
-		public StringQueryBuilder writer;
+        /// <summary>
+        /// Builds the mongo query corresponding to the LINQ query.
+        /// </summary>
+        /// <value>String query builder.</value>
+        public StringQueryBuilder writer;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable{T}"/> class.
+		/// Initializes a new instance of the <see cref="KinveyQueryable{T}"/> class.
 		/// </summary>
 		/// <param name="queryProvider">My query provider.</param>
 		/// <param name="myClass">My class.</param>
@@ -47,7 +49,7 @@ namespace Kinvey
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyQueryable{T}"/> class.
+		/// Initializes a new instance of the <see cref="KinveyQueryable{T}"/> class.
 		/// </summary>
 		/// <param name="provider">Provider.</param>
 		/// <param name="expression">Expression.</param>

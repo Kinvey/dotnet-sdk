@@ -19,6 +19,7 @@ namespace Kinvey
     /// <summary>
 	/// This class represents a response sent from Kinvey backend after a multi insert operation has been executed.
 	/// </summary>
+    /// <typeparam name="T">The type of an entity returned from the backend.</typeparam>
     [JsonObject(MemberSerialization.OptIn)]
     public class KinveyMultiInsertResponse<T>
     {
