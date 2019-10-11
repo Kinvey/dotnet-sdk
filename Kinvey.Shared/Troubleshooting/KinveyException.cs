@@ -40,7 +40,7 @@ namespace Kinvey
         /// <summary>
         /// Gets the error category.
         /// </summary>
-        /// <value>The <see cref="KinveyXamarin.EnumErrorCategory"/>  enumeration for this exception.</value>
+        /// <value>The <see cref="EnumErrorCategory"/>  enumeration for this exception.</value>
         public EnumErrorCategory ErrorCategory
 		{
 			get { return this.errorCategory; }
@@ -49,7 +49,7 @@ namespace Kinvey
 		/// <summary>
 		/// Gets the error code.
 		/// </summary>
-		/// <value>The <see cref="KinveyXamarin.EnumErrorCode"/> enumeration for this exception.</value>
+		/// <value>The <see cref="EnumErrorCode"/> enumeration for this exception.</value>
 		public EnumErrorCode ErrorCode
 		{
 			get { return this.errorCode; }
@@ -159,6 +159,13 @@ namespace Kinvey
 			this.description = errorInfo.Item3;
 		}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyException"/> class.
+        /// </summary>
+        /// <param name="errorCategory">The <see cref="EnumErrorCategory"/>  of the exception.</param>
+        /// <param name="errorCode">The <see cref="EnumErrorCode"/>  of the exception.</param>
+        /// <param name="response">Http response.</param>
+        /// <param name="innerException">Inner exception thrown, if available.</param>
         public KinveyException(EnumErrorCategory errorCategory, EnumErrorCode errorCode, HttpResponseMessage response, Exception innerException)
             : base(innerException.Message, innerException)
 		{
