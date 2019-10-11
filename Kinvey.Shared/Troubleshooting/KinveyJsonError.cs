@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,12 +11,7 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Kinvey
@@ -27,11 +22,11 @@ namespace Kinvey
     [JsonObject(MemberSerialization.OptIn)]
     public class KinveyJsonError
     {
-		/// <summary>
-		/// Gets the request ID that generated this JSON error
-		/// <value>The Kinvey Request ID.</value>
-		/// </summary>
-		[JsonProperty]
+        /// <summary>
+        /// Gets or sets the request ID that generated this JSON error.
+        /// </summary>
+        /// <value>The Kinvey request ID.</value>
+        [JsonProperty]
 		public string RequestID { get; set; }
 
 		/// <summary>
@@ -55,10 +50,11 @@ namespace Kinvey
         [JsonProperty]
         public string Debug {get; set;}
 
-		/// <summary>
-		/// Parse the specified response into an error.
-		/// </summary>
-		/// <param name="response">Response.</param>
+        /// <summary>
+        /// Parses the specified response into an error.
+        /// </summary>
+        /// <param name="response">Http response.</param>
+        /// <returns>Kinvey json error.</returns>
         public static KinveyJsonError parse(HttpResponseMessage response)
         {
             var task = response.Content.ReadAsStringAsync();
