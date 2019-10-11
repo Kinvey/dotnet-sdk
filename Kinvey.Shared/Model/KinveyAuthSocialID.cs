@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -23,22 +23,27 @@ namespace Kinvey
 	[JsonObject(MemberSerialization.OptIn)]
 	public class KinveyAuthSocialID : JObject
 	{
-		public KinveyAuthSocialID()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyAuthSocialID"/> class.
+        /// </summary>
+        public KinveyAuthSocialID()
 		{
 			this.AuthMetaData = new KinveyAuthMetaData();
 		}
 
-		/// <summary>
-		/// Gets or sets the email verification information for a user.
-		/// </summary>
-		[Preserve]
+        /// <summary>
+        /// Email verification information for a user.
+        /// </summary>
+        /// <value>The AuthMetaData property gets/sets the value of the KinveyAuthMetaData field, _authMetaData.</value>
+        [Preserve]
 		[JsonProperty("kinveyAuth")]
 		public KinveyAuthMetaData AuthMetaData { get; set; }
 
-		/// <summary>
-		/// A name-value dictionary of custom attributes of the _socialIdentity object
-		/// </summary>
-		[Preserve]
+        /// <summary>
+        /// A name-value dictionary of custom attributes of the _socialIdentity object
+        /// </summary>
+        /// <value>The dictionary with custom attributes.</value>
+        [Preserve]
 		[JsonExtensionData]
 		public Dictionary<string, JToken> Attributes;
 	}

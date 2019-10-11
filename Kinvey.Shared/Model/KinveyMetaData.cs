@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -18,24 +18,25 @@ using Newtonsoft.Json;
 namespace Kinvey
 {
 	/// <summary>
-	/// JSON representation of the _kmd field present on every entity stored in Kinvey
+	/// JSON representation of the _kmd field present on every entity stored in Kinvey.
 	/// </summary>
 	[JsonObject(MemberSerialization.OptIn)]
     [DataContract]
 	public class KinveyMetaData
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.KinveyMetaData"/> class.
-		/// </summary>
-		[Preserve]
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyMetaData"/> class.
+        /// </summary>
+        [Preserve]
 		public KinveyMetaData ()
 		{
 		}
 
-		/// <summary>
-		/// The field name within every JSON object.
-		/// </summary>
-		public const string JSON_FIELD_NAME = "_kmd";
+        /// <summary>
+        /// The field name within every JSON object.
+        /// </summary>
+        /// <value> The string value with the field name. </value>
+        public const string JSON_FIELD_NAME = "_kmd";
 
 		/// <summary>
 		/// Gets or sets the last modified time.

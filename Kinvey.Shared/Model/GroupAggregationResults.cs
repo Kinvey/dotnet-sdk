@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -21,14 +21,16 @@ namespace Kinvey
 	[JsonObject(MemberSerialization.OptIn)]
 	public class GroupAggregationResults
 	{
-		/// <summary>
-		/// The field used to group the entities prior to aggregation.
-		/// </summary>
-		public string GroupField { get; set; }
+        /// <summary>
+        /// The field used to group the entities prior to aggregation.
+        /// </summary>
+        /// <value>The GroupField property gets/sets the value of the string field, _groupField.</value>
+        public string GroupField { get; set; }
 
-		/// <summary>
-		/// The result of the aggregation for this group
-		/// </summary>
-		public int Result { get; set; }
+        /// <summary>
+        /// The result of the aggregation for this group
+        /// </summary>
+        /// <value>The Result property gets/sets the value of the int field, _result.</value>
+        public int Result { get; set; }
 	}
 }

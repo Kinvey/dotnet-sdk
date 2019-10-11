@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -13,19 +13,40 @@
 
 namespace Kinvey
 {
-	public static partial class Constants
+    /// <summary>
+    /// This class provides different constants for SDK.
+    /// </summary>
+    public static partial class Constants
 	{
-		// Const Characters
-		public const char CHAR_AMPERSAND = '&';
-		public const char CHAR_EQUAL = '=';
+        // Const Characters
+
+        /// <summary>
+        /// The constant representing the ampersand character.
+        /// </summary>
+        /// <value>The ampersand character.</value>
+        public const char CHAR_AMPERSAND = '&';
+        /// <summary>
+        /// The constant representing the equal character.
+        /// </summary>
+        /// <value>The equal character.</value>
+        public const char CHAR_EQUAL = '=';
 		internal const char CHAR_COMMA = ',';
 		internal const char CHAR_PERIOD = '.';
 		internal const char CHAR_QUOTATION_MARK = '"';
 		internal const char MIC_ID_SEPARATOR = CHAR_PERIOD;
 
-		// Const Strings
-		public const string STR_AMPERSAND = "&";
-		public const string STR_EQUAL = "=";
+        // Const Strings
+
+        /// <summary>
+        /// The constant representing the string with the ampersand character.
+        /// </summary>
+        /// <value>The string with the ampersand character.</value>
+        public const string STR_AMPERSAND = "&";
+        /// <summary>
+        /// The constant representing the string with the equal character.
+        /// </summary>
+        /// <value>The string with the equal character.</value>
+        public const string STR_EQUAL = "=";
 		internal const string STR_SQUARE_BRACKET_OPEN = "[";
 		internal const string STR_SQUARE_BRACKET_CLOSE = "]";
         internal const string STR_HYPHEN = "-";
@@ -35,18 +56,67 @@ namespace Kinvey
 		internal const string STR_PATH_CUSTOM_ENDPOINT = "/custom/";
 		internal const string STR_PATH_REALTIME_STREAM = "/stream/";
 
-		// Authentication Strings
-		public const string STR_ACCESS_TOKEN = "AccessToken";
-		public const string STR_AUTH_TOKEN = "AuthToken";
-		public const string STR_REFRESH_TOKEN = "RefreshToken";
-		public const string STR_REDIRECT_URI = "RedirectUri";
-		public const string STR_USERNAME = "UserName";
-		public const string STR_ATTRIBUTES = "Attributes";
-		public const string STR_USER_KMD = "UserKMD";
-		public const string STR_CREDENTIAL = "credential";
+        // Authentication Strings
+
+        /// <summary>
+        /// The constant representing the string with <c>AccessToken</c> value.
+        /// </summary>
+        /// <value>The string with <c>AccessToken</c> value.</value>
+        public const string STR_ACCESS_TOKEN = "AccessToken";
+        /// <summary>
+        /// The constant representing the string with <c>AuthToken</c> value.
+        /// </summary>
+        /// <value>The string with <c>AuthToken</c> value.</value>
+        public const string STR_AUTH_TOKEN = "AuthToken";
+        /// <summary>
+        /// The constant representing the string with <c>RefreshToken</c> value.
+        /// </summary>
+        /// <value>The string with <c>RefreshToken</c> value.</value>
+        public const string STR_REFRESH_TOKEN = "RefreshToken";
+        /// <summary>
+        /// The constant representing the string with <c>RedirectUri</c> value.
+        /// </summary>
+        /// <value>The string with <c>RedirectUri</c> value.</value>
+        public const string STR_REDIRECT_URI = "RedirectUri";
+        /// <summary>
+        /// The constant representing the string with <c>UserName</c> value.
+        /// </summary>
+        /// <value>The string with <c>UserName</c> value.</value>
+        public const string STR_USERNAME = "UserName";
+        /// <summary>
+        /// The constant representing the string with <c>Attributes</c> value.
+        /// </summary>
+        /// <value>The string with <c>Attributes</c> value.</value>
+        public const string STR_ATTRIBUTES = "Attributes";
+        /// <summary>
+        /// The constant representing the string with <c>UserKMD</c> value.
+        /// </summary>
+        /// <value>The string with <c>UserKMD</c> value.</value>
+        public const string STR_USER_KMD = "UserKMD";
+        /// <summary>
+        /// The constant representing the string with <c>credential</c> value.
+        /// </summary>
+        /// <value>The string with <c>credential</c> value.</value>
+        public const string STR_CREDENTIAL = "credential";
+        /// <summary>
+        /// The constant representing the string with <c>v3</c> value.
+        /// </summary>
+        /// <value>The string with <c>v3</c> value.</value>
         public const string STR_MIC_DEFAULT_VERSION = "v3";
+        /// <summary>
+        /// The constant representing the string with <c>code=</c> value.
+        /// </summary>
+        /// <value>The string with <c>code=</c> value.</value>
         public const string STR_MIC_REDIRECT_CODE = "code=";
+        /// <summary>
+        /// The constant representing the string with <c>error=</c> value.
+        /// </summary>
+        /// <value>The string with <c>error=</c> value.</value>
         public const string STR_MIC_REDIRECT_ERROR = "error=";
+        /// <summary>
+        /// The constant representing the string with <c>error_description=</c> value.
+        /// </summary>
+        /// <value>The string with <c>error_description=</c> value.</value>
         public const string STR_MIC_REDIRECT_ERROR_DESCRIPTION = "error_description=";
 
         // Realtime Strings
