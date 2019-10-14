@@ -12,6 +12,7 @@
 // contents is a violation of applicable laws.
 
 using Newtonsoft.Json;
+using System;
 
 namespace Kinvey
 {
@@ -19,6 +20,7 @@ namespace Kinvey
 	/// The class represents Kinvey realtime message.
 	/// </summary>
     /// <typeparam name="T">The type of message.</typeparam>
+    [Obsolete("This class has been deprecated.")]
 	[JsonObject(MemberSerialization.OptOut)]
 	public class RealtimeMessage<T>
 	{
