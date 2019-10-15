@@ -715,7 +715,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID:savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -724,7 +724,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -733,7 +733,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -797,7 +797,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -806,7 +806,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -815,7 +815,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -879,7 +879,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -888,7 +888,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -897,7 +897,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -962,7 +962,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -971,7 +971,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -980,7 +980,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1045,7 +1045,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1054,7 +1054,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1063,7 +1063,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1135,7 +1135,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1144,7 +1144,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1153,7 +1153,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1225,7 +1225,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1234,7 +1234,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1243,7 +1243,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1315,7 +1315,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1324,7 +1324,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1333,7 +1333,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1405,7 +1405,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1414,7 +1414,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1423,7 +1423,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1494,7 +1494,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1503,7 +1503,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1512,7 +1512,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1585,7 +1585,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1594,7 +1594,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1603,7 +1603,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1676,7 +1676,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1685,7 +1685,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1694,7 +1694,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1765,7 +1765,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1774,7 +1774,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1783,7 +1783,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1854,7 +1854,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1863,7 +1863,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1872,7 +1872,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1943,7 +1943,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1952,7 +1952,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1961,7 +1961,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2034,7 +2034,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2043,7 +2043,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2052,7 +2052,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2124,7 +2124,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2133,7 +2133,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2142,7 +2142,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2214,7 +2214,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2223,7 +2223,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2232,7 +2232,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2304,7 +2304,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2313,7 +2313,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2322,7 +2322,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2395,7 +2395,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2404,7 +2404,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2413,7 +2413,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2487,7 +2487,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2496,7 +2496,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2505,7 +2505,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2579,7 +2579,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2588,7 +2588,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2597,7 +2597,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2672,7 +2672,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2681,7 +2681,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2690,7 +2690,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2764,7 +2764,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem1 = await todoStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await todoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2773,7 +2773,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem2 = await todoStore.FindByIDAsync(savedItem2.ID);
+                existingItem2 = await todoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2782,7 +2782,7 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItem3 = await todoStore.FindByIDAsync(savedItem3.ID);
+                existingItem3 = await todoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -3273,7 +3273,7 @@ namespace Kinvey.Tests
 
             // Act
             var count = 0u;
-            count = await todoStore.GetCountAsync();
+            count = await todoStore.GetCountAsync(query: null, ct: default);
 
             // Assert
             Assert.AreEqual(2u, count);
@@ -3318,7 +3318,7 @@ namespace Kinvey.Tests
             // Act
             var count = 0u;
             var query = todoStore.Where(e => e.Details.Equals("details for 2+"));
-            count = await todoStore.GetCountAsync(query);
+            count = await todoStore.GetCountAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(t1.ID);
@@ -3353,7 +3353,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.GetCountAsync();
+                    await todoStore.GetCountAsync(query: null, ct:default);
                 });
 
                 // Assert
@@ -3384,7 +3384,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await todoStore.GetCountAsync();
+                await todoStore.GetCountAsync(query: null, ct: default);
             });
 
             // Assert
@@ -3413,7 +3413,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.GetCountAsync();
+                    await todoStore.GetCountAsync(query: null, ct: default);
                 });
 
                 // Assert
@@ -3443,7 +3443,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.GetCountAsync();
+                    await todoStore.GetCountAsync(query: null, ct: default);
                 });
 
                 // Assert
@@ -3473,7 +3473,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.GetCountAsync();
+                    await todoStore.GetCountAsync(query: null, ct: default);
                 });
 
                 // Assert
@@ -3503,7 +3503,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.GetCountAsync();
+                    await todoStore.GetCountAsync(query: null, ct: default);
                 });
 
                 // Assert
@@ -3552,7 +3552,7 @@ namespace Kinvey.Tests
             // Act
             List<ToDo> todoList = new List<ToDo>();
 
-            todoList = await todoStore.FindAsync();
+            todoList = await todoStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.IsNotNull(todoList);
@@ -3607,7 +3607,7 @@ namespace Kinvey.Tests
                 // Assert
                 Exception er = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
                 {
-                    await store.FindAsync();
+                    await store.FindAsync(query: null, ct: default);
                 });
 
                 Assert.IsNotNull(er);
@@ -3641,7 +3641,7 @@ namespace Kinvey.Tests
 
 			// Act
 			ToDo entity = null;
-			entity = await todoStore.FindByIDAsync(t.ID);
+			entity = await todoStore.FindByIDAsync(entityID: t.ID, ct: default);
 
 			// Assert
 			Assert.IsNotNull(entity);
@@ -3806,7 +3806,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -3861,7 +3861,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -3912,7 +3912,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -3965,7 +3965,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -4026,7 +4026,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -4088,7 +4088,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -4150,7 +4150,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -4218,7 +4218,7 @@ namespace Kinvey.Tests
 
             var listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -4279,7 +4279,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -4342,7 +4342,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -4403,7 +4403,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -4464,7 +4464,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -4516,7 +4516,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -4569,7 +4569,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4623,7 +4623,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4677,7 +4677,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4736,7 +4736,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4788,7 +4788,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4840,7 +4840,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4892,7 +4892,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4944,7 +4944,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -4996,7 +4996,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -5048,7 +5048,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 
             // Teardown
@@ -5102,7 +5102,7 @@ namespace Kinvey.Tests
 			// Act
             Exception e = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
 			{
-				listToDo = await todoStore.FindAsync(query);
+				listToDo = await todoStore.FindAsync(query: query, ct: default);
 			});
 
 			// Assert
@@ -5157,7 +5157,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -5199,7 +5199,7 @@ namespace Kinvey.Tests
             newItem2.DueDate = "2016-04-22T19:56:00.963Z";
 
             DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
-            foreach (var item in await todoStore.FindAsync())
+            foreach (var item in await todoStore.FindAsync(query: null, ct: default))
             {
                 await todoStore.RemoveAsync(item.ID);
             }
@@ -5214,7 +5214,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -5271,7 +5271,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -5330,7 +5330,7 @@ namespace Kinvey.Tests
 
             List<ToDo> listToDo = new List<ToDo>();
 
-            listToDo = await todoStore.FindAsync(query);
+            listToDo = await todoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(newItem1.ID);
@@ -5387,7 +5387,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -5438,7 +5438,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -5490,7 +5490,7 @@ namespace Kinvey.Tests
 
 			List<ToDo> listToDo = new List<ToDo>();
 
-			listToDo = await todoStore.FindAsync(query);
+			listToDo = await todoStore.FindAsync(query: query, ct: default);
 
 			// Teardown
 			await todoStore.RemoveAsync(newItem1.ID);
@@ -5526,7 +5526,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.FindByIDAsync(TestSetup.id_for_400_error_response_fake);
+                    await todoStore.FindByIDAsync(entityID: TestSetup.id_for_400_error_response_fake, ct: default);
                 });
 
                 // Assert
@@ -5557,7 +5557,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await todoStore.FindByIDAsync(Guid.NewGuid().ToString());
+                await todoStore.FindByIDAsync(entityID: Guid.NewGuid().ToString(), ct: default);
             });
 
             // Assert
@@ -5586,7 +5586,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.FindByIDAsync(TestSetup.id_for_403_error_response_fake);
+                    await todoStore.FindByIDAsync(entityID: TestSetup.id_for_403_error_response_fake, ct: default);
                 });
 
                 // Assert
@@ -5617,7 +5617,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await todoStore.FindByIDAsync(Guid.NewGuid().ToString());
+                await todoStore.FindByIDAsync(entityID: Guid.NewGuid().ToString(), ct: default);
             });
 
             // Assert
@@ -5646,7 +5646,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.FindByIDAsync(TestSetup.id_for_409_error_response_fake);
+                    await todoStore.FindByIDAsync(entityID: TestSetup.id_for_409_error_response_fake, ct: default);
                 });
 
                 // Assert
@@ -5676,7 +5676,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await todoStore.FindByIDAsync(TestSetup.id_for_500_error_response_fake);
+                    await todoStore.FindByIDAsync(entityID: TestSetup.id_for_500_error_response_fake, ct: default);
                 });
 
                 // Assert
@@ -5738,7 +5738,7 @@ namespace Kinvey.Tests
 
             // Act
             int avg = 0;
-            List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age");
+            List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "Age", query: null, ct: default);
             foreach (var gar in arrGAR)
             {
                 avg = gar.Result;
@@ -5793,7 +5793,7 @@ namespace Kinvey.Tests
 
             // Act
             int max = 0;
-            List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age");
+            List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_MAX, groupField: "", aggregateField: "Age", query: null, ct: default);
             foreach (var gar in arrGAR)
             {
                 max = gar.Result;
@@ -5847,7 +5847,8 @@ namespace Kinvey.Tests
 
 			// Act
 			int min = 0;
-			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age");
+			List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_MIN, groupField: "", aggregateField: "Age",
+                query: null, ct: default);
 			foreach (var gar in arrGAR)
 			{
 				min = gar.Result;
@@ -5903,7 +5904,7 @@ namespace Kinvey.Tests
 
             // Act
             int sum = 0;
-            List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "LastName", "Age", query);
+            List<GroupAggregationResults> arrGAR = await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_SUM, groupField: "LastName", aggregateField: "Age", query: query, ct: default);
             foreach (var gar in arrGAR)
             {
                 if (gar.GroupField.Equals("Bluth"))
@@ -5946,7 +5947,8 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Name");
+                    await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "Name",
+                        query: null, ct: default);
                 });
 
                 // Assert
@@ -5977,7 +5979,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await store.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Name");
+                await store.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "Name", query: null,  ct: default);
             });
 
             // Assert
@@ -6006,7 +6008,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "FirstName");
+                    await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "FirstName", query: null, ct: default);
                 });
 
                 // Assert
@@ -6036,7 +6038,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "FirstName");
+                    await personStore.GroupAndAggregateAsync(reduceFunction:EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "FirstName", query: null, ct: default);
                 });
 
                 // Assert
@@ -6066,7 +6068,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "FirstName");
+                    await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "FirstName", query: null, ct: default);
                 });
 
                 // Assert
@@ -6096,7 +6098,7 @@ namespace Kinvey.Tests
                 // Act
                 var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
                 {
-                    await personStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "FirstName");
+                    await personStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "FirstName", query: null, ct: default);
                 });
 
                 // Assert
@@ -6175,7 +6177,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var existingToDos = await todoStore.FindAsync();
+            var existingToDos = await todoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
@@ -6214,7 +6216,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var existingToDos = await todoStore.FindAsync();
+            var existingToDos = await todoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
@@ -6253,7 +6255,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+            var existingToDo = await todoStore.FindByIDAsync(entityID: savedToDo.ID, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
@@ -6291,7 +6293,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDo = await todoStore.SaveAsync(newItem);
 
-            var existingToDos = await todoStore.FindAsync();
+            var existingToDos = await todoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
@@ -6332,7 +6334,7 @@ namespace Kinvey.Tests
                 var savedToDo = await todoStore.SaveAsync(newItem);
             });
 
-            var toDosNetwork = await todoStore.FindAsync();
+            var toDosNetwork = await todoStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.IsNotNull(toDosNetwork);
@@ -6561,7 +6563,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
 
-            var existingToDos = await todoStoreNetwork.FindAsync();
+            var existingToDos = await todoStoreNetwork.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoStoreNetwork.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6607,7 +6609,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
 
-            var existingToDos = await todoStoreNetwork.FindAsync();
+            var existingToDos = await todoStoreNetwork.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoStoreNetwork.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6665,7 +6667,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
 
-            var existingToDos = await todoStoreNetwork.FindAsync();
+            var existingToDos = await todoStoreNetwork.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoStoreNetwork.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6722,7 +6724,7 @@ namespace Kinvey.Tests
                 // Act
                 var savedToDos = await todoStoreNetwork.SaveAsync(toDos);
 
-                var existingToDos = await todoStoreNetwork.FindAsync();
+                var existingToDos = await todoStoreNetwork.FindAsync(query: null, ct: default);
 
                 // Teardown
                 await todoStoreNetwork.RemoveAsync(savedToDos.Entities[0].ID);
@@ -7793,7 +7795,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await invalidToDoStore.FindByIDAsync(savedToDo.ID);
+                await invalidToDoStore.FindByIDAsync(entityID: savedToDo.ID, ct: default);
             });
                     
             // Teardown

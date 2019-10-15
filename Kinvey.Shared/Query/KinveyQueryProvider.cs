@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -24,15 +24,17 @@ namespace Kinvey
 	/// </summary>
 	public class KinveyQueryProvider : QueryProviderBase
 	{
-		/// <summary>
-		/// The query expression used to create the QueryModel.
-		/// </summary>
-		public Expression queryExpression;
+        /// <summary>
+        /// The query expression used to create the QueryModel.
+        /// </summary>
+        ///  <value>The instance of the <see cref="Expression"/>.</value>
+        public Expression queryExpression;
 
-		/// <summary>
-		/// The QueryModel from the given expression.
-		/// </summary>
-		public QueryModel qm;
+        /// <summary>
+        /// The QueryModel from the given expression.
+        /// </summary>
+        /// <value>The instance of the <see cref="QueryModel"/> </value>
+        public QueryModel qm;
 
 		internal KinveyQueryProvider(Type queryableType, IQueryParser parser, IQueryExecutor executor)
 			: base(parser, executor)

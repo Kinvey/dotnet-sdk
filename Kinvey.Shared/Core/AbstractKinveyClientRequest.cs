@@ -368,13 +368,14 @@ namespace Kinvey
             return httpClient;
         }
 
-		#endregion
+        #endregion
 
-		#region Request execution
-		/// <summary>
-		/// Executes the request without any parsing.
-		/// </summary>
-		/// <returns>The unparsed.</returns>
+        #region Request execution
+        /// <summary>
+        /// Executes the request without any parsing.
+        /// </summary>
+        /// <returns>The unparsed.</returns>
+        [Obsolete("This method has been deprecated. Please use ExecuteUnparsedAsync() instead.")]
         public HttpResponseMessage ExecuteUnparsed()
         {
             var client = InitializeRestClient();
@@ -564,6 +565,7 @@ namespace Kinvey
         /// Executes this request synchronously.
         /// </summary>
         /// <returns> The type of response. </returns>
+        [Obsolete("This method has been deprecated. Please use ExecuteAsync() instead.")]
         public virtual T Execute()
         {
             var response = ExecuteUnparsed();

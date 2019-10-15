@@ -292,11 +292,13 @@ namespace Kinvey
 		/// </summary>
 		ERROR_REALTIME_ERROR,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
 		/// Error code for realtime invalid cipher key issue.
 		/// </summary>
 		ERROR_REALTIME_CRITICAL_VERIFY_CIPHER_KEY,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime incorrect subscribe key issue.
         /// </summary>
@@ -307,136 +309,163 @@ namespace Kinvey
         /// </summary>
         ERROR_REALTIME_CRITICAL_NOT_AUTHORIZED_ON_CHANNEL,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime internal server error issue.
         /// </summary>
         ERROR_REALTIME_CRITICAL_INTERNAL_SERVER_ERROR,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime bad gateway issue.
         /// </summary>
         ERROR_REALTIME_CRITICAL_BAD_GATEWAY,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime gateway timeout issue.
         /// </summary>
 		ERROR_REALTIME_CRITICAL_GATEWAY_TIMEOUT,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime unknown issue.
         /// </summary>
         ERROR_REALTIME_CRITICAL_UNKNOWN,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime verifying hostname warning.
         /// </summary>
         ERROR_REALTIME_WARNING_VERIFY_HOSTNAME,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime checking network connection warning.
         /// </summary>
         ERROR_REALTIME_WARNING_CHECK_NETWORK_CONNECTION,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime no network connection warning.
         /// </summary>
         ERROR_REALTIME_WARNING_NO_NETWORK_CONNECTION,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime verifying cipher key warning.
         /// </summary>
         ERROR_REALTIME_WARNING_VERIFY_CIPHER_KEY,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime protocol warning.
         /// </summary>
         ERROR_REALTIME_WARNING_PROTOCOL_ERROR,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime server protocol violation warning.
         /// </summary>
         ERROR_REALTIME_WARNING_SERVER_PROTOCOL_VIOLATION,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime message too large warning.
         /// </summary>
         ERROR_REALTIME_WARNING_MESSAGE_TOO_LARGE,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime bad request warning.
         /// </summary>
         ERROR_REALTIME_WARNING_BAD_REQUEST,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime invalid publish key warning.
         /// </summary>
 		ERROR_REALTIME_WARNING_INVALID_PUBLISH_KEY,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime pam not enabled warning.
         /// </summary>
         ERROR_REALTIME_WARNING_PAM_NOT_ENABLED,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime incorrect public or secret key warning.
         /// </summary>
         ERROR_REALTIME_WARNING_INCORRECT_PUBLIC_OR_SECRET_KEY,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime url length too long warning.
         /// </summary>
         ERROR_REALTIME_WARNING_URL_LENGTH_TOO_LONG,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime undocumented error warning.
         /// </summary>
         ERROR_REALTIME_WARNING_UNDOCUMENTED_ERROR,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime unknown warning.
         /// </summary>
         ERROR_REALTIME_WARNING_UNKNOWN,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime no network connection info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_NO_NETWORK_CONNECTION,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime duplicate channel subscription info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_DUPLICATE_CHANNEL_SUBSCRIPTION,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime invalid channel name info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_INVALID_CHANNEL_NAME,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime channel not subscribed info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_CHANNEL_NOT_SUBSCRIBED,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime unsubscribe incomplete info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_UNSUBSCRIBE_INCOMPLETE,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime network not available info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_NETWORK_NOT_AVAILABLE,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime network max retries reached info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_NETWORK_MAX_RETRIES_REACHED,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime publish operation timeout info.
         /// </summary>
         ERROR_REALTIME_INFORMATIONAL_PUBLISH_OPERATION_TIMEOUT,
 
+        [Obsolete("This enum value has been deprecated.")]
         /// <summary>
         /// Error code for realtime unknown info.
         /// </summary>
