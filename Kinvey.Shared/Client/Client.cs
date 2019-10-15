@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using SQLite;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -63,10 +62,14 @@ namespace Kinvey
 			}
 		}
 
+        /// <summary>
+        /// Device platform.
+        /// </summary>
+        /// <value>The enumeration value with device platform.</value>
         public Constants.DevicePlatform DevicePlatform { get; private set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.Client"/> class.  Use a Client.Builder to create one.
+		/// Initializes a new instance of the <see cref="Client"/> class.  Use a Client.Builder to create one.
 		/// </summary>
 		/// <param name="client">The RestClient.</param>
 		/// <param name="rootUrl">The Root URL of the Kinvey instance this is associated with.</param>
@@ -78,7 +81,7 @@ namespace Kinvey
 
 
 		/// <summary>
-		/// Execute custom endpoints
+		/// Execute custom endpoints.
 		/// </summary>
 		/// <returns>A configured instance of the Custom Endpoint object.</returns>
 		/// <typeparam name="I">The Type of the input.</typeparam>
@@ -91,7 +94,7 @@ namespace Kinvey
 		/// <summary>
 		/// Pings the backend service in order to ensure that a connection can be established to Kinvey from this client.
 		/// </summary>
-		/// <returns>The <see cref="KinveyXamarin.PingResponse"/> object, from which the version can be accessed. </returns>
+		/// <returns>The <see cref="PingResponse"/> object, from which the version can be accessed. </returns>
 		public async Task<PingResponse> PingAsync()
 		{
             var urlParameters = new Dictionary<string, string>
@@ -128,7 +131,7 @@ namespace Kinvey
 
 #pragma warning disable IDE1006 // Naming Styles
             /// <summary>
-            /// A reference to the local file system -- going to be platform dependent
+            /// A reference to the local file system going to be platform dependent
             /// </summary>
             /// <value>The file path.</value>
             [Obsolete("This property has been deprecated. Please use FilePath instead.")]
@@ -146,7 +149,7 @@ namespace Kinvey
 #pragma warning restore IDE1006 // Naming Styles
 
             /// <summary>
-            /// A reference to the local file system -- going to be platform dependent
+            /// A reference to the local file system going to be platform dependent
             /// </summary>
             /// <value>The file path.</value>
             public string FilePath { get; set; }
@@ -169,11 +172,13 @@ namespace Kinvey
 
             private string apiVersion;
 
-			/// <summary>
-			/// Initializes a new instance of the <see cref="T:KinveyXamarin.Client.Builder"/> class.
-			/// </summary>
-			/// <param name="appKey">App key from Kinvey</param>
-			/// <param name="appSecret">App secret from Kinvey</param>
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Builder"/> class.
+            /// </summary>
+            /// <param name="appKey">App key from Kinvey.</param>
+            /// <param name="appSecret">App secret from Kinvey.</param>
+            /// <param name="filePath">File path.</param>
+            /// <param name="devicePlatform">[optional] Device platform.</param>
             protected Builder(string appKey, string appSecret, string filePath, Constants.DevicePlatform devicePlatform = Constants.DevicePlatform.PCL)
                 : base(new HttpClient(), new KinveyClientRequestInitializer(appKey, appSecret, new KinveyHeaders(devicePlatform)))
 			{
@@ -183,10 +188,11 @@ namespace Kinvey
                 this.devicePlatform = devicePlatform;
 			}
 
-			/// <summary>
-			/// This method creates and initializes a client for use with Kinvey.
-			/// </summary>
-			public virtual Client Build()
+            /// <summary>
+            /// This method creates and initializes a client for use with Kinvey.
+            /// </summary>
+            /// <returns>Kinvey client.</returns>  
+            public virtual Client Build()
 			{
                 RequirementsValidator.ValidateMissingGetSetAccessors();
 
@@ -249,7 +255,7 @@ namespace Kinvey
             /// <summary>
             ///Set the base url to use for this client, if it is a custom one.
             /// </summary>
-            /// <returns>This builder..</returns>
+            /// <returns>This builder.</returns>
             /// <param name="url">URL.</param>
             public Builder setBaseURL(string url)
             {
@@ -257,6 +263,11 @@ namespace Kinvey
                 return this;
             }
 
+            /// <summary>
+            ///Sets MIC host name url.
+            /// </summary>
+            /// <returns>This builder.</returns>
+            /// <param name="url">URL.</param>
             public Builder setMICHostName(string url)
             {
                 this.MICHostName = url;
@@ -266,7 +277,7 @@ namespace Kinvey
             /// <summary>
             /// Set any appended service url to the base url, if necessary.
             /// </summary>
-            /// <returns>The service path.</returns>
+            /// <returns>The current builder.</returns>
             /// <param name="servicePath">Service path.</param>
             public Builder setServicePath(string servicePath)
             {
@@ -290,7 +301,7 @@ namespace Kinvey
             /// <summary>
             /// Set the directory to use for offline.
             /// </summary>
-            /// <returns>The file path.</returns>
+            /// <returns>The current builder.</returns>
             /// <param name="filePath">Path.</param>
             public Builder SetFilePath(string filePath)
             {
@@ -299,9 +310,9 @@ namespace Kinvey
             }
 
             /// <summary>
-            /// Sets the logger action -- the ClientLogger class uses this to write to logs.
+            /// Sets the logger action.
             /// </summary>
-            /// <returns>The logger.</returns>
+            /// <returns>The current builder.</returns>
             /// <param name="log">Log.</param>
             public Builder setLogger(Action<string> log){
 				this.log = log;
@@ -309,9 +320,9 @@ namespace Kinvey
 			}
 
 			/// <summary>
-			/// Sets the project identifier of the <see cref="KinveyXamarin.Client"/>.
+			/// Sets the project identifier of the <see cref="Client"/>.
 			/// </summary>
-			/// <returns>The <see cref="KinveyXamarin.Client.Builder"/> object</returns>
+			/// <returns>The <see cref="Client.Builder"/> object.</returns>
 			/// <param name="senderid">Sender ID.</param>
 			public Builder SetProjectId(string senderid)
 			{
@@ -319,18 +330,33 @@ namespace Kinvey
 				return this;
 			}
 
+            /// <summary>
+            /// Sets Http client.
+            /// </summary>
+            /// <returns>The current builder.</returns>
+            /// <param name="client">Http client.</param>
             public Builder SetRestClient(HttpClient client)
             {
                 this.HttpClient = client;
                 return this;
             }
 
+            /// <summary>
+            /// Sets SSO group key.
+            /// </summary>
+            /// <returns>The current builder.</returns>
+            /// <param name="ssoGroupKey">SSO group key.</param>
 			public Builder SetSSOGroupKey(string ssoGroupKey)
 			{
 				this.ssoGroupKey = ssoGroupKey;
 				return this;
 			}
 
+            /// <summary>
+            /// Sets the instance identifier of Kinvey application service.
+            /// </summary>
+            /// <returns>The current builder.</returns>
+            /// <param name="instanceID">Instance identifier.</param>
             public Builder SetInstanceID(string instanceID)
             {
                 this.instanceID = instanceID;

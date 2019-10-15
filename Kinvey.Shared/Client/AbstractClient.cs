@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -34,6 +34,10 @@ namespace Kinvey
 		/// <value>The network factory</value>
 		public NetworkFactory NetworkFactory { get ; set ;}
 
+        /// <summary>
+		/// User request factory, which is used to build requests against the backend.
+		/// </summary>
+		/// <value>The UserFactory  property gets/sets the value of the UserRequestFactory field, _userFactory.</value>
 		public UserRequestFactory UserFactory { get; set; }
 
 		/// <summary>
@@ -44,9 +48,10 @@ namespace Kinvey
 		/// <value>The SSO group key (defaulted to app key).</value>
 		public string SSOGroupKey { get; protected set; }
 
-		/// <summary>
-		/// The default base URL.
-		/// </summary>
+        /// <summary>
+        /// The default base URL.
+        /// </summary>
+        /// <value>The string value containing default base URL.</value>
         public const string DefaultBaseUrl = "https://baas.kinvey.com/";
 
 		private string micHostName;
@@ -80,10 +85,11 @@ namespace Kinvey
 			}
 		}
 
-		/// <summary>
-		/// Sets the MIC API version. This is relevant in case you need to use a specific version of MIC such as an Early Adopter release.
-		/// </summary>
-		public string MICApiVersion
+        /// <summary>
+        /// Sets the MIC API version. This is relevant in case you need to use a specific version of MIC such as an Early Adopter release.
+        /// </summary>
+        /// <value>The MICApiVersion property gets/sets the value of the string field, micApiVersion.</value>
+        public string MICApiVersion
 		{
 			get { return this.micApiVersion; }
 			set
@@ -97,34 +103,39 @@ namespace Kinvey
 			}
 		}
 
-		/// <summary>
-		/// The redirect URI for MIC login requests
-		/// </summary>
-		public string MICRedirectURI { get; set;}
+        /// <summary>
+        /// The redirect URI for MIC login requests
+        /// </summary>
+        /// <value>The MICRedirectURI property gets/sets the value of the string field, _mICRedirectURI.</value>
+        public string MICRedirectURI { get; set;}
 
-		/// <summary>
-		/// The callback for the MIC login, this is used after the redirect
-		/// </summary>
-		public KinveyDelegate<User> MICDelegate;
+        /// <summary>
+        /// The callback for the MIC login, this is used after the redirect.
+        /// </summary>
+        /// <value>The instance of Kinvey delegate.</value>
+        public KinveyDelegate<User> MICDelegate;
 
-		/// <summary>
-		/// The default service path.
-		/// </summary>
+        /// <summary>
+        /// The default service path.
+        /// </summary>
+        /// <value>The string value containing default service path.</value>
         public const string DefaultServicePath = "";
 
-		/// <summary>
-		/// The active user, whose credentials are currently used for authenticating requests.
-		/// </summary>
-		protected User activeUser;
+        /// <summary>
+        /// The active user, whose credentials are currently used for authenticating requests.
+        /// </summary>
+        /// <value>Kinvey user.</value>
+        protected User activeUser;
 
 		/// <summary>
 		/// The current credential store.
 		/// </summary>
         private readonly ICredentialStore store;
 
-		/// <summary>
-		/// The access lock
-		/// </summary>
+        /// <summary>
+        /// The access lock.
+        /// </summary>
+        /// <value>Lock object.</value>
         protected object Lock = new object();
 
 		/// <summary>
@@ -144,13 +155,13 @@ namespace Kinvey
 			this.UserFactory = new UserRequestFactory(this);
         }
 
-		/// <summary>
-		/// Access file operations through this.
-		/// </summary>
-		public File File()
+        /// <summary>
+        /// Access file operations through this.
+        /// </summary>
+        /// <returns>Kinvey file.</returns>
+        public File File()
 		{
-			return new File (this);
-	
+			return new File (this);	
 		}
 
 		/// <summary>
@@ -227,7 +238,6 @@ namespace Kinvey
 		public new abstract class Builder : AbstractKinveyClient.Builder
         {
             private ICredentialStore store;
-            //private Properties props = new Properties();
 
 			/// <summary>
 			/// Initializes a new instance of the <see cref="AbstractClient.Builder"/> class.
@@ -249,7 +259,7 @@ namespace Kinvey
 			}
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="T:KinveyXamarin.AbstractClient.Builder"/> class.
+			/// Initializes a new instance of the <see cref="AbstractClient.Builder"/> class.
 			/// </summary>
 			/// <param name="transport">The REST client used to make network requests.</param>
 			/// <param name="baseUrl">Base URL.</param>
@@ -273,6 +283,10 @@ namespace Kinvey
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
 
+        /// <summary>
+        /// Performs all object cleanup.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
         protected virtual void Dispose(bool disposing)
         {
             lock (this)
@@ -297,13 +311,17 @@ namespace Kinvey
             }
         }
 
-        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        /// <summary>
+        /// Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
+        /// </summary>
         ~AbstractClient() {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs all object cleanup, so the garbage collector no longer needs to call the objects Object.Finalize override.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
