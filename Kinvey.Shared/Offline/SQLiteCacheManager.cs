@@ -1,4 +1,4 @@
-// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -14,8 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using SQLite;
 
@@ -82,13 +80,14 @@ namespace Kinvey
         /// <summary>
         /// Gets or sets the database file path.
         /// </summary>
-        /// <value>The dbpath.</value>
+        /// <value>The database file path.</value>
         public string dbpath { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SQLiteCacheManager"/> class.
-		/// </summary>
-		public SQLiteCacheManager(string filePath)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteCacheManager"/> class.
+        /// </summary>
+        /// <param name="filePath">File path.</param>
+        public SQLiteCacheManager(string filePath)
 		{
 			this.dbpath = Path.Combine (filePath, "kinveyOffline.sqlite");
 		}
@@ -127,7 +126,13 @@ namespace Kinvey
             }
 		}
 
-		public ICache<T> GetCache<T>(string collectionName) where T : class, new()
+        /// <summary>
+        /// Gets the cache.
+        /// </summary>
+        /// <returns>The cache.</returns>
+        /// <param name="collectionName">Collection name.</param>
+        /// <typeparam name="T">The type of an item.</typeparam>
+        public ICache<T> GetCache<T>(string collectionName) where T : class, new()
 		{
             lock (DBConnectionSync)
             {
@@ -191,6 +196,13 @@ namespace Kinvey
 			return collections;
 		}
 
+        /// <summary>
+        /// Gets query cache item.
+        /// </summary>
+        /// <returns>Query cache item.</returns>
+        /// <param name="collectionName">Collection name.</param>
+        /// <param name="query">Query.</param>
+        /// <param name="lastRequest">The last request time.</param>
         public QueryCacheItem GetQueryCacheItem(string collectionName, string query, string lastRequest)
         {
             lock (DBConnectionSync)
@@ -217,6 +229,11 @@ namespace Kinvey
             }
         }
 
+        /// <summary>
+        /// Sets query cache item.
+        /// </summary>
+        /// <returns><c>True</c> if the query cache item was inserted; otherwise, <c>false</c>.</returns>
+        /// <param name="item">Query cache item.</param>
         public bool SetQueryCacheItem(QueryCacheItem item)
         {
             lock (DBConnectionSync)
@@ -238,6 +255,11 @@ namespace Kinvey
             }
         }
 
+        /// <summary>
+        /// Deletes query cache item.
+        /// </summary>
+        /// <returns><c>True</c> if the query cache item was deleted; otherwise, <c>false</c>.</returns>
+        /// <param name="item">Query cache item.</param>
         public bool DeleteQueryCacheItem(QueryCacheItem item)
         {
             lock (DBConnectionSync)
@@ -258,6 +280,12 @@ namespace Kinvey
             }
         }
 
+        /// <summary>
+        /// Gets the synchronization queue.
+        /// </summary>
+        /// <returns>The synchronization queue.</returns>
+        /// <param name="collectionName">Collection name.</param>
+        /// <typeparam name="T">The type of an item.</typeparam>
         public ISyncQueue GetSyncQueue(string collectionName) {
             lock (DBConnectionSync)
             {
@@ -270,6 +298,12 @@ namespace Kinvey
             }
 		}
 
+        /// <summary>
+        /// Checks existing of a table.
+        /// </summary>
+        /// <returns><c>True</c> if the table exists; otherwise, <c>false</c>.</returns>
+        /// <param name="connection">SQLite connection.</param>
+        /// <typeparam name="T">The type of an item.</typeparam>
 		public static bool TableExists<T> (SQLiteConnection connection)
 		{    
 			const string cmdText = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
@@ -280,6 +314,10 @@ namespace Kinvey
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
 
+        /// <summary>
+        /// Performs all object cleanup.
+        /// </summary>
+        /// <param name="disposing">Indicates whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
         protected virtual void Dispose(bool disposing)
         {
             lock (this)
@@ -314,13 +352,17 @@ namespace Kinvey
             }
         }
 
-        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        /// <summary>
+        /// Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
+        /// </summary>
         ~SQLiteCacheManager() {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
         }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs all object cleanup, so the garbage collector no longer needs to call the objects Object.Finalize override.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
