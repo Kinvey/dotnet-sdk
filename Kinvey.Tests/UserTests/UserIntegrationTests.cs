@@ -489,7 +489,7 @@ namespace Kinvey.Tests
             // Act
             await User.LoginWithMIC("test3", "test3", null, kinveyClient);
             var savedToDo = await todoStore.SaveAsync(todo);
-            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+            var existingToDo = await todoStore.FindByIDAsync(entityID: savedToDo.ID, ct: default);
 
             //Teardown
             await todoStore.RemoveAsync(savedToDo.ID);
@@ -780,7 +780,7 @@ namespace Kinvey.Tests
             // Check that all state is cleared out properly in logout by verifying that re-login works correctly
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
             DataStore<ToDo> todoStoreRelogin = DataStore<ToDo>.Collection(collectionName, DataStoreType.SYNC, kinveyClient);
-            await todoStoreRelogin.FindAsync();
+            await todoStoreRelogin.FindAsync(query: null, ct: default);
         }
 
         [TestMethod]

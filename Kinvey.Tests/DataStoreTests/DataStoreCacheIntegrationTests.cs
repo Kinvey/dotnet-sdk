@@ -3559,7 +3559,7 @@ namespace Kinvey.Tests
             // Act
             var firstResponse = await store.PullAsync();
             var secondResponse = await store.PullAsync();
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 await store.RemoveAsync(localEntities.First().ID);
@@ -3617,7 +3617,7 @@ namespace Kinvey.Tests
             await store.PushAsync();
             var thirdResponse = await store.PullAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -3677,13 +3677,13 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.PullAsync(query2);
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -3742,12 +3742,12 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             int localDeleteCount = (await networkStore.RemoveAsync(fc2.ID)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.PullAsync(query2);
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             int localCount = localEntities.Count;
             bool localCopy = false;
 
@@ -3818,7 +3818,7 @@ namespace Kinvey.Tests
             await store.PushAsync();
             var secondResponse = await store.PullAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -3876,7 +3876,7 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
@@ -3890,7 +3890,7 @@ namespace Kinvey.Tests
             var query3 = store.Where(x => x.Question.StartsWith("Wh"));
             var thirdResponse = await store.PullAsync(query3);
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -3943,13 +3943,13 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.Equals("What+?"));
             var secondResponse = await store.PullAsync(query2);
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4008,14 +4008,14 @@ namespace Kinvey.Tests
             var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
             await store.PushAsync();
             var secondResponse = await store.PullAsync();
-            var firstStoreCount = (await store.FindAsync()).Count;
+            var firstStoreCount = (await store.FindAsync(query: null, ct: default)).Count;
 
             var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
             var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
             await store.PushAsync();
             var thirdResponse = await store.PullAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4075,13 +4075,13 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync();
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: null, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
             var secondResponse = await store.PullAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4140,7 +4140,7 @@ namespace Kinvey.Tests
             // Act
             var firstResponse = await store.SyncAsync();
             var secondResponse = await store.SyncAsync();
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 await store.RemoveAsync(localEntities.First().ID);
@@ -4195,7 +4195,7 @@ namespace Kinvey.Tests
             fc3 = await store.SaveAsync(fc3);
             var thirdResponse = await store.SyncAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4254,13 +4254,13 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.SyncAsync(query2);
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4318,12 +4318,12 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             int localDeleteCount = (await networkStore.RemoveAsync(fc2.ID)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.SyncAsync(query2);
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             int localCount = localEntities.Count;
             bool localCopy = false;
 
@@ -4392,7 +4392,7 @@ namespace Kinvey.Tests
             fc3 = await store.SaveAsync(fc3);
             var secondResponse = await store.SyncAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4450,7 +4450,7 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
@@ -4464,7 +4464,7 @@ namespace Kinvey.Tests
             var query3 = store.Where(x => x.Question.StartsWith("Wh"));
             var thirdResponse = await store.SyncAsync(query3);
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4523,13 +4523,13 @@ namespace Kinvey.Tests
 
             var firstDeleteResponse = await store.RemoveAsync(fc1.ID);
             var secondResponse = await store.SyncAsync();
-            var firstStoreCount = (await store.FindAsync()).Count;
+            var firstStoreCount = (await store.FindAsync(query: null, ct: default)).Count;
 
             var secondDeleteResponse = await store.RemoveAsync(fc2.ID);
             var thirdDeleteResponse = await store.RemoveAsync(fc3.ID);
             var thirdResponse = await store.SyncAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)
@@ -4589,13 +4589,13 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync();
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
             var secondResponse = await store.SyncAsync();
 
-            var localEntities = await store.FindAsync();
+            var localEntities = await store.FindAsync(query: null, ct: default);
             if (localEntities != null)
             {
                 foreach (var localEntity in localEntities)

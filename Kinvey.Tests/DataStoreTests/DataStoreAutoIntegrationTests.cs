@@ -112,8 +112,8 @@ namespace Kinvey.Tests
             // Act            
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var networkEntities = await networkStore.FindAsync();
-            var localEntities = await syncStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem3.ID);
@@ -168,7 +168,7 @@ namespace Kinvey.Tests
             });
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncStore.FindAsync();
+            var existingToDos = await syncStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.AreEqual(typeof(KinveyException), exception.GetType());
@@ -225,15 +225,15 @@ namespace Kinvey.Tests
             KinveyException exception = null;
             try
             {
-                existingItem1 = await networkStore.FindByIDAsync(savedItem1.ID);
+                existingItem1 = await networkStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
                 exception = kinveyException;
             }
 
-            var networkEntities = await networkStore.FindAsync();
-            var localEntities = await syncStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem2.ID);
@@ -302,8 +302,8 @@ namespace Kinvey.Tests
             // Act            
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var networkEntities = await networkStore.FindAsync();
-            var localEntities = await syncStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem1.ID);
@@ -368,8 +368,8 @@ namespace Kinvey.Tests
             var pushResult = await autoStore.PushAsync();
             var pendingWriteActions2 = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
-            var localEntities = await syncStore.FindAsync(query);
-            var networkEntities = await networkStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: query, ct: default);
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem3.ID);
@@ -430,7 +430,7 @@ namespace Kinvey.Tests
             SetRootUrlToKinveyClient(kinveyUrl);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncStore.FindAsync();
+            var existingToDos = await syncStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.IsNotNull(pendingWriteActions);
@@ -491,15 +491,15 @@ namespace Kinvey.Tests
             ToDo existingItem1InLocalStorage = null;
             try
             {
-                existingItem1InLocalStorage = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItem1InLocalStorage = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
                 syncStoreException = kinveyException;
             }
            
-            var networkEntities = await networkStore.FindAsync();
-            var localEntities = await syncStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem2.ID);
@@ -561,8 +561,8 @@ namespace Kinvey.Tests
             // Act
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var listToDoNetwork = await autoStore.FindAsync();
-            var listToDoCache = await syncStore.FindAsync();
+            var listToDoNetwork = await autoStore.FindAsync(query: null, ct: default);
+            var listToDoCache = await syncStore.FindAsync(query: null, ct: default);
 
             var existingItemInNetwork1 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem1.ID);
             var existingItemInNetwork2 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem2.ID);
@@ -637,8 +637,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -647,8 +647,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -657,8 +657,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -732,8 +732,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -742,8 +742,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -752,8 +752,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -826,8 +826,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -836,8 +836,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -846,8 +846,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -926,8 +926,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -936,8 +936,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -946,8 +946,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1026,8 +1026,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1036,8 +1036,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1046,8 +1046,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1127,8 +1127,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1137,8 +1137,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1147,8 +1147,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1228,8 +1228,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1238,8 +1238,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1248,8 +1248,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1329,8 +1329,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1339,8 +1339,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1349,8 +1349,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1431,8 +1431,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1441,8 +1441,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1451,8 +1451,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1533,8 +1533,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1543,8 +1543,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1553,8 +1553,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1634,8 +1634,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct:default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1644,8 +1644,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1654,8 +1654,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1735,8 +1735,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1745,8 +1745,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1755,8 +1755,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1836,8 +1836,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1846,8 +1846,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1856,8 +1856,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1939,8 +1939,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1949,8 +1949,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -1959,8 +1959,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2041,8 +2041,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2051,8 +2051,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(entityID: savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2061,8 +2061,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(entityID: savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2143,8 +2143,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID);
-                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork1 = await autoStore.FindByIDAsync(savedItem1.ID, ct: default);
+                existingItemInCache1 = await syncStore.FindByIDAsync(savedItem1.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2153,8 +2153,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID);
-                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID);
+                existingItemInNetwork2 = await autoStore.FindByIDAsync(savedItem2.ID, ct: default);
+                existingItemInCache2 = await syncStore.FindByIDAsync(savedItem2.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2163,8 +2163,8 @@ namespace Kinvey.Tests
 
             try
             {
-                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID);
-                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID);
+                existingItemInNetwork3 = await autoStore.FindByIDAsync(savedItem3.ID, ct: default);
+                existingItemInCache3 = await syncStore.FindByIDAsync(savedItem3.ID, ct: default);
             }
             catch (Exception)
             {
@@ -2237,8 +2237,8 @@ namespace Kinvey.Tests
             // Act
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var listToDoNetwork = await networkStore.FindAsync();
-            var listToDoCache = await syncStore.FindAsync();
+            var listToDoNetwork = await networkStore.FindAsync(query: null, ct: default);
+            var listToDoCache = await syncStore.FindAsync(query: null, ct: default);
 
             var existingItemInNetwork1 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem1.ID);
             var existingItemInNetwork2 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem2.ID);
@@ -2314,8 +2314,8 @@ namespace Kinvey.Tests
             // Act
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var listToDoNetwork = await networkStore.FindAsync();
-            var listToDoCache = await syncStore.FindAsync();
+            var listToDoNetwork = await networkStore.FindAsync(query: null, ct: default);
+            var listToDoCache = await syncStore.FindAsync(query: null, ct: default);
 
             var existingItemInNetwork1 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem1.ID);
             var existingItemInNetwork2 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem2.ID);
@@ -2392,8 +2392,8 @@ namespace Kinvey.Tests
             // Act
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var listToDoNetwork = await networkStore.FindAsync();
-            var listToDoCache = await syncStore.FindAsync();
+            var listToDoNetwork = await networkStore.FindAsync(query: null, ct: default);
+            var listToDoCache = await syncStore.FindAsync(query: null, ct: default);
 
             var existingItemInNetwork1 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem1.ID);
             var existingItemInNetwork2 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem2.ID);
@@ -2470,8 +2470,8 @@ namespace Kinvey.Tests
             // Act
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var listToDoNetwork = await networkStore.FindAsync();
-            var listToDoCache = await syncStore.FindAsync();
+            var listToDoNetwork = await networkStore.FindAsync(query: null, ct: default);
+            var listToDoCache = await syncStore.FindAsync(query: null, ct: default);
 
             var existingItemInNetwork1 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem1.ID);
             var existingItemInNetwork2 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem2.ID);
@@ -2549,8 +2549,8 @@ namespace Kinvey.Tests
             // Act
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var listToDoNetwork = await networkStore.FindAsync();
-            var listToDoCache = await syncStore.FindAsync();
+            var listToDoNetwork = await networkStore.FindAsync(query: null, ct: default);
+            var listToDoCache = await syncStore.FindAsync(query: null, ct: default);
 
             var existingItemInNetwork1 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem1.ID);
             var existingItemInNetwork2 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem2.ID);
@@ -2627,8 +2627,8 @@ namespace Kinvey.Tests
             // Act
             var kinveyDeleteResponse = await autoStore.RemoveAsync(query);
 
-            var listToDoNetwork = await networkStore.FindAsync();
-            var listToDoCache = await syncStore.FindAsync();
+            var listToDoNetwork = await networkStore.FindAsync(query: null, ct: default);
+            var listToDoCache = await syncStore.FindAsync(query: null, ct: default);
 
             var existingItemInNetwork1 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem1.ID);
             var existingItemInNetwork2 = listToDoNetwork.FirstOrDefault(todo => todo.ID == savedItem2.ID);
@@ -3097,7 +3097,7 @@ namespace Kinvey.Tests
             ToDo existingItem1InNetwork = null;
             try
             {
-                existingItem1InNetwork = await networkStore.FindByIDAsync(savedItem1.ID);
+                existingItem1InNetwork = await networkStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
@@ -3108,7 +3108,7 @@ namespace Kinvey.Tests
             ToDo existingItem1InLocal = null;
             try
             {
-                existingItem1InLocal = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItem1InLocal = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
@@ -3169,7 +3169,7 @@ namespace Kinvey.Tests
             });
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncStore.FindAsync();
+            var existingToDos = await syncStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.AreEqual(typeof(KinveyException), exception.GetType());
@@ -3218,8 +3218,8 @@ namespace Kinvey.Tests
             var pushResult = await autoStore.PushAsync();
             var pendingWriteActions2 = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
-            var localEntity = await syncStore.FindByIDAsync(newItem1.ID);
-            var networkEntities = await networkStore.FindAsync();
+            var localEntity = await syncStore.FindByIDAsync(entityID: newItem1.ID, ct: default);
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             // Assert            
             Assert.IsNotNull(kinveyDeleteResponse);
@@ -3269,7 +3269,7 @@ namespace Kinvey.Tests
             SetRootUrlToKinveyClient(kinveyUrl);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncStore.FindAsync();
+            var existingToDos = await syncStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.IsNotNull(pendingWriteActions);
@@ -3364,7 +3364,7 @@ namespace Kinvey.Tests
             ToDo existingItem1InLocal = null;
             try
             {
-                existingItem1InLocal = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItem1InLocal = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
@@ -3466,14 +3466,14 @@ namespace Kinvey.Tests
             newItem2 = await networkStore.SaveAsync(newItem2);
             
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
 
-            var listToDoSync1 = await syncStore.FindAsync();
+            var listToDoSync1 = await syncStore.FindAsync(query: null, ct: default);
 
             newItem3 = await networkStore.SaveAsync(newItem3);
 
-            var listToDoAuto2 = await autoStore.FindAsync();
-            var listToDoSync2 = await syncStore.FindAsync();
+            var listToDoAuto2 = await autoStore.FindAsync(query: null, ct: default);
+            var listToDoSync2 = await syncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -3537,8 +3537,8 @@ namespace Kinvey.Tests
             newItem3 = await networkStore.SaveAsync(newItem3);
 
             // Act          
-            var listToDoAuto = await autoStore.FindAsync(query);
-            var listToDoSync = await syncStore.FindAsync(query);
+            var listToDoAuto = await autoStore.FindAsync(query: query, ct: default);
+            var listToDoSync = await syncStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -3598,8 +3598,8 @@ namespace Kinvey.Tests
             newItem3 = await networkStore.SaveAsync(newItem3);
 
             // Act          
-            var listToDoAuto = await autoStore.FindAsync(query);
-            var listToDoSync = await syncStore.FindAsync(query);
+            var listToDoAuto = await autoStore.FindAsync(query: query, ct: default);
+            var listToDoSync = await syncStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -3658,19 +3658,19 @@ namespace Kinvey.Tests
             newItem2 = await networkStore.SaveAsync(newItem2);           
 
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
             newItem3 = await networkStore.SaveAsync(newItem3);
-            var listToDoAuto2 = await autoStore.FindAsync();
+            var listToDoAuto2 = await autoStore.FindAsync(query: null, ct: default);
 
             var queryCacheItems = kinveyClient.CacheManager.GetCache<QueryCacheItem>("QueryCacheItem");
             var queryCacheItemBefore = queryCacheItems.FindAll().FirstOrDefault();
 
             newItem4 = await networkStore.SaveAsync(newItem4);
 
-            var listToDoAuto3 = await autoStore.FindAsync();
+            var listToDoAuto3 = await autoStore.FindAsync(query: null, ct: default);
             var queryCacheItemAfter = queryCacheItems.FindAll().FirstOrDefault();
 
-            var listToDoSync = await syncStore.FindAsync();
+            var listToDoSync = await syncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -3733,7 +3733,7 @@ namespace Kinvey.Tests
             var query = autoStore.OrderByDescending(task => task.Details);
 
             // Act          
-            var listToDoAuto = await autoStore.FindAsync(query);
+            var listToDoAuto = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -3783,7 +3783,7 @@ namespace Kinvey.Tests
             await autoStore.RemoveAsync(newItem1.ID);
 
             // Act          
-            var listToDoSync = await syncStore.FindAsync();
+            var listToDoSync = await syncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(newItem2.ID);
@@ -3833,7 +3833,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await autoStore.FindAsync(query);
+                await autoStore.FindAsync(query: query, ct: default);
             });
 
             // Teardown
@@ -3866,7 +3866,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await autoStore.FindAsync();
+                await autoStore.FindAsync(query: null, ct: default);
             });
 
             // Assert
@@ -3916,12 +3916,12 @@ namespace Kinvey.Tests
             newItem2 = await networkStore.SaveAsync(newItem2);
 
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
 
             newItem3 = await networkStore.SaveAsync(newItem3);
 
             SetRootUrlToKinveyClient(unreachableUrl);           
-            var listToDoAuto2 = await autoStore.FindAsync();
+            var listToDoAuto2 = await autoStore.FindAsync(query: null, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
 
             // Teardown
@@ -3982,17 +3982,17 @@ namespace Kinvey.Tests
             newItem2 = await networkStore.SaveAsync(newItem2);
 
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
 
             newItem3 = await networkStore.SaveAsync(newItem3);
 
             SetRootUrlToKinveyClient(unreachableUrl);
-            var listToDoAuto2 = await autoStore.FindAsync();
+            var listToDoAuto2 = await autoStore.FindAsync(query: null, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
 
             newItem4 = await networkStore.SaveAsync(newItem4);
 
-            var listToDoAuto3 = await autoStore.FindAsync();
+            var listToDoAuto3 = await autoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -4054,10 +4054,10 @@ namespace Kinvey.Tests
             newItem3 = await networkStore.SaveAsync(newItem3);
 
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
 
             SetRootUrlToKinveyClient(unreachableUrl);
-            var listToDoAuto2 = await autoStore.FindAsync(query);
+            var listToDoAuto2 = await autoStore.FindAsync(query: query, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
 
             // Teardown
@@ -4117,10 +4117,10 @@ namespace Kinvey.Tests
             newItem3 = await networkStore.SaveAsync(newItem3);
 
             // Act
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
 
             SetRootUrlToKinveyClient(unreachableUrl);
-            var listToDoAuto2 = await autoStore.FindAsync(query);
+            var listToDoAuto2 = await autoStore.FindAsync(query: query, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
 
             // Teardown
@@ -4178,10 +4178,10 @@ namespace Kinvey.Tests
             var query = autoStore.OrderByDescending(task => task.Details);
 
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync(query);
+            var listToDoAuto1 = await autoStore.FindAsync(query: query, ct: default);
 
             SetRootUrlToKinveyClient(unreachableUrl);
-            var listToDoAuto2 = await autoStore.FindAsync(query);
+            var listToDoAuto2 = await autoStore.FindAsync(query: query, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
 
             // Teardown
@@ -4233,10 +4233,10 @@ namespace Kinvey.Tests
             newItem2 = await networkStore.SaveAsync(newItem2);
 
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
 
             SetRootUrlToKinveyClient(unreachableUrl);
-            var listToDoAuto2 = await autoStore.FindAsync();
+            var listToDoAuto2 = await autoStore.FindAsync(query: null, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
 
             // Teardown
@@ -4285,15 +4285,15 @@ namespace Kinvey.Tests
             newItem2 = await networkStore.SaveAsync(newItem2);
 
             // Act          
-            var listToDoAuto1 = await autoStore.FindAsync();
+            var listToDoAuto1 = await autoStore.FindAsync(query: null, ct: default);
             await networkStore.RemoveAsync(newItem1.ID);
-            var listToDoAuto2 = await autoStore.FindAsync();
+            var listToDoAuto2 = await autoStore.FindAsync(query: null, ct: default);
            
             KinveyException syncStoreException = null;
             ToDo existingToDo = null;
             try
             {
-                existingToDo = await syncStore.FindByIDAsync(newItem1.ID);
+                existingToDo = await syncStore.FindByIDAsync(entityID: newItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
@@ -4353,7 +4353,7 @@ namespace Kinvey.Tests
             newItem2 = await autoStore.SaveAsync(newItem2);
            
             // Act          
-            var listToDoNetwork = await autoStore.FindAsync(query);
+            var listToDoNetwork = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(newItem1.ID);
@@ -4406,7 +4406,7 @@ namespace Kinvey.Tests
             newItem2 = await syncStore.SaveAsync(newItem2);
            
             // Act          
-            var listToDoCache = await autoStore.FindAsync(query);
+            var listToDoCache = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(newItem1.ID);
@@ -4456,7 +4456,7 @@ namespace Kinvey.Tests
             newItem2 = await autoStore.SaveAsync(newItem2);
 
             //Act
-            var listToDoNetwork = await autoStore.FindAsync(query);
+            var listToDoNetwork = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(newItem1.ID);
@@ -4506,7 +4506,7 @@ namespace Kinvey.Tests
             newItem2 = await syncStore.SaveAsync(newItem2);
            
             //Act
-            var listToDoCache = await autoStore.FindAsync(query);
+            var listToDoCache = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(newItem1.ID);
@@ -4553,7 +4553,7 @@ namespace Kinvey.Tests
             newItem2 = await autoStore.SaveAsync(newItem2);
             
             //Act
-            var listToDoNetwork = await autoStore.FindAsync(query);
+            var listToDoNetwork = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(newItem1.ID);
@@ -4603,7 +4603,7 @@ namespace Kinvey.Tests
             newItem2 = await syncStore.SaveAsync(newItem2);
            
             //Act
-            var listToDoCache = await autoStore.FindAsync(query);
+            var listToDoCache = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(newItem1.ID);
@@ -4658,7 +4658,7 @@ namespace Kinvey.Tests
             newItem3 = await autoStore.SaveAsync(newItem3);
             
             // Act
-            var listToDoNetwork = await autoStore.FindAsync(query);
+            var listToDoNetwork = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(newItem1.ID);
@@ -4717,7 +4717,7 @@ namespace Kinvey.Tests
             newItem3 = await syncStore.SaveAsync(newItem3);
             
             // Act
-            var listToDoCache = await autoStore.FindAsync(query);
+            var listToDoCache = await autoStore.FindAsync(query: query, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(newItem1.ID);
@@ -4769,8 +4769,8 @@ namespace Kinvey.Tests
             var savedItem2 = await networkStore.SaveAsync(newItem2);
 
             // Act
-            var existingItemInNetwork = await autoStore.FindByIDAsync(savedItem1.ID);
-            var existingItemInLocalStorage = await syncStore.FindByIDAsync(savedItem1.ID);
+            var existingItemInNetwork = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
+            var existingItemInLocalStorage = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem1.ID);
@@ -4821,7 +4821,7 @@ namespace Kinvey.Tests
             // Act
             try
             {
-                existingItem = await autoStore.FindByIDAsync(Guid.NewGuid().ToString());
+                existingItem = await autoStore.FindByIDAsync(entityID: Guid.NewGuid().ToString(), ct: default);
             }
             catch (KinveyException kinveyException)
             {
@@ -4864,7 +4864,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await autoStore.FindByIDAsync(Guid.NewGuid().ToString());
+                await autoStore.FindByIDAsync(entityID: Guid.NewGuid().ToString(), ct: default);
             });
 
             // Assert
@@ -4909,10 +4909,10 @@ namespace Kinvey.Tests
             var savedItem2 = await networkStore.SaveAsync(newItem2);
 
             // Act            
-            var existingItemInNetwork = await autoStore.FindByIDAsync(savedItem1.ID);
+            var existingItemInNetwork = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
 
             SetRootUrlToKinveyClient(unreachableUrl);
-            var existingItemInLocalStorage = await autoStore.FindByIDAsync(savedItem1.ID);
+            var existingItemInLocalStorage = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
 
             // Teardown
@@ -4970,13 +4970,13 @@ namespace Kinvey.Tests
             var savedItem2 = await autoStore.SaveAsync(newItem2);
 
             // Act
-            var existingItemInLocalStorage1 = await syncStore.FindByIDAsync(savedItem1.ID);
+            var existingItemInLocalStorage1 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
 
             await autoStore.RemoveAsync(savedItem1.ID);
 
             try
             {
-                existingItemInNetwork = await autoStore.FindByIDAsync(savedItem1.ID);
+                existingItemInNetwork = await autoStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
@@ -4987,7 +4987,7 @@ namespace Kinvey.Tests
             ToDo existingItemInLocalStorage2 = null;
             try
             {
-                existingItemInLocalStorage2 = await syncStore.FindByIDAsync(savedItem1.ID);
+                existingItemInLocalStorage2 = await syncStore.FindByIDAsync(entityID: savedItem1.ID, ct: default);
             }
             catch (KinveyException kinveyException)
             {
@@ -5043,7 +5043,7 @@ namespace Kinvey.Tests
             var savedItem = await autoStore.SaveAsync(newItem);
 
             // Act
-            var networkEntity = await autoStore.FindByIDAsync(savedItem.ID);
+            var networkEntity = await autoStore.FindByIDAsync(entityID: savedItem.ID, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(savedItem.ID);
@@ -5085,7 +5085,7 @@ namespace Kinvey.Tests
             var savedItem = await syncStore.SaveAsync(newItem);
 
             // Act
-            var cacheEntity = await autoStore.FindByIDAsync(savedItem.ID);
+            var cacheEntity = await autoStore.FindByIDAsync(entityID: savedItem.ID, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(savedItem.ID);
@@ -5144,7 +5144,7 @@ namespace Kinvey.Tests
             p3 = await autoStore.SaveAsync(p3);
             
             // Act
-            var networkResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
+            var networkResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_SUM, groupField: "", aggregateField: "Age", query: query, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(p3.ID);
@@ -5201,7 +5201,7 @@ namespace Kinvey.Tests
             var query = autoStore.Where(x => x.LastName.Equals("Bluth"));
 
             // Act
-            var cacheResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_SUM, "", "Age", query);
+            var cacheResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_SUM, groupField: "", aggregateField: "Age", query: query, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(p3.ID);
@@ -5253,7 +5253,7 @@ namespace Kinvey.Tests
             p3 = await autoStore.SaveAsync(p3);
 
             // Act
-            var networkResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null);
+            var networkResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_MIN, groupField: "", aggregateField: "Age", query: null, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(p3.ID);
@@ -5308,7 +5308,7 @@ namespace Kinvey.Tests
             p3 = await syncStore.SaveAsync(p3);
 
             // Act
-            var cacheResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MIN, "", "Age", null);
+            var cacheResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_MIN, groupField: "", aggregateField: "Age", query: null, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(p3.ID);
@@ -5360,7 +5360,7 @@ namespace Kinvey.Tests
             p3 = await autoStore.SaveAsync(p3);
 
             // Act
-            var networkResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null);
+            var networkResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_MAX, groupField: "", aggregateField: "Age", query : null, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(p3.ID);
@@ -5415,7 +5415,7 @@ namespace Kinvey.Tests
             p3 = await syncStore.SaveAsync(p3);
 
             // Act
-            var cacheResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_MAX, "", "Age", null);
+            var cacheResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_MAX, groupField: "", aggregateField: "Age", query: null, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(p3.ID);
@@ -5474,7 +5474,7 @@ namespace Kinvey.Tests
             p4 = await autoStore.SaveAsync(p4);
 
             // Act
-            var networkResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null);
+            var networkResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "Age", query: null, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(p4.ID);
@@ -5537,7 +5537,7 @@ namespace Kinvey.Tests
             p4 = await syncStore.SaveAsync(p4);
 
             // Act
-            var cacheResult = await autoStore.GroupAndAggregateAsync(EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, "", "Age", null);
+            var cacheResult = await autoStore.GroupAndAggregateAsync(reduceFunction: EnumReduceFunction.REDUCE_FUNCTION_AVERAGE, groupField: "", aggregateField: "Age", query: null, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(p4.ID);
@@ -5581,8 +5581,8 @@ namespace Kinvey.Tests
             // Act
             fc1 = await autoStore.SaveAsync(fc1);
 
-            var networkEntities = await networkStore.FindAsync();
-            var localEntities = await syncStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             foreach (var networkEntity in networkEntities)
@@ -5632,8 +5632,8 @@ namespace Kinvey.Tests
             // Act
             fc1 = await autoStore.SaveAsync(fc1);
 
-            var networkEntities = await networkStore.FindAsync();
-            var localEntities = await syncStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             foreach (var networkEntity in networkEntities)
@@ -5682,7 +5682,7 @@ namespace Kinvey.Tests
             fc1.Answer = "7!";
             fc1 = await autoStore.SaveAsync(fc1);
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             //Teardown
             foreach (var networkEntity in networkEntities)
@@ -5724,7 +5724,7 @@ namespace Kinvey.Tests
             SetRootUrlToKinveyClient(unreachableUrl);
 
             fc1 = await autoStore.SaveAsync(fc1);           
-            var localEntities = await autoStore.FindAsync();
+            var localEntities = await autoStore.FindAsync(query: null, ct: default);
 
             SetRootUrlToKinveyClient(kinveyUrl);
 
@@ -5774,7 +5774,7 @@ namespace Kinvey.Tests
             });
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingItemsCache = await syncStore.FindAsync();
+            var existingItemsCache = await syncStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.AreEqual(typeof(KinveyException), exception.GetType());
@@ -5830,7 +5830,7 @@ namespace Kinvey.Tests
             fc1 = await autoStore.SaveAsync(fc1);
             fc2 = await autoStore.SaveAsync(fc2);
             var pendingWriteActions1 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
-            var localEntities = await autoStore.FindAsync();
+            var localEntities = await autoStore.FindAsync(query: null, ct: default);
 
             SetRootUrlToKinveyClient(kinveyUrl);
 
@@ -5838,7 +5838,7 @@ namespace Kinvey.Tests
 
             var pendingWriteActions2 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             //Teardown
             foreach (var networkEntity in networkEntities)
@@ -5891,7 +5891,7 @@ namespace Kinvey.Tests
             fc1 = await autoStore.SaveAsync(fc1);
 
             var pendingWriteActions1 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
-            var localEntities = await autoStore.FindAsync();
+            var localEntities = await autoStore.FindAsync(query: null, ct: default);
 
             SetRootUrlToKinveyClient(kinveyUrl);
 
@@ -5899,7 +5899,7 @@ namespace Kinvey.Tests
 
             var pendingWriteActions2 = kinveyClient.CacheManager.GetSyncQueue(flashCardCollection).GetAll();
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             //Teardown
             foreach (var networkEntity in networkEntities)
@@ -5955,8 +5955,8 @@ namespace Kinvey.Tests
             // Act
             var savedItem = await autoStore.SaveAsync(newItem);
 
-            var existingItemNetwork = await autoStore.FindByIDAsync(savedItem.ID);
-            var existingItemCache = await syncStore.FindByIDAsync(savedItem.ID);
+            var existingItemNetwork = await autoStore.FindByIDAsync(entityID: savedItem.ID, ct: default);
+            var existingItemCache = await syncStore.FindByIDAsync(entityID: savedItem.ID, ct: default);
 
             //Teardown
             await autoStore.RemoveAsync(savedItem.ID);
@@ -6001,8 +6001,8 @@ namespace Kinvey.Tests
             // Act
             var savedItem = await autoStore.SaveAsync(newItem);
 
-            var existingItemsCache = await syncStore.FindAsync();
-            var existingItemsNetwork = await networkStore.FindAsync();
+            var existingItemsCache = await syncStore.FindAsync(query: null, ct: default);
+            var existingItemsNetwork = await networkStore.FindAsync(query: null, ct: default);
             
             //Teardown
             await networkStore.RemoveAsync(savedItem.ID);
@@ -6059,7 +6059,7 @@ namespace Kinvey.Tests
             var savedItem = await autoStore.SaveAsync(newItem);
             SetRootUrlToKinveyClient(kinveyUrl);
 
-            var existingItemsCache = await syncStore.FindAsync();
+            var existingItemsCache = await syncStore.FindAsync(query: null, ct: default);
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
             //Teardown
@@ -6112,8 +6112,8 @@ namespace Kinvey.Tests
             // Act
             var savedItem = await autoStore.SaveAsync(newItem);
 
-            var existingItemsCache = await syncStore.FindAsync();
-            var existingItemsNetwork = await networkStore.FindAsync();
+            var existingItemsCache = await syncStore.FindAsync(query: null, ct: default);
+            var existingItemsNetwork = await networkStore.FindAsync(query: null, ct: default);
 
 
             //Teardown
@@ -6174,7 +6174,7 @@ namespace Kinvey.Tests
             var savedItem = await autoStore.SaveAsync(newItem);
             SetRootUrlToKinveyClient(kinveyUrl);
 
-            var existingItemsCache = await syncStore.FindAsync();
+            var existingItemsCache = await syncStore.FindAsync(query: null, ct: default);
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
             //Teardown
@@ -6228,8 +6228,8 @@ namespace Kinvey.Tests
             var savedToDos = await autoToDoStore.SaveAsync(toDos);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDosCache = await syncToDoStore.FindAsync();
-            var existingToDosNetwork = await networkToDoStore.FindAsync();
+            var existingToDosCache = await syncToDoStore.FindAsync(query: null, ct: default);
+            var existingToDosNetwork = await networkToDoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6286,7 +6286,7 @@ namespace Kinvey.Tests
             SetRootUrlToKinveyClient(kinveyUrl);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncToDoStore.FindAsync();
+            var existingToDos = await syncToDoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await syncToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6347,8 +6347,8 @@ namespace Kinvey.Tests
             var savedToDos = await autoToDoStore.SaveAsync(toDos);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDosCache = await syncToDoStore.FindAsync();
-            var existingToDosNetwork = await networkToDoStore.FindAsync();
+            var existingToDosCache = await syncToDoStore.FindAsync(query: null, ct: default);
+            var existingToDosNetwork = await networkToDoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6417,8 +6417,8 @@ namespace Kinvey.Tests
             var savedToDos = await autoToDoStore.SaveAsync(toDos);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDosLocal = await syncToDoStore.FindAsync();
-            var existingToDosNetwork = await networkToDoStore.FindAsync();
+            var existingToDosLocal = await syncToDoStore.FindAsync(query: null, ct: default);
+            var existingToDosNetwork = await networkToDoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6502,7 +6502,7 @@ namespace Kinvey.Tests
             SetRootUrlToKinveyClient(kinveyUrl);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await syncToDoStore.FindAsync();
+            var existingToDos = await syncToDoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await syncToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6614,7 +6614,7 @@ namespace Kinvey.Tests
 
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await todoSyncStore.FindAsync();
+            var existingToDos = await todoSyncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await todoSyncStore.RemoveAsync(todoSyncStore.Where(e => e.Name.StartsWith("Name")));
@@ -6666,7 +6666,7 @@ namespace Kinvey.Tests
             // Act
             var savedToDos = await todoStoreAuto.SaveAsync(toDos);
 
-            var existingToDos = await todoStoreAuto.FindAsync();
+            var existingToDos = await todoStoreAuto.FindAsync(query: null, ct: default);
 
             //Teardown
             await todoStoreAuto.RemoveAsync(todoStoreAuto.Where(e => e.Name.StartsWith("Name")));
@@ -6709,8 +6709,8 @@ namespace Kinvey.Tests
             var savedToDos = await todoStoreAuto.SaveAsync(toDos);
             SetRootUrlToKinveyClient(kinveyUrl);
 
-            var existingToDosSync = await todoStoreSync.FindAsync();
-            var existingToDosNetwork = await todoStoreNetwork.FindAsync();            
+            var existingToDosSync = await todoStoreSync.FindAsync(query: null, ct: default);
+            var existingToDosNetwork = await todoStoreNetwork.FindAsync(query: null, ct: default);            
 
             //Teardown
             await todoStoreSync.RemoveAsync(todoStoreAuto.Where(e => e.Name.StartsWith("Name")));
@@ -6819,8 +6819,8 @@ namespace Kinvey.Tests
                 var savedToDos = await autoToDoStore.SaveAsync(toDos);
 
                 var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-                var existingToDosCache = await syncToDoStore.FindAsync();
-                var existingToDosNetwork = await networkToDoStore.FindAsync();
+                var existingToDosCache = await syncToDoStore.FindAsync(query: null, ct: default);
+                var existingToDosNetwork = await networkToDoStore.FindAsync(query: null, ct: default);
 
                 // Teardown
                 await autoToDoStore.RemoveAsync(savedToDos.Entities[0].ID);
@@ -6879,7 +6879,7 @@ namespace Kinvey.Tests
                 var savedToDos = await toDoAutoStore.SaveAsync(toDos);
 
                 var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-                var existingToDos = await syncToDoStore.FindAsync();
+                var existingToDos = await syncToDoStore.FindAsync(query: null, ct: default);
 
                 // Teardown
                 await toDoAutoStore.RemoveAsync(savedToDos.Entities[1].ID);
@@ -6956,7 +6956,7 @@ namespace Kinvey.Tests
                 var savedToDos = await toDoAutoStore.SaveAsync(toDos);
 
                 var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-                var existingToDos = await syncToDoStore.FindAsync();
+                var existingToDos = await syncToDoStore.FindAsync(query: null, ct: default);
 
                 // Teardown
                 await toDoAutoStore.RemoveAsync(savedToDos.Entities[3].ID);
@@ -7060,8 +7060,8 @@ namespace Kinvey.Tests
             // Act
             var savedToDosToAdd = await todoAutoStore.SaveAsync(toDosToAdd);
 
-            var existingToDosNetwork = await todoNetworkStore.FindAsync();
-            var existingToDosSync = await todoSyncStore.FindAsync();
+            var existingToDosNetwork = await todoNetworkStore.FindAsync(query: null, ct: default);
+            var existingToDosSync = await todoSyncStore.FindAsync(query: null, ct: default);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
@@ -7170,8 +7170,8 @@ namespace Kinvey.Tests
                 // Act
                 var savedToDosToAdd = await todoAutoStore.SaveAsync(toDosToAdd);
 
-                var existingToDosNetwork = await todoNetworkStore.FindAsync();
-                var existingToDosSync = await todoSyncStore.FindAsync();
+                var existingToDosNetwork = await todoNetworkStore.FindAsync(query: null, ct: default);
+                var existingToDosSync = await todoSyncStore.FindAsync(query: null, ct: default);
 
                 var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
@@ -7257,8 +7257,8 @@ namespace Kinvey.Tests
             // Act
             var savedToDosToAdd = await todoAutoStore.SaveAsync(toDosToAdd);
 
-            var existingToDosNetwork = await todoNetworkStore.FindAsync();
-            var existingToDosSync = await todoSyncStore.FindAsync();
+            var existingToDosNetwork = await todoNetworkStore.FindAsync(query: null, ct: default);
+            var existingToDosSync = await todoSyncStore.FindAsync(query: null, ct: default);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
@@ -7344,11 +7344,11 @@ namespace Kinvey.Tests
             var savedItem2 = await networkStore.SaveAsync(newItem2);
           
             // Act
-            var count1 = await autoStore.GetCountAsync();
+            var count1 = await autoStore.GetCountAsync(query: null, ct: default);
 
             var savedItem3 = await networkStore.SaveAsync(newItem3);
 
-            var count2 = await autoStore.GetCountAsync();
+            var count2 = await autoStore.GetCountAsync(query: null, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem1.ID);
@@ -7407,7 +7407,7 @@ namespace Kinvey.Tests
             var savedItem3 = await networkStore.SaveAsync(newItem3);
 
             // Act
-            var count = await autoStore.GetCountAsync(query);
+            var count = await autoStore.GetCountAsync(query: query, ct: default);
 
             // Teardown
             await networkStore.RemoveAsync(savedItem1.ID);
@@ -7457,7 +7457,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await autoStore.GetCountAsync(query);
+                await autoStore.GetCountAsync(query: query, ct: default);
             });
 
             // Teardown
@@ -7513,12 +7513,12 @@ namespace Kinvey.Tests
             var savedItem2 = await networkStore.SaveAsync(newItem2);
 
             // Act
-            var listAutoToDo = await autoStore.FindAsync();
+            var listAutoToDo = await autoStore.FindAsync(query: null, ct: default);
            
             var savedItem3 = await networkStore.SaveAsync(newItem3);
 
             SetRootUrlToKinveyClient(unreachableUrl);
-            var count = await autoStore.GetCountAsync();
+            var count = await autoStore.GetCountAsync(query: null, ct: default);
             SetRootUrlToKinveyClient(kinveyUrl);
             
             // Teardown
@@ -7552,7 +7552,7 @@ namespace Kinvey.Tests
             // Act
             var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
             {
-                await autoStore.GetCountAsync();
+                await autoStore.GetCountAsync(query: null, ct: default);
             });
 
             // Assert
@@ -7604,7 +7604,7 @@ namespace Kinvey.Tests
             ToDo savedItem3 = await autoStore.SaveAsync(newItem3);
 
             // Act
-            var networkResult = await autoStore.GetCountAsync();
+            var networkResult = await autoStore.GetCountAsync(query: null, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(savedItem1.ID);
@@ -7661,7 +7661,7 @@ namespace Kinvey.Tests
             var savedItem3 = await syncStore.SaveAsync(newItem3);
 
             // Act
-            var networkResult = await autoStore.GetCountAsync();
+            var networkResult = await autoStore.GetCountAsync(query: null, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(savedItem1.ID);
@@ -7717,7 +7717,7 @@ namespace Kinvey.Tests
             var savedItem3 = await autoStore.SaveAsync(newItem3);
             
             // Act
-            var networkResult = await autoStore.GetCountAsync(query);
+            var networkResult = await autoStore.GetCountAsync(query: query, ct: default);
 
             // Teardown
             await autoStore.RemoveAsync(savedItem1.ID);
@@ -7776,7 +7776,7 @@ namespace Kinvey.Tests
             var savedItem3 = await syncStore.SaveAsync(newItem3);
             
             // Act
-            var networkResult = await autoStore.GetCountAsync(query);
+            var networkResult = await autoStore.GetCountAsync(query: query, ct: default);
 
             // Teardown
             await syncStore.RemoveAsync(savedItem1.ID);
@@ -7831,7 +7831,7 @@ namespace Kinvey.Tests
             // Act
             var pushedEntities = await autoStore.PushAsync();
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             var pendingWriteActionCount = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(false);
 
@@ -7886,7 +7886,7 @@ namespace Kinvey.Tests
             await syncStore.SaveAsync(newItem1);
             await autoStore.PushAsync();
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             var pendingWriteActionCount = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(false);
 
@@ -7956,7 +7956,7 @@ namespace Kinvey.Tests
             await syncStore.RemoveAsync(newItem2.ID);
             var pushedEntities = await autoStore.PushAsync();
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             var pendingWriteActionCount = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).Count(false);
 
@@ -8074,13 +8074,13 @@ namespace Kinvey.Tests
             newItem1.Details = "Details";
             newItem1 = await syncStore.SaveAsync(newItem1);
 
-            var networkEntities1 = await networkStore.FindAsync();
+            var networkEntities1 = await networkStore.FindAsync(query: null, ct: default);
             var idToBeRemoved = networkEntities1.FirstOrDefault(e => e.Name.Equals("todo1")).ID;
             await networkStore.RemoveAsync(idToBeRemoved);
 
             var pushedEntities2 = await autoStore.PushAsync();
 
-            var networkEntities2 = await networkStore.FindAsync();
+            var networkEntities2 = await networkStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(networkEntities2[0].ID);
@@ -8125,7 +8125,7 @@ namespace Kinvey.Tests
             var pushResponse = await autoToDoStore.PushAsync();
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDosNetwork = await networkToDoStore.FindAsync();
+            var existingToDosNetwork = await networkToDoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkToDoStore.RemoveAsync(existingToDosNetwork[0].ID);
@@ -8190,7 +8190,7 @@ namespace Kinvey.Tests
             var pushResponse = await autoToDoStore.PushAsync();
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDosNetwork = await networkToDoStore.FindAsync();
+            var existingToDosNetwork = await networkToDoStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await networkToDoStore.RemoveAsync(pushResponse.PushEntities[0].ID);
@@ -8244,7 +8244,7 @@ namespace Kinvey.Tests
             var pushResponse = await todoSyncStore.PushAsync();
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await todoSyncStore.FindAsync();
+            var existingToDos = await todoSyncStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoSyncStore.RemoveAsync(todoNetworkStore.Where(e => e.Name.StartsWith("Name")));
@@ -8301,8 +8301,8 @@ namespace Kinvey.Tests
                 var pushResponse = await todoAutoStore.PushAsync();
 
                 var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-                var existingToDosLocal = await todoSyncStore.FindAsync();
-                var existingToDosNetwork = await todoNetworkStore.FindAsync();
+                var existingToDosLocal = await todoSyncStore.FindAsync(query: null, ct: default);
+                var existingToDosNetwork = await todoNetworkStore.FindAsync(query: null, ct: default);
 
                 // Teardown
                 await todoNetworkStore.RemoveAsync(pushResponse.PushEntities[0].ID);
@@ -8365,7 +8365,7 @@ namespace Kinvey.Tests
             var pushResponse = await todoAutoStore.PushAsync();
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-            var existingToDos = await todoNetworkStore.FindAsync();
+            var existingToDos = await todoNetworkStore.FindAsync(query: null, ct: default);
 
             // Teardown
             await todoNetworkStore.RemoveAsync(existingToDos[0].ID);
@@ -8646,7 +8646,7 @@ namespace Kinvey.Tests
             // Act
             var pullEntities = await autoStore.PullAsync();
 
-            var localEntities = await syncStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(fc1.ID);
@@ -8756,7 +8756,7 @@ namespace Kinvey.Tests
             // Act
             var pullEntities = await autoStore.PullAsync(query);
 
-            var localEntities = await syncStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(fc1.ID);
@@ -8816,13 +8816,13 @@ namespace Kinvey.Tests
 
             // Act
             var pullEntities1 = await autoStore.PullAsync();
-            var localEntities1 = await syncStore.FindAsync();
+            var localEntities1 = await syncStore.FindAsync(query: null, ct: default);
 
             await networkStore.RemoveAsync(fc1.ID);
             await networkStore.RemoveAsync(fc2.ID);
 
             var pullEntities2 = await autoStore.PullAsync();
-            var localEntities2 = await syncStore.FindAsync();
+            var localEntities2 = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(fc3.ID);
@@ -8893,7 +8893,7 @@ namespace Kinvey.Tests
             fc2 = await networkStore.SaveAsync(fc2);
             
             var pullEntities2 = await autoStore.PullAsync();
-            var localEntities = await syncStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(fc1.ID);
@@ -9036,7 +9036,7 @@ namespace Kinvey.Tests
 
             var networkEntities2 = await autoStore.PullAsync();
 
-            var localEntities = await syncStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(fc1.ID);
@@ -9082,7 +9082,7 @@ namespace Kinvey.Tests
             var secondResponse = await store.PullAsync();
 
             //Teardown
-            var existingEntities = await store.FindAsync();
+            var existingEntities = await store.FindAsync(query: null, ct: default);
             if (existingEntities != null)
             {
                 await store.RemoveAsync(existingEntities.First().ID);
@@ -9139,7 +9139,7 @@ namespace Kinvey.Tests
             var thirdResponse = await store.PullAsync();
 
             //Teardown
-            var existingEntities = await store.FindAsync();
+            var existingEntities = await store.FindAsync(query: null, ct: default);
             if (existingEntities != null)
             {
                 foreach (var existingEntity in existingEntities)
@@ -9198,14 +9198,14 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.PullAsync(query2);
 
             //Teardown
-            var existingEntities = await store.FindAsync();
+            var existingEntities = await store.FindAsync(query: null, ct: default);
             if (existingEntities != null)
             {
                 foreach (var existingEntity in existingEntities)
@@ -9263,12 +9263,12 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             int networkDeleteCount = (await networkStore.RemoveAsync(fc2.ID)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.PullAsync(query2);
 
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             int networkCount = networkEntities.Count;
 
             //Teardown
@@ -9331,7 +9331,7 @@ namespace Kinvey.Tests
             var secondResponse = await store.PullAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -9389,7 +9389,7 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
@@ -9404,7 +9404,7 @@ namespace Kinvey.Tests
             var thirdResponse = await store.PullAsync(query3);
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -9463,14 +9463,14 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.Equals("What+?"));
             var secondResponse = await store.PullAsync(query2);
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -9534,7 +9534,7 @@ namespace Kinvey.Tests
             var thirdResponse = await store.PullAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -9595,14 +9595,14 @@ namespace Kinvey.Tests
             var firstResponse = await store.PullAsync();
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
             var secondResponse = await store.PullAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -9868,8 +9868,8 @@ namespace Kinvey.Tests
             // Act
             var syncedEntities = await autoStore.SyncAsync();
 
-            var localEntities = await syncStore.FindAsync();
-            var networkEntities = await networkStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             //Teardown
             foreach (var networkEntity in networkEntities)
@@ -9946,8 +9946,8 @@ namespace Kinvey.Tests
             // Act
             var syncedEntities = await autoStore.SyncAsync(query);
 
-            var localEntities = await syncStore.FindAsync(query);
-            var networkEntities = await networkStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: query, ct: default);
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             //Teardown
             foreach (var networkEntity in networkEntities)
@@ -10013,7 +10013,7 @@ namespace Kinvey.Tests
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             // Assert
             Assert.IsNotNull(exception);
@@ -10054,7 +10054,7 @@ namespace Kinvey.Tests
             var secondResponse = await store.SyncAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 await store.RemoveAsync(networkEntities.First().ID);
@@ -10110,7 +10110,7 @@ namespace Kinvey.Tests
             var thirdResponse = await store.SyncAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -10168,14 +10168,14 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.SyncAsync(query2);
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -10232,12 +10232,12 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             int removedCount = (await networkStore.RemoveAsync(fc2.ID)).count;
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
             var secondResponse = await store.SyncAsync(query2);
 
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             int networkCount = networkEntities.Count;
 
             //Teardown
@@ -10299,7 +10299,7 @@ namespace Kinvey.Tests
             var secondResponse = await store.SyncAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -10356,7 +10356,7 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync(query);
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var query2 = store.Where(x => x.Question.StartsWith("Wh"));
@@ -10371,7 +10371,7 @@ namespace Kinvey.Tests
             var thirdResponse = await store.SyncAsync(query3);
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -10435,7 +10435,7 @@ namespace Kinvey.Tests
             var thirdResponse = await store.SyncAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -10495,14 +10495,14 @@ namespace Kinvey.Tests
             var firstResponse = await store.SyncAsync();
 
             var fc2Query = store.Where(y => y.Answer.Equals("8"));
-            fc2 = (await store.FindAsync(fc2Query)).First();
+            fc2 = (await store.FindAsync(query: fc2Query, ct: default)).First();
             fc2.Answer = "14";
             fc2 = await networkStore.SaveAsync(fc2);
             var deleteResponse = await networkStore.RemoveAsync(fc3.ID);
             var secondResponse = await store.SyncAsync();
 
             //Teardown
-            var networkEntities = await store.FindAsync();
+            var networkEntities = await store.FindAsync(query: null, ct: default);
             if (networkEntities != null)
             {
                 foreach (var networkEntity in networkEntities)
@@ -10549,8 +10549,8 @@ namespace Kinvey.Tests
                 var syncResponse = await todoAutoStore.SyncAsync();
 
                 var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
-                var existingToDosNetwork = await todoNetworkStore.FindAsync();
-                var existingToDosLocal = await todoSyncStore.FindAsync();
+                var existingToDosNetwork = await todoNetworkStore.FindAsync(query: null, ct: default);
+                var existingToDosLocal = await todoSyncStore.FindAsync(query: null, ct: default);
 
                 // Teardown
                 await todoNetworkStore.RemoveAsync(existingToDosNetwork[0].ID);
@@ -11215,7 +11215,7 @@ namespace Kinvey.Tests
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 
             //Teardown
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
             foreach (var networkEntity in networkEntities)
             {
                 await networkStore.RemoveAsync(networkEntity.ID);
@@ -11268,7 +11268,7 @@ namespace Kinvey.Tests
             // Act
             var clearResponse = autoStore.ClearCache();
 
-            var networkEntities = await networkStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -11326,8 +11326,8 @@ namespace Kinvey.Tests
             // Act
             var clearResponse = autoStore.ClearCache(query);
 
-            var networkEntities = await networkStore.FindAsync();
-            var localEntities = await syncStore.FindAsync();
+            var networkEntities = await networkStore.FindAsync(query: null, ct: default);
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             //Teardown
             await networkStore.RemoveAsync(newItem1.ID);
@@ -11447,7 +11447,7 @@ namespace Kinvey.Tests
             // Act
             var clearResponse = autoStore.ClearCache();
 
-            var localEntities = await syncStore.FindAsync();
+            var localEntities = await syncStore.FindAsync(query: null, ct: default);
 
             var pendingWriteActions = kinveyClient.CacheManager.GetSyncQueue(toDosCollection).GetAll();
 

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -11,18 +11,17 @@
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// Interface for the data store cache.
-	/// </summary>
-	public interface ICache <T>
+    /// <summary>
+    /// Interface for the data store cache.
+    /// </summary>
+    /// <typeparam name="T">The type of an item.</typeparam>
+    public interface ICache <T>
 	{
 		/// <summary>
 		/// Checks if the cache is empty.
@@ -81,11 +80,12 @@ namespace Kinvey
 		/// <param name="tempID">The temporary ID used in the cached, which will be replaced with the permanent ID.</param>
 		T UpdateCacheSave(T item, string tempID);
 
-		/// <summary>
-		/// Update the specified item.
-		/// </summary>
-		/// <param name="item">Item.</param>
-		T Update(T item);
+        /// <summary>
+        /// Update the specified item.
+        /// </summary>
+        /// <returns> The updated item. </returns>
+        /// <param name="item">Item.</param>
+        T Update(T item);
 
 		/// <summary>
 		/// Refreshs the cache with the latest items from the backend.
@@ -112,7 +112,7 @@ namespace Kinvey
 		/// Deletes all the cached items.
 		/// </summary>
 		/// <returns>A KinveyDeleteResponse object.</returns>
-		/// <param name="expr">Expression derived from QueryModel object.</param>
+		/// <param name="expr">[optional] Expression derived from QueryModel object.</param>
 		KinveyDeleteResponse Clear(Expression expr = null);
 
 		/// <summary>
@@ -122,12 +122,12 @@ namespace Kinvey
 		/// <param name="id">The ID of the entity to delete from the cache.</param>
 		KinveyDeleteResponse DeleteByID(string id);
 
-		/// <summary>
-		/// Deletes a list of entities by the given IDs.
-		/// </summary>
-		/// <returns>A KinveyDeleteResponse object.</returns>
-		/// <param name="ids">The IDs of the entities to delete from the cache.</param>
-		KinveyDeleteResponse DeleteByIDs(List<string> IDs);
+        /// <summary>
+        /// Deletes a list of entities by the given IDs.
+        /// </summary>
+        /// <returns>A KinveyDeleteResponse object.</returns>
+        /// <param name="IDs">The IDs of the entities to delete from the cache.</param>
+        KinveyDeleteResponse DeleteByIDs(List<string> IDs);
 
         /// <summary>
 		/// Deletes a list of entities by the query.
@@ -136,7 +136,14 @@ namespace Kinvey
 		/// <param name="query">Query to delete entities from the cache.</param>
         KinveyDeleteResponse DeleteByQuery(IQueryable<object> query);
 
-
+        /// <summary>
+        /// Gets group aggregation result.
+        /// </summary>
+        /// <param name="reduceFunction"> Reduce function. </param>
+        /// <param name="groupField"> Group field. </param>
+        /// <param name="aggregateField"> Aggregate field. </param>
+        /// <param name="query"> Linq expression. </param>
+        /// <returns>The list of group aggregation results.</returns>
         List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query);
 
 		//TODO typed methods

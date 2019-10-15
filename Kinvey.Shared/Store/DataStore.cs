@@ -86,29 +86,32 @@ namespace Kinvey
 			set { this.client = value; }
 		}
 
-		/// <summary>
-		/// Gets the custom request properties.
-		/// </summary>
-		/// <returns>The custom request properties.</returns>
-		public JObject GetCustomRequestProperties(){
+        /// <summary>
+        /// Gets the custom request properties.
+        /// </summary>
+        /// <returns>The custom request properties.</returns>
+        [Obsolete("This method has been deprecated.")]
+        public JObject GetCustomRequestProperties(){
 			return this.customRequestProperties;
 		}
 
-		/// <summary>
-		/// Sets the custom request properties.
-		/// </summary>
-		/// <param name="customheaders">Custom headers.</param>
-		public void SetCustomRequestProperties (JObject customheaders)
+        /// <summary>
+        /// Sets the custom request properties.
+        /// </summary>
+        /// <param name="customheaders">Custom headers.</param>
+        [Obsolete("This method has been deprecated.")]
+        public void SetCustomRequestProperties (JObject customheaders)
 		{
 			this.customRequestProperties = customheaders;
 		}
 
-		/// <summary>
-		/// Sets a specific custom request property to a JSON object.
-		/// </summary>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public void SetCustomRequestProperty (string key, JObject value)
+        /// <summary>
+        /// Sets a specific custom request property to a JSON object.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value.</param>
+        [Obsolete("This method has been deprecated.")]
+        public void SetCustomRequestProperty (string key, JObject value)
 		{
 			if (this.customRequestProperties == null) {
 				this.customRequestProperties = new JObject ();
@@ -148,6 +151,7 @@ namespace Kinvey
 		}
 
         #region Public interface
+
         /// <summary>
         /// Gets an instance of the <see cref="DataStore{T}"/>.
         /// </summary>
@@ -219,18 +223,31 @@ namespace Kinvey
 			RealtimeDelegate = null;
 		}
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Performs a find operation on the network the with mongo query async.
-		/// </summary>
-		/// <returns>The list of entities that match the query. </returns>
-		/// <param name="queryString">Query string in MongoDB syntax.</param>
-		public async Task<List<T>> FindWithMongoQueryAsync(string queryString)
+        #region Find
+
+        /// <summary>
+        /// Performs a find operation on the network the with mongo query async.
+        /// </summary>
+        /// <returns>The list of entities that match the query. </returns>
+        /// <param name="queryString">Query string in MongoDB syntax.</param>
+        public async Task<List<T>> FindWithMongoQueryAsync(string queryString)
 		{
 			// TODO throw exception when used with sync store?
 			return await networkFactory.buildGetRequest<T>(this.CollectionName, queryString).ExecuteAsync();
 		}
+
+        /// <summary>
+        /// Perfoms a find operation, with an optional query filter.
+        /// </summary>
+        /// <param name="query">[optional] LINQ-style query that can be used to filter the search results</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        /// <returns> The async task with the list of entities. </returns>
+        public async Task<List<T>> FindAsync(IQueryable<object> query = null, CancellationToken ct = default(CancellationToken))
+        {
+            return await FindInternalAsync(query, null, ct);
+        }
 
         /// <summary>
         /// Perfoms a find operation, with an optional query filter.
@@ -241,12 +258,29 @@ namespace Kinvey
         /// <see cref="DataStoreType.CACHE"/></param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
         /// <returns> The async task with the list of entities. </returns>
+        [Obsolete("This method has been deprecated.  Please use FindAsync( query:, ct: ) instead.")]
         public async Task<List<T>> FindAsync(IQueryable<object> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
 		{
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
-			ct.ThrowIfCancellationRequested();
-			return await findByQueryRequest.ExecuteAsync();
-		}
+            return await FindInternalAsync(query, cacheResults, ct);
+        }
+
+        private async Task<List<T>> FindInternalAsync(IQueryable<object> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
+        {
+            FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
+            ct.ThrowIfCancellationRequested();
+            return await findByQueryRequest.ExecuteAsync();
+        }
+
+        /// <summary>
+        /// Perfoms a find operation, based on a given Kinvey ID.
+        /// </summary>
+        /// <param name="entityID">The ID of the entity to be retrieved.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        /// <returns> The async task with an entity. </returns>
+        public async Task<T> FindByIDAsync(string entityID, CancellationToken ct = default(CancellationToken))
+        {
+            return await FindByIDInternalAsync(entityID, null, ct);
+        }
 
         /// <summary>
         /// Perfoms a find operation, based on a given Kinvey ID.
@@ -257,32 +291,51 @@ namespace Kinvey
         /// <see cref="DataStoreType.CACHE"/>.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
         /// <returns> The async task with an entity. </returns>
+        [Obsolete("This method has been deprecated.  Please use FindByIDAsync( entityID:, ct: ) instead.")]
         public async Task<T> FindByIDAsync(string entityID, KinveyDelegate<T> cacheResult = null, CancellationToken ct = default(CancellationToken))
 		{
-			List<string> listIDs = new List<string>();
+            return await FindByIDInternalAsync(entityID, cacheResult, ct);
+        }
 
-			if (entityID != null)
-			{
-				listIDs.Add(entityID);
-			}
+        private async Task<T> FindByIDInternalAsync(string entityID, KinveyDelegate<T> cacheResult = null, CancellationToken ct = default(CancellationToken))
+        {
+            List<string> listIDs = new List<string>();
 
-			var cacheDelegate = new KinveyDelegate<List<T>>
-			{
-				onSuccess = (listCacheResults) => {
-					cacheResult?.onSuccess(listCacheResults.FirstOrDefault());
-				},
-				onError = (error) => {
-					cacheResult?.onError(error);
-				}
-			};
+            if (entityID != null)
+            {
+                listIDs.Add(entityID);
+            }
 
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
-			ct.ThrowIfCancellationRequested();
-			var results = await findByQueryRequest.ExecuteAsync();
-			return results.FirstOrDefault();
-		}
+            var cacheDelegate = new KinveyDelegate<List<T>>
+            {
+                onSuccess = (listCacheResults) => {
+                    cacheResult?.onSuccess(listCacheResults.FirstOrDefault());
+                },
+                onError = (error) => {
+                    cacheResult?.onError(error);
+                }
+            };
+
+            FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
+            ct.ThrowIfCancellationRequested();
+            var results = await findByQueryRequest.ExecuteAsync();
+            return results.FirstOrDefault();
+        }
+
+        #endregion Find
 
         #region Grouping/Aggregate Functions
+
+        /// <summary>
+        /// Gets a count of all the entities in a collection
+        /// </summary>
+        /// <returns>The async task which returns the count.</returns>
+        /// <param name="query">[optional] LINQ-style query that can be used to filter the search results.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<uint> GetCountAsync(IQueryable<object> query = null,  CancellationToken ct = default(CancellationToken))
+        {
+            return await GetCountInternalAsync(query, null, ct);
+        }
 
         /// <summary>
         /// Gets a count of all the entities in a collection
@@ -293,12 +346,32 @@ namespace Kinvey
 		/// network results being returned.  This is only valid if the <see cref="DataStoreType"/> is 
 		/// <see cref="DataStoreType.CACHE"/></param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        [Obsolete("This method has been deprecated.  Please use GetCountAsync( query:, ct: ) instead.")]
         public async Task<uint> GetCountAsync(IQueryable<object> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
 		{
-			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
-			ct.ThrowIfCancellationRequested();
-			return await getCountRequest.ExecuteAsync();
-		}
+            return await GetCountInternalAsync(query, cacheCount, ct);
+        }
+
+        private async Task<uint> GetCountInternalAsync(IQueryable<object> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
+        {
+            GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
+            ct.ThrowIfCancellationRequested();
+            return await getCountRequest.ExecuteAsync();
+        }
+
+        /// <summary>
+        /// Gets the aggregate value, by grouping, of the values in the given entity field.
+        /// </summary>
+        /// <returns>The sum of the values of the given property name for the entities in the <see cref="DataStore{T}"/>.</returns>
+        /// <param name="reduceFunction">The value from <see cref="EnumReduceFunction"/>.</param>
+        /// <param name="groupField">[optional] Property name of field to be used in grouping.</param>
+        /// <param name="aggregateField">[optional] Property name of field to be used in aggregation.  This is not necessary when using the <see cref="EnumReduceFunction.REDUCE_FUNCTION_COUNT"/> method.</param>
+        /// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<object> query = null, CancellationToken ct = default(CancellationToken))
+        {
+            return await GroupAndAggregateInternalAsync(reduceFunction, groupField, aggregateField, query, null, ct);
+        }
 
         /// <summary>
         /// Gets the aggregate value, by grouping, of the values in the given entity field.
@@ -310,22 +383,30 @@ namespace Kinvey
         /// <param name="query">[optional] Query used to filter results prior to aggregation.</param>
         /// <param name="cacheDelegate">[optional] Delegate used to return the sum aggregate value based on what is available in offline cache.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        [Obsolete("This method has been deprecated.  Please use GroupAndAggregateAsync( reduceFunction:, groupField:, aggregateField:, query:, ct:  ) instead.")]
         public async Task<List<GroupAggregationResults>> GroupAndAggregateAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<object> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
 		{
-			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
-			ct.ThrowIfCancellationRequested();
-			return await findByAggregateQueryRequest.ExecuteAsync();
-		}
+            return await GroupAndAggregateInternalAsync(reduceFunction, groupField, aggregateField, query, cacheDelegate, ct);
+        }
 
-		#endregion
+        private async Task<List<GroupAggregationResults>> GroupAndAggregateInternalAsync(EnumReduceFunction reduceFunction, string groupField = "", string aggregateField = "", IQueryable<object> query = null, KinveyDelegate<List<GroupAggregationResults>> cacheDelegate = null, CancellationToken ct = default(CancellationToken))
+        {
+            FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
+            ct.ThrowIfCancellationRequested();
+            return await findByAggregateQueryRequest.ExecuteAsync();
+        }
 
-		/// <summary>
-		/// Save the specified entity to a Kinvey collection.
-		/// </summary>
-		/// <returns>The async task.</returns>
-		/// <param name="entity">the entity to save.</param>
-		/// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-		public async Task<T> SaveAsync(T entity, CancellationToken ct = default(CancellationToken))
+        #endregion Grouping/Aggregate Functions
+
+        #region Save
+
+        /// <summary>
+        /// Save the specified entity to a Kinvey collection.
+        /// </summary>
+        /// <returns>The async task.</returns>
+        /// <param name="entity">the entity to save.</param>
+        /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
+        public async Task<T> SaveAsync(T entity, CancellationToken ct = default(CancellationToken))
 		{
 			SaveRequest<T> request = new SaveRequest<T>(entity, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();
@@ -354,6 +435,10 @@ namespace Kinvey
             ct.ThrowIfCancellationRequested();
             return await request.ExecuteAsync();
         }
+
+        #endregion Save
+
+        #region Remove
 
         /// <summary>
         /// Deletes the entity associated with the provided id
@@ -385,6 +470,10 @@ namespace Kinvey
             ct.ThrowIfCancellationRequested();
             return await request.ExecuteAsync();
         }
+
+        #endregion Remove
+
+        #region Push, Pull, Sync
 
         /// <summary>
         /// Pulls data from the backend to local storage
@@ -481,12 +570,16 @@ namespace Kinvey
 			return response;
 		}
 
-		/// <summary>
-		/// Get a count of the number of items currently in the sync queue, either for a particular collection or total count.
-		/// </summary>
-		/// <returns>The sync queue item count.</returns>
-		/// <param name="allCollections">[optional] Flag to determine if count should be for all collections.  Default to false.</param>
-		public int GetSyncCount(bool allCollections = false)
+        #endregion Push, Pull, Sync
+
+        #region Methods for local storage
+
+        /// <summary>
+        /// Get a count of the number of items currently in the sync queue, either for a particular collection or total count.
+        /// </summary>
+        /// <returns>The sync queue item count.</returns>
+        /// <param name="allCollections">[optional] Flag to determine if count should be for all collections.  Default to false.</param>
+        public int GetSyncCount(bool allCollections = false)
 		{
             if (this.storeType == DataStoreType.NETWORK)
             {
@@ -567,6 +660,8 @@ namespace Kinvey
 			return syncQueue.RemoveAll();
 		}
 
-		#endregion
-	}
+        #endregion Methods for local storage
+
+        #endregion Public interface
+    }
 }
