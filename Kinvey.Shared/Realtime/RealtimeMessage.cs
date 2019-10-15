@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -15,14 +15,29 @@ using Newtonsoft.Json;
 
 namespace Kinvey
 {
+    /// <summary>
+	/// The class represents Kinvey realtime message.
+	/// </summary>
+    /// <typeparam name="T">The type of message.</typeparam>
 	[JsonObject(MemberSerialization.OptOut)]
 	public class RealtimeMessage<T>
 	{
+        /// <summary>
+		/// Sender identifier.
+		/// </summary>
+		/// <value>The SenderID property gets/sets the value of the string field, _senderID.</value>
 		public string SenderID { get; set; }
 
+        /// <summary>
+		/// Message.
+		/// </summary>
+		/// <value>The Message property gets/sets the value of the T field, _message.</value>
 		public T Message { get; set; }
 
-		public RealtimeMessage()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RealtimeMessage{T}"/> class.
+        /// </summary>
+        public RealtimeMessage()
 		{
 		}
 
