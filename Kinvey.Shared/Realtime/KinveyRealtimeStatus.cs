@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -10,8 +10,6 @@
 // KINVEY, INC and is subject to applicable licensing agreements.
 // Unauthorized reproduction, transmission or distribution of this file and its
 // contents is a violation of applicable laws.
-
-using System;
 
 namespace Kinvey
 {
@@ -56,12 +54,12 @@ namespace Kinvey
 		/// <value>The channel group.</value>
 		public string ChannelGroup { get; private set; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Kinvey.KinveyRealtimeStatus"/> class.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="pubnubMessage">Pubnub message.</param>
-		public KinveyRealtimeStatus(KinveyRealtimeStatus.StatusType type, string[] arrMessage)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KinveyRealtimeStatus"/> class.
+        /// </summary>
+        /// <param name="type">Type.</param>
+        /// <param name="arrMessage">Pubnub message.</param>
+        public KinveyRealtimeStatus(KinveyRealtimeStatus.StatusType type, string[] arrMessage)
 		{
 			RealtimeStatusType = type;
 
