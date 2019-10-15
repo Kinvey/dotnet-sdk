@@ -1,4 +1,4 @@
-// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -12,39 +12,35 @@
 // contents is a violation of applicable laws.
 
 using System;
-using System.Net;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using SQLite;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.Serialization;
 using System.Reflection;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Remotion.Linq;
 
 namespace Kinvey
 {
-	/// <summary>
-	/// This is an implementation of an OfflineStore, using SQLite to manage maintaining data.
-	/// This class is responsible for breaking apart a request, and determing what actions to take
-	/// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
-	/// </summary>
-	public class SQLiteCache <T> : ICache <T> where T : class, new()
+    /// <summary>
+    /// This is an implementation of an OfflineStore, using SQLite to manage maintaining data.
+    /// This class is responsible for breaking apart a request, and determing what actions to take
+    /// Actual actions are performed on the OfflineTable class, using a SQLiteDatabaseHelper
+    /// </summary>
+    /// <typeparam name="T">The type of an item.</typeparam>
+    public class SQLiteCache <T> : ICache <T> where T : class, new()
     {
-
 		private string collectionName;
 
 		private SQLiteConnection dbConnectionSync;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.SQLiteOfflineStore"/> class.
-		/// </summary>
-		/// <param name="collection">Collection.</param>
-		/// <param name="connection">Connection.</param>
-		public SQLiteCache(string collection, SQLiteAsyncConnection connectionAsync, SQLiteConnection connectionSync)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteCache{T}"/> class.
+        /// </summary>
+        /// <param name="collection">Collection name.</param>
+        /// <param name="connectionAsync">SQLite asynchronous connection.</param>
+        /// <param name="connectionSync">SQLite synchronous connection.</param>
+        public SQLiteCache(string collection, SQLiteAsyncConnection connectionAsync, SQLiteConnection connectionSync)
 		{
 			this.collectionName = collection;
 			this.dbConnectionSync = connectionSync;
@@ -58,23 +54,23 @@ namespace Kinvey
 			dbConnectionSync.CreateTable<T>();			
 		}
 
-
-		// Deletes the SQLite table associated with the local representation of this collection.
-		private int dropTable()
-		{
-			return dbConnectionSync.DropTable<T>();
-		}
-
-		public bool IsCacheEmpty()
+        /// <summary>
+        /// Determines if cache is empty or not.
+        /// </summary>
+        /// <returns><c>True</c> if cache is empty; otherwise, <c>false</c>.</returns>
+        public bool IsCacheEmpty()
 		{
             return dbConnectionSync.Table<T>().Count() == 0;
 		}
 
-		#region SQLite Cache CRUD APIs
+        #region SQLite Cache CRUD APIs
 
-		// CREATE APIs
-		//
-		public T Save(T item)
+        /// <summary>
+        /// Saves the specified item.
+        /// </summary>
+        /// <returns>The saved item.</returns>
+        /// <param name="item">The item to save in the cache.</param>
+        public T Save(T item)
 		{
 			try
 			{
@@ -88,7 +84,12 @@ namespace Kinvey
 			return item;
 		}
 
-		public T Update(T item)
+        /// <summary>
+        /// Updates the specified item.
+        /// </summary>
+        /// <returns> The updated item. </returns>
+        /// <param name="item"> The item to update in the cache. </param>
+        public T Update(T item)
 		{
 			try
 			{
@@ -102,6 +103,11 @@ namespace Kinvey
 			return item;
 		}
 
+        /// <summary>
+        /// Saves the specified items.
+        /// </summary>
+        /// <returns>The saved items.</returns>
+        /// <param name="items">The items to save in the cache.</param>
 		public List<T> Save(List<T> items)
 		{
 			// TODO implement
@@ -122,7 +128,13 @@ namespace Kinvey
 			return items;
 		}
 
-		public T UpdateCacheSave(T item, string tempID)
+        /// <summary>
+        /// Updates the identifier in the specified item.
+        /// </summary>
+        /// <returns>The updated item.</returns>
+        /// <param name="item">The item to update in the cache.</param>
+        /// <param name="tempID">The temporary ID used in the cache, which will be replaced with the permanent ID.</param>
+        public T UpdateCacheSave(T item, string tempID)
 		{
 			try
 			{
@@ -144,21 +156,30 @@ namespace Kinvey
 			return item;
 		}
 
-		// READ APIs
-		//
-
-		public List<T> FindAll()
+        /// <summary>
+        /// Finds all items.
+        /// </summary>
+        /// <returns>The list of items.</returns>
+        public List<T> FindAll()
 		{
             return dbConnectionSync.Table<T>().ToList();
 		}
 
-		public int CountAll() 
+        /// <summary>
+        /// Gets the count of all items.
+        /// </summary>
+        /// <returns>The count of items.</returns>
+        public int CountAll() 
 		{
 			return dbConnectionSync.Table<T>().Count();
 		}
 
-
-		public T FindByID(string ID)
+        /// <summary>
+        /// Finds the item by id.
+        /// </summary>
+        /// <param name="ID">The item identifier.</param>
+        /// <returns>The item with the given ID.</returns>
+        public T FindByID(string ID)
 		{
 			T item = default(T);
 			try
@@ -177,7 +198,12 @@ namespace Kinvey
             return item;
 		}
 
-		public List<T> FindByIDs(List<string> IDs)
+        /// <summary>
+        /// Finds items by the list of identifiers.
+        /// </summary>
+        /// <param name="IDs">The list of identifiers.</param>
+        /// <returns>The list of items.</returns>
+        public List<T> FindByIDs(List<string> IDs)
 		{
 			List<T> listEntities = new List<T>();
 
@@ -189,7 +215,12 @@ namespace Kinvey
 			return listEntities;
 		}
 
-		public List<T> FindByQuery(Expression expr)
+        /// <summary>
+        /// Finds items by the expression.
+        /// </summary>
+        /// <param name="expr">Expression.</param>
+        /// <returns>The list of items.</returns>
+        public List<T> FindByQuery(Expression expr)
 		{
 			try
 			{
@@ -202,7 +233,12 @@ namespace Kinvey
 			}
 		}
 
-		public int CountByQuery(Expression expr)
+        /// <summary>
+        /// Gets the count of items by the expression.
+        /// </summary>
+        /// <param name="expr">Expression.</param>
+        /// <returns>The count of items.</returns>
+        public int CountByQuery(Expression expr)
 		{
 			try
 			{
@@ -336,7 +372,15 @@ namespace Kinvey
 			return false;
 		}
 
-		public List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query)
+        /// <summary>
+        /// Gets group aggregation result.
+        /// </summary>
+        /// <param name="reduceFunction"> Reduce function. </param>
+        /// <param name="groupField"> Group field. </param>
+        /// <param name="aggregateField"> Aggregate field. </param>
+        /// <param name="query"> Linq expression. </param>
+        /// <returns>The list of group aggregation results.</returns>
+        public List<GroupAggregationResults> GetAggregateResult(EnumReduceFunction reduceFunction, string groupField, string aggregateField, Expression query)
 		{
 			List<GroupAggregationResults> localAggregateResults = new List<GroupAggregationResults>();
 			List<object> listValues = new List<object>();
@@ -494,9 +538,12 @@ namespace Kinvey
 		}
 
 
-		// UPDATE APIs
-		//
-		public List<T> RefreshCache(List<T> items)
+        /// <summary>
+        /// Refreshes items.
+        /// </summary>
+        /// <param name="items"> The list of items to refresh. </param>
+        /// <returns>The list of refreshed items.</returns>
+        public List<T> RefreshCache(List<T> items)
 		{
 			try
 			{
@@ -515,13 +562,12 @@ namespace Kinvey
 			return items;
 		}
 
-		// DELETE APIs
-		//
-
-		/// <summary>
-		/// Clear this local cache table of all its content.
-		/// </summary>
-		public KinveyDeleteResponse Clear(Expression expr = null)
+        /// <summary>
+        /// Clears this local cache table of all its content.
+        /// </summary>
+        /// <param name="expr">[optional] Linq expression. </param>
+        /// <returns>The result of delete operation.</returns>
+        public KinveyDeleteResponse Clear(Expression expr = null)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
@@ -615,7 +661,12 @@ namespace Kinvey
 			}
 		}
 
-		public KinveyDeleteResponse DeleteByID(string id)
+        /// <summary>
+        /// Deletes item by id.
+        /// </summary>
+        /// <param name="id">The item identifier. </param>
+        /// <returns>The result of delete operation.</returns>
+        public KinveyDeleteResponse DeleteByID(string id)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
@@ -638,7 +689,12 @@ namespace Kinvey
 			return kdr;
 		}
 
-		public KinveyDeleteResponse DeleteByIDs(List<string> IDs)
+        /// <summary>
+        /// Deletes items by the list of identifiers.
+        /// </summary>
+        /// <param name="IDs">The list of identifiers. </param>
+        /// <returns> The result of delete operation. </returns>
+        public KinveyDeleteResponse DeleteByIDs(List<string> IDs)
 		{
 			KinveyDeleteResponse kdr = new KinveyDeleteResponse();
 
@@ -651,6 +707,11 @@ namespace Kinvey
 			return kdr;
 		}
 
+        /// <summary>
+        /// Deletes items according to query.
+        /// </summary>
+        /// <param name="query"> Query. </param>
+        /// <returns> The result of delete operation. </returns>
         public KinveyDeleteResponse DeleteByQuery(IQueryable<object> query)
         {            
             var kdr = new KinveyDeleteResponse();
@@ -694,9 +755,7 @@ namespace Kinvey
 
             return kdr;
         }
-
 		#endregion
 	}
-
 }
 
