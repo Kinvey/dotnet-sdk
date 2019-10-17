@@ -4,6 +4,10 @@ namespace Kinvey
 {
     public partial class Client
     {
+        /// <summary>
+		/// Default file path.
+		/// </summary>
+		/// <value>The string value with default file path.</value>
         public static string DefaultFilePath
         {
             get
