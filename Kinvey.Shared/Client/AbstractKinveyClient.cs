@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Kinvey, Inc. All rights reserved.
+﻿// Copyright (c) 2019, Kinvey, Inc. All rights reserved.
 //
 // This software is licensed to you under the Kinvey terms of service located at
 // http://www.kinvey.com/terms-of-use. By downloading, accessing and/or using this
@@ -83,7 +83,7 @@ namespace Kinvey
 		/// Sets the custom request properties.
 		/// </summary>
 		/// <returns>The custom request properties.</returns>
-		/// <param name="customheaders">Customheaders.</param>
+		/// <param name="customheaders">Custom headers.</param>
 		public void SetCustomRequestProperties(JObject customheaders)
 		{
 			this.customRequestProperties = customheaders;
@@ -135,26 +135,26 @@ namespace Kinvey
 		{
 			return this.customRequestProperties;
 		}
-       
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient"/> class.
-		/// </summary>
-		/// <param name="restClient">The REST client to be used for network requests.</param>
-		/// <param name="rootUrl">The root URL of the backend service</param>
-		/// <param name="servicePath">The service path</param>
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractKinveyClient"/> class.
+        /// </summary>
+        /// <param name="httpClient">The REST client to be used for network requests.</param>
+        /// <param name="rootUrl">The root URL of the backend service.</param>
+        /// <param name="servicePath">The service path.</param>
         protected AbstractKinveyClient(HttpClient httpClient, string rootUrl, string servicePath)
             : this(httpClient, rootUrl, servicePath, null)
 		{
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient"/> class.
-		/// </summary>
-		/// <param name="restClient">The REST client to be used for network requests.</param>
-		/// <param name="rootUrl">The root URL of the backend service</param>
-		/// <param name="servicePath">The service path</param>
-		/// <param name="initializer">Kinvey request initializer</param>
-		protected AbstractKinveyClient(HttpClient httpClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractKinveyClient"/> class.
+        /// </summary>
+        /// <param name="httpClient">The REST client to be used for network requests.</param>
+        /// <param name="rootUrl">The root URL of the backend service</param>
+        /// <param name="servicePath">The service path</param>
+        /// <param name="initializer">Kinvey request initializer</param>
+        protected AbstractKinveyClient(HttpClient httpClient, string rootUrl, string servicePath, IKinveyRequestInitializer initializer)
         {
             this.httpClient = httpClient;
             this.kinveyRequestInitializer = initializer;
@@ -162,8 +162,6 @@ namespace Kinvey
             this.servicePath = NormalizeServicePath(servicePath);
 			Logger.Log ("Kinvey Client created, running version: " + KinveyHeaders.VERSION);
         }
-
-		//public abstract User User ();
 
 		/// <summary>
 		/// Gets the root URL.
@@ -224,6 +222,7 @@ namespace Kinvey
         /// Initializes the request.
         /// </summary>
         /// <param name="request">Request.</param>
+        /// <param name="clientID">[optional] Client identifier. </param>
         /// <typeparam name="T">The Type of the response</typeparam>
         public void InitializeRequest<T>(AbstractKinveyClientRequest<T> request, string clientID = null)
         {
@@ -283,7 +282,7 @@ namespace Kinvey
         }
 
 		/// <summary>
-		/// Class which sets up the building of the <see cref="KinveyXamarin.AbstractKinveyClient"/> class.
+		/// Class which sets up the building of the <see cref="AbstractKinveyClient"/> class.
 		/// </summary>
 		public abstract class Builder
         {
@@ -310,7 +309,7 @@ namespace Kinvey
             private KinveyClientRequestInitializer kinveyRequestInitializer;
 
 			/// <summary>
-			/// Initializes a new instance of the <see cref="KinveyXamarin.AbstractKinveyClient"/> Builder class.
+			/// Initializes a new instance of the <see cref="AbstractKinveyClient.Builder"/> class.
 			/// </summary>
 			/// <param name="transport">Transport.</param>
 			/// <param name="defaultRootUrl">Default root URL.</param>
@@ -325,7 +324,7 @@ namespace Kinvey
             }
 				
 			/// <summary>
-			/// Gets the http rest client.
+			/// Gets or sets the http rest client.
 			/// </summary>
 			/// <value>The http rest client.</value>
             public HttpClient HttpClient
@@ -344,6 +343,10 @@ namespace Kinvey
                 set { this.baseUrl = NormalizeRootUrl(value); }
             }
 
+            /// <summary>
+            /// Gets or sets MIC host name.
+            /// </summary> 
+            /// <value>The MIC host name.</value>
             public string MICHostName
             {
                 get { return this.micHostName; }
