@@ -185,21 +185,21 @@ namespace Kinvey.Tests
 
         [TestMethod]
         public async Task TestLoginFacebookAsync()
-        {
-            // Arrange
+        {           
             if (MockData)
             {
+                // Arrange
                 MockResponses(1);
+
+                // Act
+                var fbUser = await User.LoginFacebookAsync(TestSetup.facebook_access_token_fake, kinveyClient);
+
+                // Assert
+                Assert.IsNotNull(fbUser);
+                Assert.IsNotNull(fbUser.AuthSocialID);
+                Assert.IsNotNull(fbUser.AuthSocialID.Attributes["facebook"]);
+                Assert.IsTrue(fbUser.AuthSocialID.Attributes["facebook"].HasValues);
             }
-
-            // Act
-            var fbUser = await User.LoginFacebookAsync(TestSetup.facebook_access_token_fake, kinveyClient);
-
-            // Assert
-            Assert.IsNotNull(fbUser);
-            Assert.IsNotNull(fbUser.AuthSocialID);
-            Assert.IsNotNull(fbUser.AuthSocialID.Attributes["facebook"]);
-            Assert.IsTrue(fbUser.AuthSocialID.Attributes["facebook"].HasValues);
         }
 
         [TestMethod]
@@ -219,20 +219,20 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestLoginGoogleAsync()
         {
-            // Arrange
             if (MockData)
             {
+                // Arrange
                 MockResponses(1);
+
+                // Act
+                var googleUser = await User.LoginGoogleAsync(TestSetup.google_access_token_fake, kinveyClient);
+
+                // Assert
+                Assert.IsNotNull(googleUser);
+                Assert.IsNotNull(googleUser.AuthSocialID);
+                Assert.IsNotNull(googleUser.AuthSocialID.Attributes["google"]);
+                Assert.IsTrue(googleUser.AuthSocialID.Attributes["google"].HasValues);
             }
-
-            // Act
-            var googleUser = await User.LoginGoogleAsync(TestSetup.google_access_token_fake, kinveyClient);
-
-            // Assert
-            Assert.IsNotNull(googleUser);
-            Assert.IsNotNull(googleUser.AuthSocialID);
-            Assert.IsNotNull(googleUser.AuthSocialID.Attributes["google"]);
-            Assert.IsTrue(googleUser.AuthSocialID.Attributes["google"].HasValues);
         }
 
         [TestMethod]
@@ -252,24 +252,25 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestLoginTwitterAsync()
         {
-            // Arrange
             if (MockData)
             {
+                // Arrange
                 MockResponses(1);
+
+                string accessTokenKey = TestSetup.twitter_access_token_fake;
+                string accessTokenSecret = "";
+                string consumerKey = "";
+                string consumerKeySecret = "";
+
+                // Act
+                var twitterUser = await User.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
+
+                // Assert
+                Assert.IsNotNull(twitterUser);
+                Assert.IsNotNull(twitterUser.AuthSocialID);
+                Assert.IsNotNull(twitterUser.AuthSocialID.Attributes["twitter"]);
+                Assert.IsTrue(twitterUser.AuthSocialID.Attributes["twitter"].HasValues);
             }
-            string accessTokenKey = TestSetup.twitter_access_token_fake;
-            string accessTokenSecret = "";
-            string consumerKey = "";
-            string consumerKeySecret = "";
-
-            // Act
-            var twitterUser = await User.LoginTwitterAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
-
-            // Assert
-            Assert.IsNotNull(twitterUser);
-            Assert.IsNotNull(twitterUser.AuthSocialID);
-            Assert.IsNotNull(twitterUser.AuthSocialID.Attributes["twitter"]);
-            Assert.IsTrue(twitterUser.AuthSocialID.Attributes["twitter"].HasValues);
         }
 
         [TestMethod]
@@ -291,25 +292,26 @@ namespace Kinvey.Tests
 
         [TestMethod]
         public async Task TestLoginLinkedInAsync()
-        {
-            // Arrange
+        {         
             if (MockData)
             {
+                // Arrange
                 MockResponses(1);
+
+                string accessTokenKey = TestSetup.linkedin_access_token_fake;
+                string accessTokenSecret = "";
+                string consumerKey = "";
+                string consumerKeySecret = "";
+
+                // Act
+                var linkedinUser = await User.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
+
+                // Assert
+                Assert.IsNotNull(linkedinUser);
+                Assert.IsNotNull(linkedinUser.AuthSocialID);
+                Assert.IsNotNull(linkedinUser.AuthSocialID.Attributes["linkedin"]);
+                Assert.IsTrue(linkedinUser.AuthSocialID.Attributes["linkedin"].HasValues);
             }
-            string accessTokenKey = TestSetup.linkedin_access_token_fake;
-            string accessTokenSecret = "";
-            string consumerKey = "";
-            string consumerKeySecret = "";
-
-            // Act
-            var linkedinUser = await User.LoginLinkedinAsync(accessTokenKey, accessTokenSecret, consumerKey, consumerKeySecret, kinveyClient);
-
-            // Assert
-            Assert.IsNotNull(linkedinUser);
-            Assert.IsNotNull(linkedinUser.AuthSocialID);
-            Assert.IsNotNull(linkedinUser.AuthSocialID.Attributes["linkedin"]);
-            Assert.IsTrue(linkedinUser.AuthSocialID.Attributes["linkedin"].HasValues);
         }
 
         [TestMethod]
@@ -331,25 +333,26 @@ namespace Kinvey.Tests
 
         [TestMethod]
         public async Task TestLoginSalesforceAsync()
-        {
-            // Arrange
+        {            
             if (MockData)
             {
+                // Arrange
                 MockResponses(1);
+
+                string access = TestSetup.salesforce_access_token_fake;
+                string reauth = "";
+                string clientID = "";
+                string ID = "";
+
+                // Act
+                var salesforceUser = await User.LoginSalesforceAsync(access, reauth, clientID, ID, kinveyClient);
+
+                // Assert
+                Assert.IsNotNull(salesforceUser);
+                Assert.IsNotNull(salesforceUser.AuthSocialID);
+                Assert.IsNotNull(salesforceUser.AuthSocialID.Attributes["salesforce"]);
+                Assert.IsTrue(salesforceUser.AuthSocialID.Attributes["salesforce"].HasValues);
             }
-            string access = TestSetup.salesforce_access_token_fake;
-            string reauth = "";
-            string clientID = "";
-            string ID = "";
-
-            // Act
-            var salesforceUser = await User.LoginSalesforceAsync(access, reauth, clientID, ID, kinveyClient);
-
-            // Assert
-            Assert.IsNotNull(salesforceUser);
-            Assert.IsNotNull(salesforceUser.AuthSocialID);
-            Assert.IsNotNull(salesforceUser.AuthSocialID.Attributes["salesforce"]);
-            Assert.IsTrue(salesforceUser.AuthSocialID.Attributes["salesforce"].HasValues);
         }
      
         [TestMethod]
@@ -421,298 +424,274 @@ namespace Kinvey.Tests
 
         [TestMethod]
         public async Task TestLoginWithMicResourceOwnerGrantFlowAsync()
-        {
-            // Arrange
+        {            
             if (MockData)
             {
+                // Arrange
                 MockResponses(2);
-            }
 
-            // Act
-            Exception exception = null;
-            try
-            {
-                await User.LoginWithMIC("test", "test", null, kinveyClient);
-            }
-            catch (Exception ex)
-            {
-                exception = ex;
-            }
+                // Act
+                Exception exception = null;
+                try
+                {
+                    await User.LoginWithMIC("test", "test", null, kinveyClient);
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
 
-            // Assert
-            Assert.IsNull(exception);
+                // Assert
+                Assert.IsNull(exception);
+            }
         }
 
         [TestMethod]
         public async Task TestLoginWithMicResourceOwnerGrantFlowWithServiceIdAsync()
-        {
-            // Arrange
+        {            
             if (MockData)
             {
+                // Arrange
                 MockResponses(2);
-            }
 
-            // Act
-            Exception exception = null;
-            try
-            {
-                await User.LoginWithMIC("test", "test", TestSetup.mic_id_fake, kinveyClient);
-            }
-            catch (Exception ex)
-            {
-                exception = ex;
-            }
+                // Act
+                Exception exception = null;
+                try
+                {
+                    await User.LoginWithMIC("test", "test", TestSetup.mic_id_fake, kinveyClient);
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
 
-            // Assert
-            Assert.IsNull(exception);
+                // Assert
+                Assert.IsNull(exception);
+            }
         }
 
         [TestMethod]
         public async Task TestLoginMICWithAccessTokenUnauthorizedResponseRefreshTokenExistsAsync()
-        {
-            // Arrange
+        {           
             if (MockData)
             {
+                // Arrange
                 MockResponses(8);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todo = new ToDo
+                {
+                    Name = "Test"
+                };
+
+                // Act
+                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+                var savedToDo = await todoStore.SaveAsync(todo);
+                var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
+
+                //Teardown
+                await todoStore.RemoveAsync(savedToDo.ID);
+
+                // Assert
+                Assert.IsNotNull(savedToDo);
+                Assert.AreEqual(savedToDo.ID, existingToDo.ID);
+                Assert.AreEqual(savedToDo.Name, existingToDo.Name);
             }
-            else
-            {
-                Assert.Fail("Use this test only with mocks.");
-            }
-
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-            var todo = new ToDo
-            {
-                Name = "Test"
-            };
-
-            // Act
-            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
-            var savedToDo = await todoStore.SaveAsync(todo);
-            var existingToDo = await todoStore.FindByIDAsync(savedToDo.ID);
-
-            //Teardown
-            await todoStore.RemoveAsync(savedToDo.ID);
-
-            // Assert
-            Assert.IsNotNull(savedToDo);
-            Assert.AreEqual(savedToDo.ID, existingToDo.ID);
-            Assert.AreEqual(savedToDo.Name, existingToDo.Name);
         }
 
         [TestMethod]
         public async Task TestLoginMICWithAccessTokenUnauthorizedResponseTwoAttemptsRetrievingRefreshTokenAsync()
         {
-            // Arrange
             if (MockData)
             {
+                // Arrange
                 MockResponses(6);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todo = new ToDo
+                {
+                    Name = "Test"
+                };
+
+                // Act
+                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+
+                var userId = kinveyClient.ActiveUser.Id;
+
+                var credentials = kinveyClient.Store.Load(userId, null);
+                credentials.RefreshToken = TestSetup.refresh_token_for_401_response_fake;
+                kinveyClient.Store.Store(userId, null, credentials);
+
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+                {
+                    await todoStore.SaveAsync(todo);
+                });
+
+                credentials = kinveyClient.Store.Load(userId, null);
+
+                // Assert
+                Assert.IsNotNull(exception);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+                Assert.AreEqual(401, exception.StatusCode);
+                Assert.IsNull(kinveyClient.ActiveUser);
+                Assert.IsNull(credentials);
             }
-            else
-            {
-                Assert.Fail("Use this test only with mocks.");
-            }
-
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-            var todo = new ToDo
-            {
-                Name = "Test"
-            };
-
-            // Act
-            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
-
-            var userId = kinveyClient.ActiveUser.Id;
-
-            var credentials = kinveyClient.Store.Load(userId, null);
-            credentials.RefreshToken = TestSetup.refresh_token_for_401_response_fake;
-            kinveyClient.Store.Store(userId, null, credentials);
-
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-            {
-                await todoStore.SaveAsync(todo);
-            });
-
-            credentials = kinveyClient.Store.Load(userId, null);
-
-            // Assert
-            Assert.IsNotNull(exception);
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            Assert.AreEqual(401, exception.StatusCode);
-            Assert.IsNull(kinveyClient.ActiveUser);
-            Assert.IsNull(credentials);
         }
 
         [TestMethod]
         public async Task TestLoginMICWithAccessTokenUnauthorizedResponseCredentialsAreEmptyAsync()
-        {
-            // Arrange
+        {       
             if (MockData)
             {
+                // Arrange
                 MockResponses(3);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todo = new ToDo
+                {
+                    Name = "Test"
+                };
+
+                // Act
+                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+
+                var userId = kinveyClient.ActiveUser.Id;
+
+                kinveyClient.Store.Delete(userId, null);
+
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+                {
+                    await todoStore.SaveAsync(todo);
+                });
+
+                // Assert
+                Assert.IsNotNull(exception);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+                Assert.AreEqual(401, exception.StatusCode);
+                Assert.IsNull(kinveyClient.ActiveUser);
             }
-            else
-            {
-                Assert.Fail("Use this test only with mocks.");
-            }
-
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-            var todo = new ToDo
-            {
-                Name = "Test"
-            };
-
-            // Act
-            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
-
-            var userId = kinveyClient.ActiveUser.Id;
-
-            kinveyClient.Store.Delete(userId, null);
-
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-            {
-                await todoStore.SaveAsync(todo);
-            });
-
-            // Assert
-            Assert.IsNotNull(exception);
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            Assert.AreEqual(401, exception.StatusCode);
-            Assert.IsNull(kinveyClient.ActiveUser);
         }
 
         [TestMethod]
         public async Task TestLoginMICWithAccessTokenUnauthorizedResponseRefreshTokenIsNullAsync()
         {
-            // Arrange
             if (MockData)
             {
+                // Arrange
                 MockResponses(3);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todo = new ToDo
+                {
+                    Name = "Test"
+                };
+
+                // Act
+                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+
+                var userId = kinveyClient.ActiveUser.Id;
+
+                var credentials = kinveyClient.Store.Load(userId, null);
+                credentials.RefreshToken = null;
+                kinveyClient.Store.Store(userId, null, credentials);
+
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+                {
+                    await todoStore.SaveAsync(todo);
+                });
+
+                credentials = kinveyClient.Store.Load(userId, null);
+
+                // Assert
+                Assert.IsNotNull(exception);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+                Assert.AreEqual(401, exception.StatusCode);
+                Assert.IsNull(kinveyClient.ActiveUser);
+                Assert.IsNull(credentials);
             }
-            else
-            {
-                Assert.Fail("Use this test only with mocks.");
-            }
-
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-            var todo = new ToDo
-            {
-                Name = "Test"
-            };
-
-            // Act
-            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
-
-            var userId = kinveyClient.ActiveUser.Id;
-
-            var credentials = kinveyClient.Store.Load(userId, null);
-            credentials.RefreshToken = null;
-            kinveyClient.Store.Store(userId, null, credentials);
-
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-            {
-                await todoStore.SaveAsync(todo);
-            });
-
-            credentials = kinveyClient.Store.Load(userId, null);
-
-            // Assert
-            Assert.IsNotNull(exception);
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            Assert.AreEqual(401, exception.StatusCode);
-            Assert.IsNull(kinveyClient.ActiveUser);
-            Assert.IsNull(credentials);
         }
 
         [TestMethod]
         public async Task TestLoginMICWithAccessTokenUnauthorizedResponseRefreshTokenIsEmptyAsync()
-        {
-            // Arrange
+        {            
             if (MockData)
             {
+                // Arrange
                 MockResponses(3);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todo = new ToDo
+                {
+                    Name = "Test"
+                };
+
+                // Act
+                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+
+                var userId = kinveyClient.ActiveUser.Id;
+
+                var credentials = kinveyClient.Store.Load(userId, null);
+                credentials.RefreshToken = string.Empty;
+                kinveyClient.Store.Store(userId, null, credentials);
+
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+                {
+                    await todoStore.SaveAsync(todo);
+                });
+
+                credentials = kinveyClient.Store.Load(userId, null);
+
+                // Assert
+                Assert.IsNotNull(exception);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+                Assert.AreEqual(401, exception.StatusCode);
+                Assert.IsNull(kinveyClient.ActiveUser);
+                Assert.IsNull(credentials);
             }
-            else
-            {
-                Assert.Fail("Use this test only with mocks.");
-            }
-
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-            var todo = new ToDo
-            {
-                Name = "Test"
-            };
-
-            // Act
-            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
-
-            var userId = kinveyClient.ActiveUser.Id;
-
-            var credentials = kinveyClient.Store.Load(userId, null);
-            credentials.RefreshToken = string.Empty;
-            kinveyClient.Store.Store(userId, null, credentials);
-
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-            {
-                await todoStore.SaveAsync(todo);
-            });
-
-            credentials = kinveyClient.Store.Load(userId, null);
-
-            // Assert
-            Assert.IsNotNull(exception);
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            Assert.AreEqual(401, exception.StatusCode);
-            Assert.IsNull(kinveyClient.ActiveUser);
-            Assert.IsNull(credentials);
         }
 
         [TestMethod]
         public async Task TestLoginMICWithAccessTokenUnauthorizedResponseRefreshTokenIsNullStringAsync()
-        {
-            // Arrange
+        {           
             if (MockData)
             {
+                // Arrange
                 MockResponses(3);
+
+                var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
+                var todo = new ToDo
+                {
+                    Name = "Test"
+                };
+
+                // Act
+                await User.LoginWithMIC("test3", "test3", null, kinveyClient);
+
+                var userId = kinveyClient.ActiveUser.Id;
+
+                var credentials = kinveyClient.Store.Load(userId, null);
+                credentials.RefreshToken = "null";
+                kinveyClient.Store.Store(userId, null, credentials);
+
+                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
+                {
+                    await todoStore.SaveAsync(todo);
+                });
+
+                credentials = kinveyClient.Store.Load(userId, null);
+
+                // Assert
+                Assert.IsNotNull(exception);
+                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
+                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
+                Assert.AreEqual(401, exception.StatusCode);
+                Assert.IsNull(kinveyClient.ActiveUser);
+                Assert.IsNull(credentials);
             }
-            else
-            {
-                Assert.Fail("Use this test only with mocks.");
-            }
-
-            var todoStore = DataStore<ToDo>.Collection(collectionName, DataStoreType.NETWORK, kinveyClient);
-            var todo = new ToDo
-            {
-                Name = "Test"
-            };
-
-            // Act
-            await User.LoginWithMIC("test3", "test3", null, kinveyClient);
-
-            var userId = kinveyClient.ActiveUser.Id;
-
-            var credentials = kinveyClient.Store.Load(userId, null);
-            credentials.RefreshToken = "null";
-            kinveyClient.Store.Store(userId, null, credentials);
-
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate ()
-            {
-                await todoStore.SaveAsync(todo);
-            });
-
-            credentials = kinveyClient.Store.Load(userId, null);
-
-            // Assert
-            Assert.IsNotNull(exception);
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, exception.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, exception.ErrorCode);
-            Assert.AreEqual(401, exception.StatusCode);
-            Assert.IsNull(kinveyClient.ActiveUser);
-            Assert.IsNull(credentials);
         }
 
         [TestMethod]
@@ -889,28 +868,36 @@ namespace Kinvey.Tests
         public async Task TestLookupUsersAsync()
         {
             // Setup
-            if (MockData) MockResponses(2);
+            if (MockData) 
+            {
+                MockResponses(2); 
+            }
+
             await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
             // Arrange
             UserDiscovery criteria = new UserDiscovery();
-            criteria.FirstName = "George";
+            criteria.Username = TestSetup.user;
 
             // Act
             User[] users = await kinveyClient.ActiveUser.LookupAsync(criteria);
 
             // Assert
             Assert.IsNotNull(users);
-            Assert.AreEqual(3, users.Length);
+            Assert.AreEqual(1, users.Length);
         }
 
         [TestMethod]
         public async Task TestDoesUsernameExistAsync()
         {
             // Arrange
-            if (MockData) MockResponses(1);
-            string username = "testuser";
-
+            if (MockData)
+            {
+                MockResponses(1);
+            }
+            
+            string username = TestSetup.user;
+            
             // Act
             bool exists = await User.HasUser(username);
 
@@ -1070,16 +1057,20 @@ namespace Kinvey.Tests
         [TestMethod]
         public async Task TestUserDisabledAsync()
         {
-            // Setup
-            if (MockData) MockResponses(2);
-            User myUser = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+            if (MockData)
+            {
+                // Setup
+                MockResponses(2);
 
-            // Arrange
-            User deletedSoftUser = await myUser.RetrieveAsync("5808de04e87d27107142f686");
+                // Arrange
+                var myUser = await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
 
-            // Act
-            // Assert
-            Assert.IsTrue(deletedSoftUser.Disabled);
+                // Act
+                var deletedSoftUser = await myUser.RetrieveAsync("5808de04e87d27107142f686");
+               
+                // Assert
+                Assert.IsTrue(deletedSoftUser.Disabled);
+            }
         }
 
         [TestMethod]
@@ -1158,10 +1149,15 @@ namespace Kinvey.Tests
             Client kinveyClient2 = builder2.Build();
 
             // Assert
-            Assert.IsTrue(activeUser?.AccessToken == kinveyClient2?.ActiveUser?.AccessToken);
-            Assert.AreEqual(2, kinveyClient2?.ActiveUser?.Attributes.Count);
+            Assert.IsTrue(activeUser?.AccessToken == kinveyClient2?.ActiveUser?.AccessToken);           
             Assert.AreEqual(activeUser?.Attributes.Count, kinveyClient2?.ActiveUser?.Attributes.Count);
-            Assert.AreEqual(activeUser?.Attributes["email"], kinveyClient2?.ActiveUser?.Attributes["email"]);
+
+            if (MockData) 
+            {
+                Assert.AreEqual(2, kinveyClient2?.ActiveUser?.Attributes.Count);
+                Assert.AreEqual(activeUser?.Attributes["email"], kinveyClient2?.ActiveUser?.Attributes["email"]);
+            }
+
             Assert.AreEqual(activeUser?.Attributes["_acl"]["creator"], kinveyClient2?.ActiveUser?.Attributes["_acl"]["creator"]);
             Assert.IsTrue(activeUser?.AuthToken == kinveyClient2?.ActiveUser?.AuthToken);
             Assert.IsTrue(activeUser?.Id == kinveyClient2?.ActiveUser?.Id);

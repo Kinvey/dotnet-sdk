@@ -14,14 +14,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Kinvey;
 using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Threading;
-using System.Text;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Kinvey.Tests
 {
@@ -227,38 +220,33 @@ namespace Kinvey.Tests
 
         [TestMethod]
 		public async Task TestCustomEndpoint()
-		{
-            // Arrange
-            Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir);
-
-            if (MockData) builder.setBaseURL("http://localhost:8080");
-
-            builder.Build();
-
-            if (MockData) MockResponses(2);
-
-			if (!Client.SharedClient.IsUserLoggedIn())
-			{
-				await User.LoginAsync(TestSetup.user, TestSetup.pass);
-			}
-
-            // Act
-            JObject obj = new JObject
+		{           
+            if (MockData)
             {
-                { "input", 1 }
-            };
+                // Arrange
+                Client.Builder builder = ClientBuilder.setFilePath(TestSetup.db_dir);
+                builder.setBaseURL("http://localhost:8080");
+                builder.Build();
 
-            CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
-			var result = await ce.ExecuteCustomEndpoint("test", obj);
-			string outputstr = result[1].DueDate;
-			int output = int.Parse(outputstr);
+                MockResponses(2);
 
-			// Assert
-			Assert.AreEqual(3, output);
-			Assert.AreEqual(2, result.Length);
+                 await User.LoginAsync(TestSetup.user, TestSetup.pass);
 
-			// Teardown
-			Client.SharedClient.ActiveUser.Logout();
+                // Act
+                JObject obj = new JObject
+                {
+                    { "input", 1 }
+                };
+
+                CustomEndpoint<JObject, ToDo[]> ce = Client.SharedClient.CustomEndpoint<JObject, ToDo[]>();
+                var result = await ce.ExecuteCustomEndpoint("test", obj);
+                string outputstr = result[1].DueDate;
+                int output = int.Parse(outputstr);
+
+                // Assert
+                Assert.AreEqual(3, output);
+                Assert.AreEqual(2, result.Length);
+            }
 		}
 
         [TestMethod]

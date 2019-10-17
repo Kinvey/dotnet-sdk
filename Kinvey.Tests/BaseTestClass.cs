@@ -1782,7 +1782,7 @@ namespace Kinvey.Tests
             var lookup = Read<JObject>(context);
             users = users.Where(x =>
             {
-                return lookup["first_name"].Equals(x["first_name"]);
+                return lookup["username"].Equals(x["username"]);
             }).Select(x =>
             {
                 return new JObject()
