@@ -21,8 +21,8 @@ namespace Kinvey.Tests
         public const string user_with_invalid_json_response = "userwithinvalidjsonresponse";
         public const string pass_for_user_with_invalid_json_response = "userwithinvalidjsonresponse";
 
-        public const string app_key = "kid_Zy0JOYPKkZ";
-		public const string app_secret = "d83de70e64d540e49acd6cfce31415df";
+        public const string app_key = "_kid_";
+        public const string app_secret = "appSecret";
 
 		public const string app_key_fake = "abcdefg";
 		public const string app_secret_fake = "0123456789abcdef";
