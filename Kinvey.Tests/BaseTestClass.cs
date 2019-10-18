@@ -37,7 +37,7 @@ namespace Kinvey.Tests
         {
             get
             {
-                return TestSetup.app_key;
+                return EnvironmentVariable.AppKey ?? TestSetup.app_key;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Kinvey.Tests
         {
             get
             {
-                return TestSetup.app_secret;
+                return EnvironmentVariable.AppSecret ?? TestSetup.app_secret;
             }
         }
 
@@ -72,6 +72,13 @@ namespace Kinvey.Tests
             }
 
             return builder.Build();
+        }
+
+        public static class EnvironmentVariable
+        {
+            public static string AppKey => Environment.GetEnvironmentVariable("KINVEY_APP_KEY");
+
+            public static string AppSecret => Environment.GetEnvironmentVariable("KINVEY_APP_SECRET");
         }
 
         private static readonly string REQUEST_START_HEADER = "X-Kinvey-Request-Start";
