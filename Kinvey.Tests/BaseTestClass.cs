@@ -37,7 +37,7 @@ namespace Kinvey.Tests
         {
             get
             {
-                return EnvironmentVariable.AppKey ?? "_kid_";
+                return EnvironmentVariable.AppKey ?? TestSetup.app_key;
             }
         }
 
@@ -45,16 +45,15 @@ namespace Kinvey.Tests
         {
             get
             {
-                return EnvironmentVariable.AppSecret ?? "appSecret";
+                return EnvironmentVariable.AppSecret ?? TestSetup.app_secret;
             }
         }
-
 
         public static bool MockData
         {
             get
             {
-                return string.IsNullOrEmpty(EnvironmentVariable.AppKey) && string.IsNullOrEmpty(EnvironmentVariable.AppSecret);
+                return AppKey.Equals("_kid_", StringComparison.Ordinal) && AppSecret.Equals("appSecret", StringComparison.Ordinal) ? true : false;
             }
         }
 
@@ -1782,7 +1781,7 @@ namespace Kinvey.Tests
             var lookup = Read<JObject>(context);
             users = users.Where(x =>
             {
-                return lookup["first_name"].Equals(x["first_name"]);
+                return lookup["username"].Equals(x["username"]);
             }).Select(x =>
             {
                 return new JObject()
