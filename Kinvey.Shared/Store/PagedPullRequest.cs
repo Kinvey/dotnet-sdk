@@ -58,7 +58,7 @@ namespace Kinvey
 			int skipCount = 0, pageSize = 10000;
 
 			if (count < 0) {
-				count = (int) await new GetCountRequest<T>(this.Client, this.Collection, this.Cache, ReadPolicy.FORCE_NETWORK, false, null, this.Query).ExecuteAsync();
+				count = (int) await new GetCountRequest<T>(this.Client, this.Collection, this.Cache, ReadPolicy.FORCE_NETWORK, false, null, this.Query).ExecuteAsync().ConfigureAwait(false);
 			}
 
 			Task consumer = null;
@@ -75,16 +75,16 @@ namespace Kinvey
 
 			while (pageQueue.Count > 0) {
 				Debug.WriteLine("Pagequeue size: " + pageQueue.Count);
-				var page = await Task.WhenAny(pageQueue);
+				var page = await Task.WhenAny(pageQueue).ConfigureAwait(false);
 				pageQueue.Remove(page);
 				//maxThread.Release();
-				workQueue.Add(await page);
+				workQueue.Add(await page.ConfigureAwait(false));
 				if (!isConsumerWorking) {
 					consumer = Task.Run(() => ConsumeWorkQueue());
 				}
 			}
 			workQueue.CompleteAdding();
-			await consumer;
+			await consumer.ConfigureAwait(false);
 			return new PullDataStoreResponse<T>();
 		}
 

@@ -42,7 +42,7 @@ namespace Kinvey
         /// <returns> The async task with the request result.</returns>
 		public override async Task<PullDataStoreResponse<T>> ExecuteAsync()
 		{
-			var result = await PerformNetworkFind();
+			var result = await PerformNetworkFind().ConfigureAwait(false);
 			return new PullDataStoreResponse<T>(result.TotalCount, result.ResultSet.Count, result.ResultSet);
 		}
 

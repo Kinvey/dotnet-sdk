@@ -60,7 +60,7 @@ namespace Kinvey
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					var result = await RetrieveNetworkResults(this.BuildMongoQuery());
+					var result = await RetrieveNetworkResults(this.BuildMongoQuery()).ConfigureAwait(false);
 					listResult = result;
 					break;
 
@@ -71,7 +71,7 @@ namespace Kinvey
 					PerformLocalFind(cacheDelegate);
 
 					// once local query finishes, perform network query
-					var resolved = await PerformNetworkFind();
+					var resolved = await PerformNetworkFind().ConfigureAwait(false);
 					if (resolved.IsDeltaFetched)
 					{
 						listResult = PerformLocalFind();
@@ -89,7 +89,7 @@ namespace Kinvey
                     try
                     {
                         // first, perform a network request
-                        var networkResult = await PerformNetworkFind();
+                        var networkResult = await PerformNetworkFind().ConfigureAwait(false);
                         if (networkResult.IsDeltaFetched)
                         {
                             listResult = PerformLocalFind();

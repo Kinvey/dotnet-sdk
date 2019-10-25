@@ -42,7 +42,7 @@ namespace Kinvey
                     return;
                 }
 
-                await EnablePushAsync(ANDROID, token);
+                await EnablePushAsync(ANDROID, token).ConfigureAwait(false);
 
                 var prefs = PreferenceManager.GetDefaultSharedPreferences(appContext);
                 ISharedPreferencesEditor editor = prefs.Edit();
@@ -79,8 +79,8 @@ namespace Kinvey
 
             try
             {
-                await DisablePushAsync(ANDROID, alreadyInitialized);
-                await DeleteFirebaseInstanceId();
+                await DisablePushAsync(ANDROID, alreadyInitialized).ConfigureAwait(false);
+                await DeleteFirebaseInstanceId().ConfigureAwait(false);
 
                 ISharedPreferencesEditor editor = prefs.Edit();
                 editor.Remove(FCM_ID);
@@ -115,7 +115,7 @@ namespace Kinvey
         {
             await Task.Run(() => {
                 FirebaseInstanceId.Instance.DeleteInstanceId();
-                });
+                }).ConfigureAwait(false);
         }
 
         private void CheckKinveyFCMServiceClassOverrideExistence()

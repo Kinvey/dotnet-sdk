@@ -51,7 +51,7 @@ namespace Kinvey
 			NSUserDefaults.StandardUserDefaults.SetString(deviceToken, APN_Token); 
 			NSUserDefaults.StandardUserDefaults.Synchronize ();
 			try{
-			  await EnablePushAsync("ios", deviceToken);
+			  await EnablePushAsync("ios", deviceToken).ConfigureAwait(false);
 			}catch(Exception e){
 //				Console.WriteLine ("wtf");
 				//throw e;
@@ -93,7 +93,7 @@ namespace Kinvey
             NSUserDefaults.StandardUserDefaults.Synchronize();
             try
             {
-                await EnablePushAsync("ios", deviceToken);
+                await EnablePushAsync("ios", deviceToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -130,7 +130,7 @@ namespace Kinvey
                 return;
             }
 
-            await DisablePushAsync("ios", value);
+            await DisablePushAsync("ios", value).ConfigureAwait(false);
         }
 
     }

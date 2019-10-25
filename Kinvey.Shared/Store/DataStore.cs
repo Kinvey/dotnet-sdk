@@ -186,7 +186,7 @@ namespace Kinvey
 
 			// TODO request subscribe access with KCS
 			var subscribeRequest = new SubscribeRequest<T>(client, collectionName, client.DeviceID);
-			var result = await subscribeRequest.ExecuteAsync();
+			var result = await subscribeRequest.ExecuteAsync().ConfigureAwait(false);
 
 			if (realtimeHandler != null)
 			{
@@ -229,7 +229,7 @@ namespace Kinvey
 		public async Task<List<T>> FindWithMongoQueryAsync(string queryString)
 		{
 			// TODO throw exception when used with sync store?
-			return await networkFactory.buildGetRequest<T>(this.CollectionName, queryString).ExecuteAsync();
+			return await networkFactory.buildGetRequest<T>(this.CollectionName, queryString).ExecuteAsync().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Kinvey
 		{
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
 			ct.ThrowIfCancellationRequested();
-			return await findByQueryRequest.ExecuteAsync();
+			return await findByQueryRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace Kinvey
 
 			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
 			ct.ThrowIfCancellationRequested();
-			var results = await findByQueryRequest.ExecuteAsync();
+			var results = await findByQueryRequest.ExecuteAsync().ConfigureAwait(false);
 			return results.FirstOrDefault();
 		}
 
@@ -297,7 +297,7 @@ namespace Kinvey
 		{
 			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
 			ct.ThrowIfCancellationRequested();
-			return await getCountRequest.ExecuteAsync();
+			return await getCountRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -314,7 +314,7 @@ namespace Kinvey
 		{
 			FindAggregateRequest<T> findByAggregateQueryRequest = new FindAggregateRequest<T>(client, collectionName, reduceFunction, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, query, groupField, aggregateField);
 			ct.ThrowIfCancellationRequested();
-			return await findByAggregateQueryRequest.ExecuteAsync();
+			return await findByAggregateQueryRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		#endregion
@@ -329,7 +329,7 @@ namespace Kinvey
 		{
 			SaveRequest<T> request = new SaveRequest<T>(entity, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();
-			return await request.ExecuteAsync();
+			return await request.ExecuteAsync().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -352,7 +352,7 @@ namespace Kinvey
 
             var request = new MultiInsertRequest<T>(entities, this.client, this.CollectionName, this.cache, this.syncQueue, this.storeType.WritePolicy);
             ct.ThrowIfCancellationRequested();
-            return await request.ExecuteAsync();
+            return await request.ExecuteAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace Kinvey
 		{
 			RemoveRequest<T> request = new RemoveRequest<T>(entityID, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();
-			return await request.ExecuteAsync();
+			return await request.ExecuteAsync().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace Kinvey
 
             var request = new RemoveRequest<T>(query, client, CollectionName, cache, syncQueue, storeType.WritePolicy);
             ct.ThrowIfCancellationRequested();
-            return await request.ExecuteAsync();
+            return await request.ExecuteAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -412,13 +412,13 @@ namespace Kinvey
 			{
 				var pagedPullRequest = new PagedPullRequest<T>(client, CollectionName, cache, DeltaSetFetchingEnabled, query, count, isInitial);
 				ct.ThrowIfCancellationRequested();
-				return await pagedPullRequest.ExecuteAsync();
+				return await pagedPullRequest.ExecuteAsync().ConfigureAwait(false);
 
 			}
 
 			var	pullRequest = new PullRequest<T> (client, CollectionName, cache, DeltaSetFetchingEnabled, query);	
 			ct.ThrowIfCancellationRequested();
-			return await pullRequest.ExecuteAsync();
+			return await pullRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -436,7 +436,7 @@ namespace Kinvey
 
 			PushRequest<T> pushRequest = new PushRequest<T>(client, CollectionName, cache, syncQueue, storeType.WritePolicy);
 			ct.ThrowIfCancellationRequested();
-			return await pushRequest.ExecuteAsync();
+			return await pushRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -457,7 +457,7 @@ namespace Kinvey
 			}
 
 			// first push
-			PushDataStoreResponse<T> pushResponse = await this.PushAsync(ct);   //partial success
+			PushDataStoreResponse<T> pushResponse = await this.PushAsync(ct).ConfigureAwait(false);   //partial success
 
 			ct.ThrowIfCancellationRequested();
 
@@ -466,7 +466,7 @@ namespace Kinvey
 
 			try
 			{
-				pullResponse = await this.PullAsync(query, -1, false, ct);
+				pullResponse = await this.PullAsync(query, -1, false, ct).ConfigureAwait(false);
 			}
 			catch (KinveyException e)
 			{

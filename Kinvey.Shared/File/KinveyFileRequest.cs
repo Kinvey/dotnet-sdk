@@ -32,19 +32,19 @@ namespace Kinvey
 
 		internal async Task uploadFileAsync(FileMetaData metadata, byte[] input)
         {
-            int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size);
-            await uploadFileAsync(metadata, new ByteArrayContent(input, startPosition, (int)metadata.size -startPosition));
+            int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size).ConfigureAwait(false);
+            await uploadFileAsync(metadata, new ByteArrayContent(input, startPosition, (int)metadata.size -startPosition)).ConfigureAwait(false);
         }
 
 		internal async Task uploadFileAsync(FileMetaData metadata, Stream input)
 		{
             if (input.CanSeek)
             {
-                int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size);
+                int startPosition = await CheckResumableStateAsync(metadata.uploadUrl, (int)metadata.size).ConfigureAwait(false);
                 input.Position = startPosition;
             }
 
-			await uploadFileAsync(metadata, new StreamContent(input));
+			await uploadFileAsync(metadata, new StreamContent(input)).ConfigureAwait(false);
 		}
 
 		private async Task<HttpResponseMessage> uploadFileAsync(FileMetaData metadata, HttpContent input)
@@ -62,7 +62,7 @@ namespace Kinvey
 				httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
 			}
 
-			var response = await httpClient.PutAsync(requestURI, input);
+			var response = await httpClient.PutAsync(requestURI, input).ConfigureAwait(false);
 			response.EnsureSuccessStatusCode();
 			return response;
 		}
@@ -82,7 +82,7 @@ namespace Kinvey
             try
             {
                 Logger.Log(httpRequest);
-                var httpResponse = await httpClient.SendAsync(httpRequest);
+                var httpResponse = await httpClient.SendAsync(httpRequest).ConfigureAwait(false);
                 Logger.Log(httpResponse);
             }
             catch (System.Net.Http.HttpRequestException hre)
@@ -159,17 +159,17 @@ namespace Kinvey
 
 		internal async Task downloadFileAsync(FileMetaData metadata, Stream stream)
 		{
-			var response = await downloadFileAsync(metadata);
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
+			var response = await downloadFileAsync(metadata).ConfigureAwait(false);
+            using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
-                await responseStream.CopyToAsync(stream);
+                await responseStream.CopyToAsync(stream).ConfigureAwait(false);
             }
 		}
 
 		internal async Task<byte[]> downloadFileBytesAsync(FileMetaData metadata)
 		{
-			var response = await downloadFileAsync(metadata);
-            var output = await response.Content.ReadAsByteArrayAsync();
+			var response = await downloadFileAsync(metadata).ConfigureAwait(false);
+            var output = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
             return output;
 		}
 
@@ -180,7 +180,7 @@ namespace Kinvey
 
             var request = new HttpRequestMessage(HttpMethod.Get, downloadURL);
             Logger.Log(request);
-            var response = await client.SendAsync(request);
+            var response = await client.SendAsync(request).ConfigureAwait(false);
             Logger.Log(response);
             return response;
 		}

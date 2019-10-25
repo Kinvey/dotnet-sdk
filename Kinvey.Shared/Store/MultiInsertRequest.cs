@@ -86,7 +86,7 @@ namespace Kinvey
 
                 case WritePolicy.FORCE_NETWORK:
                     // network
-                    kinveyDataStoreResponse = await HandleNetworkRequestAsync(entities);
+                    kinveyDataStoreResponse = await HandleNetworkRequestAsync(entities).ConfigureAwait(false);
                     ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE);
                     break;
 
@@ -125,7 +125,7 @@ namespace Kinvey
                     try
                     {
                         // network
-                        kinveyDataStoreNetworkResponse = await HandleNetworkRequestAsync(entities);
+                        kinveyDataStoreNetworkResponse = await HandleNetworkRequestAsync(entities).ConfigureAwait(false);
                     }
                     catch (KinveyException kinveyEx)
                     {
@@ -285,7 +285,7 @@ namespace Kinvey
                         }
                     }
 
-                    await Task.WhenAll(tasks.ToArray());
+                    await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
                    
                     foreach (var task in tasks)
                     {
@@ -338,7 +338,7 @@ namespace Kinvey
                 T updatedEntity = default(T);
                 try
                 {
-                    updatedEntity = await updateRequest.Value.ExecuteAsync();
+                    updatedEntity = await updateRequest.Value.ExecuteAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -367,7 +367,7 @@ namespace Kinvey
             try
             {
                 var multiInsertRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, entities.ToList());
-                response = await multiInsertRequest.ExecuteAsync();
+                response = await multiInsertRequest.ExecuteAsync().ConfigureAwait(false);
             }
             catch (KinveyException exception)
             {
