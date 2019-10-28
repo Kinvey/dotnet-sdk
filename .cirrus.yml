@@ -5,6 +5,8 @@ task:
   env:
     DOTNET_ROOT: /usr/local/share/dotnet
     PATH: $PATH:$DOTNET_ROOT
+    KINVEY_APP_KEY: kid_rkXtWsucm
+    KINVEY_APP_SECRET: 3575b4e4fc8947eabcaad2ee7278060c
   git_submodule_update_init_script: git submodule update --init --recursive
   install_dotnet_sdk_script: brew cask install dotnet-sdk
   check_version_script: dotnet --version
