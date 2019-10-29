@@ -61,6 +61,8 @@ task:
   name: Linux .Net
   container:
     image: mcr.microsoft.com/dotnet/core/sdk
+  env:
+    CIRRUS_SHELL: powershell
   #env:
     #KINVEY_APP_KEY: 'kid_HkEDqv45B'
     #KINVEY_APP_SECRET: '06fa3d06463f473d8c6ecdd26b306f67'
