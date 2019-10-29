@@ -273,7 +273,7 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest();
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -296,7 +296,7 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(username, password);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -311,7 +311,7 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
         #region User class login methods - Social Login Convenience APIs
@@ -331,7 +331,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			provider.facebook = new FacebookCredential(accessToken);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct).ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			provider.google = new GoogleCredential(accessToken);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct).ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -370,7 +370,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			provider.twitter = new TwitterCredential(accesstoken, accesstokensecret, consumerkey, consumersecret);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct).ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			provider.linkedin = new LinkedInCredential(accesstoken, accesstokensecret, consumerkey, consumersecret);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct).ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			provider.salesforce = new SalesforceCredential(access, reauth, clientid, id);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct);
+			return await LoginAsync(new ThirdPartyIdentity(provider), uc, ct).ConfigureAwait(false);
 		}
 
 		#endregion
@@ -470,7 +470,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			provider.authlink = new AuthLinkCredential (accesstoken, refreshtoken);
 			ct.ThrowIfCancellationRequested();
-			return await LoginAsync(new ThirdPartyIdentity(provider));
+			return await LoginAsync(new ThirdPartyIdentity(provider)).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -485,7 +485,7 @@ namespace Kinvey
 			ct.ThrowIfCancellationRequested();
 			provider.kinveyAuth = new MICCredential(accessToken);
 			ct.ThrowIfCancellationRequested();
-			User u = await LoginMICAsync(new ThirdPartyIdentity(provider));
+			User u = await LoginMICAsync(new ThirdPartyIdentity(provider)).ConfigureAwait(false);
 			return u;
 		}
 
@@ -501,7 +501,7 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			MICLoginRequest loginRequestMIC = uc.UserFactory.BuildMICLoginRequest(identity);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequestMIC.ExecuteAsync();
+			return await loginRequestMIC.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -575,7 +575,7 @@ namespace Kinvey
         [Obsolete("This method has been deprecated.  Please use LoginWithMIC(username:, password:, micID:, userClient:, ct: ) instead.")]
 		static public async Task LoginWithAuthorizationCodeAPIAsync(string username, string password, string redirectURI, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-			await LoginWithMICInternal(username, password, redirectURI, null, userClient, ct);
+			await LoginWithMICInternal(username, password, redirectURI, null, userClient, ct).ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -591,7 +591,7 @@ namespace Kinvey
         [Obsolete("This method has been deprecated.  Please use LoginWithMIC(username:, password:, micID:, userClient:, ct: ) instead.")]
         static public async Task LoginWithMIC(string username, string password, string redirectURI, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
 		{
-            await LoginWithMICInternal(username, password, redirectURI, micID, userClient, ct);
+            await LoginWithMICInternal(username, password, redirectURI, micID, userClient, ct).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -605,7 +605,7 @@ namespace Kinvey
         /// <returns>The async task.</returns>
         static public async Task LoginWithMIC(string username, string password, string micID = null, AbstractClient userClient = null, CancellationToken ct = default(CancellationToken))
         {
-            await LoginWithMICInternal(username, password, string.Empty, micID, userClient, ct);
+            await LoginWithMICInternal(username, password, string.Empty, micID, userClient, ct).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -639,7 +639,7 @@ namespace Kinvey
                 //
                 var micLoginRequest = BuildMICLogin(uc, username, password, clientID);
                 ct.ThrowIfCancellationRequested();
-                var accessResult = await micLoginRequest.ExecuteAsync();
+                var accessResult = await micLoginRequest.ExecuteAsync().ConfigureAwait(false);
 
                 ct.ThrowIfCancellationRequested();
 
@@ -649,7 +649,7 @@ namespace Kinvey
 
                 // Log into Kinvey using the token
                 //
-                var user = await LoginMICWithAccessTokenAsync(accessToken);
+                var user = await LoginMICWithAccessTokenAsync(accessToken).ConfigureAwait(false);
 
                 ct.ThrowIfCancellationRequested();
 
@@ -700,11 +700,11 @@ namespace Kinvey
 				}
 
 				ct.ThrowIfCancellationRequested();
-				JObject result = await User.GetMICToken(uc, token, clientID).ExecuteAsync();
+				JObject result = await User.GetMICToken(uc, token, clientID).ExecuteAsync().ConfigureAwait(false);
 				string accessToken = result["access_token"].ToString();
 
 				ct.ThrowIfCancellationRequested();
-				User u = await User.LoginMICWithAccessTokenAsync(accessToken);
+				User u = await User.LoginMICWithAccessTokenAsync(accessToken).ConfigureAwait(false);
 
 				ct.ThrowIfCancellationRequested();
 
@@ -766,7 +766,7 @@ namespace Kinvey
 				// Only proceed with RealtimeRouter init if call is successful.
 				RealtimeRegisterRequest realtimeRequest = BuildRealtimeRegisterRequest(Id, KinveyClient.DeviceID);
 				ct.ThrowIfCancellationRequested();
-				JObject responseRegister = await realtimeRequest.ExecuteAsync();
+				JObject responseRegister = await realtimeRequest.ExecuteAsync().ConfigureAwait(false);
 
 				string channelGroupName = responseRegister[Constants.STR_REALTIME_CHANNEL_GROUP].ToString();
 				string publishKey = responseRegister[Constants.STR_REALTIME_PUBLISH_KEY].ToString();
@@ -795,7 +795,7 @@ namespace Kinvey
 				// TODO make "Realtime Unregister" request to KCS, and throw any error received.
 				RealtimeUnregisterRequest realtimeRequest = BuildRealtimeUnregisterRequest(Id, KinveyClient.DeviceID);
 				ct.ThrowIfCancellationRequested();
-				JObject responseUnregister = await realtimeRequest.ExecuteAsync();
+				JObject responseUnregister = await realtimeRequest.ExecuteAsync().ConfigureAwait(false);
 			}
 			catch (KinveyException)
 			{
@@ -823,7 +823,7 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildCreateRequest(username, password, customFieldsAndValues);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -836,7 +836,7 @@ namespace Kinvey
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(userID);
 			ct.ThrowIfCancellationRequested();
-			return await retrieveRequest.ExecuteAsync();
+			return await retrieveRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -848,7 +848,7 @@ namespace Kinvey
 		{
 			RetrieveRequest retrieveRequest = buildRetrieveRequest(this.Id);
 			ct.ThrowIfCancellationRequested();
-			User u = await retrieveRequest.ExecuteAsync();
+			User u = await retrieveRequest.ExecuteAsync().ConfigureAwait(false);
 
 			if (this.Active)
 			{
@@ -871,7 +871,7 @@ namespace Kinvey
 		{
 			RetrieveUsersRequest retrieveUsersRequest = buildRetrieveUsersRequest(query, resolves, resolveDepth, retain);
 			ct.ThrowIfCancellationRequested();
-			return await retrieveUsersRequest.ExecuteAsync();
+			return await retrieveUsersRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -890,7 +890,7 @@ namespace Kinvey
 			{
 				LookupRequest lookupRequest = buildLookupRequest(criteria);
 				ct.ThrowIfCancellationRequested();
-				users = await lookupRequest.ExecuteAsync();
+				users = await lookupRequest.ExecuteAsync().ConfigureAwait(false);
 			}
 
 			return users;
@@ -916,7 +916,7 @@ namespace Kinvey
 
 			try
 			{
-				JObject existenceResult = await existenceCheckRequest.ExecuteAsync();
+				JObject existenceResult = await existenceCheckRequest.ExecuteAsync().ConfigureAwait(false);
 				if (existenceResult != null)
 				{
 					JToken existenceCheck = existenceResult.GetValue("usernameExists");
@@ -970,7 +970,7 @@ namespace Kinvey
 			ForgotUsernameRequest forgotUsernameRequest = uc.UserFactory.BuildForgotUsernameRequest(email);
 
 			ct.ThrowIfCancellationRequested();
-			await forgotUsernameRequest.ExecuteAsync();
+			await forgotUsernameRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		// User Update APIs
@@ -985,7 +985,7 @@ namespace Kinvey
 		{
 			UpdateRequest updateRequest = buildUpdateRequest(this);
 			ct.ThrowIfCancellationRequested();
-			return await updateRequest.ExecuteAsync();
+			return await updateRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -998,7 +998,7 @@ namespace Kinvey
 		{
 			UpdateRequest updateRequest = buildUpdateRequest(user);
 			ct.ThrowIfCancellationRequested();
-			return await updateRequest.ExecuteAsync();
+			return await updateRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -1012,7 +1012,7 @@ namespace Kinvey
 		{
 			ResetPasswordRequest resetPasswordRequest = buildResetPasswordRequest(userID);
 			ct.ThrowIfCancellationRequested();
-			return await resetPasswordRequest.ExecuteAsync();
+			return await resetPasswordRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 
@@ -1030,7 +1030,7 @@ namespace Kinvey
 		{
 			DeleteRequest deleteRequest = buildDeleteRequest(userID, hard);
 			ct.ThrowIfCancellationRequested();
-			return await deleteRequest.ExecuteAsync();
+			return await deleteRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -1043,7 +1043,7 @@ namespace Kinvey
         {
             EmailVerificationRequest emailVerificationRequest = buildEmailVerificationRequest(userID);
             ct.ThrowIfCancellationRequested();
-            return await emailVerificationRequest.ExecuteAsync();
+            return await emailVerificationRequest.ExecuteAsync().ConfigureAwait(false);
         }
 
         #endregion
@@ -1059,14 +1059,14 @@ namespace Kinvey
 			if (!String.IsNullOrEmpty(cred.AccessToken) &&
 			    (0 != string.Compare(uc.SSOGroupKey, ((KinveyClientRequestInitializer)uc.RequestInitializer).AppKey, StringComparison.Ordinal)) )
 			{
-				User u = await User.LoginMICWithAccessTokenAsync(cred.AccessToken);
+				User u = await User.LoginMICWithAccessTokenAsync(cred.AccessToken).ConfigureAwait(false);
 				uc.ActiveUser = u;
 			}
 			else
 			{
 				LoginRequest loginRequest = uc.UserFactory.BuildLoginRequest(cred);
 				ct.ThrowIfCancellationRequested();
-				await loginRequest.ExecuteAsync();
+				await loginRequest.ExecuteAsync().ConfigureAwait(false);
 			}
 		}
 
@@ -1076,7 +1076,7 @@ namespace Kinvey
 			AbstractClient uc = userClient ?? Client.SharedClient;
 			LoginRequest loginRequest = uc.UserFactory.BuildLoginRequestWithKinveyAuthToken(userID, authToken);
 			ct.ThrowIfCancellationRequested();
-			return await loginRequest.ExecuteAsync();
+			return await loginRequest.ExecuteAsync().ConfigureAwait(false);
 		}
 
 		#endregion
@@ -1503,7 +1503,7 @@ namespace Kinvey
 
 			public override async Task<User> ExecuteAsync()
 			{
-				User u = await base.ExecuteAsync();
+				User u = await base.ExecuteAsync().ConfigureAwait(false);
 
 				if (u.id == (user.id))
 				{

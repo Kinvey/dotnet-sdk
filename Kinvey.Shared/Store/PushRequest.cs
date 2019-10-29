@@ -49,17 +49,17 @@ namespace Kinvey
 
             if (HelperMethods.IsLessThan(Client.ApiVersion, 5))
             {
-                response = await PushSingleActionsAsync();
+                response = await PushSingleActionsAsync().ConfigureAwait(false);
             }
             else
             {
-                var pushMultiPostActionsResponse = await PushMultiPostActionsAsync();
+                var pushMultiPostActionsResponse = await PushMultiPostActionsAsync().ConfigureAwait(false);
                 response.SetResponse(pushMultiPostActionsResponse);
 
-                var pushSinglePutActionsResponse = await PushSingleActionsAsync("PUT");
+                var pushSinglePutActionsResponse = await PushSingleActionsAsync("PUT").ConfigureAwait(false);
                 response.SetResponse(pushSinglePutActionsResponse);
 
-                var pushSingleDeleteActionsResponse = await PushSingleActionsAsync("DELETE");
+                var pushSingleDeleteActionsResponse = await PushSingleActionsAsync("DELETE").ConfigureAwait(false);
                 response.SetResponse(pushSingleDeleteActionsResponse);
             }
 
@@ -107,7 +107,7 @@ namespace Kinvey
 
                 try
                 {
-                    await Task.WhenAll(tasks.ToArray());
+                    await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -167,7 +167,7 @@ namespace Kinvey
                 localEntity = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(obj.ToString());
 
                 NetworkRequest<T> request = Client.NetworkFactory.buildCreateRequest<T>(pwa.collection, localEntity);
-                entity = await request.ExecuteAsync();
+                entity = await request.ExecuteAsync().ConfigureAwait(false);
 
                 Cache.UpdateCacheSave(entity, tempID);
 
@@ -200,7 +200,7 @@ namespace Kinvey
                 var localEntity = Cache.FindByID(pwa.entityId);
 
                 NetworkRequest<T> request = Client.NetworkFactory.buildUpdateRequest<T>(pwa.collection, localEntity, pwa.entityId);
-                entity = await request.ExecuteAsync();
+                entity = await request.ExecuteAsync().ConfigureAwait(false);
 
                 Cache.UpdateCacheSave(entity, pwa.entityId);
 
@@ -230,7 +230,7 @@ namespace Kinvey
                 int result = 0;
 
                 NetworkRequest<KinveyDeleteResponse> request = Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(pwa.collection, pwa.entityId);
-                KinveyDeleteResponse kdr = await request.ExecuteAsync();
+                KinveyDeleteResponse kdr = await request.ExecuteAsync().ConfigureAwait(false);
 
                 if (kdr.count == 1)
                 {
@@ -279,7 +279,7 @@ namespace Kinvey
                     }
                 }
 
-                await Task.WhenAll(tasks.ToArray());
+                await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
 
                 foreach (var task in tasks)
                 {
@@ -322,7 +322,7 @@ namespace Kinvey
                 }
 
                 var multiInsertNetworkRequest = Client.NetworkFactory.BuildMultiInsertRequest<T, KinveyMultiInsertResponse<T>>(Collection, localData.Select(e => e.Item2).ToList());
-                multiInsertNetworkResponse = await multiInsertNetworkRequest.ExecuteAsync();
+                multiInsertNetworkResponse = await multiInsertNetworkRequest.ExecuteAsync().ConfigureAwait(false);
 
             }
             catch (KinveyException ke)

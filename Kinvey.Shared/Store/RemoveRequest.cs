@@ -95,12 +95,12 @@ namespace Kinvey
                     // network
                     if (_query == null)
                     {
-                        kdr = await Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID).ExecuteAsync();
+                        kdr = await Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID).ExecuteAsync().ConfigureAwait(false);
                     }
                     else
                     {
                         var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
-                        kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
+                        kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync().ConfigureAwait(false);
                     }
                     break;
 
@@ -111,7 +111,7 @@ namespace Kinvey
                         kdr = Cache.DeleteByID(entityID);
 
                         // network
-                        kdr = await Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID).ExecuteAsync();
+                        kdr = await Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID).ExecuteAsync().ConfigureAwait(false);
                     }
                     else
                     {
@@ -120,7 +120,7 @@ namespace Kinvey
 
                         // network
                         var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
-                        kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
+                        kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync().ConfigureAwait(false);
                     }
                     break;
 
@@ -137,7 +137,7 @@ namespace Kinvey
                         try
                         { 
                             // network
-                            kdr = await deleteRequest.ExecuteAsync();
+                            kdr = await deleteRequest.ExecuteAsync().ConfigureAwait(false);
                         }
                         catch (KinveyException kinveyEx)
                         {
@@ -170,7 +170,7 @@ namespace Kinvey
                         try
                         { 
                             var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
-                            kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync();
+                            kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync().ConfigureAwait(false);
                         }
                         catch (KinveyException kinveyEx)
                         {

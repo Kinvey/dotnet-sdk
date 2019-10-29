@@ -59,7 +59,7 @@ namespace Kinvey
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					countResult = await PerformNetworkCount();
+					countResult = await PerformNetworkCount().ConfigureAwait(false);
 					break;
 
 				case ReadPolicy.BOTH:
@@ -69,7 +69,7 @@ namespace Kinvey
 					PerformLocalCount(cacheDelegate);
 
 					// once local query finishes, perform network query
-					countResult = await PerformNetworkCount();
+					countResult = await PerformNetworkCount().ConfigureAwait(false);
 					break;
 
                 case ReadPolicy.NETWORK_OTHERWISE_LOCAL:
@@ -79,7 +79,7 @@ namespace Kinvey
                     try
                     {
                         // first, perform a network request
-                        countResult = await PerformNetworkCount();
+                        countResult = await PerformNetworkCount().ConfigureAwait(false);
                     }
                     catch (KinveyException exception)
                     {
@@ -154,7 +154,7 @@ namespace Kinvey
 			{
 				string mongoQuery = this.BuildMongoQuery();
 				NetworkRequest<JObject> request = Client.NetworkFactory.buildGetCountRequest<JObject>(Collection, mongoQuery);
-				JObject networkResults = await request.ExecuteAsync();
+				JObject networkResults = await request.ExecuteAsync().ConfigureAwait(false);
 
 				if (networkResults != null)
 				{

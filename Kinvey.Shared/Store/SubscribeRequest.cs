@@ -48,7 +48,7 @@ namespace Kinvey
 		{
 			JObject result = default(JObject);
 
-			result = await Client.NetworkFactory.BuildSubscribeRequest<JObject>(Collection, DeviceID).ExecuteAsync();
+			result = await Client.NetworkFactory.BuildSubscribeRequest<JObject>(Collection, DeviceID).ExecuteAsync().ConfigureAwait(false);
 
 			return result;
 		}

@@ -78,7 +78,7 @@ namespace Kinvey
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					aggregateResult = await PerformNetworkAggregateFind();
+					aggregateResult = await PerformNetworkAggregateFind().ConfigureAwait(false);
 					break;
 
 				case ReadPolicy.BOTH:
@@ -88,7 +88,7 @@ namespace Kinvey
 					PerformLocalAggregateFind(cacheDelegate);
 
 					// once local finishes, perform network aggregation
-					aggregateResult = await PerformNetworkAggregateFind();
+					aggregateResult = await PerformNetworkAggregateFind().ConfigureAwait(false);
 					break;
 
                 case ReadPolicy.NETWORK_OTHERWISE_LOCAL:
@@ -98,7 +98,7 @@ namespace Kinvey
                     try
                     {
                         // first, perform a network request
-                        aggregateResult = await PerformNetworkAggregateFind();
+                        aggregateResult = await PerformNetworkAggregateFind().ConfigureAwait(false);
                     }
                     catch (KinveyException exception)
                     {
@@ -164,7 +164,7 @@ namespace Kinvey
 			{
 				string mongoQuery = this.BuildMongoQuery();
 				NetworkRequest<JArray> request = Client.NetworkFactory.BuildGetAggregateRequest<JArray>(Collection, reduceFunction, mongoQuery, groupField, aggregateField);
-				JArray results = await request.ExecuteAsync();
+				JArray results = await request.ExecuteAsync().ConfigureAwait(false);
 
 				if (results != null)
 				{
