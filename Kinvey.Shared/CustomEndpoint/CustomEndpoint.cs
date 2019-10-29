@@ -98,7 +98,7 @@ namespace Kinvey
 			O result = default(O);
 			try
 			{
-				result = await BuildCustomEnpointRequest(endpoint, input).ExecuteAsync();
+				result = await BuildCustomEnpointRequest(endpoint, input).ExecuteAsync().ConfigureAwait(false);
 			}
 			catch (KinveyException ke)
 			{

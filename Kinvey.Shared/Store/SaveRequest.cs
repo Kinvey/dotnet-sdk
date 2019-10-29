@@ -88,7 +88,7 @@ namespace Kinvey
 
 				case WritePolicy.FORCE_NETWORK:
 					// network
-					savedEntity = await request.ExecuteAsync ();
+					savedEntity = await request.ExecuteAsync ().ConfigureAwait(false);
 					break;
 
 				case WritePolicy.NETWORK_THEN_LOCAL:
@@ -107,7 +107,7 @@ namespace Kinvey
                     }
 
                     // network save
-                    savedEntity = await request.ExecuteAsync();
+                    savedEntity = await request.ExecuteAsync().ConfigureAwait(false);
 
                     if (tempIdNetworkThenLocal != null)
                     {
@@ -135,7 +135,7 @@ namespace Kinvey
                     try
                     {
                         // network save
-                        savedEntity = await request.ExecuteAsync();
+                        savedEntity = await request.ExecuteAsync().ConfigureAwait(false);
                     }                   
                     catch (KinveyException kinveyEx)
                     {

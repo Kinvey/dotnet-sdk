@@ -112,9 +112,9 @@ namespace Kinvey
 		{
 			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
-			FileMetaData fmd = await uploadRequest.ExecuteAsync();
+			FileMetaData fmd = await uploadRequest.ExecuteAsync().ConfigureAwait(false);
 			ct.ThrowIfCancellationRequested();
-			await uploadRequest.uploadFileAsync(fmd, content);
+			await uploadRequest.uploadFileAsync(fmd, content).ConfigureAwait(false);
 			return fmd;
 		}
 
@@ -128,9 +128,9 @@ namespace Kinvey
 		{
 			UploadFileWithMetaDataRequest uploadRequest = buildUploadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
-			FileMetaData fmd = await uploadRequest.ExecuteAsync();
+			FileMetaData fmd = await uploadRequest.ExecuteAsync().ConfigureAwait(false);
 			ct.ThrowIfCancellationRequested();
-			await uploadRequest.uploadFileAsync(fmd, content);
+			await uploadRequest.uploadFileAsync(fmd, content).ConfigureAwait(false);
 			return fmd;
 		}
 
@@ -143,7 +143,7 @@ namespace Kinvey
 		{
 			UploadMetaDataRequest uploadMetaDataRequest = buildUploadMetaDataRequest(metadata);
 			ct.ThrowIfCancellationRequested();
-			FileMetaData fmd = await uploadMetaDataRequest.ExecuteAsync();
+			FileMetaData fmd = await uploadMetaDataRequest.ExecuteAsync().ConfigureAwait(false);
 			return fmd;
 		}
 
@@ -154,7 +154,7 @@ namespace Kinvey
         [Obsolete("This method has been deprecated (2018-Oct-03).  Please use DownloadAsync() instead.")]
         public async Task<FileMetaData> downloadAsync(FileMetaData metadata, byte[] content, CancellationToken ct = default(CancellationToken))
         {
-            return await DownloadAsync(metadata, content, ct);
+            return await DownloadAsync(metadata, content, ct).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -167,16 +167,16 @@ namespace Kinvey
         {
             DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
-			FileMetaData fmd = await downloadRequest.ExecuteAsync();
+			FileMetaData fmd = await downloadRequest.ExecuteAsync().ConfigureAwait(false);
 			ct.ThrowIfCancellationRequested();
-			content = await downloadRequest.downloadFileBytesAsync(fmd);
+			content = await downloadRequest.downloadFileBytesAsync(fmd).ConfigureAwait(false);
 			return fmd;
 		}
 
         [Obsolete("This method has been deprecated (2018-Oct-03).  Please use DownloadAsync() instead.")]
         public async Task<FileMetaData> downloadAsync(FileMetaData metadata, Stream content, CancellationToken ct = default(CancellationToken))
         {
-            return await DownloadAsync(metadata, content, ct);
+            return await DownloadAsync(metadata, content, ct).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -189,9 +189,9 @@ namespace Kinvey
 		{
 			DownloadFileWithMetaDataRequest downloadRequest = buildDownloadFileRequest(metadata);
 			ct.ThrowIfCancellationRequested();
-			FileMetaData fmd = await downloadRequest.ExecuteAsync();
+			FileMetaData fmd = await downloadRequest.ExecuteAsync().ConfigureAwait(false);
 			ct.ThrowIfCancellationRequested();
-			await downloadRequest.downloadFileAsync(fmd, content);
+			await downloadRequest.downloadFileAsync(fmd, content).ConfigureAwait(false);
 			return fmd;
 		}
 
@@ -204,7 +204,7 @@ namespace Kinvey
 		{
 			DownloadMetaDataRequest downloadMetadataRequest = buildDownloadMetaDataRequest(fileId);
 			ct.ThrowIfCancellationRequested();
-			FileMetaData fmd = await downloadMetadataRequest.ExecuteAsync();
+			FileMetaData fmd = await downloadMetadataRequest.ExecuteAsync().ConfigureAwait(false);
 			return fmd;
 		}
 
@@ -221,7 +221,7 @@ namespace Kinvey
 		{
 			DeleteFileAndMetaDataRequest request = buildDeleteFileRequest(fileId);
 			ct.ThrowIfCancellationRequested();
-			KinveyDeleteResponse deleteResponse = await request.ExecuteAsync();
+			KinveyDeleteResponse deleteResponse = await request.ExecuteAsync().ConfigureAwait(false);
 			return deleteResponse;
 		}
 

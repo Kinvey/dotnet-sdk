@@ -438,7 +438,7 @@ namespace Kinvey
 
             RequestAuth.Authenticate(request);
             Logger.Log(request);
-            var response = await httClient.SendAsync(request);
+            var response = await httClient.SendAsync(request).ConfigureAwait(false);
             Logger.Log(response);
             var contentType = response.Headers
                                       .Where(x => x.Key.ToLower().Equals("content-type"))
@@ -471,7 +471,7 @@ namespace Kinvey
                 ServerError error = null;
                 try
                 {
-                    var json = await response.Content.ReadAsStringAsync();
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     error = JsonConvert.DeserializeObject<ServerError>(json);
                 }
                 catch (Exception)
@@ -501,7 +501,7 @@ namespace Kinvey
                                 hasRetried = true;
 
                                 //use the refresh token for a new access token
-                                JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, micClientId).ExecuteAsync();
+                                JObject result = await Client.ActiveUser.UseRefreshToken(refreshToken, redirectUri, micClientId).ExecuteAsync().ConfigureAwait(false);
 
                                 // log out the current user without removing the user record from the credential store
                                 Client.ActiveUser.LogoutSoft();
@@ -509,7 +509,7 @@ namespace Kinvey
                                 //login with the access token
                                 Provider provider = new Provider();
                                 provider.kinveyAuth = new MICCredential(result["access_token"].ToString());
-                                User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client);
+                                User u = await User.LoginAsync(new ThirdPartyIdentity(provider), Client).ConfigureAwait(false);
 
                                 //store the new refresh token
                                 Credential currentCred = Client.Store.Load(Client.ActiveUser.Id, Client.SSOGroupKey);
@@ -520,7 +520,7 @@ namespace Kinvey
 
                                 // Retry the original request
                                 RequestAuth = new KinveyAuthenticator(currentCred.AuthToken);
-                                var retryResponse = await ExecuteUnparsedAsync();
+                                var retryResponse = await ExecuteUnparsedAsync().ConfigureAwait(false);
                                 return retryResponse;
                             }
                             else
@@ -616,7 +616,7 @@ namespace Kinvey
         /// </summary>
         /// <returns> The async task with the type of the response. </returns>
 		public virtual async Task<T> ExecuteAsync(){
-			var response = await ExecuteUnparsedAsync();
+			var response = await ExecuteUnparsedAsync().ConfigureAwait(false);
 
 			if (OverrideRedirect)
 			{
@@ -630,7 +630,7 @@ namespace Kinvey
 					}
 				}
 				//string newlocation = response.Headers.FirstOrDefault(stringToCheck => stringToCheck.ToString().Equals("Location")).ToString();
-				return await onRedirectAsync(newLoc);
+				return await onRedirectAsync(newLoc).ConfigureAwait(false);
 			}
 			// special case to handle void or empty responses
 			if (response.Content == null)
@@ -709,7 +709,7 @@ namespace Kinvey
             string json = null;
 			try
 			{
-                json = await response.Content.ReadAsStringAsync();
+                json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<T>(json);
 
                 RequestStartTime = HelperMethods.GetRequestStartTime(response);

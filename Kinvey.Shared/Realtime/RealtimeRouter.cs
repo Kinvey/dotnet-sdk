@@ -148,7 +148,7 @@ namespace Kinvey
 	                        }))
             );
 
-            return await taskCompletionSource.Task;
+            return await taskCompletionSource.Task.ConfigureAwait(false);
         }
 
         internal void SubscribeCollection(string collectionName, KinveyRealtimeDelegate callback)

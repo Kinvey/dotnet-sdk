@@ -188,7 +188,7 @@ namespace Kinvey
 			if (numIDs == networkItems.Count) {
 				//Special case where delta set is the same size as the network result.
 				//This will occur either when all entities are new/updated, or in error cases such as missing lmts
-				return await RetrieveNetworkResults(mongoQuery);
+				return await RetrieveNetworkResults(mongoQuery).ConfigureAwait(false);
 			}
 
 			int start = 0;
@@ -198,7 +198,7 @@ namespace Kinvey
 			{
 				int count = Math.Min((numIDs - start), batchSize);
 				string queryIDs = BuildIDsQuery(listIDsToFetch.GetRange(start, count));
-				List<T> listBatchResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, queryIDs).ExecuteAsync();
+				List<T> listBatchResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, queryIDs).ExecuteAsync().ConfigureAwait(false);
 
 				start += listBatchResults.Count();
 				listDeltaSetResults.AddRange(listBatchResults);
@@ -279,7 +279,7 @@ namespace Kinvey
                             DeltaSetResponse<T> results = null;
                             try
                             {
-                               results  = await request.ExecuteAsync();
+                               results  = await request.ExecuteAsync().ConfigureAwait(false);
                             }
                             catch (KinveyException ke)
                             {
@@ -294,7 +294,7 @@ namespace Kinvey
                                             // This means that there are greater than 10k items in the delta set.
                                             // Clear QueryCache table, perform a regular GET
                                             // and capture x-kinvey-request-start time
-                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery).ConfigureAwait(false);
                                         }
                                         else if (ke.Error.Equals(Constants.STR_ERROR_BACKEND_PARAMETER_VALUE_OUT_OF_RANGE))
                                         {
@@ -303,7 +303,7 @@ namespace Kinvey
                                             // and already attempted a GET.
 
                                             // Perform regular GET and capture x-kinvey-request-start time
-                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery).ConfigureAwait(false);
                                         }
                                         break;
 
@@ -313,7 +313,7 @@ namespace Kinvey
                                             // This means that server-side delta sync
                                             // is not enabled - should perform a regular
                                             // GET and capture x-kinvey-request-start time
-                                            return await PerformNetworkInitialDeltaGet(mongoQuery);
+                                            return await PerformNetworkInitialDeltaGet(mongoQuery).ConfigureAwait(false);
                                         }
                                         break;
 
@@ -347,17 +347,17 @@ namespace Kinvey
                         else
                         {
                             // Perform regular GET and capture x-kinvey-request-start time
-                            return await PerformNetworkInitialDeltaGet(mongoQuery);
+                            return await PerformNetworkInitialDeltaGet(mongoQuery).ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         // Perform regular GET and capture x-kinvey-request-start time
-                        return await PerformNetworkInitialDeltaGet(mongoQuery, queryCacheItem);
+                        return await PerformNetworkInitialDeltaGet(mongoQuery, queryCacheItem).ConfigureAwait(false);
                     }
 				}
 
-                return await PerformNetworkGet(mongoQuery);
+                return await PerformNetworkGet(mongoQuery).ConfigureAwait(false);
 			}
 			catch (KinveyException)
 			{
@@ -383,20 +383,20 @@ namespace Kinvey
 
 			if (Query != null)
 			{
-				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync();
+				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery).ExecuteAsync().ConfigureAwait(false);
 			}
 			else if (EntityIDs?.Count > 0)
 			{
 				networkResults = new List<T>();
 				foreach (string entityID in EntityIDs)
 				{
-					T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync();
+					T item = await Client.NetworkFactory.buildGetByIDRequest<T>(Collection, entityID).ExecuteAsync().ConfigureAwait(false);
 					networkResults.Add(item);
 				}
 			}
 			else
 			{
-				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync();
+				networkResults = await Client.NetworkFactory.buildGetRequest<T>(Collection).ExecuteAsync().ConfigureAwait(false);
 			}
 
 			return networkResults;
@@ -432,7 +432,7 @@ namespace Kinvey
 
         private async Task<NetworkReadResponse<T>> PerformNetworkGet(string mongoQuery)
         {
-            var results = await RetrieveNetworkResults(mongoQuery);
+            var results = await RetrieveNetworkResults(mongoQuery).ConfigureAwait(false);
             Cache.Clear(Query?.Expression);
             Cache.RefreshCache(results);
             return new NetworkReadResponse<T>(results, results.Count, false);
@@ -441,7 +441,7 @@ namespace Kinvey
         private async Task<NetworkReadResponse<T>> PerformNetworkInitialDeltaGet(string mongoQuery, QueryCacheItem queryCacheItem = null)
         {
             var getResult = Client.NetworkFactory.buildGetRequest<T>(Collection, mongoQuery);
-            List<T> results = await getResult.ExecuteAsync();
+            List<T> results = await getResult.ExecuteAsync().ConfigureAwait(false);
             Cache.Clear(Query?.Expression);
             Cache.RefreshCache(results);
             string lastRequestTime = getResult.RequestStartTime;

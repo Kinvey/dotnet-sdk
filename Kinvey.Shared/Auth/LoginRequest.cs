@@ -86,7 +86,7 @@ namespace Kinvey
 				userType = this.type.ToString();
 			}
 
-			KinveyAuthResponse response = await this.request.ExecuteAsync();
+			KinveyAuthResponse response = await request.ExecuteAsync().ConfigureAwait(false);
 
 			return InitUser(response, userType);
 		}

@@ -185,7 +185,7 @@ namespace Kinvey
 		/// <returns>The collection tables.</returns>
 		public async Task<List<string>> getCollectionTablesAsync ()
 		{
-			List<SQLTemplates.TableItem> result = await dbConnectionAsync.Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToListAsync ();
+			List<SQLTemplates.TableItem> result = await dbConnectionAsync.Table<SQLTemplates.TableItem> ().OrderByDescending (t => t.name).ToListAsync ().ConfigureAwait(false);
 			List<string> collections = new List<string> ();
 
 

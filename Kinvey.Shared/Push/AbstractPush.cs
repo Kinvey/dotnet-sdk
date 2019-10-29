@@ -52,7 +52,7 @@ namespace Kinvey
         /// <returns> The asynchronous task with push data. </returns>
         public async Task<PushPayload> EnablePushAsync(string platform, string deviceId)
         {
-			return await EnablePushViaRest (platform, deviceId).ExecuteAsync ();
+			return await EnablePushViaRest (platform, deviceId).ExecuteAsync ().ConfigureAwait(false);
 		}
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Kinvey
         /// <returns> The asynchronous task with push data. </returns>
 		public async Task<PushPayload> DisablePushAsync(string platform, string deviceId)
         {
-			return await DisablePushViaRest (platform, deviceId).ExecuteAsync ();
+			return await DisablePushViaRest (platform, deviceId).ExecuteAsync ().ConfigureAwait(false);
 		}
 
         /// <summary>

@@ -230,12 +230,12 @@ namespace Kinvey
 			var client = InitializeHttpClient();
 			var request = BuildRestRequest();
             Logger.Log(request);
-            var response = await client.SendAsync(request);
+            var response = await client.SendAsync(request).ConfigureAwait(false);
             Logger.Log(response);
             if (response.StatusCode == HttpStatusCode.NotFound && this.create == false)
             { //if user is not found, create a new user
 				this.create = true;
-				return await ExecuteUnparsedAsync ();
+				return await ExecuteUnparsedAsync ().ConfigureAwait(false);
 			}
             try
             {
@@ -263,8 +263,8 @@ namespace Kinvey
             HttpResponseMessage response = null;
 			try
 			{
-                response = await ExecuteUnparsedAsync();
-                json = await response.Content.ReadAsStringAsync();
+                response = await ExecuteUnparsedAsync().ConfigureAwait(false);
+                json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				return JsonConvert.DeserializeObject<KinveyAuthResponse>(json);
 			}
             catch (JsonException ex)
