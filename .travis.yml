@@ -6,6 +6,9 @@ matrix:
       mono: none
       dotnet: 3.0
       dist: xenial
+      before_install:
+        - export KINVEY_APP_KEY="_kid_"
+        - export KINVEY_APP_SECRET="appSecret"
       after_success:
         - bash <(curl -s https://codecov.io/bash) -F Linux
     - name: "macOS"
@@ -16,8 +19,8 @@ matrix:
         - brew update
         - brew cask install dotnet-sdk
         - export PATH="$PATH:/usr/local/share/dotnet"
-        - export KINVEY_APP_KEY="kid_HkEDqv45B"
-        - export KINVEY_APP_SECRET="06fa3d06463f473d8c6ecdd26b306f67"
+        - export KINVEY_APP_KEY="_kid_"
+        - export KINVEY_APP_SECRET="appSecret"
       after_success:
         - bash <(curl -s https://codecov.io/bash) -F macOS
     # - name: "Mono"
