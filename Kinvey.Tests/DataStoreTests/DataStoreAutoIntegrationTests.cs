@@ -11462,13 +11462,5 @@ namespace Kinvey.Tests
 
         #endregion Clear cache       
 
-        [TestMethod]
-        public async Task TestIntegration()
-        {
-            if (!MockData)
-            {
-                Assert.Fail("Test integration");
-            }
-        }
-        }
+    }
 }
