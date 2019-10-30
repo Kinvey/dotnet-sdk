@@ -11460,6 +11460,6 @@ namespace Kinvey.Tests
             Assert.AreEqual(0, pendingWriteActions.Count);
         }
 
-        #endregion Clear cache
+        #endregion Clear cache       
     }
 }
