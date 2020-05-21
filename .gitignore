@@ -335,3 +335,6 @@ coverage.opencover.xml
 **/*.sqlite
 **/*.sqlite-shm
 **/*.sqlite-wal
+
+# macOS
+.DS_Store
