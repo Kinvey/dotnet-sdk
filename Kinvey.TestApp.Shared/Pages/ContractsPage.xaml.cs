@@ -6,6 +6,7 @@ using Plugin.Connectivity;
 using System.Linq;
 using Kinvey.TestApp.Shared.Interfaces;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Kinvey.TestApp.Shared.Pages
 {
@@ -180,6 +181,40 @@ namespace Kinvey.TestApp.Shared.Pages
                     break;
                 default:
                     throw new Exception("Wrong index.");
+            }
+        }
+
+        private async void CustomEndpointTestHello_OnClickedAsync(object sender, EventArgs e)
+        {
+            var requestBody = new JObject();
+            var customEndpoint = Client.SharedClient.CustomEndpoint<JObject, JObject>();
+
+            try
+            {
+                var result = await customEndpoint.ExecuteCustomEndpoint("test", requestBody);
+
+                await DisplayMessage("Response", result.ToString());
+            }
+            catch (KinveyException ex)
+            {
+                await DisplayMessage("Exception", ex.Message);
+            }
+        }
+
+        private async void CustomEndpointTestError_OnClickedAsync(object sender, EventArgs e)
+        {
+            var requestBody = new JObject();
+            var customEndpoint = Client.SharedClient.CustomEndpoint<JObject, JObject>();
+
+            try
+            {
+                var result = await customEndpoint.ExecuteCustomEndpoint("test_error", requestBody);
+
+                await DisplayMessage("Response", result.ToString());
+            }
+            catch (KinveyException ex)
+            {
+                await DisplayMessage("Exception", ex.Message);
             }
         }
     }

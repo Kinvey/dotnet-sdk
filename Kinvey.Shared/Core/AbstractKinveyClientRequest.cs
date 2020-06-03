@@ -411,7 +411,7 @@ namespace Kinvey
 
 			try
             {
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCodeWithoutDispose();
             }
             catch (Exception ex)
             {
@@ -543,7 +543,7 @@ namespace Kinvey
 
             try
             {
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCodeWithoutDispose();
             }
             catch (Exception ex)
             {
@@ -649,7 +649,7 @@ namespace Kinvey
 				// produce a successsful outcome.
                 try
                 {
-                    response.EnsureSuccessStatusCode();
+                    response.EnsureSuccessStatusCodeWithoutDispose();
                 }
                 catch (Exception ex)
                 {
@@ -672,7 +672,7 @@ namespace Kinvey
 				// indicates that there is an issue with what was being requested
                 try
                 {
-                    response.EnsureSuccessStatusCode();
+                    response.EnsureSuccessStatusCodeWithoutDispose();
                 }
                 catch (Exception ex)
                 {
@@ -690,7 +690,7 @@ namespace Kinvey
 			{
 				try
                 {
-                    response.EnsureSuccessStatusCode();
+                    response.EnsureSuccessStatusCodeWithoutDispose();
                 }
                 catch (Exception ex)
                 {
@@ -818,5 +818,22 @@ namespace Kinvey
 				return String.Join("&", dict.Select(kvp => String.Concat(Uri.EscapeDataString(kvp.Key), "=", Uri.EscapeDataString(kvp.Value.ToString()))));
 			}
 		}
+    }
+
+    public static class HttpResponseMessageExtensions
+    {
+        public static HttpResponseMessage EnsureSuccessStatusCodeWithoutDispose(this HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException(string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    "Response status code does not indicate success: {0} ({1}).",
+                    (int)response.StatusCode,
+                    response.ReasonPhrase));
+            }
+
+            return response;
+        }
     }
 }
