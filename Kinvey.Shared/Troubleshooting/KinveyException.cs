@@ -180,12 +180,11 @@ namespace Kinvey
 			{
 				KinveyJsonError errorJSON = KinveyJsonError.parse(response);
 				this.error = errorJSON.Error ?? errorInfo.Item1;
-				this.debug = errorJSON.Debug ?? errorInfo.Item2;
+				this.debug = errorJSON.Debug != null ? errorJSON.Debug.ToString() : errorInfo.Item2;
 				this.description = errorJSON.Description ?? errorInfo.Item3;
 				this.requestID = HelperMethods.getRequestID(response);
-
 			}
-			catch (Exception) { 
+			catch (Exception) {
 				//Catch any exceptions thrown while parsing an unknown responseJSON
 			}
 		}

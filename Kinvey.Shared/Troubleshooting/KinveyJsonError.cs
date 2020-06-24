@@ -13,6 +13,7 @@
 
 using System.Net.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Kinvey
 {
@@ -48,7 +49,7 @@ namespace Kinvey
 		/// </summary>
 		/// <value>The debug.</value>
         [JsonProperty]
-        public string Debug {get; set;}
+        public JToken Debug {get; set;}
 
         /// <summary>
         /// Parses the specified response into an error.
