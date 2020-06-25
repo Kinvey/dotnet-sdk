@@ -50,6 +50,14 @@ namespace Kinvey
 		public string LastModifiedTime { get; set; }
 
         /// <summary>
+        /// The last login time.
+        /// </summary>
+        /// <value>The LastLoginTime property gets/sets the value of the string field, _lastLoginTime.</value>
+		[Preserve]
+		[JsonProperty("llt")]
+		public string LastLoginTime { get; set; }
+
+        /// <summary>
         /// The time of entity creation.
         /// </summary>
         /// <value>The EntityCreationTime property gets/sets the value of the string field, _entityCreationTime.</value>

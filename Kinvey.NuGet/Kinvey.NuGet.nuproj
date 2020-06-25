@@ -7,7 +7,7 @@
     <ProjectGuid>{9AB9D425-D38F-44BA-84D0-C92AFEDA4D77}</ProjectGuid>
     <Description>Build Xamarin apps which leverage the power of Kinvey's BaaS, with support for users, data, and files, with caching and offline. Check out http://devcenter.kinvey.com/xamarin for guides, tutorials, and sample apps.</Description>
     <PackageId>Kinvey</PackageId>
-    <PackageVersion>4.3.6</PackageVersion>
+    <PackageVersion>4.4.0</PackageVersion>
     <Authors>Kinvey</Authors>
     <DevelopmentDependency>false</DevelopmentDependency>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

@@ -5,33 +5,40 @@
             x:Class="Kinvey.TestApp.Shared.Pages.ContractsPage"
             Appearing="ContractsPage_OnAppearing">  
     <pages:BasePage.Content>
-        <StackLayout>
-            <Label x:Name="UserLabel" Text="Hello!" 
-               HorizontalOptions="Center"/>
-
-            <Label Text="Contracts" Margin="0, 20, 0, 0"
-                   HorizontalOptions="Center"/>
-
-            <ListView x:Name="ContractsList">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextCell Text="{Binding Title}" Detail="{Binding Number}"></TextCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <Picker x:Name="Platforms" Title="Platforms" SelectedIndex="0" HorizontalOptions="FillAndExpand">
-              <Picker.Items>
-                <x:String>Android</x:String>
-                <x:String>IOS</x:String>
-              </Picker.Items>
-            </Picker>
-
-            <Button Text="Add contract" Clicked="AddContractButton_OnClicked"/>
-            <Button Text="Subscribe Live Service" Clicked="SubscribeLiveService_OnClicked"/>
-            <Button Text="Unsubscribe Live Service" Clicked="UnsubscribeLiveService_OnClicked"/>
-            <Button Text="Register push" Clicked="RegisterPush_OnClickedAsync"/>
-            <Button Text="Unregister push" Clicked="UnregisterPush_OnClickedAsync"/>
+        <StackLayout Spacing="20" Padding="10">
+            <Label x:Name="UserLabel" Text="Hello!" HorizontalOptions="Center" Margin="0,50,0,0" />
+            <StackLayout>
+                <Label Text="Live Service" HorizontalOptions="Center"/>
+                <Button Text="Subscribe Live Service" Clicked="SubscribeLiveService_OnClicked"/>
+                <Button Text="Unsubscribe Live Service" Clicked="UnsubscribeLiveService_OnClicked"/>
+            </StackLayout>
+            <StackLayout>
+                <Label Text="Push Notifications" HorizontalOptions="Center"/>
+                <Picker x:Name="Platforms" SelectedIndex="0" HorizontalOptions="FillAndExpand" VerticalOptions="End">
+                    <Picker.Items>
+                    <x:String>FCMService</x:String>
+                    <x:String>IOSPushService</x:String>
+                    </Picker.Items>
+                </Picker>
+                <Button Text="Register push" Clicked="RegisterPush_OnClickedAsync"/>
+                <Button Text="Unregister push" Clicked="UnregisterPush_OnClickedAsync"/>
+            </StackLayout>
+            <StackLayout>
+                <Label Text="Custom Endpoints" HorizontalOptions="Center"/>
+                <Button Text="Call CustomEndpoint Test -> Hello" Clicked="CustomEndpointTestHello_OnClickedAsync"/>
+                <Button Text="Call CustomEndpoint Test -> Error" Clicked="CustomEndpointTestError_OnClickedAsync"/>
+            </StackLayout>
+            <StackLayout HeightRequest="200">
+                <Label Text="Contracts Collection" HorizontalOptions="Center"/>
+                <Button Text="Add New Record" Clicked="AddContractButton_OnClicked"/>
+                <ListView x:Name="ContractsList">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Title}" Detail="{Binding Number}"></TextCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
         </StackLayout>
     </pages:BasePage.Content>
 </pages:BasePage>

@@ -157,6 +157,7 @@ namespace Kinvey.Tests
 
             // Assert
             Assert.IsNotNull(kinveyClient.ActiveUser);
+            Assert.IsNotNull(u.Metadata.LastLoginTime);
             Assert.IsTrue(u.IsActive());
         }
 
@@ -333,7 +334,7 @@ namespace Kinvey.Tests
 
         [TestMethod]
         public async Task TestLoginSalesforceAsync()
-        {            
+        {
             if (MockData)
             {
                 // Arrange

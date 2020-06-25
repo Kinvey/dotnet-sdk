@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -225,7 +225,8 @@ namespace Kinvey.Tests
 
                     responseJson["_kmd"] = new JObject
                     {
-                        ["authtoken"] = authtoken
+                        ["authtoken"] = authtoken,
+                        ["llt"] = DateTime.UtcNow.ToString(DATE_FORMAT),
                     };
 
                     Write(context, responseJson);
@@ -269,7 +270,8 @@ namespace Kinvey.Tests
                     {
                         user["_kmd"] = new JObject
                         {
-                            ["authtoken"] = Guid.NewGuid().ToString()
+                            ["authtoken"] = Guid.NewGuid().ToString(),
+                            ["llt"] = DateTime.UtcNow.ToString(DATE_FORMAT),
                         };
                     }
 
