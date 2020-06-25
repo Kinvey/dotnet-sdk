@@ -63,7 +63,7 @@ namespace Kinvey
 			}
 
 			var response = await httpClient.PutAsync(requestURI, input).ConfigureAwait(false);
-			response.EnsureSuccessStatusCode();
+			response.EnsureSuccessStatusCodeWithoutDispose();
 			return response;
 		}
 

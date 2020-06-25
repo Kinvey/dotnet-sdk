@@ -239,7 +239,7 @@ namespace Kinvey
 			}
             try
             {
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCodeWithoutDispose();
             }
             catch (Exception ex)
             {
