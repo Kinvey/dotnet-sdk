@@ -24,8 +24,6 @@ namespace Kinvey
     public class FindRequest<T> : ReadRequest<T, List<T>>
 	{
 
-		private KinveyDelegate<List<T>> cacheDelegate;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FindRequest{T}"/> class.
         /// </summary>
@@ -34,13 +32,11 @@ namespace Kinvey
         /// <param name="cache">Cache.</param>
         /// <param name="policy">Read policy.</param>
         /// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
-        /// <param name="cacheDelegate">Cache delegate.</param>
         /// <param name="query">Query.</param>
         /// <param name="listIDs">List identifiers.</param>
-        public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<List<T>> cacheDelegate, IQueryable<object> query, List<string> listIDs)
+        public FindRequest(AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, IQueryable<object> query, List<string> listIDs)
 			: base(client, collection, cache, query, policy, deltaSetFetchingEnabled, listIDs)
 		{
-			this.cacheDelegate = cacheDelegate;
 		}
 
         /// <summary>
@@ -62,24 +58,6 @@ namespace Kinvey
 					// network
 					var result = await RetrieveNetworkResults(this.BuildMongoQuery()).ConfigureAwait(false);
 					listResult = result;
-					break;
-
-				case ReadPolicy.BOTH:
-					// cache
-
-					// first, perform local query
-					PerformLocalFind(cacheDelegate);
-
-					// once local query finishes, perform network query
-					var resolved = await PerformNetworkFind().ConfigureAwait(false);
-					if (resolved.IsDeltaFetched)
-					{
-						listResult = PerformLocalFind();
-					}
-					else 
-					{
-						listResult = resolved.ResultSet;
-					}
 					break;
 
                 case ReadPolicy.NETWORK_OTHERWISE_LOCAL:

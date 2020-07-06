@@ -58,7 +58,7 @@ namespace Kinvey
 			int skipCount = 0, pageSize = 10000;
 
 			if (count < 0) {
-				count = (int) await new GetCountRequest<T>(this.Client, this.Collection, this.Cache, ReadPolicy.FORCE_NETWORK, false, null, this.Query).ExecuteAsync().ConfigureAwait(false);
+				count = (int) await new GetCountRequest<T>(this.Client, this.Collection, this.Cache, ReadPolicy.FORCE_NETWORK, false, this.Query).ExecuteAsync().ConfigureAwait(false);
 			}
 
 			Task consumer = null;
@@ -68,7 +68,7 @@ namespace Kinvey
             do
 			{
 				var skipTakeQuery = query.Skip(skipCount).Take(pageSize);
-				pageQueue.Add(new FindRequest<T>(Client, Collection, Cache, ReadPolicy.FORCE_NETWORK, false, null, skipTakeQuery, null).ExecuteAsync());
+				pageQueue.Add(new FindRequest<T>(Client, Collection, Cache, ReadPolicy.FORCE_NETWORK, false, skipTakeQuery, null).ExecuteAsync());
 				skipCount += pageSize;
 			} while (skipCount < count);
 

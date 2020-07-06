@@ -81,16 +81,6 @@ namespace Kinvey
 					aggregateResult = await PerformNetworkAggregateFind().ConfigureAwait(false);
 					break;
 
-				case ReadPolicy.BOTH:
-					// cache
-
-					// first, perform local aggregation
-					PerformLocalAggregateFind(cacheDelegate);
-
-					// once local finishes, perform network aggregation
-					aggregateResult = await PerformNetworkAggregateFind().ConfigureAwait(false);
-					break;
-
                 case ReadPolicy.NETWORK_OTHERWISE_LOCAL:
                     // auto
 

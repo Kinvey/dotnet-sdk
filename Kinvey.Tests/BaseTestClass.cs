@@ -57,7 +57,7 @@ namespace Kinvey.Tests
             }
         }
 
-        protected Client BuildClient(string apiVersion = null)
+        protected Client BuildClient(string apiVersion = "4")
         {
             Client.Builder builder = ClientBuilder.SetFilePath(TestSetup.db_dir);
 
@@ -66,11 +66,7 @@ namespace Kinvey.Tests
                 builder.setBaseURL("http://localhost:8080");
             }
 
-            if (!string.IsNullOrEmpty(apiVersion))
-            {
-                builder.SetApiVersion(apiVersion);
-            }
-
+            builder.SetApiVersion(apiVersion);
             return builder.Build();
         }
 
@@ -581,7 +577,6 @@ namespace Kinvey.Tests
                     jObjectErrors.Add(jObjectError);
 
                     continue;
-
                 }
                 else if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
                 {

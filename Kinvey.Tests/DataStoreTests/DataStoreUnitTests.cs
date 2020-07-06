@@ -23,6 +23,8 @@ namespace Kinvey.Tests
                 .setFilePath(TestSetup.db_dir)
                 .SetRestClient(new HttpClient(moqRestClient.Object));
 
+            clientBuilder.SetApiVersion("4");
+
             Client client = clientBuilder.Build();
 
             if (client.ActiveUser != null)
