@@ -74,7 +74,8 @@ namespace Kinvey
                             {
                                 Index = index,
                                 Code = 0,
-                                Errmsg = ex.Message
+                                Errmsg = ex.Message,
+                                Debug = ex.ToString()
                             };
                             kinveyDataStoreResponse.Errors.Add(error);
                         }
@@ -112,7 +113,8 @@ namespace Kinvey
                             {
                                 Index = index,
                                 Code = 0,
-                                Errmsg = ex.Message
+                                Errmsg = ex.Message,
+                                Debug = ex.ToString()
                             };
                             kinveyDataStoreResponse.Errors.Add(error);
                         }
@@ -302,7 +304,9 @@ namespace Kinvey
                                     {
                                         Index = currentIndex,
                                         Code = error.Code,
-                                        Errmsg = error.Errmsg
+                                        Errmsg = error.Errmsg,
+                                        Description = error.Description,
+                                        Debug = error.Debug
                                     };
                                     multiInsertNetworkResponse.Errors.Add(newError);
                                 }
@@ -327,7 +331,9 @@ namespace Kinvey
                     {
                         Index = initialIndexes[index],
                         Code = error.Code,
-                        Errmsg = error.Errmsg
+                        Errmsg = error.Errmsg,
+                        Description = error.Description,
+                        Debug = error.Debug
                     };
                     kinveyDataStoreResponse.Errors.Add(newError);
                 }
@@ -346,7 +352,8 @@ namespace Kinvey
                     {
                         Index = updateRequest.Key,
                         Code = 0,
-                        Errmsg = ex.Message
+                        Errmsg = ex.Message,
+                        Debug = ex.ToString()
                     };
 
                     kinveyDataStoreResponse.Errors.Add(error);
@@ -381,7 +388,13 @@ namespace Kinvey
                 for (var index = 0; index < entities.Count(); index++)
                 {
                     response.Entities.Add(default(T));
-                    response.Errors.Add(new Error { Code = 0, Errmsg = exception.Message, Index = index });
+                    response.Errors.Add(new Error {
+                        Index = index,
+                        Code = 0,
+                        Errmsg = exception.Message,
+                        Description = exception.Description,
+                        Debug = exception.Debug,
+                    });
                 }
             }
 
@@ -392,7 +405,17 @@ namespace Kinvey
         {
             if (kinveyDataStoreResponse.Entities.All(e => e == null) && kinveyDataStoreResponse.Errors.Count > 0)
             {
-                throw new KinveyException(errorCategory, errorCode, kinveyDataStoreResponse.Errors[0].Errmsg);
+                var err = kinveyDataStoreResponse.Errors[0];
+                var kinveyException = new KinveyException(errorCategory, errorCode, err.Errmsg);
+                if (!string.IsNullOrWhiteSpace(err.Description))
+                {
+                    kinveyException.Description = err.Description;
+                }
+                if (!string.IsNullOrWhiteSpace(err.Debug))
+                {
+                    kinveyException.Debug = err.Debug;
+                }
+                throw kinveyException;
             }
         }
     }
