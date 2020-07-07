@@ -557,9 +557,17 @@ namespace Kinvey.Tests
                 return;
             }
 
+            var testSetupErrors = new[] {
+                TestSetup.entity_name_for_400_response_error,
+                TestSetup.entity_name_for_403_response_error,
+                TestSetup.entity_name_for_404_response_error,
+                TestSetup.entity_name_for_409_response_error,
+                TestSetup.entity_name_for_500_response_error,
+            };
+
             for(var index = 0; index < jObjects.Count; index ++)
             {
-                if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_400_response_error))
+                if (jObjects[index]["name"] != null && testSetupErrors.Any(err => err == jObjects[index]["name"].ToString()))
                 {
                     jObjectsToSave.Add(null);
 
@@ -567,73 +575,13 @@ namespace Kinvey.Tests
                     {
                         ["index"] = index,
                         ["code"] = 1,
-                        ["errmsg"] = "Error"
+                        ["errmsg"] = jObjects[index]["name"].ToString()
                     };
 
                     jObjectErrors.Add(jObjectError);
 
                     continue;
 
-                }
-                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_403_response_error))
-                {
-                    jObjectsToSave.Add(null);
-
-                    var jObjectError = new JObject
-                    {
-                        ["index"] = index,
-                        ["code"] = 1,
-                        ["errmsg"] = "Error"
-                    };
-
-                    jObjectErrors.Add(jObjectError);
-
-                    continue;
-                }
-                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_404_response_error))
-                {
-                    jObjectsToSave.Add(null);
-
-                    var jObjectError = new JObject
-                    {
-                        ["index"] = index,
-                        ["code"] = 1,
-                        ["errmsg"] = "Error"
-                    };
-
-                    jObjectErrors.Add(jObjectError);
-
-                    continue;
-                }
-                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_409_response_error))
-                {
-                    jObjectsToSave.Add(null);
-
-                    var jObjectError = new JObject
-                    {
-                        ["index"] = index,
-                        ["code"] = 1,
-                        ["errmsg"] = "Error"
-                    };
-
-                    jObjectErrors.Add(jObjectError);
-
-                    continue;
-                }
-                else if (jObjects[index]["name"] != null && jObjects[index]["name"].ToString().Equals(TestSetup.entity_name_for_500_response_error))
-                {
-                    jObjectsToSave.Add(null);
-
-                    var jObjectError = new JObject
-                    {
-                        ["index"] = index,
-                        ["code"] = 1,
-                        ["errmsg"] = "Error"
-                    };
-
-                    jObjectErrors.Add(jObjectError);
-
-                    continue;
                 }
                 else if (jObjects[index]["_geoloc"] != null && !IsValidGeolocation(jObjects[index]["_geoloc"].ToString()))
                 {
@@ -656,12 +604,6 @@ namespace Kinvey.Tests
                     items.Add(jObjects[index]);
                     jObjectsToSave.Add(jObjects[index]);
                 }
-            }
-
-            if(!jObjectsToSave.Any(j=> j != null) && jObjectErrors.Count > 0)
-            {
-                MockInternal(context);
-                return;
             }
 
             var multiInsertResultJsonObject = new JObject

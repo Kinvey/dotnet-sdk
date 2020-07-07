@@ -7217,16 +7217,13 @@ namespace Kinvey.Tests
             };
 
             // Act
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-            {
-                await todoStoreNetwork.SaveAsync(toDos);
-            });
+            var response = await todoStoreNetwork.SaveAsync(toDos);
 
             // Assert
-            Assert.AreEqual(typeof(KinveyException), exception.GetType());
-            var kinveyException = exception as KinveyException;
-            Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+            Assert.AreEqual(toDos.Count, response.Entities.Count);
+            Assert.IsTrue(response.Entities.All(e => e == null));
+            Assert.AreEqual(toDos.Count, response.Errors.Count);
+            Assert.AreEqual("Response status code does not indicate success: 401 (Unauthorized).", response.Errors[0].Errmsg);
         }
 
         [TestMethod]
@@ -7265,7 +7262,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing400ErrorResponseInMultiInsertAsync()
+        public async Task TestSaveMultiInsertWith400ErrorResponseInMultiInsertAsync()
         {
             if (MockData)
             {
@@ -7286,21 +7283,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual(TestSetup.entity_name_for_400_response_error, response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing400ErrorResponseInUpdateAsync()
+        public async Task TestSaveMultiInsertWith400ErrorResponseInUpdateAsync()
         {
             if (MockData)
             {
@@ -7321,21 +7315,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual("Response status code does not indicate success: 400 (Bad Request).", response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing403ErrorResponseInMultiInsertAsync()
+        public async Task TestSaveMultiInsertWith403ErrorResponseInMultiInsertAsync()
         {
             if (MockData)
             {
@@ -7356,21 +7347,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual(TestSetup.entity_name_for_403_response_error, response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing403ErrorResponseInUpdateAsync()
+        public async Task TestSaveMultiInsertWith403ErrorResponseInUpdateAsync()
         {
             if (MockData)
             {
@@ -7390,21 +7378,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual("Response status code does not indicate success: 403 (Forbidden).", response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing404ErrorResponseInMultiInsertAsync()
+        public async Task TestSaveMultiInsertWith404ErrorResponseInMultiInsertAsync()
         {
             if (MockData)
             {
@@ -7425,21 +7410,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual(TestSetup.entity_name_for_404_response_error, response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing404ErrorResponseInUpdateAsync()
+        public async Task TestSaveMultiInsertWith404ErrorResponseInUpdateAsync()
         {
             if (MockData)
             {
@@ -7459,21 +7441,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual("Response status code does not indicate success: 404 (Not Found).", response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing409ErrorResponseInMultiInsertAsync()
+        public async Task TestSaveMultiInsertWith409ErrorResponseInMultiInsertAsync()
         {
             if (MockData)
             {
@@ -7494,21 +7473,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual(TestSetup.entity_name_for_409_response_error, response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing409ErrorResponseInUpdateAsync()
+        public async Task TestSaveMultiInsertWith409ErrorResponseInUpdateAsync()
         {
             if (MockData)
             {
@@ -7528,21 +7504,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual("Response status code does not indicate success: 409 (Conflict).", response.Errors[0].Errmsg);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing500ErrorResponseInMultiInsertAsync()
+        public async Task TestSaveMultiInsertWith500ErrorResponseInMultiInsertAsync()
         {
             if (MockData)
             {
@@ -7563,21 +7536,18 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual(response.Errors[0].Errmsg, TestSetup.entity_name_for_500_response_error);
             }
         }
 
         [TestMethod]
-        public async Task TestSaveMultiInsertThrowing500ErrorResponseInUpdateAsync()
+        public async Task TestSaveMultiInsertWith500ErrorAsync()
         {
             if (MockData)
             {
@@ -7597,16 +7567,13 @@ namespace Kinvey.Tests
                 };
 
                 // Act
-                var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-                {
-                    await todoStoreNetwork.SaveAsync(toDos);
-                });
+                var response = await todoStoreNetwork.SaveAsync(toDos);
 
                 // Assert
-                Assert.AreEqual(typeof(KinveyException), exception.GetType());
-                var kinveyException = exception as KinveyException;
-                Assert.AreEqual(EnumErrorCategory.ERROR_BACKEND, kinveyException.ErrorCategory);
-                Assert.AreEqual(EnumErrorCode.ERROR_JSON_RESPONSE, kinveyException.ErrorCode);
+                Assert.AreEqual(toDos.Count, response.Entities.Count);
+                Assert.IsTrue(response.Entities.All(e => e == null));
+                Assert.AreEqual(toDos.Count, response.Errors.Count);
+                Assert.AreEqual("Response status code does not indicate success: 500 (Internal Server Error).", response.Errors[0].Errmsg);
             }
         }
 

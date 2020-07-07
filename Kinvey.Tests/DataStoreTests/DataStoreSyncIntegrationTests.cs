@@ -6149,7 +6149,7 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
-        public async Task TestSyncStoreSaveMultiInsertThrowingExceptionAsync()
+        public async Task TestSyncStoreSaveMultiInsertWithErrorAsync()
         {
             // Setup
             kinveyClient = BuildClient("5");
@@ -6170,16 +6170,13 @@ namespace Kinvey.Tests
             };
 
             // Act
-            var exception = await Assert.ThrowsExceptionAsync<KinveyException>(async delegate
-            {
-                await todoStore.SaveAsync(toDos);
-            });
+            var response = await todoStore.SaveAsync(toDos);
 
             // Assert
-            Assert.AreEqual(typeof(KinveyException), exception.GetType());
-            var kinveyException = exception as KinveyException;
-            Assert.AreEqual(EnumErrorCategory.ERROR_DATASTORE_CACHE, kinveyException.ErrorCategory);
-            Assert.AreEqual(EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE, kinveyException.ErrorCode);
+            Assert.AreEqual(toDos.Count, response.Entities.Count);
+            Assert.IsTrue(response.Entities.All(e => e == null));
+            Assert.AreEqual(toDos.Count, response.Errors.Count);
+            Assert.AreEqual("Value cannot be null. (Parameter 'o')", response.Errors[0].Errmsg);
         }
 
         #endregion Save
