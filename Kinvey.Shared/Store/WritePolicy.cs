@@ -19,24 +19,19 @@ namespace Kinvey
     /// Controls how the library saves data.
     /// </summary>
     public enum WritePolicy
-	{
-		/// <summary>
-		/// Executes the request online every single time.
-		/// </summary>
-		FORCE_NETWORK,
-		/// <summary>
-		/// Executes the request from the cache every single time.
-		/// </summary>
-		FORCE_LOCAL,
-        /// <summary>
-        /// Attempts to get the response from the cache, if it's not present attempts to execute online.  If online is successful, the response will cached.
-        /// </summary>
-        [Obsolete("This enum value has been deprecated. Please use LOCAL_THEN_NETWORK instead.")]
-        NETWORK_THEN_LOCAL,
-        /// <summary>
-		/// Writes in the local cache first and then try to write trought the network (backend).
-		/// </summary>
-		LOCAL_THEN_NETWORK
+		{
+			/// <summary>
+			/// Executes the request online every single time.
+			/// </summary>
+			FORCE_NETWORK,
+			/// <summary>
+			/// Executes the request from the cache every single time.
+			/// </summary>
+			FORCE_LOCAL,
+			/// <summary>
+			/// Writes in the local cache first and then try to write trought the network (backend).
+			/// </summary>
+			LOCAL_THEN_NETWORK
     }
 }
 

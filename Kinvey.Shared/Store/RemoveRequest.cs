@@ -104,26 +104,6 @@ namespace Kinvey
                     }
                     break;
 
-                case WritePolicy.NETWORK_THEN_LOCAL:
-                    if (_query == null)
-                    {
-                        // cache
-                        kdr = Cache.DeleteByID(entityID);
-
-                        // network
-                        kdr = await Client.NetworkFactory.buildDeleteRequest<KinveyDeleteResponse>(Collection, entityID).ExecuteAsync().ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        // cache
-                        kdr = Cache.DeleteByQuery(_query);
-
-                        // network
-                        var mongoQuery = KinveyMongoQueryBuilder.GetQueryForRemoveOperation<T>(_query);
-                        kdr = await Client.NetworkFactory.buildDeleteRequestWithQuery<KinveyDeleteResponse>(Collection, mongoQuery).ExecuteAsync().ConfigureAwait(false);
-                    }
-                    break;
-
                 case WritePolicy.LOCAL_THEN_NETWORK:                   
                     if (_query == null)
                     {
