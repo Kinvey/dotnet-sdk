@@ -575,7 +575,7 @@ namespace Kinvey.Tests
                     {
                         ["index"] = index,
                         ["code"] = 1,
-                        ["errmsg"] = jObjects[index]["name"].ToString()
+                        ["error"] = jObjects[index]["name"].ToString()
                     };
 
                     jObjectErrors.Add(jObjectError);
@@ -591,7 +591,7 @@ namespace Kinvey.Tests
                     {
                         ["index"] = index,
                         ["code"] = 1,
-                        ["errmsg"] = "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90"
+                        ["error"] = "Geolocation points must be in the form [longitude, latitude] with long between -180 and 180, lat between -90 and 90"
                     };
 
                     jObjectErrors.Add(jObjectError);
