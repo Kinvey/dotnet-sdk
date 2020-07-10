@@ -378,9 +378,18 @@ namespace Kinvey
             var entities = multiInsertNetworkResponse.Entities.Where(e => e != null).ToList();
             response.AddEntities(entities);
 
-            foreach (var error in multiInsertNetworkResponse.Errors)
+            foreach (var err in multiInsertNetworkResponse.Errors)
             {
-                response.AddKinveyException(new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_GENERAL, error.Errmsg));
+                var kinveyException = new KinveyException(EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_GENERAL, err.Errmsg);
+                if (!string.IsNullOrWhiteSpace(err.Description))
+                {
+                    kinveyException.Description = err.Description;
+                }
+                if (!string.IsNullOrWhiteSpace(err.Debug))
+                {
+                    kinveyException.Debug = err.Debug;
+                }
+                response.AddKinveyException(kinveyException);
                 offset++;
             }
 
