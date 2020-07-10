@@ -38,8 +38,22 @@ namespace Kinvey
         /// <summary>
         /// Error message.
         /// </summary>
-        /// <value>The Errmsg  property gets/sets the value of the string field, _errmsg.</value>
-        [JsonProperty]
+        /// <value>The Errmsg property gets/sets the value of the string field, _error.</value>
+        [JsonProperty("error")]
         public string Errmsg { get; set; }
+
+        /// <summary>
+        /// Error description.
+        /// </summary>
+        /// <value>The Description property gets/sets the value of the string field, _description.</value>
+        [JsonProperty]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Debug information.
+        /// </summary>
+        /// <value>The Debug property gets/sets the value of the string field, _debug.</value>
+        [JsonProperty]
+        public string Debug { get; set; }
     }
 }
