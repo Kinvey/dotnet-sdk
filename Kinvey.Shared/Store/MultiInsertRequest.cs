@@ -81,14 +81,11 @@ namespace Kinvey
                         }
                     }
 
-                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE);
-
                     break;
 
                 case WritePolicy.FORCE_NETWORK:
                     // network
                     kinveyDataStoreResponse = await HandleNetworkRequestAsync(entities).ConfigureAwait(false);
-                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE);
                     break;
 
                 case WritePolicy.LOCAL_THEN_NETWORK:
@@ -119,8 +116,6 @@ namespace Kinvey
                             kinveyDataStoreResponse.Errors.Add(error);
                         }
                     }
-
-                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_DATASTORE_CACHE, EnumErrorCode.ERROR_DATASTORE_CACHE_MULTIPLE_SAVE);
 
                     KinveyException kinveyException = null;
                     Exception exception = null;
@@ -186,8 +181,6 @@ namespace Kinvey
 
                         kinveyDataStoreResponse = kinveyDataStoreNetworkResponse;                        
                     }
-
-                    ThrowExceptionIfOnlyErrors(kinveyDataStoreResponse, EnumErrorCategory.ERROR_BACKEND, EnumErrorCode.ERROR_JSON_RESPONSE);
 
                     break;
 
@@ -399,24 +392,6 @@ namespace Kinvey
             }
 
             return response;
-        }
-
-        private void ThrowExceptionIfOnlyErrors(KinveyMultiInsertResponse<T> kinveyDataStoreResponse, EnumErrorCategory errorCategory, EnumErrorCode errorCode)
-        {
-            if (kinveyDataStoreResponse.Entities.All(e => e == null) && kinveyDataStoreResponse.Errors.Count > 0)
-            {
-                var err = kinveyDataStoreResponse.Errors[0];
-                var kinveyException = new KinveyException(errorCategory, errorCode, err.Errmsg);
-                if (!string.IsNullOrWhiteSpace(err.Description))
-                {
-                    kinveyException.Description = err.Description;
-                }
-                if (!string.IsNullOrWhiteSpace(err.Debug))
-                {
-                    kinveyException.Debug = err.Debug;
-                }
-                throw kinveyException;
-            }
         }
     }
 }
