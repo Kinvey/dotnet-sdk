@@ -41,7 +41,7 @@ namespace Kinvey.Tests
             kinveyClient = BuildClient();
 
             // Act
-            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection);
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.AUTO);
 
             // Assert
             Assert.IsNotNull(todoStore);

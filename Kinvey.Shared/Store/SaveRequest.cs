@@ -91,31 +91,6 @@ namespace Kinvey
 					savedEntity = await request.ExecuteAsync ().ConfigureAwait(false);
 					break;
 
-				case WritePolicy.NETWORK_THEN_LOCAL:
-                    // cache
-                    string saveModeNetworkThenLocal = request.RequestMethod;
-                    string tempIdNetworkThenLocal = null;
-
-                    if (String.Equals("POST", saveModeNetworkThenLocal))
-                    {
-                        tempIdNetworkThenLocal = PrepareCacheSave(ref entity);
-                        Cache.Save(entity);
-                    }
-                    else
-                    {
-                        Cache.Update(entity);
-                    }
-
-                    // network save
-                    savedEntity = await request.ExecuteAsync().ConfigureAwait(false);
-
-                    if (tempIdNetworkThenLocal != null)
-                    {
-                        Cache.UpdateCacheSave(savedEntity, tempIdNetworkThenLocal);
-                    }
-
-                    break;
-
                 case WritePolicy.LOCAL_THEN_NETWORK:                    
                     string saveModeLocalThenNetwork = request.RequestMethod;
 

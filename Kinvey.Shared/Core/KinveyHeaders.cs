@@ -27,10 +27,10 @@ namespace Kinvey
         /// The version of the SDK.
         /// </summary>
         /// <value>The string value containing the current version of SDK.</value>
-        public static string VERSION = "4.4.1";
+        public static string VERSION = "5.0.0";
 
 		// The kinvey API version.
-        internal static readonly string kinveyApiVersion = "4";
+        internal static readonly string kinveyApiVersion = "5";
 
 		// The user agent.
         static string userAgentKey = "user-agent";

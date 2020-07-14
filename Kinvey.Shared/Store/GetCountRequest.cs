@@ -24,8 +24,6 @@ namespace Kinvey
     /// <typeparam name="T">The type of an entity.</typeparam>
 	public class GetCountRequest<T> : ReadRequest<T, uint>
 	{
-		private KinveyDelegate<uint> cacheDelegate;
-
         /// <summary>
 		/// Initializes a new instance of the <see cref="GetCountRequest{T}"/> class.
 		/// </summary>
@@ -34,12 +32,10 @@ namespace Kinvey
 		/// <param name="cache">Cache.</param>
 		/// <param name="policy">Read policy.</param>
 		/// <param name="deltaSetFetchingEnabled">If set to <c>true</c> delta set fetching enabled.</param>
-		/// <param name="cacheDelegate">Cache delegate.</param>
 		/// <param name="query">Query.</param>
-		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, KinveyDelegate<uint> cacheDelegate, IQueryable<object> query)
+		public GetCountRequest (AbstractClient client, string collection, ICache<T> cache, ReadPolicy policy, bool deltaSetFetchingEnabled, IQueryable<object> query)
 			: base (client, collection, cache, query, policy, deltaSetFetchingEnabled)
 		{
-			this.cacheDelegate = cacheDelegate;
 		}
 
         /// <summary>
@@ -59,16 +55,6 @@ namespace Kinvey
 
 				case ReadPolicy.FORCE_NETWORK:
 					// network
-					countResult = await PerformNetworkCount().ConfigureAwait(false);
-					break;
-
-				case ReadPolicy.BOTH:
-					// cache
-
-					// first, perform local query
-					PerformLocalCount(cacheDelegate);
-
-					// once local query finishes, perform network query
 					countResult = await PerformNetworkCount().ConfigureAwait(false);
 					break;
 

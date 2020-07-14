@@ -38,7 +38,7 @@ namespace Kinvey
 
 		private ISyncQueue syncQueue = null;
 
-		private DataStoreType storeType = DataStoreType.CACHE;
+		private DataStoreType storeType = DataStoreType.AUTO;
 
 		private JObject customRequestProperties = new JObject();
 
@@ -148,17 +148,6 @@ namespace Kinvey
 		}
 
         #region Public interface
-        /// <summary>
-        /// Gets an instance of the <see cref="DataStore{T}"/>.
-        /// </summary>
-        /// <returns>The DataStore instance.</returns>
-        /// <param name="collectionName">Collection name of the Kinvey collection backing this DataStore</param>
-        /// <param name="client">[optional] Kinvey Client used by this DataStore. If the client is not specified, the <see cref="Client.SharedClient"/> is used.</param>
-        [Obsolete("This method has been deprecated.  Please use Collection( collectionName:, type:, client: ) instead.")]
-        public static DataStore<T> Collection(string collectionName, AbstractClient client = null)
-		{
-			return new DataStore<T>(DataStoreType.CACHE, collectionName, client);
-		}
 
         /// <summary>
         /// Gets an instance of the <see cref="DataStore{T}"/>.
@@ -236,14 +225,11 @@ namespace Kinvey
         /// Perfoms a find operation, with an optional query filter.
         /// </summary>
         /// <param name="query">[optional] LINQ-style query that can be used to filter the search results</param>
-        /// <param name="cacheResults">[optional] The intermediate cache results, returned via delegate prior to the 
-        /// network results being returned.  This is only valid if the <see cref="DataStoreType"/> is 
-        /// <see cref="DataStoreType.CACHE"/></param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
         /// <returns> The async task with the list of entities. </returns>
-        public async Task<List<T>> FindAsync(IQueryable<object> query = null, KinveyDelegate<List<T>> cacheResults = null, CancellationToken ct = default(CancellationToken))
+        public async Task<List<T>> FindAsync(IQueryable<object> query = null, CancellationToken ct = default(CancellationToken))
 		{
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheResults, query, null);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, query, null);
 			ct.ThrowIfCancellationRequested();
 			return await findByQueryRequest.ExecuteAsync().ConfigureAwait(false);
 		}
@@ -252,12 +238,9 @@ namespace Kinvey
         /// Perfoms a find operation, based on a given Kinvey ID.
         /// </summary>
         /// <param name="entityID">The ID of the entity to be retrieved.</param>
-        /// <param name="cacheResult">[optional] The intermediate cache results, returned via delegate prior to the 
-        /// network results being returned.  This is only valid if the <see cref="DataStoreType"/> is 
-        /// <see cref="DataStoreType.CACHE"/>.</param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
         /// <returns> The async task with an entity. </returns>
-        public async Task<T> FindByIDAsync(string entityID, KinveyDelegate<T> cacheResult = null, CancellationToken ct = default(CancellationToken))
+        public async Task<T> FindByIDAsync(string entityID, CancellationToken ct = default(CancellationToken))
 		{
 			List<string> listIDs = new List<string>();
 
@@ -266,17 +249,7 @@ namespace Kinvey
 				listIDs.Add(entityID);
 			}
 
-			var cacheDelegate = new KinveyDelegate<List<T>>
-			{
-				onSuccess = (listCacheResults) => {
-					cacheResult?.onSuccess(listCacheResults.FirstOrDefault());
-				},
-				onError = (error) => {
-					cacheResult?.onError(error);
-				}
-			};
-
-			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheDelegate, null, listIDs);
+			FindRequest<T> findByQueryRequest = new FindRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, null, listIDs);
 			ct.ThrowIfCancellationRequested();
 			var results = await findByQueryRequest.ExecuteAsync().ConfigureAwait(false);
 			return results.FirstOrDefault();
@@ -289,13 +262,10 @@ namespace Kinvey
         /// </summary>
         /// <returns>The async task which returns the count.</returns>
         /// <param name="query">[optional] LINQ-style query that can be used to filter the search results.</param>
-        /// <param name="cacheCount">[optional] The intermediate cache results, returned via delegate prior to the 
-		/// network results being returned.  This is only valid if the <see cref="DataStoreType"/> is 
-		/// <see cref="DataStoreType.CACHE"/></param>
         /// <param name="ct">[optional] CancellationToken used to cancel the request.</param>
-        public async Task<uint> GetCountAsync(IQueryable<object> query = null, KinveyDelegate<uint> cacheCount = null, CancellationToken ct = default(CancellationToken))
+        public async Task<uint> GetCountAsync(IQueryable<object> query = null, CancellationToken ct = default(CancellationToken))
 		{
-			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, cacheCount, query);
+			GetCountRequest<T> getCountRequest = new GetCountRequest<T>(client, collectionName, cache, storeType.ReadPolicy, DeltaSetFetchingEnabled, query);
 			ct.ThrowIfCancellationRequested();
 			return await getCountRequest.ExecuteAsync().ConfigureAwait(false);
 		}
