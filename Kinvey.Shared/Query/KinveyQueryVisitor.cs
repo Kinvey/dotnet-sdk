@@ -126,7 +126,16 @@ namespace Kinvey
                 if (whereClause.Predicate.NodeType.ToString().Equals("Equal"))
                 {
                     BinaryExpression equality = whereClause.Predicate as BinaryExpression;
-                    var member = equality.Left as MemberExpression;
+					
+                    MemberExpression member;
+                    if (equality.Left.NodeType == ExpressionType.Convert)
+                    {
+                        member = ((UnaryExpression)equality.Left).Operand as MemberExpression;
+                    } else
+                    {
+                        member = equality.Left as MemberExpression;
+                    }
+					
                     var argument = equality.Right.ToString();
 
                     if (index > 0)
