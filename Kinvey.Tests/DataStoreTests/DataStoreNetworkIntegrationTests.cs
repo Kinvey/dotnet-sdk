@@ -4530,6 +4530,112 @@ namespace Kinvey.Tests
         }
 
         [TestMethod]
+        public async Task TestNetworkStoreFindByQueryEnumValue()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            ToDo newItem1 = new ToDo();
+            newItem1.Name = "todo";
+            newItem1.Details = "details for 1";
+            newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+            ToDo newItem2 = new ToDo();
+            newItem2.Name = "another todo";
+            newItem2.Details = "details for 2";
+            newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+            newItem2.State = ToDoState.InProgress;
+
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            newItem1 = await todoStore.SaveAsync(newItem1);
+            newItem2 = await todoStore.SaveAsync(newItem2);
+
+            // Cast the enum value to int, or it will be sent as "InProgress" string.
+            // This cannot be fixed because the argument type is not enum but Object when traversing the query tree.
+            var query = todoStore.Where(x => x.State.Equals((int)ToDoState.InProgress));
+
+            List<ToDo> listToDo = new List<ToDo>();
+
+            listToDo = await todoStore.FindAsync(query);
+
+            // Teardown
+            await todoStore.RemoveAsync(newItem1.ID);
+            await todoStore.RemoveAsync(newItem2.ID);
+            kinveyClient.ActiveUser.Logout();
+
+            // Assert
+            Assert.IsNotNull(listToDo);
+            Assert.IsTrue(listToDo.Count > 0);
+            Assert.AreEqual(1, listToDo.Count);
+            Assert.AreEqual(newItem2.Name, listToDo[0].Name);
+        }
+
+        [TestMethod]
+        public async Task TestNetworkStoreFindByQueryEnumValueWithEqualsOperator()
+        {
+            // Setup
+            kinveyClient = BuildClient();
+
+            if (MockData)
+            {
+                MockResponses(6);
+            }
+            if (kinveyClient.ActiveUser != null)
+            {
+                kinveyClient.ActiveUser.Logout();
+            }
+
+            await User.LoginAsync(TestSetup.user, TestSetup.pass, kinveyClient);
+
+            // Arrange
+            ToDo newItem1 = new ToDo();
+            newItem1.Name = "todo";
+            newItem1.Details = "details for 1";
+            newItem1.DueDate = "2016-04-22T19:56:00.963Z";
+
+            ToDo newItem2 = new ToDo();
+            newItem2.Name = "another todo";
+            newItem2.Details = "details for 2";
+            newItem2.DueDate = "2016-04-22T19:56:00.963Z";
+            newItem2.State = ToDoState.InProgress;
+
+            DataStore<ToDo> todoStore = DataStore<ToDo>.Collection(toDosCollection, DataStoreType.NETWORK);
+
+            newItem1 = await todoStore.SaveAsync(newItem1);
+            newItem2 = await todoStore.SaveAsync(newItem2);
+
+            var query = todoStore.Where(x => x.State == ToDoState.InProgress);
+
+            List<ToDo> listToDo = new List<ToDo>();
+
+            listToDo = await todoStore.FindAsync(query);
+
+            // Teardown
+            await todoStore.RemoveAsync(newItem1.ID);
+            await todoStore.RemoveAsync(newItem2.ID);
+            kinveyClient.ActiveUser.Logout();
+
+            // Assert
+            Assert.IsNotNull(listToDo);
+            Assert.IsTrue(listToDo.Count > 0);
+            Assert.AreEqual(1, listToDo.Count);
+            Assert.AreEqual(newItem2.Name, listToDo[0].Name);
+        }
+
+        [TestMethod]
         public async Task TestNetworkStoreFindByQueryLogicalAnd()
         {
             // Setup

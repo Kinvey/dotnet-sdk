@@ -3,6 +3,13 @@ using Newtonsoft.Json;
 
 namespace Kinvey.Tests
 {
+	public enum ToDoState
+	{
+		NotDone = 0,
+		InProgress = 1,
+		Done = 2
+	}
+
 	[JsonObject(MemberSerialization.OptIn)]
 	public class ToDo : Entity
 	{
@@ -26,6 +33,9 @@ namespace Kinvey.Tests
 
         [JsonProperty("_geoloc")]
         public string GeoLoc { get; set; }
-    }
+
+		[JsonProperty("state")]
+		public ToDoState State { get; set; }
+	}
 }
 
